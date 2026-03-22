@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix | Landing Page</title>
+    <title>Matrix</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
         /* --- BASE STYLES & VARIABLES --- */
         :root {
-            --bg-color: #0e2e41; /* Deep navy from screenshot */
+            --bg-color: #0e2e41; /* Deep navy from your tweak */
+            --nav-bg: #0a1e2d; /* New Nav Background */
             --grid-color: rgba(255, 255, 255, 0.03);
             --matrix-yellow: #d8a61a;
             --matrix-yellow-hover: #e0a31c;
@@ -23,7 +24,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             min-height: 100vh;
@@ -34,17 +35,26 @@
             background-image: 
                 linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
                 linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background-size: 75px 75px;
             background-position: center top;
+            position: relative;
         }
 
         /* --- NAVIGATION --- */
         nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            background-color: var(--nav-bg); /* THE FIX IS HERE */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Adds a subtle edge */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 24px 48px;
-            width: 100%;
+            padding: 20px 48px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
 
         .nav-logo {
@@ -52,19 +62,19 @@
             align-items: center;
             gap: 12px;
             font-weight: 800;
-            letter-spacing: 2px;
-            font-size: 16px;
+            letter-spacing: 1px;
+            font-size: 18px;
         }
 
         .nav-logo-icon {
             background-color: var(--matrix-yellow);
             color: #ffffff;
-            width: 28px;
-            height: 28px;
+            width: 34px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 4px;
+            border-radius: 10px;
             font-size: 14px;
         }
 
@@ -78,7 +88,7 @@
             color: var(--text-main);
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 10px 20px;
-            border-radius: 6px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
@@ -95,7 +105,7 @@
             color: #ffffff;
             border: none;
             padding: 10px 20px;
-            border-radius: 6px;
+            border-radius: 10px;
             font-weight: 800;
             font-size: 14px;
             cursor: pointer;
@@ -114,20 +124,20 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 0 24px;
-            margin-top: -50px; /* Slight visual tweak to center perfectly */
+            padding: 100px 24px 40px; 
+            min-height: 100vh;
         }
 
         .university-badge {
             border: 1px solid rgba(245, 185, 39, 0.3);
-            background: rgba(245, 185, 39, 0.05);
+            background: rgba(245, 185, 39, 0.15);
             color: var(--matrix-yellow);
-            padding: 8px 24px;
+            padding: 8px 20px;
             border-radius: 50px;
-            font-size: 11px;
-            font-weight: 800;
+            font-size: 12px;
+            font-weight: 600;
             letter-spacing: 1.5px;
-            margin-bottom: 32px;
+            margin-bottom: 18px;
             text-transform: uppercase;
         }
 
@@ -143,11 +153,11 @@
         }
 
         .hero-subtitle {
-            font-size: 13px;
+            font-size: 16px;
             color: var(--text-muted);
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             font-weight: 600;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .hero-description {
@@ -165,6 +175,7 @@
 
         /* --- ACTION BUTTONS --- */
         .role-buttons {
+            font-family: 'Poppins', sans-serif;
             display: flex;
             gap: 16px;
             margin-bottom: 48px;
@@ -173,7 +184,7 @@
         .btn-large {
             padding: 14px 32px;
             font-size: 16px;
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -181,7 +192,7 @@
 
         .btn-student {
             background: var(--matrix-yellow);
-            color: #000;
+            color: #fff;
             border: none;
             font-weight: 800;
             cursor: pointer;
@@ -218,8 +229,8 @@
         }
 
         .tag {
-            padding: 6px 16px;
-            border-radius: 6px;
+            padding: 4px 16px;
+            border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
             display: flex;
@@ -227,10 +238,10 @@
             gap: 6px;
         }
 
-        .tag-green { border: 1px solid rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.05); color: #4ade80; }
-        .tag-blue { border: 1px solid rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.05); color: #38bdf8; }
-        .tag-orange { border: 1px solid rgba(249, 115, 22, 0.3); background: rgba(249, 115, 22, 0.05); color: #fb923c; }
-        .tag-purple { border: 1px solid rgba(168, 85, 247, 0.3); background: rgba(168, 85, 247, 0.05); color: #c084fc; }
+        .tag-green { border: 1px solid rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.05); color: #457c52; }
+        .tag-blue { border: 1px solid rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.05); color: #2596be; }
+        .tag-orange { border: 1px solid rgba(249, 115, 22, 0.3); background: rgba(249, 115, 22, 0.05); color: #af512c; }
+        .tag-purple { border: 1px solid rgba(168, 85, 247, 0.3); background: rgba(168, 85, 247, 0.05); color: #7466a3; }
 
     </style>
 </head>
