@@ -3,18 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <title>Matrix | Landing Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;800;900&display=swap" rel="stylesheet">
     <style>
         /* --- BASE STYLES & VARIABLES --- */
         :root {
-            --bg-color: #0e2e41; /* Deep navy from your tweak */
-            --nav-bg: #0a1e2d; /* New Nav Background */
+            /* This is the base background underneath everything (where the grid lives) */
+            --bg-color: #0e2e41; 
+            --nav-bg: #0a1e2d; 
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.05);
             --grid-color: rgba(255, 255, 255, 0.03);
+            
             --matrix-yellow: #d8a61a;
             --matrix-yellow-hover: #e0a31c;
+            --matrix-green: #457c52;
+            --matrix-green-hover: #529361;
+            
             --text-main: #ffffff;
             --text-muted: #94a3b8;
+            --text-gray: #cbd5e1;
+            --text-opacity: #ffffff8c;
+            --text-span: rgb(255, 255, 255, 0.8);
         }
 
         * {
@@ -31,30 +41,39 @@
             display: flex;
             flex-direction: column;
             
-            /* Blueprint Grid Effect */
+            /* Blueprint Grid Effect stays on the body */
             background-image: 
                 linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
                 linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
             background-size: 75px 75px;
             background-position: center top;
-            position: relative;
+            background-attachment: fixed; 
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
         }
 
         /* --- NAVIGATION --- */
         nav {
-            position: absolute;
+            position: fixed; 
             top: 0;
             left: 0;
             width: 100%;
-            height: 65px;
-            background-color: var(--nav-bg); /* THE FIX IS HERE */
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Adds a subtle edge */
+            height: 75px;
+            
+            /* Background for Nav Bar color */
+            background-color: var(--nav-bg); 
+            
+            border-bottom: 1px solid var(--card-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 48px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
+            padding: 0 48px;
+            z-index: 1000;
         }
 
         .nav-logo {
@@ -74,21 +93,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 14px;
         }
 
-        .nav-actions {
-            display: flex;
-            gap: 16px;
-        }
+        .nav-actions { display: flex; gap: 16px; }
 
         .btn-ghost {
+            font-family: 'Poppins', sans-serif;
             background: transparent;
             color: var(--text-main);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 10px 24px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
@@ -101,43 +118,66 @@
         }
 
         .btn-primary {
+            font-family: 'Poppins', sans-serif;
             background: var(--matrix-yellow);
-            color: #ffffff;
+            color: #fff;
             border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 800;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
             font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .btn-primary:hover {
-            background: var(--matrix-yellow-hover);
+        .btn-primary:hover { background: var(--matrix-yellow-hover); }
+
+        /* --- TYPOGRAPHY UTILS --- */
+        .section-eyebrow {
+            color: var(--matrix-yellow);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
         }
 
-        /* --- MAIN HERO SECTION --- */
-        main {
-            flex-grow: 1;
+        .section-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 48px;
+        }
+        .section-title span { color: var(--matrix-yellow); }
+
+        /* --- GLOBAL SECTION SPACING --- */
+        section { padding: 100px 0; }
+        .text-center { text-align: center; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            /* Background for Hero section color */
+            /* Leave transparent to see the body grid, or add a solid hex color here */
+            background-color: transparent; 
+            
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 100px 24px 40px; 
+            padding: 160px 24px 80px; 
             min-height: 100vh;
         }
 
         .university-badge {
             border: 1px solid rgba(245, 185, 39, 0.3);
-            background: rgba(245, 185, 39, 0.15);
+            background: rgba(245, 185, 39, 0.1);
             color: var(--matrix-yellow);
-            padding: 8px 20px;
+            padding: 8px 24px;
             border-radius: 50px;
             font-size: 12px;
             font-weight: 600;
             letter-spacing: 1.5px;
-            margin-bottom: 18px;
+            margin-bottom: 24px;
             text-transform: uppercase;
         }
 
@@ -146,23 +186,22 @@
             font-weight: 900;
             letter-spacing: -3px;
             margin-bottom: 16px;
+            line-height: 1;
         }
 
-        .hero-title span {
-            color: var(--matrix-yellow);
-        }
+        .hero-title span { color: var(--matrix-yellow); }
 
         .hero-subtitle {
             font-size: 16px;
             color: var(--text-muted);
             letter-spacing: 1px;
             font-weight: 600;
-            margin-bottom: 16px;
+            margin-bottom: 24px;
         }
 
         .hero-description {
             font-size: 18px;
-            color: #cbd5e1;
+            color: var(--text-gray);
             line-height: 1.6;
             max-width: 600px;
             margin-bottom: 40px;
@@ -173,9 +212,7 @@
             font-weight: 600;
         }
 
-        /* --- ACTION BUTTONS --- */
         .role-buttons {
-            font-family: 'Poppins', sans-serif;
             display: flex;
             gap: 16px;
             margin-bottom: 48px;
@@ -188,11 +225,12 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: inherit;
         }
 
         .btn-student {
             background: var(--matrix-yellow);
-            color: #fff;
+            color: #ffffff;
             border: none;
             font-weight: 800;
             cursor: pointer;
@@ -208,7 +246,7 @@
         .btn-teacher {
             background: rgba(255, 255, 255, 0.03);
             color: var(--text-main);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -220,7 +258,6 @@
             transform: translateY(-2px);
         }
 
-        /* --- QUADRANT TAGS --- */
         .quadrant-tags {
             display: flex;
             gap: 12px;
@@ -229,19 +266,300 @@
         }
 
         .tag {
-            padding: 4px 16px;
+            padding: 6px 16px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
-        .tag-green { border: 1px solid rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.05); color: #457c52; }
-        .tag-blue { border: 1px solid rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.05); color: #2596be; }
-        .tag-orange { border: 1px solid rgba(249, 115, 22, 0.3); background: rgba(249, 115, 22, 0.05); color: #af512c; }
-        .tag-purple { border: 1px solid rgba(168, 85, 247, 0.3); background: rgba(168, 85, 247, 0.05); color: #7466a3; }
+        .tag-green { border: 1px solid rgba(69, 124, 82, 0.4); background: rgba(69, 124, 82, 0.1); color: #4ade80; }
+        .tag-blue { border: 1px solid rgba(37, 150, 190, 0.4); background: rgba(37, 150, 190, 0.1); color: #38bdf8; }
+        .tag-orange { border: 1px solid rgba(175, 81, 44, 0.4); background: rgba(175, 81, 44, 0.1); color: #fb923c; }
+        .tag-purple { border: 1px solid rgba(116, 102, 163, 0.4); background: rgba(116, 102, 163, 0.1); color: #c084fc; }
+
+        /* --- THE PROCESS SECTION --- */
+        .process {
+            /* Background for Process section color */
+            background-color: #0f2535; 
+            border-top: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .process-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 40px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .process-number {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 80px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            line-height: 1;
+            user-select: none;
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            font-size: 20px;
+        }
+
+        .icon-yellow { background: rgba(216, 166, 26, 0.1); color: var(--matrix-yellow); }
+        .icon-green { background: rgba(69, 124, 82, 0.1); color: #4ade80; }
+        .icon-blue { background: rgba(37, 150, 190, 0.1); color: #38bdf8; }
+
+        .process-card h3 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .process-card p {
+            color: var(--text-opacity);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* --- THE FRAMEWORK SECTION --- */
+        .framework {
+            /* Background for Framework section color */
+            background-color: #0a1e2c; 
+        }
+
+        .framework-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+
+        .framework-content p {
+            color: var(--text-opacity);
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+
+        .framework-content strong {
+            color: var(--text-span);
+        }
+
+        .framework-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .fw-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .fw-card.green { border-color: rgba(69, 124, 82, 0.3); }
+        .fw-card.blue { border-color: rgba(37, 150, 190, 0.3); }
+        .fw-card.orange { border-color: rgba(175, 81, 44, 0.3); }
+        .fw-card.purple { border-color: rgba(116, 102, 163, 0.3); }
+
+        .fw-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .fw-card.green .fw-card-title { color: #4ade80; }
+        .fw-card.blue .fw-card-title { color: #38bdf8; }
+        .fw-card.orange .fw-card-title { color: #fb923c; }
+        .fw-card.purple .fw-card-title { color: #c084fc; }
+
+        .fw-card p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .framework-image {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            /* Added Border to match mockup */
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .framework-image img {
+            max-width: 99%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        /* --- BUILT FOR EVERYONE SECTION --- */
+        .roles {
+            /* Background for Roles section color */
+            background-color: #0f2535; 
+            border-top: 1px solid var(--card-border);
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .role-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 48px;
+        }
+
+        .role-box h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .role-list {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+
+        .role-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+            color: var(--text-gray);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .role-list li::before {
+            content: '✓';
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .role-student .role-list li::before { color: var(--matrix-yellow); }
+        .role-teacher .role-list li::before { color: #4ade80; }
+
+        .btn-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-student-portal { background: var(--matrix-yellow); color: #fff; }
+        .btn-teacher-portal { background: #457c52; color: #fff; }
+
+        /* --- FEATURES BOTTOM SECTION --- */
+        .features { 
+            /* Background for Features section color */
+            background-color: #0a1e2c; 
+            
+            padding-top: 40px; 
+            border-bottom: 1px solid var(--card-border);
+        } 
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-small-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .feature-small-card h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .feature-small-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            /* Background for Footer section color */
+            background-color: #060f17; 
+            
+            padding: 32px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-copyright {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .footer-dots { display: flex; gap: 8px; }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-yellow { background: var(--matrix-yellow); }
+        .dot-green { background: #4ade80; }
+        .dot-blue { background: #38bdf8; }
+        .dot-orange { background: #fb923c; }
+        .dot-purple { background: #c084fc; }
 
     </style>
 </head>
@@ -259,37 +577,184 @@
     </nav>
 
     <main>
-        <div class="university-badge">
-            • BSIT · Our Lady of Fatima University — Quezon City
-        </div>
+        <section class="hero">
+            <div class="container text-center" style="display:flex; flex-direction:column; align-items:center;">
+                <div class="university-badge">
+                    • BSIT · Our Lady of Fatima University — Quezon City
+                </div>
 
-        <h1 class="hero-title">MAT<span>R</span>IX</h1>
+                <h1 class="hero-title">MAT<span>R</span>IX</h1>
 
-        <div class="hero-subtitle">
-            A QUADRANT-BASED EVALUATION AND TARGETED MODULE DELIVERY SYSTEM
-        </div>
+                <div class="hero-subtitle">
+                    A QUADRANT-BASED EVALUATION AND TARGETED MODULE DELIVERY SYSTEM
+                </div>
 
-        <p class="hero-description">
-            Discover your learning mode. Map your position. Unlock <br>
-            <span>personalized modules</span> built for how you actually learn.
-        </p>
+                <p class="hero-description">
+                    Discover your learning mode. Map your position. Unlock <br>
+                    <span>personalized modules</span> built for how you actually learn.
+                </p>
 
-        <div class="role-buttons">
-            <button class="btn-large btn-student">
-                <span>🎓</span> I'm a Student
-            </button>
-            <button class="btn-large btn-teacher">
-                <span>👥</span> I'm a Teacher
-            </button>
-        </div>
+                <div class="role-buttons">
+                    <button class="btn-large btn-student">
+                        <span>🎓</span> I'm a Student
+                    </button>
+                    <button class="btn-large btn-teacher">
+                        <span>👥</span> I'm a Teacher
+                    </button>
+                </div>
 
-        <div class="quadrant-tags">
-            <div class="tag tag-green">📚 Hierarchical Individual</div>
-            <div class="tag tag-blue">💻 Distributed Individual</div>
-            <div class="tag tag-orange">🤝 Hierarchical Collective</div>
-            <div class="tag tag-purple">🧠 Distributed Collective</div>
-        </div>
+                <div class="quadrant-tags">
+                    <div class="tag tag-green">📚 Hierarchical Individual</div>
+                    <div class="tag tag-blue">💻 Distributed Individual</div>
+                    <div class="tag tag-orange">🤝 Hierarchical Collective</div>
+                    <div class="tag tag-purple">🧠 Distributed Collective</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="process">
+            <div class="container">
+                <div class="text-center">
+                    <div class="section-eyebrow">The Process</div>
+                    <h2 class="section-title">How <span>MATRIX</span> Works</h2>
+                </div>
+
+                <div class="process-grid">
+                    <div class="process-card">
+                        <div class="process-number">01</div>
+                        <div class="icon-box icon-yellow">📊</div>
+                        <h3>Take the Assessment</h3>
+                        <p>Complete a quarterly question-based evaluation designed to capture your behavioral and cognitive learning patterns. New assessment every quarter.</p>
+                    </div>
+                    
+                    <div class="process-card">
+                        <div class="process-number">02</div>
+                        <div class="icon-box icon-green">🗺️</div>
+                        <h3>Get Mapped</h3>
+                        <p>Your responses are processed by MATRIX's weighted scoring algorithm, placing you precisely on a 2D quadrant grid based on Elmore's learning modes.</p>
+                    </div>
+
+                    <div class="process-card">
+                        <div class="process-number">03</div>
+                        <div class="icon-box icon-blue">📚</div>
+                        <h3>Receive Your Modules</h3>
+                        <p>Get targeted learning modules aligned with your dominant quadrant plus guided activities to strengthen the modes where you have the most to gain.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="framework">
+            <div class="container">
+                <div class="framework-wrapper">
+                    <div class="framework-content">
+                        <div class="section-eyebrow">The Framework</div>
+                        <h2 class="section-title" style="margin-bottom: 24px; text-align: left;">Elmore's Four <span>Modes of Learning</span></h2>
+                        <p>MATRIX is built on Richard Elmore's framework from Harvard GSE, which categorizes learning along two dimensions: the <strong>authority structure</strong> (Hierarchical vs. Distributed) and the <strong>social structure</strong> (Individual vs. Collective).</p>
+                        
+                        <div class="framework-cards">
+                            <div class="fw-card green">
+                                <div class="fw-card-title">📚 Hierarchical Individual</div>
+                                <p>Structured lessons • Direct instruction</p>
+                            </div>
+                            <div class="fw-card blue">
+                                <div class="fw-card-title">💻 Distributed Individual</div>
+                                <p>Self-paced • Tech-enabled</p>
+                            </div>
+                            <div class="fw-card orange">
+                                <div class="fw-card-title">🤝 Hierarchical Collective</div>
+                                <p>Group learning • Teacher-guided</p>
+                            </div>
+                            <div class="fw-card purple">
+                                <div class="fw-card-title">🧠 Distributed Collective</div>
+                                <p>Peer-driven • Inquiry-based</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="framework-image">
+                        <img src="images/elmore.png" alt="Modes of Learning Diagram">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="roles">
+            <div class="container">
+                <div class="text-center">
+                    <div class="section-eyebrow">Built for Everyone</div>
+                    <h2 class="section-title">Two Roles, <span>One Platform</span></h2>
+                </div>
+
+                <div class="roles-grid">
+                    <div class="role-box role-student">
+                        <div class="icon-box icon-yellow">🎓</div>
+                        <h3>For Students</h3>
+                        <ul class="role-list">
+                            <li>Take quarterly learning mode assessments</li>
+                            <li>See your exact position on the quadrant map</li>
+                            <li>Access personalized study modules for your dominant mode</li>
+                            <li>Get targeted tips to strengthen your weaker quadrants</li>
+                            <li>Track how your learning mode evolves each quarter</li>
+                        </ul>
+                        <button class="btn-role btn-student-portal">Student Portal ></button>
+                    </div>
+
+                    <div class="role-box role-teacher">
+                        <div class="icon-box icon-green">👥</div>
+                        <h3>For Teachers</h3>
+                        <ul class="role-list">
+                            <li>View the full quadrant distribution of your class</li>
+                            <li>See each student's coordinate position on the map</li>
+                            <li>Monitor how students' modes shift across quarters</li>
+                            <li>Generate simplified 'Teacher-Ready' progress reports</li>
+                            <li>Identify students who may need targeted academic support</li>
+                        </ul>
+                        <button class="btn-role btn-teacher-portal">Teacher Portal ></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <div class="features-grid">
+                    <div class="feature-small-card">
+                        <div class="icon-box icon-yellow" style="margin: 0 auto 16px;">⚡</div>
+                        <h4>Quarterly Tracking</h4>
+                        <p>Reassess every quarter and track how your dominant learning mode evolves throughout the school year.</p>
+                    </div>
+                    <div class="feature-small-card">
+                        <div class="icon-box icon-green" style="margin: 0 auto 16px;">🛡️</div>
+                        <h4>ISO/IEC 25010</h4>
+                        <p>System quality validated by both IT professionals and end-users using internationally recognized software standards.</p>
+                    </div>
+                    <div class="feature-small-card">
+                        <div class="icon-box icon-blue" style="margin: 0 auto 16px;">📊</div>
+                        <h4>KNN Algorithm</h4>
+                        <p>Powered by K-Nearest Neighbor and Prescriptive Analytics to accurately map and recommend based on your profile.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
+
+    <footer>
+        <div class="nav-logo">
+            <div class="nav-logo-icon">M</div>
+            MATRIX
+        </div>
+        <div class="footer-copyright">
+            © 2026 MATRIX · Our Lady of Fatima University — Quezon City · BS Information Technology
+        </div>
+        <div class="footer-dots">
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <div class="dot dot-blue"></div>
+            <div class="dot dot-orange"></div>
+            <div class="dot dot-purple"></div>
+        </div>
+    </footer>
 
 </body>
 </html>
