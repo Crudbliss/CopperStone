@@ -57,6 +57,11 @@
             width: 100%;
         }
 
+        /* Utility for hidden elements */
+        .svg-defs {
+            display: none;
+        }
+
         /* --- ICONS ---*/
 
         /* --- NAVIGATION --- */
@@ -168,6 +173,12 @@
             text-align: center;
             padding: 160px 24px 80px; 
             min-height: 100vh;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .university-badge {
@@ -349,6 +360,11 @@
             background-color: #0a1e2c; 
         }
 
+        .framework-title {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
         .framework-wrapper {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -469,6 +485,10 @@
             line-height: 1.5;
         }
 
+        /* Custom colored icons for list */
+        .role-student .role-list-icon { color: var(--matrix-yellow); }
+        .role-teacher .role-list-icon { color: #4ade80; }
+
         .role-student .role-list li::before { color: var(--matrix-yellow); }
         .role-teacher .role-list li::before { color: #4ade80; }
 
@@ -513,6 +533,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        /* Override generic icon-box margin for the features block */
+        .feature-small-card .icon-box {
+            margin: 0 auto 16px;
         }
 
         .feature-small-card h4 {
@@ -560,8 +585,7 @@
     </style>
 </head>
 <body>
-    <!-- Svg Icons-->
-    <svg style="display: none;">
+    <svg class="svg-defs">
         <symbol id="icon-student" viewBox="0 2 24 24">
             <path d="M21.080 12.84l-8.92-3.24c-0.4-0.16-0.88-0.2-1.16-0.2-0.32 0-0.76 0.040-1.16 0.2l-8.92 3.24c-0.84 0.32-0.92 0.88-0.92 1.12s0.080 0.8 0.92 1.12l0.4 0.12v3.32c0 0.48 0.36 0.84 0.84 0.84s0.84-0.36 0.84-0.84v-2.72l1.56 0.56v3.76c0 1.64 3.84 2.44 6.44 2.44s6.44-0.76 6.44-2.44v-3.72l3.64-1.32c0.84-0.28 0.92-0.88 0.92-1.12s-0.080-0.8-0.92-1.12zM15.8 19.92c-0.48 0.32-2.28 0.96-4.76 0.96s-4.32-0.64-4.76-0.96v-2.92l3.6 1.32c0.4 0.16 0.88 0.2 1.16 0.2s0.76-0.040 1.16-0.2l3.6-1.32v2.92zM11.6 16.72c-0.28 0.12-0.88 0.12-1.16 0l-7.64-2.76 7.6-2.76c0.28-0.12 0.88-0.12 1.16 0l7.64 2.76-7.6 2.76z"></path>
         </symbol>
@@ -672,7 +696,7 @@
 
     <main>
         <section class="hero">
-            <div class="container text-center" style="display:flex; flex-direction:column; align-items:center;">
+            <div class="container hero-content">
                 <div class="university-badge">
                     • BSIT · Our Lady of Fatima University — Quezon City
                 </div>
@@ -756,7 +780,7 @@
                 <div class="framework-wrapper">
                     <div class="framework-content">
                         <div class="section-eyebrow">The Framework</div>
-                        <h2 class="section-title" style="margin-bottom: 24px; text-align: left;">Elmore's Four <span>Modes of Learning</span></h2>
+                        <h2 class="section-title framework-title">Elmore's Four <span>Modes of Learning</span></h2>
                         <p>MATRIX is built on Richard Elmore's framework from Harvard GSE, which categorizes learning along two dimensions: the <strong>authority structure</strong> (Hierarchical vs. Distributed) and the <strong>social structure</strong> (Individual vs. Collective).</p>
                         
                         <div class="framework-cards">
@@ -800,11 +824,11 @@
                     </svg></div>
                         <h3>For Students</h3>
                         <ul class="role-list">
-                            <li><div style="color: #d8a61a;"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Take quarterly learning mode assessments</li>
-                            <li><div style="color: #d8a61a;"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>See your exact position on the quadrant map</li>
-                            <li><div style="color: #d8a61a;"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Access personalized study modules for your dominant mode</li>
-                            <li><div style="color: #d8a61a;"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Get targeted tips to strengthen your weaker quadrants</li>
-                            <li><div style="color: #d8a61a;"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Track how your learning mode evolves each quarter</li>
+                            <li><div class="role-list-icon"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Take quarterly learning mode assessments</li>
+                            <li><div class="role-list-icon"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>See your exact position on the quadrant map</li>
+                            <li><div class="role-list-icon"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Access personalized study modules for your dominant mode</li>
+                            <li><div class="role-list-icon"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Get targeted tips to strengthen your weaker quadrants</li>
+                            <li><div class="role-list-icon"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Track how your learning mode evolves each quarter</li>
                         </ul>
                         <button class="btn-role btn-student-portal">Student Portal ></button>
                     </div>
@@ -816,11 +840,11 @@
                         </div>
                         <h3>For Teachers</h3>
                         <ul class="role-list">
-                            <li><div style="color: #4ade80;" ><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>View the full quadrant distribution of your class</li>
-                            <li><div style="color: #4ade80;" ><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>See each student's coordinate position on the map</li>
-                            <li><div style="color: #4ade80;" ><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Monitor how students' modes shift across quarters</li>
-                            <li><div style="color: #4ade80;" ><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Generate simplified 'Teacher-Ready' progress reports</li>
-                            <li><div style="color: #4ade80;" ><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Identify students who may need targeted academic support</li>
+                            <li><div class="role-list-icon"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>View the full quadrant distribution of your class</li>
+                            <li><div class="role-list-icon"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>See each student's coordinate position on the map</li>
+                            <li><div class="role-list-icon"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Monitor how students' modes shift across quarters</li>
+                            <li><div class="role-list-icon"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Generate simplified 'Teacher-Ready' progress reports</li>
+                            <li><div class="role-list-icon"><svg width="18px" height="18px"><use href="#icon-circle-check"></use></svg></div>Identify students who may need targeted academic support</li>
                         </ul>
                         <button class="btn-role btn-teacher-portal">Teacher Portal ></button>
                     </div>
@@ -832,21 +856,21 @@
             <div class="container">
                 <div class="features-grid">
                     <div class="feature-small-card">
-                        <div class="icon-box icon-yellow" style="margin: 0 auto 16px;"><svg width="24px" height="24px">
+                        <div class="icon-box icon-yellow"><svg width="24px" height="24px">
                             <use href="#icon-lightning"></use></svg>
                         </div>
                         <h4>Quarterly Tracking</h4>
                         <p>Reassess every quarter and track how your dominant learning mode evolves throughout the school year.</p>
                     </div>
                     <div class="feature-small-card">
-                        <div class="icon-box icon-green" style="margin: 0 auto 16px;"><svg width="24px" height="24px">
+                        <div class="icon-box icon-green"><svg width="24px" height="24px">
                         <use href="#icon-shield"></use>
                     </svg></div>
                         <h4>ISO/IEC 25010</h4>
                         <p>System quality validated by both IT professionals and end-users using internationally recognized software standards.</p>
                     </div>
                     <div class="feature-small-card">
-                        <div class="icon-box icon-blue" style="margin: 0 auto 16px;"><svg width="24px" height="24px">
+                        <div class="icon-box icon-blue"><svg width="24px" height="24px">
                         <use href="#icon-bar-chart"></use>
                     </svg></div>
                         <h4>KNN Algorithm</h4>
