@@ -54,7 +54,7 @@
 
         /* --- LAYOUT WRAPPERS --- */
         .sidebar {
-            width: 260px;
+            width: 220px;
             background-color: var(--bg-panel);
             border-right: 1px solid var(--border-light);
             display: flex;
@@ -65,16 +65,13 @@
 
         .main-wrapper {
             flex: 1;
-            display: flex;
-            flex-direction: column;
             overflow-y: auto;
-            position: relative;
         }
 
         /* --- SIDEBAR COMPONENTS --- */
         .sidebar-header {
-            padding: 32px;
-            margin-bottom: 16px;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
         
         .logo-container {
@@ -172,7 +169,7 @@
 
         /* --- TOP HEADER --- */
         .top-header {
-            height: 88px;
+            height: 64px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -695,8 +692,9 @@
                     <p class="welcome-sub">2022-10345 · BSIT 3-1 · 3rd Year</p>
                 </div>
                 <button class="btn-primary">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                    Q3 Assessment
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: scale(0.85);">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>                    Q3 Assessment
                 </button>
             </div>
 
@@ -707,7 +705,7 @@
                     <p class="stat-sub">Current quadrant</p>
                 </div>
                 <div class="glass-card stat-card">
-                    <p class="stat-title lg">2/4</p>
+                    <p class="stat-title lg" style="color: var(--matrix-green);">2/4</p>
                     <p class="stat-label">Assessments Done</p>
                     <p class="stat-sub">This school year</p>
                 </div>
