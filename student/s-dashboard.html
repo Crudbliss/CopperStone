@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATRIX | Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS VARIABLES (Theme Colors) --- */
+        :root {
+            --bg-base: #060f17;
+            --bg-panel: #0a1e2d;
+            --bg-card: #12181f;
+            --bg-yellow: #1a1c16;
+            --bg-green: #0e1b1d;
+            --hd-color: #0a1e2c;
+            
+            --matrix-yellow: #d8a61a;
+            --matrix-yellow-hover: #eab308;
+            --matrix-dg: #4a8f4b;
+            --matrix-green: #4ade80;
+            --matrix-blue: #38bdf8;
+            --matrix-orange: #fb923c;
+            --matrix-purple: #c084fc;
+            
+            --text-main: #ffffff;
+            --text-muted: #8b9eb0;
+            --border-light: rgba(255, 255, 255, 0.05);
+            --border-lighter: rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- RESET & BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .svg-defs { display: none; }
+        
+        svg {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* --- LAYOUT WRAPPERS --- */
+        .sidebar {
+            width: 220px;
+            background-color: var(--bg-panel);
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            z-index: 20;
+            flex-shrink: 0;
+        }
+
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column; /* Stacks header and iframe */
+            overflow: hidden; /* Iframe will handle the scrolling */
+        }
+
+        /* --- SIDEBAR COMPONENTS --- */
+        .sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--matrix-yellow);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 16px;
+            color: var(--bg-base);
+        }
+        
+        .logo-text {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-link:hover {
+            color: var(--text-main);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-link.active {
+            background-color: rgba(216, 166, 26, 0.1);
+            border-left-color: var(--matrix-yellow);
+            color: var(--matrix-yellow);
+        }
+
+        /* --- UPDATED SIDEBAR FOOTER (USER + LOGOUT) --- */
+        .sidebar-footer {
+            padding: 24px 20px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%; /* Made circular per reference image */
+            background-color: rgba(216, 166, 26, 0.15); /* Dark faint yellow */
+            color: var(--matrix-yellow); /* Yellow text */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .user-details h4 {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #ffffff;
+        }
+        
+        .user-details p {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .sign-out-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding-left: 6px;
+            transition: color 0.2s ease;
+        }
+
+        .sign-out-link:hover {
+            color: var(--text-main);
+        }
+
+        /* --- TOP HEADER --- */
+        .top-header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            border-bottom: 1px solid var(--border-light);
+            background-color: rgba(10, 30, 45, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+        }
+
+        .header-title-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header-subtitle {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+            display: flex;
+        }
+
+        .btn-icon:hover { color: var(--text-main); }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #0c2417;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            padding: 8px 16px;
+            border-radius: 50px;
+        }
+
+        .status-dot-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            background-color: var(--matrix-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-panel);
+        }
+
+        .status-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--matrix-green);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- IFRAME STYLING --- */
+        #content-frame {
+            width: 100%;
+            flex: 1;
+            border: none;
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <svg class="svg-defs">
+        <symbol id="icon-speedometer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M13 7h-2v5.41l3.3 3.3 1.41-1.41L13 11.59z"/></symbol>
+        <symbol id="icon-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></symbol>
+        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></symbol>
+        <symbol id="icon-linechart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></symbol>
+        <symbol id="icon-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
+        <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></symbol>
+        <symbol id="icon-books-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v4H4zM4 14h16v4H4z"/></symbol>
+        <symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></symbol>
+        
+        <symbol id="icon-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+        </symbol>
+    </svg>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <div class="logo-icon">M</div>
+                <span class="logo-text">Matrix</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard-content.html" target="content-frame" class="sidebar-link active">
+                <svg width="20" height="20"><use href="#icon-speedometer"></use></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg width="20" height="20"><use href="#icon-checklist"></use></svg>
+                <span>Assessment</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg width="20" height="20"><use href="#icon-book"></use></svg>
+                <span>My Modules</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg width="20" height="20"><use href="#icon-linechart"></use></svg>
+                <span>Progress</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg width="20" height="20"><use href="#icon-person"></use></svg>
+                <span>Profile</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="user-avatar">MS</div>
+                <div class="user-details">
+                    <h4>Maria Santos</h4>
+                    <p>BSIT 3-1</p>
+                </div>
+            </div>
+            
+            <a href="#" class="sign-out-link">
+                <svg width="18" height="18"><use href="#icon-logout"></use></svg>
+                <span>Sign Out</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        
+        <header class="top-header">
+            <div class="header-title-box">
+                <span class="header-subtitle">Student Portal</span>
+                <span class="header-title">Dashboard</span>
+            </div>
+            
+            <div class="header-actions">
+                <button class="btn-icon">
+                    <svg width="20" height="20"><use href="#icon-bell"></use></svg>
+                </button>
+                <div class="status-pill">
+                    <div class="status-dot-icon">
+                        <svg width="10" height="10"><use href="#icon-books-stack"></use></svg>
+                    </div>
+                    <span class="status-text">Hierarchical Individual</span>
+                </div>
+            </div>
+        </header>
+
+        <iframe src="dashboard-content.html" name="content-frame" id="content-frame"></iframe>
+        
+    </div>
+
+</body>
+</html>
