@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Modules Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS VARIABLES (Theme Colors) --- */
+        :root {
+            --bg-base: #060f17;
+            --bg-card: #12181f;
+            
+            --matrix-yellow: #d8a61a;
+            --matrix-green: #4ade80;
+            --matrix-blue: #38bdf8;
+            --matrix-orange: #fb923c;
+            --matrix-purple: #c084fc;
+            
+            /* Status / Difficulty Colors */
+            --tag-beginner: #4ade80;
+            --tag-intermediate: #d8a61a;
+            --tag-advanced: #fb923c;
+            
+            --text-main: #ffffff;
+            --text-muted: #8b9eb0;
+            
+            --border-light: rgba(255, 255, 255, 0.08);
+            
+            /* Gap Container Backgrounds */
+            --bg-purple-faint: rgba(192, 132, 252, 0.05);
+            --border-purple-faint: rgba(192, 132, 252, 0.2);
+            
+            --bg-blue-faint: rgba(56, 189, 248, 0.05);
+            --border-blue-faint: rgba(56, 189, 248, 0.2);
+            
+            --bg-orange-faint: rgba(251, 146, 60, 0.05);
+            --border-orange-faint: rgba(251, 146, 60, 0.2);
+        }
+
+        /* --- RESET & BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .svg-defs { display: none; }
+        
+        svg {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .modules-container {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* --- HEADER --- */
+        .page-header {
+            margin-bottom: 8px;
+        }
+        
+        .header-title-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .header-title-row svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 800;
+        }
+        
+        .page-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        
+        .highlight-green {
+            color: var(--matrix-green);
+            font-weight: 700;
+        }
+
+        /* --- MODULE GRID & CARDS --- */
+        .module-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .module-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.15);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .module-icon {
+            font-size: 20px;
+        }
+
+        .tags-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        /* Tag Variations */
+        .tag-beginner { background-color: rgba(74, 222, 128, 0.1); color: var(--tag-beginner); }
+        .tag-intermediate { background-color: rgba(216, 166, 26, 0.1); color: var(--tag-intermediate); }
+        .tag-advanced { background-color: rgba(251, 146, 60, 0.1); color: var(--tag-advanced); }
+        
+        .tag-topic { background-color: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--border-light); }
+
+        .module-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .module-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 24px;
+            flex: 1;
+        }
+
+        .card-bottom {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        .card-bottom svg { width: 14px; height: 14px; }
+
+
+        /* --- DIVIDER --- */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--text-muted);
+        }
+        .section-divider::before, .section-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .section-divider span {
+            padding: 0 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .section-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: -16px;
+            margin-bottom: 24px;
+        }
+
+
+        /* --- GAP SECTIONS --- */
+        .gap-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .gap-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .gap-pill {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .gap-title {
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .gap-title span { font-size: 18px; } /* For the emoji */
+
+        /* Gap Box Styling */
+        .gap-info-box {
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .gap-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #d1d5db; /* Slightly lighter than muted */
+        }
+
+        .tips-header {
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .tips-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tips-list li {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        /* Specific Gap Colors */
+        
+        /* Purple (Primary) */
+        .gap-purple .gap-pill { background-color: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); } /* Primary pill is yellow in image */
+        .gap-purple .gap-title { color: var(--matrix-purple); }
+        .gap-purple .gap-info-box { background-color: var(--bg-purple-faint); border-color: var(--border-purple-faint); }
+        .gap-purple .tips-header { color: var(--matrix-purple); }
+        .gap-purple .tips-list li::before { content: '→'; color: var(--matrix-purple); }
+
+        /* Cyan/Blue (Secondary) */
+        .gap-blue .gap-pill { background-color: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); }
+        .gap-blue .gap-title { color: var(--matrix-blue); }
+        .gap-blue .gap-info-box { background-color: var(--bg-blue-faint); border-color: var(--border-blue-faint); }
+        .gap-blue .tips-header { color: var(--matrix-blue); }
+        .gap-blue .tips-list li::before { content: '→'; color: var(--matrix-blue); }
+
+        /* Orange (Tertiary) */
+        .gap-orange .gap-pill { background-color: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); }
+        .gap-orange .gap-title { color: var(--matrix-orange); }
+        .gap-orange .gap-info-box { background-color: var(--bg-orange-faint); border-color: var(--border-orange-faint); }
+        .gap-orange .tips-header { color: var(--matrix-orange); }
+        .gap-orange .tips-list li::before { content: '→'; color: var(--matrix-orange); }
+
+        /* For the specific gap tag colors */
+        .tag-purple-outline { border: 1px solid rgba(192, 132, 252, 0.3); color: #c084fc; background: none;}
+        .tag-blue-outline { border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; background: none;}
+        .tag-orange-outline { border: 1px solid rgba(251, 146, 60, 0.3); color: #fb923c; background: none;}
+
+    </style>
+</head>
+<body>
+
+    <svg class="svg-defs">
+        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></symbol>
+    </svg>
+
+    <div class="modules-container">
+        
+        <div class="page-header">
+            <div class="header-title-row">
+                <span>📚</span>
+                <h1 class="page-title">Your Dominant Mode Modules</h1>
+            </div>
+            <p class="page-subtitle">Personalized for your <span class="highlight-green">Hierarchical Individual</span> learning style — techniques that align with how you naturally learn best.</p>
+        </div>
+
+        <div class="module-grid">
+            <div class="module-card">
+                <div class="card-top">
+                    <span class="module-icon">✏️</span>
+                    <div class="tags-row">
+                        <span class="tag tag-beginner">Beginner</span>
+                        <span class="tag tag-topic">Note-Taking</span>
+                    </div>
+                </div>
+                <h3 class="module-title">Cornell Note-Taking System</h3>
+                <p class="module-desc">Master the Cornell method to organize lectures and textbook content into powerful study notes.</p>
+                <div class="card-bottom">
+                    <svg><use href="#icon-clock"></use></svg> 45 min
+                </div>
+            </div>
+
+            <div class="module-card">
+                <div class="card-top">
+                    <span class="module-icon">🎬</span>
+                    <div class="tags-row">
+                        <span class="tag tag-beginner">Beginner</span>
+                        <span class="tag tag-topic">Comprehension</span>
+                    </div>
+                </div>
+                <h3 class="module-title">Active Lecture Comprehension</h3>
+                <p class="module-desc">Techniques for absorbing and retaining information from teacher-led lessons and recorded lectures.</p>
+                <div class="card-bottom">
+                    <svg><use href="#icon-clock"></use></svg> 30 min
+                </div>
+            </div>
+
+            <div class="module-card">
+                <div class="card-top">
+                    <span class="module-icon">📖</span>
+                    <div class="tags-row">
+                        <span class="tag tag-intermediate">Intermediate</span>
+                        <span class="tag tag-topic">Retention</span>
+                    </div>
+                </div>
+                <h3 class="module-title">Structured Self-Review Methods</h3>
+                <p class="module-desc">Spaced repetition and sequential review strategies to reinforce material learned from direct instruction.</p>
+                <div class="card-bottom">
+                    <svg><use href="#icon-clock"></use></svg> 20 min
+                </div>
+            </div>
+
+            <div class="module-card">
+                <div class="card-top">
+                    <span class="module-icon">🔧</span>
+                    <div class="tags-row">
+                        <span class="tag tag-intermediate">Intermediate</span>
+                        <span class="tag tag-topic">Problem-Solving</span>
+                    </div>
+                </div>
+                <h3 class="module-title">Step-by-Step Problem Frameworks</h3>
+                <p class="module-desc">Systematic approaches to breaking down complex IT problems using structured logical flow.</p>
+                <div class="card-bottom">
+                    <svg><use href="#icon-clock"></use></svg> 60 min
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider">
+            <span>STRENGTHEN YOUR OTHER MODES</span>
+        </div>
+        <p class="section-desc">These modules target your weaker quadrants. Strengthening them builds cognitive adaptability and makes you a more versatile learner.</p>
+
+
+        <div class="gap-section gap-purple">
+            <div class="gap-header">
+                <span class="gap-pill">PRIMARY GAP</span>
+                <h3 class="gap-title"><span>🧠</span> Distributed Collective</h3>
+            </div>
+            
+            <div class="gap-info-box">
+                <p class="gap-description">You excel in peer-driven, inquiry-based group settings. Shared leadership, open-ended discussions, and co-creation of knowledge define your ideal learning environment.</p>
+                <div>
+                    <h4 class="tips-header">💡 Strengthening Tips:</h4>
+                    <ul class="tips-list">
+                        <li>Practice sitting through a fully lecture-based class session with focused note-taking</li>
+                        <li>Follow a strictly structured textbook chapter from start to finish, solo</li>
+                        <li>Accept a clearly defined role in a group project rather than co-leading</li>
+                        <li>Submit individual work to a teacher and request direct, authoritative feedback</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="module-grid">
+                <div class="module-card">
+                    <div class="card-top">
+                        <span class="module-icon">✏️</span>
+                        <div class="tags-row">
+                            <span class="tag tag-intermediate">Intermediate</span>
+                            <span class="tag tag-purple-outline">Teaching</span>
+                        </div>
+                    </div>
+                    <h3 class="module-title">Peer Teaching Circles</h3>
+                    <p class="module-desc">Lead and participate in sessions where each member teaches a topic to the group, deepening mutual understanding.</p>
+                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 60 min</div>
+                </div>
+
+                <div class="module-card">
+                    <div class="card-top">
+                        <span class="module-icon">🔧</span>
+                        <div class="tags-row">
+                            <span class="tag tag-advanced">Advanced</span>
+                            <span class="tag tag-purple-outline">Project-Based</span>
+                        </div>
+                    </div>
+                    <h3 class="module-title">Open Inquiry IT Projects</h3>
+                    <p class="module-desc">Collaborate on group projects where the problem, solution, and process are defined collectively by the team.</p>
+                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 120 min</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gap-section gap-blue">
+            <div class="gap-header">
+                <span class="gap-pill">SECONDARY GAP</span>
+                <h3 class="gap-title"><span>💻</span> Distributed Individual</h3>
+            </div>
+            
+            <div class="gap-info-box">
+                <p class="gap-description">You are an autonomous, self-directed learner who thrives when given freedom to explore. You excel through technology-enabled discovery at your own pace.</p>
+                <div>
+                    <h4 class="tips-header">💡 Strengthening Tips:</h4>
+                    <ul class="tips-list">
+                        <li>Attend structured group study sessions at least once a week</li>
+                        <li>Ask a teacher or mentor to set a guided learning path for one subject</li>
+                        <li>Practice following a syllabus strictly for one quarter</li>
+                        <li>Volunteer to lead a structured presentation in your IT class</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="module-grid">
+                <div class="module-card">
+                    <div class="card-top">
+                        <span class="module-icon">✏️</span>
+                        <div class="tags-row">
+                            <span class="tag tag-beginner">Beginner</span>
+                            <span class="tag tag-blue-outline">Planning</span>
+                        </div>
+                    </div>
+                    <h3 class="module-title">Building Your Learning Roadmap</h3>
+                    <p class="module-desc">Create a self-directed study plan using curated online courses, documentation, and open resources.</p>
+                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 40 min</div>
+                </div>
+
+                <div class="module-card">
+                    <div class="card-top">
+                        <span class="module-icon">🔧</span>
+                        <div class="tags-row">
+                            <span class="tag tag-advanced">Advanced</span>
+                            <span class="tag tag-blue-outline">Project-Based</span>
+                        </div>
+                    </div>
+                    <h3 class="module-title">Portfolio Project Development</h3>
+                    <p class="module-desc">Channel your independent learning into a personal IT project that demonstrates your growing skills.</p>
+                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 90 min</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gap-section gap-orange">
+            <div class="gap-header">
+                <span class="gap-pill">TERTIARY GAP</span>
+                <h3 class="gap-title">🤝 Hierarchical Collective</h3>
+            </div>
+            
+            <div class="gap-info-box">
+                <p class="gap-description">You flourish in teacher-guided group environments. Structured collaborative activities, clear roles, and instructor oversight bring out your best performance.</p>
+                <div>
+                    <h4 class="tips-header">💡 Strengthening Tips:</h4>
+                    <ul class="tips-list">
+                        <li>Dedicate one study session per week to completely solo, unguided review</li>
+                        <li>Practice making independent academic decisions without seeking teacher approval first</li>
+                        <li>Start a personal IT project with no group members or assigned roles</li>
+                        <li>Try self-paced online courses and pace yourself without external deadlines</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="module-grid">
+                <div class="module-card">
+                    <div class="card-top">
+                        <span class="module-icon">✏️</span>
+                        <div class="tags-row">
+                            <span class="tag tag-beginner">Beginner</span>
+                            <span class="tag tag-orange-outline">Collaboration</span>
+                        </div>
+                    </div>
+                    <h3 class="module-title">Structured Group Study Design</h3>
+                    <p class="module-desc">Organize effective study groups with clearly defined roles, agendas, and teacher-set objectives.</p>
+                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 50 min</div>
+                </div>
+
+                <div class="module-card">
+                    <div class="card-top">
+                        <span class="module-icon">🎬</span>
+                        <div class="tags-row">
+                            <span class="tag tag-intermediate">Intermediate</span>
+                            <span class="tag tag-orange-outline">Discussion</span>
+                        </div>
+                    </div>
+                    <h3 class="module-title">Socratic Dialogue Techniques</h3>
+                    <p class="module-desc">Participate meaningfully in instructor-led class discussions using structured questioning frameworks.</p>
+                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 35 min</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -315,19 +315,19 @@
                 <svg width="20" height="20"><use href="#icon-speedometer"></use></svg>
                 <span>Dashboard</span>
             </a>
-            <a href="#" class="sidebar-link">
+            <a href="qa-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20"><use href="#icon-checklist"></use></svg>
                 <span>Assessment</span>
             </a>
-            <a href="#" class="sidebar-link">
+            <a href="modules-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20"><use href="#icon-book"></use></svg>
                 <span>My Modules</span>
             </a>
-            <a href="#" class="sidebar-link">
+            <a href="#" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20"><use href="#icon-linechart"></use></svg>
                 <span>Progress</span>
             </a>
-            <a href="#" class="sidebar-link">
+            <a href="#" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20"><use href="#icon-person"></use></svg>
                 <span>Profile</span>
             </a>
@@ -374,5 +374,20 @@
         
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    // Remove active class from all links
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to the clicked link
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
