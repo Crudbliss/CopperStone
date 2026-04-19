@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS VARIABLES (Theme Colors) --- */
+        :root {
+            --bg-base: #060f17;
+            --bg-card: #12181f;
+            --bg-box: #1a222a; /* Slightly lighter background for inner boxes */
+            
+            --matrix-yellow: #d8a61a;
+            --matrix-yellow-faint: rgba(216, 166, 26, 0.15);
+            --matrix-green: #4ade80;
+            --matrix-green-faint: rgba(74, 222, 128, 0.1);
+            
+            --text-main: #ffffff;
+            --text-muted: #8b9eb0;
+            --text-dark-muted: #4e6376;
+            
+            --border-light: rgba(255, 255, 255, 0.06);
+            --border-yellow: rgba(216, 166, 26, 0.2);
+        }
+
+        /* --- RESET & BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: transparent; /* Allows parent background to show */
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .svg-defs { display: none; }
+        
+        svg {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .profile-container {
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* --- GLASS CARD BASE --- */
+        .glass-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 32px;
+        }
+
+        /* --- 1. PROFILE HEADER CARD --- */
+        .card-profile {
+            border-color: var(--border-yellow); /* Slight yellow tint to the border */
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .profile-top-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .profile-avatar-lg {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background-color: var(--matrix-yellow-faint);
+            border: 1px solid rgba(216, 166, 26, 0.4);
+            color: var(--matrix-yellow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .profile-id {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .profile-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: rgba(74, 222, 128, 0.05);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: var(--matrix-green);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Info Grid */
+        .profile-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .info-box {
+            background-color: var(--bg-box);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* --- 2. ASSESSMENT HISTORY CARD --- */
+        .history-card-header {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .history-item-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .history-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Status Colors for History Icons */
+        .icon-success { color: var(--matrix-green); }
+        .icon-pending { color: var(--matrix-yellow); }
+        .icon-locked { color: var(--text-dark-muted); }
+
+        .history-item-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .history-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .history-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .history-item-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .history-mode {
+            color: var(--matrix-green);
+            font-weight: 500;
+        }
+
+        .history-score {
+            color: var(--matrix-green);
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .history-status-text {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* --- 3. FOOTER CARD --- */
+        .card-footer {
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .univ-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background-color: var(--matrix-yellow-faint);
+            color: var(--matrix-yellow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 16px;
+        }
+
+        .univ-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .univ-title {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .univ-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+    </style>
+</head>
+<body>
+
+    <svg class="svg-defs">
+        <symbol id="icon-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </symbol>
+        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+        </symbol>
+        <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </symbol>
+    </svg>
+
+    <div class="profile-container">
+        
+        <div class="glass-card card-profile">
+            
+            <div class="profile-top-row">
+                <div class="profile-avatar-lg">MS</div>
+                <div class="profile-details">
+                    <h2 class="profile-name">Maria Santos</h2>
+                    <p class="profile-id">2022-10345</p>
+                    <div class="profile-status-pill">
+                        <span>📚</span> Hierarchical Individual
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-info-grid">
+                <div class="info-box">
+                    <span class="info-label">Program</span>
+                    <span class="info-value">BS Information Technology</span>
+                </div>
+                <div class="info-box">
+                    <span class="info-label">Year Level</span>
+                    <span class="info-value">3rd Year</span>
+                </div>
+                <div class="info-box">
+                    <span class="info-label">Section</span>
+                    <span class="info-value">BSIT 3-1</span>
+                </div>
+                <div class="info-box">
+                    <span class="info-label">Email</span>
+                    <span class="info-value">maria.santos@student.olfu.edu.ph</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="glass-card">
+            <h3 class="history-card-header">ASSESSMENT HISTORY</h3>
+            
+            <div class="history-list">
+                
+                <div class="history-item">
+                    <div class="history-item-left">
+                        <div class="history-icon icon-success">
+                            <svg width="20" height="20"><use href="#icon-check-circle"></use></svg>
+                        </div>
+                        <div class="history-item-text">
+                            <span class="history-title">Q1 Assessment</span>
+                            <span class="history-date">January 15, 2026</span>
+                        </div>
+                    </div>
+                    <div class="history-item-right">
+                        <span class="history-mode">Hierarchical Individual</span>
+                        <span class="history-score">88%</span>
+                    </div>
+                </div>
+
+                <div class="history-item">
+                    <div class="history-item-left">
+                        <div class="history-icon icon-success">
+                            <svg width="20" height="20"><use href="#icon-check-circle"></use></svg>
+                        </div>
+                        <div class="history-item-text">
+                            <span class="history-title">Q2 Assessment</span>
+                            <span class="history-date">April 10, 2026</span>
+                        </div>
+                    </div>
+                    <div class="history-item-right">
+                        <span class="history-mode">Hierarchical Individual</span>
+                        <span class="history-score">91%</span>
+                    </div>
+                </div>
+
+                <div class="history-item">
+                    <div class="history-item-left">
+                        <div class="history-icon icon-pending">
+                            <svg width="20" height="20"><use href="#icon-clock"></use></svg>
+                        </div>
+                        <div class="history-item-text">
+                            <span class="history-title">Q3 Assessment</span>
+                            <span class="history-date">July 2026</span>
+                        </div>
+                    </div>
+                    <div class="history-item-right">
+                        <span class="history-status-text">current</span>
+                    </div>
+                </div>
+
+                <div class="history-item">
+                    <div class="history-item-left">
+                        <div class="history-icon icon-locked">
+                            <svg width="20" height="20"><use href="#icon-lock"></use></svg>
+                        </div>
+                        <div class="history-item-text">
+                            <span class="history-title">Q4 Assessment</span>
+                            <span class="history-date">October 2026</span>
+                        </div>
+                    </div>
+                    <div class="history-item-right">
+                        <span class="history-status-text">locked</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="glass-card card-footer">
+            <div class="univ-icon">M</div>
+            <div class="univ-text">
+                <span class="univ-title">Our Lady of Fatima University</span>
+                <span class="univ-subtitle">MATRIX Platform • Academic Year 2025–2026</span>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

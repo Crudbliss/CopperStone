@@ -237,8 +237,8 @@
             letter-spacing: 1px;
         }
 
-        .axis-y-top { left: -36px; top: 25%; transform: translateY(-50%) rotate(-90deg); }
-        .axis-y-bot { left: -36px; top: 75%; transform: translateY(-50%) rotate(-90deg); }
+        .axis-y-top { left: -28px; top: 25%; transform: translateY(-50%) rotate(-90deg); }
+        .axis-y-bot { left: -28px; top: 75%; transform: translateY(-50%) rotate(-90deg); }
         
         .axis-x-container {
             position: absolute;
@@ -428,11 +428,12 @@
                 <h2 class="welcome-title">Maria Santos <span>👋</span></h2>
                 <p class="welcome-sub">2022-10345 · BSIT 3-1 · 3rd Year</p>
             </div>
-            <button class="btn-primary">
+            <a href="qa-content.html" class="btn-primary" onclick="updateParentSidebar(1)" style="text-decoration: none; display: inline-flex; width: fit-content;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: scale(1.30);">
                     <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                </svg>                    Q3 Assessment
-            </button>
+                </svg>                    
+                Q3 Assessment
+            </a>
         </div>
 
         <div class="stats-grid">
@@ -464,33 +465,36 @@
                 <h3 class="section-title">Your Quadrant Position</h3>
                 
                 <div class="quadrant-map-container">
-                    
-                    <div class="quadrant-graph">
-                        
-                        <div class="quadrant-grid-lines">
-                            <div class="q-cell top-left">
-                                <span class="q-label text-matrix-green">H. Individual</span>
-                            </div>
-                            <div class="q-cell top-right">
-                                <span class="q-label text-matrix-blue">D. Individual</span>
-                            </div>
-                            <div class="q-cell bottom-left">
-                                <span class="q-label text-matrix-orange">H. Collective</span>
-                            </div>
-                            <div class="q-cell bottom-right">
-                                <span class="q-label text-matrix-purple">D. Collective</span>
-                            </div>
-                        </div>
+    
+                    <div style="position: relative; width: 100%; max-width: 340px;">
                         
                         <div class="axis-label axis-y-top">INDIVIDUAL</div>
                         <div class="axis-label axis-y-bot">COLLECTIVE</div>
+
+                        <div class="quadrant-graph">
+                            <div class="quadrant-grid-lines">
+                                <div class="q-cell top-left">
+                                    <span class="q-label text-matrix-green">H. Individual</span>
+                                </div>
+                                <div class="q-cell top-right">
+                                    <span class="q-label text-matrix-blue">D. Individual</span>
+                                </div>
+                                <div class="q-cell bottom-left">
+                                    <span class="q-label text-matrix-orange">H. Collective</span>
+                                </div>
+                                <div class="q-cell bottom-right">
+                                    <span class="q-label text-matrix-purple">D. Collective</span>
+                                </div>
+                            </div>
+                            
+                            <div class="data-point"></div>
+                        </div>
                         
                         <div class="axis-x-container">
                             <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
                             <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
                         </div>
 
-                        <div class="data-point"></div>
                     </div>
                 </div>
 
@@ -525,15 +529,17 @@
                 <div class="glass-card quick-actions-card">
                     <h3>Quick Actions</h3>
                     <div class="action-links">
-                        <a href="#" class="action-item">
+                        <a href="modules-content.html" class="action-item" onclick="updateParentSidebar(2)">
                             <span>View your personalized modules</span>
                             <svg><use href="#icon-arrow-right"></use></svg>
                         </a>
-                        <a href="#" class="action-item">
+                        
+                        <a href="qa-content.html" class="action-item" onclick="updateParentSidebar(1)">
                             <span>See your Q3 assessment details</span>
                             <svg><use href="#icon-arrow-right"></use></svg>
                         </a>
-                        <a href="#" class="action-item">
+                        
+                        <a href="progress-content.html" class="action-item" onclick="updateParentSidebar(3)">
                             <span>Check your quarterly progress</span>
                             <svg><use href="#icon-arrow-right"></use></svg>
                         </a>
@@ -542,6 +548,27 @@
 
             </div>
         </div>
+
+        <script>
+            function updateParentSidebar(activeIndex) {
+                // Check if we are inside an iframe and can access the parent window
+                if (window.parent && window.parent.document) {
+                    // Find all sidebar links in the parent index.html
+                    const sidebarLinks = window.parent.document.querySelectorAll('.sidebar-link');
+                    
+                    if (sidebarLinks && sidebarLinks.length > 0) {
+                        // Remove 'active' class from all links
+                        sidebarLinks.forEach(link => link.classList.remove('active'));
+                        
+                        // Add 'active' class to the correct link based on the index
+                        // 0 = Dashboard, 1 = Assessment, 2 = Modules, 3 = Progress, 4 = Profile
+                        if (sidebarLinks[activeIndex]) {
+                            sidebarLinks[activeIndex].classList.add('active');
+                        }
+                    }
+                }
+            }
+        </script>
     </main>
 
 </body>
