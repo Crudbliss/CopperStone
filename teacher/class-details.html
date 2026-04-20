@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Details Content</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --bg-base: #060f17;
+            --bg-card: #12181f;
+            --bg-box: #1a222a;
+            
+            --matrix-yellow: #d8a61a;
+            --matrix-dg: #4a8f4b;
+            --matrix-green: #4ade80;
+            --matrix-blue: #38bdf8;
+            --matrix-orange: #fb923c;
+            --matrix-purple: #c084fc;
+            
+            --text-main: #ffffff;
+            --text-muted: #8b9eb0;
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-lighter: rgba(255, 255, 255, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: transparent;
+            color: var(--text-main);
+            padding: 40px;
+        }
+
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 32px;
+            align-items: start;
+        }
+
+        /* --- LEFT COLUMN (LIST & FILTERS) --- */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .search-filter-bar {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+        }
+
+        .filter-group {
+            display: flex;
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 12px 16px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-right: 1px solid var(--border-light);
+        }
+
+        .filter-btn:last-child { border-right: none; }
+        .filter-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.02); }
+        .filter-btn.active { color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); }
+
+        /* --- STUDENT ROWS --- */
+        .student-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .student-row {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .student-row:hover {
+            border-color: rgba(255,255,255,0.2);
+            transform: translateX(4px);
+        }
+
+        /* Active row logic (controlled by JS) */
+        .student-row.active { border-color: var(--matrix-green); }
+        .student-row.active[data-mode="HI"] { border-color: var(--matrix-green); }
+        .student-row.active[data-mode="DI"] { border-color: var(--matrix-blue); }
+        .student-row.active[data-mode="HC"] { border-color: var(--matrix-orange); }
+        .student-row.active[data-mode="DC"] { border-color: var(--matrix-purple); }
+
+        .row-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar-sm {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* Dynamic Avatar Colors based on mode */
+        [data-mode="HI"] .avatar-sm { background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green); }
+        [data-mode="DI"] .avatar-sm { background-color: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); }
+        [data-mode="HC"] .avatar-sm { background-color: rgba(251, 146, 60, 0.1); color: var(--matrix-orange); }
+        [data-mode="DC"] .avatar-sm { background-color: rgba(192, 132, 252, 0.1); color: var(--matrix-purple); }
+
+        .student-info h4 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+        .student-info p { font-size: 12px; color: var(--text-muted); }
+
+        .row-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mode-pill {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        [data-mode="HI"] .mode-pill { background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green); }
+        [data-mode="DI"] .mode-pill { background-color: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); }
+        [data-mode="HC"] .mode-pill { background-color: rgba(251, 146, 60, 0.1); color: var(--matrix-orange); }
+        [data-mode="DC"] .mode-pill { background-color: rgba(192, 132, 252, 0.1); color: var(--matrix-purple); }
+
+        .score { font-size: 16px; font-weight: 800; }
+        [data-mode="HI"] .score { color: var(--matrix-green); }
+        [data-mode="DI"] .score { color: var(--matrix-blue); }
+        [data-mode="HC"] .score { color: var(--matrix-orange); }
+        [data-mode="DC"] .score { color: var(--matrix-purple); }
+
+        .chevron { color: var(--text-muted); width: 16px; height: 16px; }
+
+        /* --- RIGHT COLUMN (PANEL) --- */
+        .right-col {
+            position: sticky;
+            top: 40px;
+        }
+
+        .detail-panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .avatar-lg {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .panel-name { font-size: 18px; font-weight: 800; margin-bottom: 2px; }
+        .panel-id { font-size: 13px; color: var(--text-muted); }
+
+        /* Quadrant Map inside Panel */
+        .quadrant-map-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .quadrant-graph {
+            position: relative;
+            width: 100%;
+            max-width: 240px;
+            aspect-ratio: 1 / 1;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-lighter);
+        }
+
+        .quadrant-grid-lines {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        .q-cell { border: 1px solid var(--border-lighter); display: flex; align-items: center; justify-content: center;}
+        .q-cell.top-left { background-color: rgba(74, 222, 128, 0.04); color: rgba(74, 222, 128, 0.3); font-size: 10px; font-weight: 700; }
+        .q-cell.top-right { background-color: rgba(56, 189, 248, 0.04); color: rgba(56, 189, 248, 0.3); font-size: 10px; font-weight: 700; }
+        .q-cell.bottom-left { background-color: rgba(251, 146, 60, 0.04); color: rgba(251, 146, 60, 0.3); font-size: 10px; font-weight: 700; }
+        .q-cell.bottom-right { background-color: rgba(192, 132, 252, 0.04); color: rgba(192, 132, 252, 0.3); font-size: 10px; font-weight: 700; }
+
+        .axis-label { position: absolute; font-size: 9px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; }
+        .axis-y-top { left: -30px; top: 25%; transform: translateY(-50%) rotate(-90deg); }
+        .axis-y-bot { left: -30px; top: 75%; transform: translateY(-50%) rotate(-90deg); }
+        .axis-x-container { position: absolute; bottom: -24px; width: 100%; display: flex; justify-content: space-between; padding: 0 12px; }
+
+        .scatter-dot {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background-color: var(--bg-card);
+            border-radius: 50%;
+            border: 4px solid var(--matrix-green); /* Default */
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Panel List Details */
+        .panel-details-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 13px;
+        }
+        .panel-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .panel-label { color: var(--text-muted); font-weight: 500; }
+        .panel-val { font-weight: 700; color: var(--text-main); transition: color 0.3s ease; }
+
+    </style>
+</head>
+<body>
+
+    <svg style="display: none;">
+        <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </symbol>
+        <symbol id="icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </symbol>
+    </svg>
+
+    <div class="content-container">
+        
+        <div class="left-col">
+            
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <svg width="16" height="16"><use href="#icon-search"></use></svg>
+                    <input type="text" placeholder="Search by name or ID...">
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn active">All</button>
+                    <button class="filter-btn">HI</button>
+                    <button class="filter-btn">DI</button>
+                    <button class="filter-btn">HC</button>
+                    <button class="filter-btn">DC</button>
+                </div>
+            </div>
+
+            <div class="student-list">
+                
+                <div class="student-row active" data-mode="HI" data-name="Maria Santos" data-id="2022-10345" data-initials="MS" data-fullmode="Hierarchical Individual" data-score="91%" data-date="Apr 10, 2026" data-coords="(-0.35, 0.50)" data-x="32.5%" data-y="25%" data-color="var(--matrix-green)">
+                    <div class="row-left">
+                        <div class="avatar-sm">MS</div>
+                        <div class="student-info">
+                            <h4>Maria Santos</h4>
+                            <p>2022-10345</p>
+                        </div>
+                    </div>
+                    <div class="row-right">
+                        <span class="mode-pill">HI</span>
+                        <span class="score">91%</span>
+                        <svg class="chevron"><use href="#icon-chevron"></use></svg>
+                    </div>
+                </div>
+
+                <div class="student-row" data-mode="DI" data-name="Juan dela Cruz" data-id="2022-10346" data-initials="Jd" data-fullmode="Distributed Individual" data-score="85%" data-date="Apr 10, 2026" data-coords="(0.25, 0.60)" data-x="62.5%" data-y="20%" data-color="var(--matrix-blue)">
+                    <div class="row-left">
+                        <div class="avatar-sm">Jd</div>
+                        <div class="student-info">
+                            <h4>Juan dela Cruz</h4>
+                            <p>2022-10346</p>
+                        </div>
+                    </div>
+                    <div class="row-right">
+                        <span class="mode-pill">DI</span>
+                        <span class="score">85%</span>
+                        <svg class="chevron"><use href="#icon-chevron"></use></svg>
+                    </div>
+                </div>
+
+                <div class="student-row" data-mode="HC" data-name="Ana Reyes" data-id="2022-10347" data-initials="AR" data-fullmode="Hierarchical Collective" data-score="79%" data-date="Apr 10, 2026" data-coords="(-0.45, -0.40)" data-x="27.5%" data-y="70%" data-color="var(--matrix-orange)">
+                    <div class="row-left">
+                        <div class="avatar-sm">AR</div>
+                        <div class="student-info">
+                            <h4>Ana Reyes</h4>
+                            <p>2022-10347</p>
+                        </div>
+                    </div>
+                    <div class="row-right">
+                        <span class="mode-pill">HC</span>
+                        <span class="score">79%</span>
+                        <svg class="chevron"><use href="#icon-chevron"></use></svg>
+                    </div>
+                </div>
+
+                <div class="student-row" data-mode="DC" data-name="Carlos Bautista" data-id="2022-10348" data-initials="CB" data-fullmode="Distributed Collective" data-score="93%" data-date="Apr 10, 2026" data-coords="(0.60, -0.55)" data-x="80%" data-y="77.5%" data-color="var(--matrix-purple)">
+                    <div class="row-left">
+                        <div class="avatar-sm">CB</div>
+                        <div class="student-info">
+                            <h4>Carlos Bautista</h4>
+                            <p>2022-10348</p>
+                        </div>
+                    </div>
+                    <div class="row-right">
+                        <span class="mode-pill">DC</span>
+                        <span class="score">93%</span>
+                        <svg class="chevron"><use href="#icon-chevron"></use></svg>
+                    </div>
+                </div>
+
+                <div class="student-row" data-mode="DC" data-name="Rico Villanueva" data-id="2022-10354" data-initials="RV" data-fullmode="Distributed Collective" data-score="80%" data-date="Apr 10, 2026" data-coords="(0.30, -0.30)" data-x="65%" data-y="65%" data-color="var(--matrix-purple)">
+                    <div class="row-left">
+                        <div class="avatar-sm">RV</div>
+                        <div class="student-info">
+                            <h4>Rico Villanueva</h4>
+                            <p>2022-10354</p>
+                        </div>
+                    </div>
+                    <div class="row-right">
+                        <span class="mode-pill">DC</span>
+                        <span class="score">80%</span>
+                        <svg class="chevron"><use href="#icon-chevron"></use></svg>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="right-col">
+            <div class="detail-panel" id="detailPanel">
+                
+                <div class="panel-header">
+                    <div class="avatar-lg" id="panelAvatar" style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green);">MS</div>
+                    <div>
+                        <h2 class="panel-name" id="panelName">Maria Santos</h2>
+                        <p class="panel-id" id="panelId">2022-10345</p>
+                    </div>
+                </div>
+
+                <div class="quadrant-map-container">
+                    <div style="position: relative; width: 100%; max-width: 240px;">
+                        
+                        <div class="axis-label axis-y-top">INDIVIDUAL</div>
+                        <div class="axis-label axis-y-bot">COLLECTIVE</div>
+
+                        <div class="quadrant-graph">
+                            <div class="quadrant-grid-lines">
+                                <div class="q-cell top-left">HI</div>
+                                <div class="q-cell top-right">DI</div>
+                                <div class="q-cell bottom-left">HC</div>
+                                <div class="q-cell bottom-right">DC</div>
+                            </div>
+                            
+                            <div class="scatter-dot" id="panelDot" style="top: 25%; left: 32.5%; border-color: var(--matrix-green); box-shadow: 0 0 16px rgba(74, 222, 128, 0.4);"></div>
+                        </div>
+
+                        <div class="axis-x-container">
+                            <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
+                            <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-details-list">
+                    <div class="panel-row">
+                        <span class="panel-label">Dominant Mode</span>
+                        <span class="panel-val" id="panelMode" style="color: var(--matrix-green);">Hierarchical Individual</span>
+                    </div>
+                    <div class="panel-row">
+                        <span class="panel-label">Q2 Score</span>
+                        <span class="panel-val" id="panelScore" style="color: var(--matrix-green);">91%</span>
+                    </div>
+                    <div class="panel-row">
+                        <span class="panel-label">Last Assessment</span>
+                        <span class="panel-val" id="panelDate">Apr 10, 2026</span>
+                    </div>
+                    <div class="panel-row">
+                        <span class="panel-label">Coordinates</span>
+                        <span class="panel-val" id="panelCoords">(-0.35, 0.50)</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Logic to update the right panel when a student is clicked
+        const rows = document.querySelectorAll('.student-row');
+
+        rows.forEach(row => {
+            row.addEventListener('click', function() {
+                // Remove active from all, add to clicked
+                rows.forEach(r => r.classList.remove('active'));
+                this.classList.add('active');
+
+                // Get data from attributes
+                const name = this.dataset.name;
+                const id = this.dataset.id;
+                const initials = this.dataset.initials;
+                const modeFull = this.dataset.fullmode;
+                const score = this.dataset.score;
+                const date = this.dataset.date;
+                const coords = this.dataset.coords;
+                const x = this.dataset.x;
+                const y = this.dataset.y;
+                const color = this.dataset.color; // e.g. var(--matrix-purple)
+
+                // Update text elements
+                document.getElementById('panelName').textContent = name;
+                document.getElementById('panelId').textContent = id;
+                document.getElementById('panelMode').textContent = modeFull;
+                document.getElementById('panelScore').textContent = score;
+                document.getElementById('panelDate').textContent = date;
+                document.getElementById('panelCoords').textContent = coords;
+                
+                // Update avatar
+                const avatar = document.getElementById('panelAvatar');
+                avatar.textContent = initials;
+                avatar.style.color = color;
+                avatar.style.backgroundColor = `color-mix(in srgb, ${color} 15%, transparent)`;
+
+                // Update map dot position and color
+                const dot = document.getElementById('panelDot');
+                dot.style.left = x;
+                dot.style.top = y;
+                dot.style.borderColor = color;
+                dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${color} 40%, transparent)`;
+                
+                // Update text colors in detail rows
+                document.getElementById('panelMode').style.color = color;
+                document.getElementById('panelScore').style.color = color;
+            });
+        });
+    </script>
+</body>
+</html>
