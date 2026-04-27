@@ -718,8 +718,8 @@
             <form id="loginForm" action="student/s-dashboard.html" class="modal-form">
                 
                 <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="modalEmail" placeholder="maria.santos@student.olfu.edu.ph" required>
+                    <label>Email Address / Username</label>
+                    <input type="text" id="modalEmail" placeholder="maria.santos@student.olfu.edu.ph" required>
                 </div>
                 
                 <div class="form-group">
@@ -839,6 +839,20 @@
                 closeRoleSelectModal();
             }
         }
+
+        // Admin login check
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', function(e) {
+                const email = document.getElementById('modalEmail').value;
+                const password = document.getElementById('modalPassword').value;
+                
+                if (email === 'admin' && password === 'admin') {
+                    e.preventDefault();
+                    window.location.href = 'admin/a-dashboard.html';
+                }
+            });
+        });
     </script>
 </body>
 </html>
