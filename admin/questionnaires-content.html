@@ -245,23 +245,17 @@
     </div>
 
     <script>
-        // Sample initial data or load from localStorage
-        const defaultQuestions = [
-            {
-                id: 1,
-                title: "When starting a new project, how do you prefer to proceed?",
-                answers: [
-                    { text: "Follow a clear, step-by-step guide provided by the instructor.", x: -1.5, y: -0.5 },
-                    { text: "Brainstorm with a group and divide tasks.", x: -0.5, y: 1.2 },
-                    { text: "Research independently and try different approaches.", x: 1.5, y: -1.5 }
-                ]
+        let questions = [];
+
+        // Fetch questions from the real database
+        async function fetchQuestions() {
+            try {
+                const response = await fetch('/api/questions');
+                questions = await response.json();
+                renderQuestions();
+            } catch (error) {
+                console.error("Failed to load questions:", error);
             }
-        ];
-
-        let questions = JSON.parse(localStorage.getItem('matrix_db_questionnaires')) || defaultQuestions;
-
-        function saveToDatabase() {
-            localStorage.setItem('matrix_db_questionnaires', JSON.stringify(questions));
         }
 
         const questionsList = document.getElementById('questionsList');
@@ -299,11 +293,14 @@
             });
         }
 
-        function deleteQuestion(id) {
+        async function deleteQuestion(id) {
             if(confirm('Are you sure you want to delete this question?')) {
-                questions = questions.filter(q => q.id !== id);
-                saveToDatabase();
-                renderQuestions();
+                try {
+                    await fetch(`/api/questions/${id}`, { method: 'DELETE' });
+                    await fetchQuestions(); // reload
+                } catch(err) {
+                    console.error("Failed to delete", err);
+                }
             }
         }
 
@@ -333,7 +330,7 @@
             answersContainer.appendChild(row);
         }
 
-        document.getElementById('questionForm').addEventListener('submit', function(e) {
+        document.getElementById('questionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const title = document.getElementById('qTitle').value;
@@ -353,15 +350,20 @@
                 });
             });
 
-            questions.push({
-                id: Date.now(), // unique ID
-                title: title,
-                answers: newAnswers
-            });
-
-            saveToDatabase();
-            closeModal();
-            renderQuestions();
+            // Save to database
+            try {
+                await fetch('/api/questions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: title, answers: newAnswers })
+                });
+                
+                closeModal();
+                await fetchQuestions(); // Reload list
+            } catch (err) {
+                console.error("Failed to save", err);
+                alert("Error saving question to database");
+            }
         });
 
         function testQuestionnaire() {
@@ -374,7 +376,7 @@
         }
 
         // Initialize
-        renderQuestions();
+        fetchQuestions();
     </script>
 </body>
 </html>
