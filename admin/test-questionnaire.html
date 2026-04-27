@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Questionnaire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #060f17;
+            --bg-card: #12181f;
+            --matrix-blue: #38bdf8;
+            --matrix-green: #4ade80;
+            --matrix-yellow: #d8a61a;
+            --matrix-orange: #fb923c;
+            --matrix-purple: #c084fc;
+            --text-main: #ffffff;
+            --text-muted: #8b9eb0;
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-active: rgba(56, 189, 248, 0.5);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg-base); 
+            color: var(--text-main); 
+            padding: 40px; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-back:hover { color: white; }
+
+        .glass-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        /* Test Progress */
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--matrix-blue);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Question View */
+        .question-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            line-height: 1.4;
+        }
+
+        .answers-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .answer-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .answer-btn:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--matrix-blue);
+            transform: translateX(4px);
+        }
+
+        /* Results View */
+        #resultsView {
+            display: none;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .result-quadrant {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--matrix-yellow);
+            margin-bottom: 8px;
+        }
+
+        .result-scores {
+            color: var(--text-muted);
+            font-family: monospace;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        /* Graph */
+        .graph-container {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        /* Axis lines */
+        .axis-x { position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255, 255, 255, 0.2); }
+        .axis-y { position: absolute; top: 0; left: 50%; width: 1px; height: 100%; background: rgba(255, 255, 255, 0.2); }
+
+        /* Labels */
+        .label { position: absolute; font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+        .label-top { top: 8px; left: 50%; transform: translateX(-50%); } /* Individual */
+        .label-bottom { bottom: 8px; left: 50%; transform: translateX(-50%); } /* Collective */
+        .label-left { left: 8px; top: 50%; transform: translateY(-50%); } /* Hierarchical */
+        .label-right { right: 8px; top: 50%; transform: translateY(-50%); } /* Distributed */
+        
+        .quadrant-label { position: absolute; font-size: 14px; font-weight: 800; opacity: 0.2; }
+        .ql-tl { top: 20px; left: 20px; color: var(--matrix-green); } /* HI */
+        .ql-tr { top: 20px; right: 20px; color: var(--matrix-blue); } /* DI */
+        .ql-bl { bottom: 20px; left: 20px; color: var(--matrix-orange); } /* HC */
+        .ql-br { bottom: 20px; right: 20px; color: var(--matrix-purple); } /* DC */
+
+        /* The Dot */
+        .result-dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: var(--matrix-blue);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--matrix-blue);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-actions">
+            <a href="questionnaires-content.html" class="btn-back">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Back to Editor
+            </a>
+            <div style="font-size: 14px; color: var(--text-muted); font-weight: 600;">Test Mode</div>
+        </div>
+
+        <div class="glass-card">
+            
+            <div id="testView">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                
+                <div id="questionCounter" style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px;">Question 1 of X</div>
+                <div class="question-title" id="questionTitle">Loading...</div>
+                
+                <div class="answers-grid" id="answersGrid">
+                    <!-- Answers rendered here -->
+                </div>
+            </div>
+
+            <div id="resultsView">
+                <h2 class="result-title">Test Complete</h2>
+                <div class="result-quadrant" id="resultQuadrantText">Calculating...</div>
+                <div class="result-scores" id="resultScoresText">X: 0.00 | Y: 0.00</div>
+
+                <div class="graph-container">
+                    <div class="axis-x"></div>
+                    <div class="axis-y"></div>
+                    
+                    <div class="label label-top">Individual (-Y)</div>
+                    <div class="label label-bottom">Collective (+Y)</div>
+                    <div class="label label-left">Hierarchical (-X)</div>
+                    <div class="label label-right">Distributed (+X)</div>
+                    
+                    <div class="quadrant-label ql-tl">HI</div>
+                    <div class="quadrant-label ql-tr">DI</div>
+                    <div class="quadrant-label ql-bl">HC</div>
+                    <div class="quadrant-label ql-br">DC</div>
+
+                    <div class="result-dot" id="resultDot" style="top: 50%; left: 50%;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+        let currentIndex = 0;
+        let scoreX = 0;
+        let scoreY = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const stored = sessionStorage.getItem('matrix_test_questions');
+            if(stored) {
+                try {
+                    questions = JSON.parse(stored);
+                } catch(e) {}
+            }
+
+            if(!questions || questions.length === 0) {
+                document.getElementById('testView').innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted);">
+                        No active questions found. Please go back and add some questions first.
+                    </div>
+                `;
+                return;
+            }
+
+            renderQuestion();
+        });
+
+        function renderQuestion() {
+            const q = questions[currentIndex];
+            
+            // Update progress
+            const progress = ((currentIndex) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('questionCounter').textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+            
+            document.getElementById('questionTitle').textContent = q.title;
+            
+            const grid = document.getElementById('answersGrid');
+            grid.innerHTML = '';
+            
+            q.answers.forEach(ans => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = ans.text;
+                btn.onclick = () => selectAnswer(ans.x, ans.y);
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(x, y) {
+            scoreX += parseFloat(x) || 0;
+            scoreY += parseFloat(y) || 0;
+            
+            currentIndex++;
+            
+            if(currentIndex >= questions.length) {
+                showResults();
+            } else {
+                renderQuestion();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('testView').style.display = 'none';
+            document.getElementById('resultsView').style.display = 'block';
+
+            // Interpret Quadrant
+            // Rules assumed:
+            // X < 0: Hierarchical | X >= 0: Distributed
+            // Y < 0: Individual   | Y >= 0: Collective
+            
+            let qText = "";
+            let color = "";
+            
+            if(scoreX < 0 && scoreY < 0) {
+                qText = "Hierarchical Individual (HI)";
+                color = "var(--matrix-green)";
+            } else if(scoreX >= 0 && scoreY < 0) {
+                qText = "Distributed Individual (DI)";
+                color = "var(--matrix-blue)";
+            } else if(scoreX < 0 && scoreY >= 0) {
+                qText = "Hierarchical Collective (HC)";
+                color = "var(--matrix-orange)";
+            } else {
+                qText = "Distributed Collective (DC)";
+                color = "var(--matrix-purple)";
+            }
+
+            const qElem = document.getElementById('resultQuadrantText');
+            qElem.textContent = qText;
+            qElem.style.color = color;
+            
+            document.getElementById('resultScoresText').textContent = `Final Score → X: ${scoreX.toFixed(2)} | Y: ${scoreY.toFixed(2)}`;
+
+            // Plot Dot
+            // Center is 50%, 50%.
+            // Scale factors (assume max score might be around questions.length * 2)
+            // We clamp it to visually fit within the grid. (Grid is 300x300. Max range is -150 to 150 px).
+            const maxScore = Math.max(1, questions.length * 2);
+            
+            // Calculate percentage from -maxScore to +maxScore
+            let leftPct = 50 + (scoreX / maxScore) * 50;
+            let topPct = 50 + (scoreY / maxScore) * 50; 
+            
+            // Clamp to avoid going outside
+            leftPct = Math.max(5, Math.min(95, leftPct));
+            topPct = Math.max(5, Math.min(95, topPct));
+
+            const dot = document.getElementById('resultDot');
+            dot.style.left = leftPct + '%';
+            dot.style.top = topPct + '%';
+            dot.style.backgroundColor = color;
+            dot.style.boxShadow = `0 0 15px ${color}`;
+        }
+    </script>
+</body>
+</html>
