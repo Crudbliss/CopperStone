@@ -1,6 +1,8 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const bcrypt = require('bcrypt');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -94,6 +96,85 @@ db.serialize(() => {
 });
 
 // --- API ENDPOINTS ---
+
+// POST /api/students/register - Register a new student
+app.post('/api/students/register', async (req, res) => {
+    const { student_no, first_name, last_name, mi, program, year_level, section, email, password } = req.body;
+    
+    // Basic validation
+    if (!student_no || !first_name || !last_name || !email || !password) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    try {
+        // Hash the password securely
+        const saltRounds = 10;
+        const password_hash = await bcrypt.hash(password, saltRounds);
+
+        const sql = `INSERT INTO students (student_no, first_name, last_name, mi, program, year_level, section, email, password_hash) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        
+        db.run(sql, [student_no, first_name, last_name, mi, program, year_level, section, email, password_hash], function(err) {
+            if (err) {
+                // If the email or student no already exists, SQLite throws a constraint error
+                if (err.message.includes('UNIQUE constraint failed')) {
+                    return res.status(409).json({ error: 'Email or Student Number already exists' });
+                }
+                return res.status(500).json({ error: err.message });
+            }
+            res.status(201).json({ success: true, message: 'Student registered successfully!', student_id: this.lastID });
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error during registration' });
+    }
+});
+
+// POST /api/teachers/register - Register a new teacher
+app.post('/api/teachers/register', async (req, res) => {
+    const { first_name, last_name, mi, email, password } = req.body;
+    
+    // Basic validation
+    if (!first_name || !last_name || !email || !password) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    try {
+        // Hash the password securely
+        const saltRounds = 10;
+        const password_hash = await bcrypt.hash(password, saltRounds);
+
+        const sql = `INSERT INTO teachers (first_name, last_name, mi, email, password_hash) 
+                     VALUES (?, ?, ?, ?, ?)`;
+        
+        db.run(sql, [first_name, last_name, mi, email, password_hash], function(err) {
+            if (err) {
+                if (err.message.includes('UNIQUE constraint failed')) {
+                    return res.status(409).json({ error: 'Email already exists' });
+                }
+                return res.status(500).json({ error: err.message });
+            }
+            res.status(201).json({ success: true, message: 'Teacher registered successfully!', teacher_id: this.lastID });
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error during registration' });
+    }
+});
+
+// GET /api/students - Fetch all students
+app.get('/api/students', (req, res) => {
+    db.all(`SELECT id, student_no, first_name, last_name, mi, program, year_level, section, email, is_current, created_at FROM students`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// GET /api/teachers - Fetch all teachers
+app.get('/api/teachers', (req, res) => {
+    db.all(`SELECT id, first_name, last_name, mi, email, created_at FROM teachers`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
 
 // GET /api/questions - Fetch all questions and their answers
 app.get('/api/questions', (req, res) => {
