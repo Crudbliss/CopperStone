@@ -18,11 +18,59 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 // Create tables if they don't exist
 db.serialize(() => {
+    // 1. Students Table
+    db.run(`CREATE TABLE IF NOT EXISTS students (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_no TEXT UNIQUE NOT NULL,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        mi TEXT,
+        program TEXT,
+        year_level TEXT,
+        section TEXT,
+        email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        is_current INTEGER DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    // 2. Teachers Table
+    db.run(`CREATE TABLE IF NOT EXISTS teachers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        mi TEXT,
+        email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    // 3. Classes Table
+    db.run(`CREATE TABLE IF NOT EXISTS classes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        course_subj_name TEXT NOT NULL,
+        teacher_id INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE SET NULL
+    )`);
+
+    // 4. Enrollments Table (Many-to-Many: Students to Classes)
+    db.run(`CREATE TABLE IF NOT EXISTS enrollments (
+        student_id INTEGER,
+        class_id INTEGER,
+        enrolled_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (student_id, class_id),
+        FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE,
+        FOREIGN KEY(class_id) REFERENCES classes(id) ON DELETE CASCADE
+    )`);
+
+    // 5. Questions Table (Already exists)
     db.run(`CREATE TABLE IF NOT EXISTS questions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL
     )`);
 
+    // 6. Answers Table (Already exists - holds text and x,y coordinates)
     db.run(`CREATE TABLE IF NOT EXISTS answers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         question_id INTEGER,
@@ -30,6 +78,18 @@ db.serialize(() => {
         x_value REAL,
         y_value REAL,
         FOREIGN KEY(question_id) REFERENCES questions(id) ON DELETE CASCADE
+    )`);
+
+    // 7. Student Responses Table (Links a student to the answer they picked)
+    db.run(`CREATE TABLE IF NOT EXISTS student_responses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id INTEGER,
+        question_id INTEGER,
+        answer_id INTEGER,
+        answered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE,
+        FOREIGN KEY(question_id) REFERENCES questions(id) ON DELETE CASCADE,
+        FOREIGN KEY(answer_id) REFERENCES answers(id) ON DELETE CASCADE
     )`);
 });
 
