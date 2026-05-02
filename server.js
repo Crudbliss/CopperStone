@@ -176,6 +176,43 @@ app.get('/api/teachers', (req, res) => {
     });
 });
 
+// POST /api/login - Universal login for Students and Teachers
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
+
+    // 1. Check if user is a student
+    db.get(`SELECT * FROM students WHERE email = ?`, [email], async (err, student) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        if (student) {
+            const match = await bcrypt.compare(password, student.password_hash);
+            if (match) {
+                return res.json({ success: true, role: 'student', user: { id: student.id, name: student.first_name, no: student.student_no } });
+            } else {
+                return res.status(401).json({ error: 'Invalid password' });
+            }
+        }
+
+        // 2. If not a student, check if user is a teacher
+        db.get(`SELECT * FROM teachers WHERE email = ?`, [email], async (err, teacher) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            if (teacher) {
+                const match = await bcrypt.compare(password, teacher.password_hash);
+                if (match) {
+                    return res.json({ success: true, role: 'teacher', user: { id: teacher.id, name: teacher.first_name } });
+                } else {
+                    return res.status(401).json({ error: 'Invalid password' });
+                }
+            }
+
+            // 3. User not found in either table
+            return res.status(404).json({ error: 'User not found' });
+        });
+    });
+});
+
 // GET /api/questions - Fetch all questions and their answers
 app.get('/api/questions', (req, res) => {
     db.all(`SELECT * FROM questions`, [], (err, questions) => {

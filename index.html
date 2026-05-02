@@ -840,16 +840,52 @@
             }
         }
 
-        // Admin login check
+        // Admin and API login check
         document.addEventListener('DOMContentLoaded', () => {
             const loginForm = document.getElementById('loginForm');
-            loginForm.addEventListener('submit', function(e) {
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault(); // Stop standard form redirect
+                
                 const email = document.getElementById('modalEmail').value;
                 const password = document.getElementById('modalPassword').value;
+                const btnSubmit = loginForm.querySelector('.btn-submit');
                 
+                // Keep the admin backdoor
                 if (email === 'admin' && password === 'admin') {
-                    e.preventDefault();
                     window.location.href = 'admin/a-dashboard.html';
+                    return;
+                }
+
+                // Call the real backend API
+                const originalText = btnSubmit.textContent;
+                btnSubmit.textContent = 'Verifying...';
+
+                try {
+                    const res = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        // Save user profile for the dashboard to use
+                        localStorage.setItem('currentUser', JSON.stringify(data.user));
+                        
+                        // Let the server tell us where they belong
+                        if (data.role === 'student') {
+                            window.location.href = 'student/s-dashboard.html';
+                        } else if (data.role === 'teacher') {
+                            window.location.href = 'teacher/t-dashboard.html';
+                        }
+                    } else {
+                        alert("Login Failed: " + data.error);
+                        btnSubmit.textContent = originalText;
+                    }
+                } catch (error) {
+                    alert("Error connecting to server. Is the backend running?");
+                    btnSubmit.textContent = originalText;
                 }
             });
         });
