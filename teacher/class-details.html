@@ -78,6 +78,20 @@
             outline: none;
         }
 
+        .btn-add-student {
+            background-color: var(--matrix-yellow);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-add-student:hover { background-color: #e0a31c; }
+
         .filter-group {
             display: flex;
             background-color: var(--bg-card);
@@ -127,31 +141,20 @@
             transform: translateX(4px);
         }
 
-        /* Active row logic (controlled by JS) */
         .student-row.active { border-color: var(--matrix-green); }
         .student-row.active[data-mode="HI"] { border-color: var(--matrix-green); }
         .student-row.active[data-mode="DI"] { border-color: var(--matrix-blue); }
         .student-row.active[data-mode="HC"] { border-color: var(--matrix-orange); }
         .student-row.active[data-mode="DC"] { border-color: var(--matrix-purple); }
 
-        .row-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+        .row-left { display: flex; align-items: center; gap: 16px; }
 
         .avatar-sm {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
         }
 
-        /* Dynamic Avatar Colors based on mode */
         [data-mode="HI"] .avatar-sm { background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green); }
         [data-mode="DI"] .avatar-sm { background-color: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); }
         [data-mode="HC"] .avatar-sm { background-color: rgba(251, 146, 60, 0.1); color: var(--matrix-orange); }
@@ -160,20 +163,9 @@
         .student-info h4 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
         .student-info p { font-size: 12px; color: var(--text-muted); }
 
-        .row-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+        .row-right { display: flex; align-items: center; gap: 16px; }
 
-        .mode-pill {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        
+        .mode-pill { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
         [data-mode="HI"] .mode-pill { background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green); }
         [data-mode="DI"] .mode-pill { background-color: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); }
         [data-mode="HC"] .mode-pill { background-color: rgba(251, 146, 60, 0.1); color: var(--matrix-orange); }
@@ -188,10 +180,7 @@
         .chevron { color: var(--text-muted); width: 16px; height: 16px; }
 
         /* --- RIGHT COLUMN (PANEL) --- */
-        .right-col {
-            position: sticky;
-            top: 40px;
-        }
+        .right-col { position: sticky; top: 40px; }
 
         .detail-panel {
             background-color: var(--bg-card);
@@ -200,54 +189,32 @@
             padding: 32px;
             display: flex;
             flex-direction: column;
+            display: none; /* hidden until a student is clicked */
+        }
+        
+        .detail-placeholder {
+            background-color: var(--bg-card); border: 1px dashed var(--border-lighter);
+            border-radius: 20px; padding: 40px; text-align: center; color: var(--text-muted);
+            font-size: 14px;
         }
 
-        .panel-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 32px;
-        }
+        .panel-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
 
         .avatar-lg {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 18px;
-            transition: all 0.3s ease;
+            width: 50px; height: 50px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 18px; transition: all 0.3s ease;
         }
 
         .panel-name { font-size: 18px; font-weight: 800; margin-bottom: 2px; }
         .panel-id { font-size: 13px; color: var(--text-muted); }
 
-        /* Quadrant Map inside Panel */
-        .quadrant-map-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 32px;
-        }
-
+        .quadrant-map-container { display: flex; justify-content: center; margin-bottom: 32px; }
         .quadrant-graph {
-            position: relative;
-            width: 100%;
-            max-width: 240px;
-            aspect-ratio: 1 / 1;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-lighter);
+            position: relative; width: 100%; max-width: 240px; aspect-ratio: 1 / 1;
+            border-radius: 12px; overflow: hidden; border: 1px solid var(--border-lighter);
         }
-
-        .quadrant-grid-lines {
-            position: absolute;
-            inset: 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-        }
+        .quadrant-grid-lines { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
 
         .q-cell { border: 1px solid var(--border-lighter); display: flex; align-items: center; justify-content: center;}
         .q-cell.top-left { background-color: rgba(74, 222, 128, 0.04); color: rgba(74, 222, 128, 0.3); font-size: 10px; font-weight: 700; }
@@ -261,35 +228,38 @@
         .axis-x-container { position: absolute; bottom: -24px; width: 100%; display: flex; justify-content: space-between; padding: 0 12px; }
 
         .scatter-dot {
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            background-color: var(--bg-card);
-            border-radius: 50%;
-            border: 4px solid var(--matrix-green); /* Default */
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: absolute; width: 14px; height: 14px; background-color: var(--bg-card);
+            border-radius: 50%; border: 4px solid var(--matrix-green); transform: translate(-50%, -50%);
+            z-index: 10; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Panel List Details */
-        .panel-details-list {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .panel-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border-light);
-            font-size: 13px;
-        }
+        .panel-details-list { display: flex; flex-direction: column; }
+        .panel-row { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--border-light); font-size: 13px; }
         .panel-row:last-child { border-bottom: none; padding-bottom: 0; }
-
         .panel-label { color: var(--text-muted); font-weight: 500; }
         .panel-val { font-weight: 700; color: var(--text-main); transition: color 0.3s ease; }
 
+        /* --- MODAL --- */
+        .modal-backdrop {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6, 15, 23, 0.8); backdrop-filter: blur(4px);
+            z-index: 100; align-items: center; justify-content: center;
+        }
+        .modal {
+            background: #12181f; border-radius: 12px; padding: 24px; width: 100%; max-width: 500px;
+            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h3 { margin: 0; color: #fff; }
+        .btn-close { background: transparent; color: #8b9eb0; padding: 0; font-size: 24px; font-weight: 300; line-height: 1; border:none; cursor:pointer;}
+        .btn-close:hover { color: #fff; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        label { font-size: 13px; color: #8b9eb0; }
+        select { background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; font-family: 'Poppins', sans-serif;}
+        select:focus { outline: none; border-color: var(--matrix-yellow); }
+        option { background: #0a1e2d; }
     </style>
 </head>
 <body>
@@ -308,6 +278,7 @@
         <div class="left-col">
             
             <div class="search-filter-bar">
+                <button class="btn-add-student" onclick="openEnrollModal()">+ Add Student</button>
                 <div class="search-box">
                     <svg width="16" height="16"><use href="#icon-search"></use></svg>
                     <input type="text" placeholder="Search by name or ID...">
@@ -321,100 +292,31 @@
                 </div>
             </div>
 
-            <div class="student-list">
-                
-                <div class="student-row active" data-mode="HI" data-name="Maria Santos" data-id="2022-10345" data-initials="MS" data-fullmode="Hierarchical Individual" data-score="91%" data-date="Apr 10, 2026" data-coords="(-0.35, 0.50)" data-x="32.5%" data-y="25%" data-color="var(--matrix-green)">
-                    <div class="row-left">
-                        <div class="avatar-sm">MS</div>
-                        <div class="student-info">
-                            <h4>Maria Santos</h4>
-                            <p>2022-10345</p>
-                        </div>
-                    </div>
-                    <div class="row-right">
-                        <span class="mode-pill">HI</span>
-                        <span class="score">91%</span>
-                        <svg class="chevron"><use href="#icon-chevron"></use></svg>
-                    </div>
-                </div>
-
-                <div class="student-row" data-mode="DI" data-name="Juan dela Cruz" data-id="2022-10346" data-initials="Jd" data-fullmode="Distributed Individual" data-score="85%" data-date="Apr 10, 2026" data-coords="(0.25, 0.60)" data-x="62.5%" data-y="20%" data-color="var(--matrix-blue)">
-                    <div class="row-left">
-                        <div class="avatar-sm">Jd</div>
-                        <div class="student-info">
-                            <h4>Juan dela Cruz</h4>
-                            <p>2022-10346</p>
-                        </div>
-                    </div>
-                    <div class="row-right">
-                        <span class="mode-pill">DI</span>
-                        <span class="score">85%</span>
-                        <svg class="chevron"><use href="#icon-chevron"></use></svg>
-                    </div>
-                </div>
-
-                <div class="student-row" data-mode="HC" data-name="Ana Reyes" data-id="2022-10347" data-initials="AR" data-fullmode="Hierarchical Collective" data-score="79%" data-date="Apr 10, 2026" data-coords="(-0.45, -0.40)" data-x="27.5%" data-y="70%" data-color="var(--matrix-orange)">
-                    <div class="row-left">
-                        <div class="avatar-sm">AR</div>
-                        <div class="student-info">
-                            <h4>Ana Reyes</h4>
-                            <p>2022-10347</p>
-                        </div>
-                    </div>
-                    <div class="row-right">
-                        <span class="mode-pill">HC</span>
-                        <span class="score">79%</span>
-                        <svg class="chevron"><use href="#icon-chevron"></use></svg>
-                    </div>
-                </div>
-
-                <div class="student-row" data-mode="DC" data-name="Carlos Bautista" data-id="2022-10348" data-initials="CB" data-fullmode="Distributed Collective" data-score="93%" data-date="Apr 10, 2026" data-coords="(0.60, -0.55)" data-x="80%" data-y="77.5%" data-color="var(--matrix-purple)">
-                    <div class="row-left">
-                        <div class="avatar-sm">CB</div>
-                        <div class="student-info">
-                            <h4>Carlos Bautista</h4>
-                            <p>2022-10348</p>
-                        </div>
-                    </div>
-                    <div class="row-right">
-                        <span class="mode-pill">DC</span>
-                        <span class="score">93%</span>
-                        <svg class="chevron"><use href="#icon-chevron"></use></svg>
-                    </div>
-                </div>
-
-                <div class="student-row" data-mode="DC" data-name="Rico Villanueva" data-id="2022-10354" data-initials="RV" data-fullmode="Distributed Collective" data-score="80%" data-date="Apr 10, 2026" data-coords="(0.30, -0.30)" data-x="65%" data-y="65%" data-color="var(--matrix-purple)">
-                    <div class="row-left">
-                        <div class="avatar-sm">RV</div>
-                        <div class="student-info">
-                            <h4>Rico Villanueva</h4>
-                            <p>2022-10354</p>
-                        </div>
-                    </div>
-                    <div class="row-right">
-                        <span class="mode-pill">DC</span>
-                        <span class="score">80%</span>
-                        <svg class="chevron"><use href="#icon-chevron"></use></svg>
-                    </div>
-                </div>
-
+            <div class="student-list" id="studentList">
+                <!-- Students injected via JS -->
+            </div>
+            <div id="noStudentsMsg" style="display:none; text-align:center; padding: 40px; color: #8b9eb0; background: var(--bg-card); border-radius: 12px; border: 1px dashed var(--border-lighter);">
+                No students enrolled in this class yet. Click "+ Add Student" to assign them.
             </div>
         </div>
 
         <div class="right-col">
+            <div class="detail-placeholder" id="detailPlaceholder">
+                Select a student from the list to view their quadrant map and details.
+            </div>
+
             <div class="detail-panel" id="detailPanel">
                 
                 <div class="panel-header">
-                    <div class="avatar-lg" id="panelAvatar" style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green);">MS</div>
+                    <div class="avatar-lg" id="panelAvatar" style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green);"></div>
                     <div>
-                        <h2 class="panel-name" id="panelName">Maria Santos</h2>
-                        <p class="panel-id" id="panelId">2022-10345</p>
+                        <h2 class="panel-name" id="panelName"></h2>
+                        <p class="panel-id" id="panelId"></p>
                     </div>
                 </div>
 
                 <div class="quadrant-map-container">
                     <div style="position: relative; width: 100%; max-width: 240px;">
-                        
                         <div class="axis-label axis-y-top">INDIVIDUAL</div>
                         <div class="axis-label axis-y-bot">COLLECTIVE</div>
 
@@ -425,7 +327,6 @@
                                 <div class="q-cell bottom-left">HC</div>
                                 <div class="q-cell bottom-right">DC</div>
                             </div>
-                            
                             <div class="scatter-dot" id="panelDot" style="top: 25%; left: 32.5%; border-color: var(--matrix-green); box-shadow: 0 0 16px rgba(74, 222, 128, 0.4);"></div>
                         </div>
 
@@ -439,75 +340,229 @@
                 <div class="panel-details-list">
                     <div class="panel-row">
                         <span class="panel-label">Dominant Mode</span>
-                        <span class="panel-val" id="panelMode" style="color: var(--matrix-green);">Hierarchical Individual</span>
+                        <span class="panel-val" id="panelMode" style="color: var(--matrix-green);"></span>
                     </div>
                     <div class="panel-row">
-                        <span class="panel-label">Q2 Score</span>
-                        <span class="panel-val" id="panelScore" style="color: var(--matrix-green);">91%</span>
+                        <span class="panel-label">Latest Score</span>
+                        <span class="panel-val" id="panelScore" style="color: var(--matrix-green);"></span>
                     </div>
                     <div class="panel-row">
                         <span class="panel-label">Last Assessment</span>
-                        <span class="panel-val" id="panelDate">Apr 10, 2026</span>
+                        <span class="panel-val" id="panelDate"></span>
                     </div>
                     <div class="panel-row">
                         <span class="panel-label">Coordinates</span>
-                        <span class="panel-val" id="panelCoords">(-0.35, 0.50)</span>
+                        <span class="panel-val" id="panelCoords"></span>
                     </div>
                 </div>
-
             </div>
         </div>
+    </div>
 
+    <!-- The Enroll Modal -->
+    <div id="enrollModal" class="modal-backdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Enroll Student</h3>
+                <button class="btn-close" onclick="closeEnrollModal()">&times;</button>
+            </div>
+            <form id="enrollForm">
+                <div class="form-group">
+                    <label>Select Student to Assign</label>
+                    <select id="studentSelect" required>
+                        <option value="">Loading students...</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
+                    <button type="button" onclick="closeEnrollModal()" style="background: transparent; color: #8b9eb0; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 10px 20px; cursor:pointer;">Cancel</button>
+                    <button type="submit" class="btn-add-student">Enroll Student</button>
+                </div>
+                <div id="enrollMessage" style="margin-top: 15px; font-size: 14px; font-weight: 500; text-align: right;"></div>
+            </form>
+        </div>
     </div>
 
     <script>
-        // Logic to update the right panel when a student is clicked
-        const rows = document.querySelectorAll('.student-row');
+        const urlParams = new URLSearchParams(window.location.search);
+        const classId = urlParams.get('id');
 
-        rows.forEach(row => {
-            row.addEventListener('click', function() {
-                // Remove active from all, add to clicked
-                rows.forEach(r => r.classList.remove('active'));
-                this.classList.add('active');
+        const studentListEl = document.getElementById('studentList');
+        const noStudentsMsg = document.getElementById('noStudentsMsg');
+        
+        const detailPlaceholder = document.getElementById('detailPlaceholder');
+        const detailPanel = document.getElementById('detailPanel');
+        const enrollModal = document.getElementById('enrollModal');
 
-                // Get data from attributes
-                const name = this.dataset.name;
-                const id = this.dataset.id;
-                const initials = this.dataset.initials;
-                const modeFull = this.dataset.fullmode;
-                const score = this.dataset.score;
-                const date = this.dataset.date;
-                const coords = this.dataset.coords;
-                const x = this.dataset.x;
-                const y = this.dataset.y;
-                const color = this.dataset.color; // e.g. var(--matrix-purple)
+        function openEnrollModal() {
+            enrollModal.style.display = 'flex';
+            document.getElementById('enrollMessage').textContent = '';
+        }
 
-                // Update text elements
-                document.getElementById('panelName').textContent = name;
-                document.getElementById('panelId').textContent = id;
-                document.getElementById('panelMode').textContent = modeFull;
-                document.getElementById('panelScore').textContent = score;
-                document.getElementById('panelDate').textContent = date;
-                document.getElementById('panelCoords').textContent = coords;
-                
-                // Update avatar
-                const avatar = document.getElementById('panelAvatar');
-                avatar.textContent = initials;
-                avatar.style.color = color;
-                avatar.style.backgroundColor = `color-mix(in srgb, ${color} 15%, transparent)`;
+        function closeEnrollModal() {
+            enrollModal.style.display = 'none';
+            document.getElementById('enrollForm').reset();
+        }
 
-                // Update map dot position and color
-                const dot = document.getElementById('panelDot');
-                dot.style.left = x;
-                dot.style.top = y;
-                dot.style.borderColor = color;
-                dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${color} 40%, transparent)`;
-                
-                // Update text colors in detail rows
-                document.getElementById('panelMode').style.color = color;
-                document.getElementById('panelScore').style.color = color;
-            });
+        enrollModal.addEventListener('click', (e) => {
+            if (e.target === enrollModal) closeEnrollModal();
         });
+
+        // Load all students for the dropdown
+        async function loadAllStudentsForDropdown() {
+            try {
+                const res = await fetch('/api/students');
+                const students = await res.json();
+                const select = document.getElementById('studentSelect');
+                select.innerHTML = '<option value="">-- Choose a Student --</option>';
+                
+                students.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.id;
+                    opt.textContent = `${s.first_name} ${s.last_name} (${s.student_no})`;
+                    select.appendChild(opt);
+                });
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        // Fake data assigner for students until real questionnaire data is linked
+        const fakeModes = [
+            { mode: 'HI', full: 'Hierarchical Individual', color: 'var(--matrix-green)', x: '25%', y: '25%', coords: '(-0.5, 0.5)' },
+            { mode: 'DI', full: 'Distributed Individual', color: 'var(--matrix-blue)', x: '75%', y: '25%', coords: '(0.5, 0.5)' },
+            { mode: 'HC', full: 'Hierarchical Collective', color: 'var(--matrix-orange)', x: '25%', y: '75%', coords: '(-0.5, -0.5)' },
+            { mode: 'DC', full: 'Distributed Collective', color: 'var(--matrix-purple)', x: '75%', y: '75%', coords: '(0.5, -0.5)' }
+        ];
+
+        async function loadClassStudents() {
+            if (!classId) {
+                studentListEl.innerHTML = '<div style="color:var(--matrix-orange); padding:20px;">Please select a class from the previous page first.</div>';
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/classes/${classId}/students`);
+                const students = await res.json();
+                
+                studentListEl.innerHTML = '';
+                
+                if (students.length === 0) {
+                    noStudentsMsg.style.display = 'block';
+                    detailPlaceholder.style.display = 'block';
+                    detailPanel.style.display = 'none';
+                } else {
+                    noStudentsMsg.style.display = 'none';
+                    
+                    students.forEach((s, index) => {
+                        // Assign fake mode info deterministically based on index for demo purposes
+                        const m = fakeModes[index % 4];
+                        const initials = s.first_name.charAt(0) + s.last_name.charAt(0);
+                        const score = Math.floor(Math.random() * 20 + 80) + '%'; // 80-99%
+                        
+                        const row = document.createElement('div');
+                        row.className = 'student-row';
+                        row.dataset.mode = m.mode;
+                        row.dataset.name = `${s.first_name} ${s.last_name}`;
+                        row.dataset.id = s.student_no;
+                        row.dataset.initials = initials;
+                        row.dataset.fullmode = m.full;
+                        row.dataset.score = score;
+                        row.dataset.date = 'N/A';
+                        row.dataset.coords = m.coords;
+                        row.dataset.x = m.x;
+                        row.dataset.y = m.y;
+                        row.dataset.color = m.color;
+
+                        row.innerHTML = `
+                            <div class="row-left">
+                                <div class="avatar-sm">${initials}</div>
+                                <div class="student-info">
+                                    <h4>${s.first_name} ${s.last_name}</h4>
+                                    <p>${s.student_no}</p>
+                                </div>
+                            </div>
+                            <div class="row-right">
+                                <span class="mode-pill">${m.mode}</span>
+                                <span class="score">${score}</span>
+                                <svg class="chevron"><use href="#icon-chevron"></use></svg>
+                            </div>
+                        `;
+
+                        row.addEventListener('click', function() {
+                            document.querySelectorAll('.student-row').forEach(r => r.classList.remove('active'));
+                            this.classList.add('active');
+
+                            detailPlaceholder.style.display = 'none';
+                            detailPanel.style.display = 'flex';
+
+                            document.getElementById('panelName').textContent = this.dataset.name;
+                            document.getElementById('panelId').textContent = this.dataset.id;
+                            document.getElementById('panelMode').textContent = this.dataset.fullmode;
+                            document.getElementById('panelScore').textContent = this.dataset.score;
+                            document.getElementById('panelDate').textContent = this.dataset.date;
+                            document.getElementById('panelCoords').textContent = this.dataset.coords;
+                            
+                            const avatar = document.getElementById('panelAvatar');
+                            avatar.textContent = this.dataset.initials;
+                            avatar.style.color = this.dataset.color;
+                            avatar.style.backgroundColor = `color-mix(in srgb, ${this.dataset.color} 15%, transparent)`;
+
+                            const dot = document.getElementById('panelDot');
+                            dot.style.left = this.dataset.x;
+                            dot.style.top = this.dataset.y;
+                            dot.style.borderColor = this.dataset.color;
+                            dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${this.dataset.color} 40%, transparent)`;
+                            
+                            document.getElementById('panelMode').style.color = this.dataset.color;
+                            document.getElementById('panelScore').style.color = this.dataset.color;
+                        });
+
+                        studentListEl.appendChild(row);
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Enroll submission
+        document.getElementById('enrollForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!classId) return alert("Missing Class ID");
+
+            const studentId = document.getElementById('studentSelect').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            const msg = document.getElementById('enrollMessage');
+            
+            btn.textContent = 'Enrolling...';
+            msg.textContent = '';
+
+            try {
+                const res = await fetch('/api/enroll', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ student_id: studentId, class_id: classId })
+                });
+                const result = await res.json();
+
+                if (res.ok) {
+                    closeEnrollModal();
+                    loadClassStudents(); // refresh the list
+                } else {
+                    msg.style.color = '#fb923c';
+                    msg.textContent = result.error;
+                }
+            } catch(err) {
+                msg.style.color = '#fb923c';
+                msg.textContent = 'Server error';
+            }
+            btn.textContent = 'Enroll Student';
+        });
+
+        // Init
+        loadAllStudentsForDropdown();
+        loadClassStudents();
     </script>
 </body>
 </html>

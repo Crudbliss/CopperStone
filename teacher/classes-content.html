@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Students Content</title>
+    <title>Teacher Classes Content</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* --- CSS VARIABLES --- */
@@ -50,7 +50,6 @@
         }
 
         .class-card {
-            position: relative;
             background-color: var(--bg-card);
             border-radius: 12px;
             overflow: hidden;
@@ -64,44 +63,6 @@
         .class-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-actions {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            gap: 6px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .class-card:hover .card-actions {
-            opacity: 1;
-        }
-
-        .btn-action {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text-muted);
-            border-radius: 4px;
-            padding: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .btn-action:hover {
-            color: var(--text-main);
-            background: rgba(255,255,255,0.1);
-        }
-
-        .btn-action.delete:hover {
-            color: #ef4444;
-            border-color: #ef4444;
-            background: rgba(239, 68, 68, 0.1);
         }
 
         .card-banner {
@@ -189,12 +150,6 @@
             <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
             <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
         </symbol>
-        <symbol id="icon-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line>
-        </symbol>
-        <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
-        </symbol>
     </svg>
 
     <div class="content-container">
@@ -222,7 +177,7 @@
             </div>
             <form id="addClassForm">
                 <div class="form-group">
-                    <label>Program</label>
+                    <label>Course Name</label>
                     <input type="text" id="course_subj_name" placeholder="e.g. BSIT" required>
                 </div>
                 <div class="form-group">
@@ -231,7 +186,7 @@
                 </div>
                 <div class="form-group">
                     <label>Section</label>
-                    <input type="text" id="section" placeholder="e.g. Y2-1" required>
+                    <input type="text" id="section" placeholder="e.g. A" required>
                 </div>
                 <div class="form-group">
                     <label>School Year</label>
@@ -300,11 +255,6 @@
                     }
 
                     card.innerHTML = `
-                        <div class="card-actions">
-                            <button class="btn-action" title="Archive Class" onclick="archiveClass(${c.id}, event)">
-                                <svg width="16" height="16"><use href="#icon-archive"></use></svg>
-                            </button>
-                        </div>
                         <div class="card-banner">
                             <svg><use href="#icon-course"></use></svg>
                         </div>
@@ -374,16 +324,6 @@
             }
             btn.textContent = 'Create Class';
         });
-        // Archive Logic
-        async function archiveClass(id, e) {
-            e.stopPropagation();
-            if(!confirm("Are you sure you want to archive this class? It will be hidden from this view.")) return;
-            try {
-                const res = await fetch('/api/classes/' + id + '/archive', { method: 'PUT' });
-                if(res.ok) loadClasses();
-                else alert("Failed to archive");
-            } catch(err) { console.error(err); }
-        }
     </script>
 </body>
 </html>

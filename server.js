@@ -51,10 +51,20 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS classes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         course_subj_name TEXT NOT NULL,
+        year_level TEXT,
+        section TEXT,
+        school_year TEXT,
         teacher_id INTEGER,
+        is_archived INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE SET NULL
-    )`);
+    )`, () => {
+        // Safely attempt to add new columns to an existing table if they don't exist
+        db.run(`ALTER TABLE classes ADD COLUMN year_level TEXT`, () => {});
+        db.run(`ALTER TABLE classes ADD COLUMN section TEXT`, () => {});
+        db.run(`ALTER TABLE classes ADD COLUMN school_year TEXT`, () => {});
+        db.run(`ALTER TABLE classes ADD COLUMN is_archived INTEGER DEFAULT 0`, () => {});
+    });
 
     // 4. Enrollments Table (Many-to-Many: Students to Classes)
     db.run(`CREATE TABLE IF NOT EXISTS enrollments (
@@ -210,6 +220,121 @@ app.post('/api/login', async (req, res) => {
             // 3. User not found in either table
             return res.status(404).json({ error: 'User not found' });
         });
+    });
+});
+
+// --- CLASS & ENROLLMENT APIs ---
+
+// GET /api/classes - Fetch all classes
+app.get('/api/classes', (req, res) => {
+    const sql = `
+        SELECT c.*, t.first_name as teacher_first_name, t.last_name as teacher_last_name 
+        FROM classes c
+        LEFT JOIN teachers t ON c.teacher_id = t.id
+    `;
+    db.all(sql, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// GET /api/classes/teacher/:teacher_id - Fetch classes for a specific teacher
+app.get('/api/classes/teacher/:teacher_id', (req, res) => {
+    // Only return non-archived classes by default
+    const sql = `SELECT * FROM classes WHERE teacher_id = ? AND is_archived = 0`;
+    db.all(sql, [req.params.teacher_id], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// PUT /api/classes/:id/archive - Archive a class
+app.put('/api/classes/:id/archive', (req, res) => {
+    db.run(`UPDATE classes SET is_archived = 1 WHERE id = ?`, [req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Class archived' });
+    });
+});
+
+// PUT /api/classes/:id/unarchive - Unarchive a class
+app.put('/api/classes/:id/unarchive', (req, res) => {
+    db.run(`UPDATE classes SET is_archived = 0 WHERE id = ?`, [req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Class unarchived' });
+    });
+});
+
+// DELETE /api/classes/:id - Permanently delete a class and its enrollments
+app.delete('/api/classes/:id', (req, res) => {
+    // Delete enrollments first (if cascade isn't fully enabled in sqlite config)
+    db.run(`DELETE FROM enrollments WHERE class_id = ?`, [req.params.id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        db.run(`DELETE FROM classes WHERE id = ?`, [req.params.id], function(err2) {
+            if (err2) return res.status(500).json({ error: err2.message });
+            res.json({ success: true, message: 'Class deleted' });
+        });
+    });
+});
+
+// POST /api/classes - Create a new class
+app.post('/api/classes', (req, res) => {
+    const { course_subj_name, year_level, section, school_year, teacher_id } = req.body;
+    if (!course_subj_name || !teacher_id) {
+        return res.status(400).json({ error: 'course_subj_name and teacher_id are required' });
+    }
+    
+    db.run(`INSERT INTO classes (course_subj_name, year_level, section, school_year, teacher_id) VALUES (?, ?, ?, ?, ?)`, 
+        [course_subj_name, year_level, section, school_year, teacher_id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(201).json({ success: true, class_id: this.lastID });
+    });
+});
+
+// POST /api/enroll - Enroll a student in a class
+app.post('/api/enroll', (req, res) => {
+    const { student_id, class_id } = req.body;
+    if (!student_id || !class_id) {
+        return res.status(400).json({ error: 'student_id and class_id are required' });
+    }
+
+    db.run(`INSERT INTO enrollments (student_id, class_id) VALUES (?, ?)`, [student_id, class_id], function(err) {
+        if (err) {
+            if (err.message.includes('UNIQUE constraint failed')) {
+                return res.status(409).json({ error: 'Student is already enrolled in this class' });
+            }
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({ success: true, message: 'Successfully enrolled' });
+    });
+});
+
+// GET /api/students/:id/classes - Get all classes a student is enrolled in
+app.get('/api/students/:id/classes', (req, res) => {
+    const sql = `
+        SELECT c.*, t.first_name as teacher_first_name, t.last_name as teacher_last_name
+        FROM classes c
+        JOIN enrollments e ON c.id = e.class_id
+        LEFT JOIN teachers t ON c.teacher_id = t.id
+        WHERE e.student_id = ?
+    `;
+    db.all(sql, [req.params.id], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// GET /api/classes/:id/students - Get all students enrolled in a specific class
+app.get('/api/classes/:id/students', (req, res) => {
+    const sql = `
+        SELECT s.id, s.student_no, s.first_name, s.last_name, s.email, s.program, s.year_level, s.section
+        FROM students s
+        JOIN enrollments e ON s.id = e.student_id
+        WHERE e.class_id = ?
+    `;
+    db.all(sql, [req.params.id], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
     });
 });
 
