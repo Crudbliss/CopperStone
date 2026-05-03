@@ -10,21 +10,147 @@
             --bg-base: #060f17;
             --bg-card: #12181f;
             --matrix-blue: #38bdf8;
+            --matrix-green: #4ade80;
+            --matrix-yellow: #facc15;
+            --matrix-purple: #c084fc;
             --text-main: #ffffff;
             --text-muted: #8b9eb0;
             --border-light: rgba(255, 255, 255, 0.08);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: transparent; color: var(--text-main); padding: 40px; }
+        
+        .dashboard-header { margin-bottom: 30px; }
+        .dashboard-header h1 { color: var(--matrix-blue); font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .dashboard-header p { color: var(--text-muted); font-size: 15px; }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .metric-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .icon-blue { background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); }
+        .icon-green { background: rgba(74, 222, 128, 0.1); color: var(--matrix-green); }
+        .icon-yellow { background: rgba(250, 204, 21, 0.1); color: var(--matrix-yellow); }
+        .icon-purple { background: rgba(192, 132, 252, 0.1); color: var(--matrix-purple); }
+
+        .metric-info h3 { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
+        .metric-info .value { font-size: 32px; font-weight: 700; color: var(--text-main); line-height: 1; }
+
         .glass-card { background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 32px; text-align: center; }
-        h1 { color: var(--matrix-blue); margin-bottom: 16px; }
-        p { color: var(--text-muted); }
     </style>
 </head>
 <body>
-    <div class="glass-card">
-        <h1>Welcome to the Admin Dashboard</h1>
-        <p>This section is under development. Here you will see system-wide statistics.</p>
+    <div class="dashboard-header">
+        <h1>System Overview</h1>
+        <p>Live metrics and statistics for the CopperStone platform.</p>
     </div>
+
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-icon icon-green">🧑‍🎓</div>
+            <div class="metric-info">
+                <h3>Total Students</h3>
+                <div class="value" id="count-students">--</div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon icon-blue">👨‍🏫</div>
+            <div class="metric-info">
+                <h3>Total Teachers</h3>
+                <div class="value" id="count-teachers">--</div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon icon-yellow">🏫</div>
+            <div class="metric-info">
+                <h3>Active Classes</h3>
+                <div class="value" id="count-classes">--</div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon icon-purple">📝</div>
+            <div class="metric-info">
+                <h3>Question Bank</h3>
+                <div class="value" id="count-questions">--</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <h2 style="color: var(--text-main); margin-bottom: 10px;">Platform Health</h2>
+        <p style="color: var(--matrix-green); font-weight: 500;">All systems operational. Database is connected and syncing.</p>
+    </div>
+
+    <script>
+        async function loadMetrics() {
+            try {
+                // Fetch all data concurrently
+                const [studentsRes, teachersRes, classesRes, questionsRes] = await Promise.all([
+                    fetch('/api/students'),
+                    fetch('/api/teachers'),
+                    fetch('/api/classes'),
+                    fetch('/api/questions')
+                ]);
+
+                if (studentsRes.ok) {
+                    const students = await studentsRes.json();
+                    document.getElementById('count-students').textContent = students.length;
+                }
+
+                if (teachersRes.ok) {
+                    const teachers = await teachersRes.json();
+                    document.getElementById('count-teachers').textContent = teachers.length;
+                }
+
+                if (classesRes.ok) {
+                    const classes = await classesRes.json();
+                    // Count only active (non-archived) classes if applicable
+                    const activeClasses = classes.filter(c => c.is_archived === 0);
+                    document.getElementById('count-classes').textContent = activeClasses.length;
+                }
+
+                if (questionsRes.ok) {
+                    const questions = await questionsRes.json();
+                    document.getElementById('count-questions').textContent = questions.length;
+                }
+            } catch (err) {
+                console.error('Failed to load dashboard metrics:', err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMetrics);
+    </script>
 </body>
 </html>

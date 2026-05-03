@@ -38,8 +38,9 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         label { font-size: 13px; color: #8b9eb0; }
-        input { background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; }
-        input:focus { outline: none; border-color: #4ade80; }
+        input, select { background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; font-family: 'Poppins', sans-serif;}
+        input:focus, select:focus { outline: none; border-color: #4ade80; }
+        option { background: #0a1e2d; color: #fff; }
     </style>
 </head>
 <body>
@@ -79,9 +80,23 @@
                     <div class="form-group"><label>First Name</label><input type="text" id="first_name" required></div>
                     <div class="form-group"><label>Last Name</label><input type="text" id="last_name" required></div>
                     <div class="form-group"><label>Middle Initial</label><input type="text" id="mi"></div>
-                    <div class="form-group"><label>Program</label><input type="text" id="program" required></div>
-                    <div class="form-group"><label>Year Level</label><input type="text" id="year_level" required></div>
-                    <div class="form-group"><label>Section</label><input type="text" id="section" required></div>
+                    <div class="form-group"><label>Program</label>
+                        <select id="program" required>
+                            <option value="" disabled selected>Select Program</option>
+                            <option value="BSIT">BSIT</option>
+                            <option value="BSCS">BSCS</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Year Level</label>
+                        <select id="year_level" required>
+                            <option value="" disabled selected>Select Year</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Section</label><input type="text" id="section" placeholder="e.g. 1" required></div>
                     <div class="form-group"><label>Password</label><input type="password" id="password" required></div>
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
