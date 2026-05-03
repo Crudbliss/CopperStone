@@ -260,8 +260,12 @@
             const user = JSON.parse(userStr);
 
             try {
-                const sessionRes = await fetch('/api/students/' + user.id + '/active-sessions');
+                const [sessionRes, historyRes] = await Promise.all([
+                    fetch('/api/students/' + user.id + '/active-sessions'),
+                    fetch('/api/students/' + user.id + '/history')
+                ]);
                 const sessions = await sessionRes.json();
+                const history = await historyRes.json();
                 
                 if (!sessions || sessions.length === 0) {
                     document.getElementById('test-container').innerHTML = `
@@ -275,6 +279,18 @@
                 
                 // For simplicity, just grab the first active session
                 activeSession = sessions[0];
+
+                // Check if already completed
+                const alreadyTook = history.some(h => h.session_id === activeSession.session_id);
+                if (alreadyTook) {
+                    document.getElementById('test-container').innerHTML = `
+                        <div style="text-align: center; padding: 60px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-light);">
+                            <h2 style="color: var(--matrix-green); margin-bottom: 12px;">Assessment Completed</h2>
+                            <p style="color: var(--text-muted);">You have already completed the assessment for ${activeSession.course_subj_name} - ${activeSession.quarter_name}. You cannot retake it.</p>
+                        </div>
+                    `;
+                    return;
+                }
                 
                 // Show which session this is
                 const header = document.querySelector('.header h1');

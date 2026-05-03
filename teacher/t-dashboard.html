@@ -283,7 +283,7 @@
                 </button>
                 <div class="status-pill">
                     <svg width="16" height="16" style="color: var(--matrix-green);"><use href="#icon-grad-cap"></use></svg>
-                    <span class="status-text">BSIT 3-1 · 12 Students</span>
+                    <span class="status-text" id="header-status-text">BSIT 3-1 · 12 Students</span>
                 </div>
             </div>
         </header>
@@ -321,6 +321,7 @@
                     }
                     document.getElementById('sidebar-teacher-name').textContent = "Prof. " + user.name;
                     document.getElementById('sidebar-teacher-avatar').textContent = user.name.substring(0, 2).toUpperCase();
+                    document.getElementById('header-status-text').textContent = "Prof. " + user.name;
                 } catch(e) { console.error(e); }
             } else {
                 window.location.href = '../index.html'; // Basic protection

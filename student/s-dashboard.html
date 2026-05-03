@@ -426,7 +426,7 @@
 
                             // Set Top Bar mode
                             const modeText = data.learning_mode || 'Not Assessed';
-                            document.getElementById('header-status-text').textContent = modeText;
+                            document.getElementById('header-status-text').textContent = fullName;
 
                             let color = 'var(--text-muted)';
                             if (modeText === 'Hierarchical Individual') color = 'var(--matrix-green)';

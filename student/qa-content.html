@@ -482,35 +482,48 @@
             // 2. Render Active/Upcoming Assessment Card
             if (activeSessions.length > 0) {
                 const active = activeSessions[0]; // just grab the first active
+                const alreadyTook = history.some(h => h.session_id === active.session_id);
                 let deadlineStr = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'No deadline';
 
-                html += `
-                    <div class="card card-upcoming">
-                        <div class="upcoming-icon-bg">
-                            <svg width="24" height="24"><use href="#icon-clipboard"></use></svg>
-                        </div>
-                        
-                        <span class="pill-upcoming" style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green);">ACTIVE NOW</span>
-                        <h2 class="upcoming-title">${active.course_subj_name} - ${active.quarter_name}</h2>
-                        <p class="upcoming-sub">Estimated 20-30 minutes</p>
-                        
-                        <div class="upcoming-status-row">
-                            <div class="status-item" style="color: var(--matrix-green);">
-                                <svg style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>
-                                <span>Assessment is open</span>
+                if (alreadyTook) {
+                    html += `
+                        <div class="card card-upcoming" style="background-color: var(--bg-card); border: 1px solid var(--border-light);">
+                            <div class="upcoming-icon-bg" style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green);">
+                                <svg width="24" height="24"><use href="#icon-check"></use></svg>
                             </div>
-                            <div class="status-item">
-                                <svg><use href="#icon-clock"></use></svg>
-                                <span>Deadline: ${deadlineStr}</span>
-                            </div>
+                            <h2 class="upcoming-title" style="color: var(--matrix-green);">Assessment Completed</h2>
+                            <p class="upcoming-sub" style="margin-bottom: 0;">You have already completed the assessment for ${active.course_subj_name} - ${active.quarter_name}.</p>
                         </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="card card-upcoming">
+                            <div class="upcoming-icon-bg">
+                                <svg width="24" height="24"><use href="#icon-clipboard"></use></svg>
+                            </div>
+                            
+                            <span class="pill-upcoming" style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green);">ACTIVE NOW</span>
+                            <h2 class="upcoming-title">${active.course_subj_name} - ${active.quarter_name}</h2>
+                            <p class="upcoming-sub">Estimated 20-30 minutes</p>
+                            
+                            <div class="upcoming-status-row">
+                                <div class="status-item" style="color: var(--matrix-green);">
+                                    <svg style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>
+                                    <span>Assessment is open</span>
+                                </div>
+                                <div class="status-item">
+                                    <svg><use href="#icon-clock"></use></svg>
+                                    <span>Deadline: ${deadlineStr}</span>
+                                </div>
+                            </div>
 
-                        <a href="test-content.html" class="btn-preview" style="text-decoration: none; width: fit-content; background-color: rgba(74, 222, 128, 0.15); color: var(--matrix-green); border-color: var(--matrix-green);">
-                            <svg width="14" height="14" style="color: var(--matrix-green);"><use href="#icon-play"></use></svg>
-                            Take Assessment
-                        </a>
-                    </div>
-                `;
+                            <a href="test-content.html" class="btn-preview" style="text-decoration: none; width: fit-content; background-color: rgba(74, 222, 128, 0.15); color: var(--matrix-green); border-color: var(--matrix-green);">
+                                <svg width="14" height="14" style="color: var(--matrix-green);"><use href="#icon-play"></use></svg>
+                                Take Assessment
+                            </a>
+                        </div>
+                    `;
+                }
             } else {
                 html += `
                     <div class="card card-upcoming" style="background-color: var(--bg-card); border: 1px solid var(--border-light);">
