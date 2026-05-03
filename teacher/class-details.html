@@ -466,13 +466,38 @@
             }
         }
 
-        // Fake data assigner for students until real questionnaire data is linked
-        const fakeModes = [
-            { mode: 'HI', full: 'Hierarchical Individual', color: 'var(--matrix-green)', x: '25%', y: '25%', coords: '(-0.5, 0.5)' },
-            { mode: 'DI', full: 'Distributed Individual', color: 'var(--matrix-blue)', x: '75%', y: '25%', coords: '(0.5, 0.5)' },
-            { mode: 'HC', full: 'Hierarchical Collective', color: 'var(--matrix-orange)', x: '25%', y: '75%', coords: '(-0.5, -0.5)' },
-            { mode: 'DC', full: 'Distributed Collective', color: 'var(--matrix-purple)', x: '75%', y: '75%', coords: '(0.5, -0.5)' }
-        ];
+        // Dynamic data assigner using real DB coords
+        function getModeData(student) {
+            if (!student.learning_mode) {
+                return { mode: 'N/A', full: 'Not Assessed', color: 'var(--text-muted)', x: '50%', y: '50%', coords: '(--, --)' };
+            }
+            
+            let color = 'var(--matrix-green)';
+            let modeShort = 'N/A';
+            
+            if (student.learning_mode === 'Hierarchical Individual') { color = 'var(--matrix-green)'; modeShort = 'HI'; }
+            else if (student.learning_mode === 'Distributed Individual') { color = 'var(--matrix-blue)'; modeShort = 'DI'; }
+            else if (student.learning_mode === 'Hierarchical Collective') { color = 'var(--matrix-orange)'; modeShort = 'HC'; }
+            else if (student.learning_mode === 'Distributed Collective') { color = 'var(--matrix-purple)'; modeShort = 'DC'; }
+            
+            // Map coordinates (-5 to 5) to percentages (0% to 100%)
+            let xPct = ((student.x_coord + 5) / 10) * 100;
+            // Y is inverted in CSS (Top is 0%)
+            let yPct = ((5 - student.y_coord) / 10) * 100;
+
+            // Keep dot slightly away from exact edges
+            xPct = Math.max(5, Math.min(95, xPct));
+            yPct = Math.max(5, Math.min(95, yPct));
+
+            return { 
+                mode: modeShort, 
+                full: student.learning_mode, 
+                color: color, 
+                x: xPct + '%', 
+                y: yPct + '%', 
+                coords: `(${student.x_coord}, ${student.y_coord})` 
+            };
+        }
 
         async function loadClassStudents() {
             if (!classId) {
@@ -493,11 +518,10 @@
                 } else {
                     noStudentsMsg.style.display = 'none';
                     
-                    students.forEach((s, index) => {
-                        // Assign fake mode info deterministically based on index for demo purposes
-                        const m = fakeModes[index % 4];
+                    students.forEach((s) => {
+                        const m = getModeData(s);
                         const initials = s.first_name.charAt(0) + s.last_name.charAt(0);
-                        const score = Math.floor(Math.random() * 20 + 80) + '%'; // 80-99%
+                        const score = s.learning_mode ? 'Completed' : 'Pending';
                         
                         const row = document.createElement('div');
                         row.className = 'student-row';
