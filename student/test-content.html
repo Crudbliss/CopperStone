@@ -183,6 +183,37 @@
             max-width: 400px;
         }
 
+        /* Loading Screen overlay */
+        #loading-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg-base);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(74, 222, 128, 0.2);
+            border-bottom-color: var(--matrix-green);
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+            margin-bottom: 24px;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
     </style>
 </head>
 <body>
@@ -199,6 +230,12 @@
         </div>
 
         <button class="btn-submit" id="btn-submit" disabled>Submit Assessment</button>
+    </div>
+
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <h3>Analyzing Responses...</h3>
+        <p style="color: var(--text-muted); margin-top: 8px;">Calculating your optimal learning mode quadrant</p>
     </div>
 
     <div id="result-screen">
@@ -283,6 +320,9 @@
             const answersArray = Object.values(selectedAnswers);
 
             try {
+                document.getElementById('test-container').style.display = 'none';
+                document.getElementById('loading-screen').style.display = 'flex';
+
                 const res = await fetch('/api/assessments/submit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -294,14 +334,18 @@
 
                 const data = await res.json();
 
-                if (data.success) {
-                    document.getElementById('test-container').style.display = 'none';
-                    const resultScreen = document.getElementById('result-screen');
-                    resultScreen.style.display = 'flex';
-                    document.getElementById('final-mode').textContent = data.result.mode;
-                } else {
-                    alert('Error: ' + data.error);
-                }
+                // Add a small delay to let the user see the "analyzing" screen (looks more professional)
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    if (data.success) {
+                        const resultScreen = document.getElementById('result-screen');
+                        resultScreen.style.display = 'flex';
+                        document.getElementById('final-mode').textContent = data.result.mode;
+                    } else {
+                        alert('Error: ' + data.error);
+                        document.getElementById('test-container').style.display = 'flex';
+                    }
+                }, 1500);
 
             } catch(e) {
                 console.error(e);

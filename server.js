@@ -193,6 +193,15 @@ app.get('/api/teachers', (req, res) => {
     });
 });
 
+// GET /api/students/:id - Get a specific student's full profile
+app.get('/api/students/:id', (req, res) => {
+    db.get(`SELECT id, student_no, first_name, last_name, mi, email, program, year_level, section, x_coord, y_coord, learning_mode FROM students WHERE id = ?`, [req.params.id], (err, student) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!student) return res.status(404).json({ error: 'Student not found' });
+        res.json(student);
+    });
+});
+
 // POST /api/login - Universal login for Students and Teachers
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;

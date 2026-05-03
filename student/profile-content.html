@@ -463,6 +463,31 @@
                     if (!fName && !lName) email = 'student@olfu.edu.ph';
                     document.getElementById('profile-email').textContent = email;
                     
+                    // Populate Mode from cached profile
+                    const profileStr = localStorage.getItem('studentProfile');
+                    if(profileStr) {
+                        const profile = JSON.parse(profileStr);
+                        const mode = profile.learning_mode;
+                        const modeEl = document.getElementById('profile-mode');
+                        const pillEl = modeEl.parentElement;
+                        
+                        if(mode) {
+                            let color = 'var(--matrix-green)';
+                            if(mode === 'Hierarchical Individual') color = 'var(--matrix-green)';
+                            else if(mode === 'Distributed Individual') color = 'var(--matrix-blue)';
+                            else if(mode === 'Hierarchical Collective') color = 'var(--matrix-orange)';
+                            else if(mode === 'Distributed Collective') color = 'var(--matrix-purple)';
+                            
+                            modeEl.textContent = mode;
+                            modeEl.style.color = color;
+                            pillEl.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
+                            pillEl.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
+                        } else {
+                            modeEl.textContent = 'Not Assessed';
+                            modeEl.style.color = 'var(--text-muted)';
+                        }
+                    }
+                    
                 } catch(e) {
                     console.error(e);
                 }

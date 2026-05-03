@@ -583,6 +583,11 @@
 
                         studentListEl.appendChild(row);
                     });
+                    
+                    // Maintain search/filter state when data refreshes
+                    if (typeof applyFilters === 'function') {
+                        applyFilters();
+                    }
                 }
             } catch (err) {
                 console.error(err);
@@ -622,6 +627,41 @@
             }
             btn.textContent = 'Enroll Student';
         });
+
+        // Filter and Search Logic
+        const searchInput = document.querySelector('.search-box input');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        let currentFilter = 'All';
+
+        searchInput.addEventListener('input', applyFilters);
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.textContent.trim();
+                applyFilters();
+            });
+        });
+
+        function applyFilters() {
+            const term = searchInput.value.toLowerCase();
+            const rows = document.querySelectorAll('.student-row');
+            
+            rows.forEach(row => {
+                const name = row.dataset.name.toLowerCase();
+                const id = row.dataset.id.toLowerCase();
+                const mode = row.dataset.mode;
+                
+                const matchesSearch = name.includes(term) || id.includes(term);
+                const matchesFilter = currentFilter === 'All' || mode === currentFilter;
+                
+                if (matchesSearch && matchesFilter) {
+                    row.style.display = 'flex';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
 
         // Init
         loadAllStudentsForDropdown();

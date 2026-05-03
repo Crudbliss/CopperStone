@@ -361,11 +361,11 @@
                 <button class="btn-icon">
                     <svg width="20" height="20"><use href="#icon-bell"></use></svg>
                 </button>
-                <div class="status-pill">
-                    <div class="status-dot-icon">
+                <div class="status-pill" id="header-status-pill">
+                    <div class="status-dot-icon" id="header-status-dot">
                         <svg width="10" height="10"><use href="#icon-books-stack"></use></svg>
                     </div>
-                    <span class="status-text">Hierarchical Individual</span>
+                    <span class="status-text" id="header-status-text">Loading...</span>
                 </div>
             </div>
         </header>
@@ -394,26 +394,48 @@
                 try {
                     const user = JSON.parse(userStr);
                     
-                    // Set full name
-                    const fullName = `${user.name} ${user.last_name || ''}`.trim();
-                    document.getElementById('sidebar-student-name').textContent = fullName;
-                    
-                    // Set initials
-                    if (user.name) {
-                        const init1 = user.name.charAt(0);
-                        const init2 = user.last_name ? user.last_name.charAt(0) : '';
-                        document.getElementById('sidebar-student-avatar').textContent = (init1 + init2).toUpperCase() || '--';
-                    }
-                    
-                    // Set program
-                    const prog = user.program || 'Student';
-                    const yr = user.year_level || '';
-                    const sec = user.section || '';
-                    let progStr = prog;
-                    if (yr || sec) progStr += ` ${yr}-${sec}`;
-                    
-                    document.getElementById('sidebar-student-program').textContent = progStr;
-                    
+                    fetch('/api/students/' + user.id)
+                        .then(res => res.json())
+                        .then(data => {
+                            // Cache the real profile for child iframes
+                            localStorage.setItem('studentProfile', JSON.stringify(data));
+
+                            // Set full name
+                            const fullName = `${data.first_name} ${data.last_name || ''}`.trim();
+                            document.getElementById('sidebar-student-name').textContent = fullName;
+                            
+                            // Set initials
+                            if (data.first_name) {
+                                const init1 = data.first_name.charAt(0);
+                                const init2 = data.last_name ? data.last_name.charAt(0) : '';
+                                document.getElementById('sidebar-student-avatar').textContent = (init1 + init2).toUpperCase() || '--';
+                            }
+                            
+                            // Set program
+                            const prog = data.program || 'Student';
+                            const yr = data.year_level || '';
+                            const sec = data.section || '';
+                            let progStr = prog;
+                            if (yr || sec) progStr += ` ${yr}-${sec}`;
+                            document.getElementById('sidebar-student-program').textContent = progStr;
+
+                            // Set Top Bar mode
+                            const modeText = data.learning_mode || 'Not Assessed';
+                            document.getElementById('header-status-text').textContent = modeText;
+
+                            let color = 'var(--text-muted)';
+                            if (modeText === 'Hierarchical Individual') color = 'var(--matrix-green)';
+                            else if (modeText === 'Distributed Individual') color = 'var(--matrix-blue)';
+                            else if (modeText === 'Hierarchical Collective') color = 'var(--matrix-orange)';
+                            else if (modeText === 'Distributed Collective') color = 'var(--matrix-purple)';
+
+                            document.getElementById('header-status-dot').style.backgroundColor = color;
+                            document.getElementById('header-status-text').style.color = color;
+                            const pill = document.getElementById('header-status-pill');
+                            pill.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
+                            pill.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
+                        })
+                        .catch(err => console.error("Failed to load student data", err));
                 } catch(e) { console.error(e); }
             } else {
                 window.location.href = '../login.html';

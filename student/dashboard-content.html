@@ -451,8 +451,8 @@
         </div>
 
         <div class="stats-grid">
-            <div class="glass-card stat-card">
-                <p class="stat-title text-matrix-green">H. Individual</p>
+            <div class="glass-card stat-card" id="mode-stat-card">
+                <p class="stat-title" id="stat-mode-text" style="color: var(--matrix-green);">Not Assessed</p>
                 <p class="stat-label">Dominant Mode</p>
                 <p class="stat-sub">Current quadrant</p>
             </div>
@@ -501,7 +501,7 @@
                                 </div>
                             </div>
                             
-                            <div class="data-point"></div>
+                            <div class="data-point" id="quadrant-dot"></div>
                         </div>
                         
                         <div class="axis-x-container">
@@ -517,22 +517,22 @@
 
             <div class="right-stack">
                 
-                <div class="glass-card dominant-mode-card"  style="background-color: var(--bg-green);">
+                <div class="glass-card dominant-mode-card" id="dm-card" style="background-color: var(--bg-green);">
                     <div class="dm-header">
                         <div class="dm-icon-wrapper">
                             <svg width="28" height="28"><use href="#icon-books-stack"></use></svg>
                         </div>
                         <div class="dm-title-box">
                             <p>Your Dominant Mode</p>
-                            <h4>Hierarchical Individual</h4>
+                            <h4 id="dm-title">Hierarchical Individual</h4>
                         </div>
                     </div>
                     
-                    <p class="dm-description">
+                    <p class="dm-description" id="dm-desc">
                         You learn best through structured, teacher-directed instruction in a solo setting. Clear guidelines and direct authority from an instructor help you thrive.
                     </p>
                     
-                    <div class="dm-tags">
+                    <div class="dm-tags" id="dm-tags">
                         <span class="tag">Structured lessons</span>
                         <span class="tag">Direct instruction</span>
                         <span class="tag">Solo study</span>
@@ -610,6 +610,89 @@
                         titleEl.style.color = "var(--matrix-orange)";
                         teacherEl.textContent = "You are not currently enrolled in any active classes. Please wait for your instructor.";
                         syContainer.style.display = 'none';
+                    }
+                    
+                    // 3. Populate Mode from cached profile
+                    const profileStr = localStorage.getItem('studentProfile');
+                    if(profileStr) {
+                        const profile = JSON.parse(profileStr);
+                        const mode = profile.learning_mode;
+                        
+                        const statText = document.getElementById('stat-mode-text');
+                        const dmTitle = document.getElementById('dm-title');
+                        const dmDesc = document.getElementById('dm-desc');
+                        const dmTags = document.getElementById('dm-tags');
+                        const dmCard = document.getElementById('dm-card');
+                        const dot = document.getElementById('quadrant-dot');
+                        
+                        if(mode) {
+                            let shortMode = 'Unknown';
+                            let color = 'var(--matrix-green)';
+                            let bg = 'var(--bg-green)';
+                            let desc = '';
+                            let tags = '';
+                            
+                            if(mode === 'Hierarchical Individual') {
+                                shortMode = 'H. Individual'; color = 'var(--matrix-green)'; bg = 'rgba(74, 222, 128, 0.05)';
+                                desc = 'You learn best through structured, teacher-directed instruction in a solo setting. Clear guidelines and direct authority from an instructor help you thrive.';
+                                tags = '<span class="tag">Structured lessons</span><span class="tag">Direct instruction</span><span class="tag">Solo study</span><span class="tag">Teacher-led</span>';
+                            } else if(mode === 'Distributed Individual') {
+                                shortMode = 'D. Individual'; color = 'var(--matrix-blue)'; bg = 'rgba(56, 189, 248, 0.05)';
+                                desc = 'You prefer working independently but thrive when given the freedom to explore topics your own way. You rely on self-direction and personal curiosity.';
+                                tags = '<span class="tag">Self-directed</span><span class="tag">Exploratory</span><span class="tag">Solo study</span><span class="tag">Flexible</span>';
+                            } else if(mode === 'Hierarchical Collective') {
+                                shortMode = 'H. Collective'; color = 'var(--matrix-orange)'; bg = 'rgba(251, 146, 60, 0.05)';
+                                desc = 'You learn best in a group setting that is guided by a teacher or clear structure. Assigned roles and clear rubrics in team projects help you succeed.';
+                                tags = '<span class="tag">Group work</span><span class="tag">Structured teams</span><span class="tag">Clear roles</span><span class="tag">Teacher-guided</span>';
+                            } else if(mode === 'Distributed Collective') {
+                                shortMode = 'D. Collective'; color = 'var(--matrix-purple)'; bg = 'rgba(192, 132, 252, 0.05)';
+                                desc = 'You thrive in open, collaborative environments where peers share ideas freely. Brainstorming, peer-reviews, and decentralized teamwork are your strengths.';
+                                tags = '<span class="tag">Collaborative</span><span class="tag">Peer-led</span><span class="tag">Open discussion</span><span class="tag">Flexible groups</span>';
+                            }
+                            
+                            statText.textContent = shortMode;
+                            statText.style.color = color;
+                            
+                            dmTitle.textContent = mode;
+                            dmTitle.style.color = color;
+                            dmCard.style.backgroundColor = bg;
+                            dmCard.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
+                            dmDesc.textContent = desc;
+                            dmTags.innerHTML = tags;
+                            
+                            // Style inner elements
+                            const iconWrap = dmCard.querySelector('.dm-icon-wrapper');
+                            if (iconWrap) {
+                                iconWrap.style.backgroundColor = `color-mix(in srgb, ${color} 15%, transparent)`;
+                                iconWrap.style.color = color;
+                            }
+                            dmTags.querySelectorAll('.tag').forEach(t => {
+                                t.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
+                                t.style.color = color;
+                                t.style.borderColor = `color-mix(in srgb, ${color} 20%, transparent)`;
+                            });
+                            
+                            // Calculate Plot
+                            let xPct = ((profile.x_coord + 5) / 10) * 100;
+                            let yPct = ((5 - profile.y_coord) / 10) * 100;
+                            xPct = Math.max(5, Math.min(95, xPct));
+                            yPct = Math.max(5, Math.min(95, yPct));
+                            
+                            dot.style.display = 'block';
+                            dot.style.left = xPct + '%';
+                            dot.style.top = yPct + '%';
+                            dot.style.borderColor = color;
+                            dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${color} 60%, transparent)`;
+                            
+                        } else {
+                            statText.textContent = 'Not Assessed';
+                            statText.style.color = 'var(--text-muted)';
+                            dmTitle.textContent = 'Not Assessed';
+                            dmDesc.textContent = 'You have not completed the Learning Mode Assessment yet. Please complete the assessment to unlock your personalized learning profile.';
+                            dmTags.innerHTML = '';
+                            dot.style.display = 'none';
+                            dmCard.style.backgroundColor = 'transparent';
+                        }
                     }
                     
                 } catch(e) { console.error(e); }
