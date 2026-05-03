@@ -336,72 +336,14 @@
         </div>
 
         <div class="glass-card">
-            <h3 class="history-card-header">ASSESSMENT HISTORY</h3>
+            <div class="card-header">
+                <div class="card-title">Assessment History</div>
+                <div class="card-subtitle">Track your learning mode changes over time.</div>
+            </div>
             
-            <div class="history-list">
-                
-                <div class="history-item">
-                    <div class="history-item-left">
-                        <div class="history-icon icon-success">
-                            <svg width="20" height="20"><use href="#icon-check-circle"></use></svg>
-                        </div>
-                        <div class="history-item-text">
-                            <span class="history-title">Q1 Assessment</span>
-                            <span class="history-date">January 15, 2026</span>
-                        </div>
-                    </div>
-                    <div class="history-item-right">
-                        <span class="history-mode">Hierarchical Individual</span>
-                        <span class="history-score">88%</span>
-                    </div>
-                </div>
-
-                <div class="history-item">
-                    <div class="history-item-left">
-                        <div class="history-icon icon-success">
-                            <svg width="20" height="20"><use href="#icon-check-circle"></use></svg>
-                        </div>
-                        <div class="history-item-text">
-                            <span class="history-title">Q2 Assessment</span>
-                            <span class="history-date">April 10, 2026</span>
-                        </div>
-                    </div>
-                    <div class="history-item-right">
-                        <span class="history-mode">Hierarchical Individual</span>
-                        <span class="history-score">91%</span>
-                    </div>
-                </div>
-
-                <div class="history-item">
-                    <div class="history-item-left">
-                        <div class="history-icon icon-pending">
-                            <svg width="20" height="20"><use href="#icon-clock"></use></svg>
-                        </div>
-                        <div class="history-item-text">
-                            <span class="history-title">Q3 Assessment</span>
-                            <span class="history-date">July 2026</span>
-                        </div>
-                    </div>
-                    <div class="history-item-right">
-                        <span class="history-status-text">current</span>
-                    </div>
-                </div>
-
-                <div class="history-item">
-                    <div class="history-item-left">
-                        <div class="history-icon icon-locked">
-                            <svg width="20" height="20"><use href="#icon-lock"></use></svg>
-                        </div>
-                        <div class="history-item-text">
-                            <span class="history-title">Q4 Assessment</span>
-                            <span class="history-date">October 2026</span>
-                        </div>
-                    </div>
-                    <div class="history-item-right">
-                        <span class="history-status-text">locked</span>
-                    </div>
-                </div>
-
+            <div class="history-list" id="history-list">
+                <!-- Dynamically populated -->
+                <div style="text-align: center; padding: 20px; color: var(--text-muted);">Loading history...</div>
             </div>
         </div>
 
@@ -488,11 +430,53 @@
                         }
                     }
                     
+                    fetchHistory(user.id);
+
                 } catch(e) {
-                    console.error(e);
+                    console.error("Error parsing user data:", e);
                 }
             }
         });
+
+        async function fetchHistory(studentId) {
+            try {
+                const res = await fetch('/api/students/' + studentId + '/history');
+                const history = await res.json();
+                
+                const list = document.getElementById('history-list');
+                list.innerHTML = '';
+                
+                if (!history || history.length === 0) {
+                    list.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted);">No assessment history found.</div>';
+                    return;
+                }
+                
+                history.forEach(item => {
+                    const dateObj = new Date(item.taken_at);
+                    const dateStr = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    
+                    list.innerHTML += `
+                        <div class="history-item">
+                            <div class="history-item-left">
+                                <div class="history-icon icon-success">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                </div>
+                                <div class="history-item-text">
+                                    <span class="history-title">${item.course_subj_name} - ${item.quarter_name}</span>
+                                    <span class="history-date">${dateStr}</span>
+                                </div>
+                            </div>
+                            <div class="history-item-right">
+                                <span class="history-mode">${item.learning_mode}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error("Failed to fetch history:", err);
+                document.getElementById('history-list').innerHTML = '<div style="color: #f87171; text-align: center;">Error loading history</div>';
+            }
+        }
     </script>
 </body>
 </html>

@@ -110,6 +110,30 @@ db.serialize(() => {
         FOREIGN KEY(question_id) REFERENCES questions(id) ON DELETE CASCADE,
         FOREIGN KEY(answer_id) REFERENCES answers(id) ON DELETE CASCADE
     )`);
+
+    // 8. Assessment Sessions (Teacher controlled windows)
+    db.run(`CREATE TABLE IF NOT EXISTS assessment_sessions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        class_id INTEGER,
+        quarter_name TEXT NOT NULL,
+        deadline DATETIME,
+        is_active INTEGER DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(class_id) REFERENCES classes(id) ON DELETE CASCADE
+    )`);
+
+    // 9. Assessment History (Tracks student changes over time)
+    db.run(`CREATE TABLE IF NOT EXISTS assessment_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id INTEGER,
+        session_id INTEGER,
+        x_coord REAL,
+        y_coord REAL,
+        learning_mode TEXT,
+        taken_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE,
+        FOREIGN KEY(session_id) REFERENCES assessment_sessions(id) ON DELETE CASCADE
+    )`);
 });
 
 // --- API ENDPOINTS ---
@@ -461,9 +485,68 @@ app.delete('/api/questions/:id', (req, res) => {
     });
 });
 
+// --- ASSESSMENT SESSIONS & HISTORY APIs ---
+
+// POST /api/classes/:id/sessions - Create an assessment session
+app.post('/api/classes/:id/sessions', (req, res) => {
+    const { quarter_name, deadline } = req.body;
+    db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, deadline) VALUES (?, ?, ?)`,
+        [req.params.id, quarter_name, deadline], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, session_id: this.lastID });
+    });
+});
+
+// GET /api/classes/:id/sessions - Get sessions for a class
+app.get('/api/classes/:id/sessions', (req, res) => {
+    db.all(`SELECT * FROM assessment_sessions WHERE class_id = ? ORDER BY created_at DESC`, [req.params.id], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// PUT /api/sessions/:id/close - Close a session
+app.put('/api/sessions/:id/close', (req, res) => {
+    db.run(`UPDATE assessment_sessions SET is_active = 0 WHERE id = ?`, [req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
+// GET /api/students/:id/active-sessions - Get active sessions for a student
+app.get('/api/students/:id/active-sessions', (req, res) => {
+    const sql = `
+        SELECT s.id as session_id, s.quarter_name, s.deadline, c.course_subj_name, c.id as class_id
+        FROM assessment_sessions s
+        JOIN enrollments e ON s.class_id = e.class_id
+        JOIN classes c ON s.class_id = c.id
+        WHERE e.student_id = ? AND s.is_active = 1 AND c.is_archived = 0
+    `;
+    db.all(sql, [req.params.id], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// GET /api/students/:id/history - Get assessment history
+app.get('/api/students/:id/history', (req, res) => {
+    const sql = `
+        SELECT h.*, s.quarter_name, c.course_subj_name 
+        FROM assessment_history h
+        JOIN assessment_sessions s ON h.session_id = s.id
+        JOIN classes c ON s.class_id = c.id
+        WHERE h.student_id = ?
+        ORDER BY h.taken_at ASC
+    `;
+    db.all(sql, [req.params.id], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
 // POST /api/assessments/submit - Submit answers and calculate learning mode
 app.post('/api/assessments/submit', (req, res) => {
-    const { student_id, answers } = req.body;
+    const { student_id, session_id, answers } = req.body;
     
     if (!student_id || !answers || !Array.isArray(answers) || answers.length === 0) {
         return res.status(400).json({ error: 'Missing student_id or answers' });
@@ -492,14 +575,28 @@ app.post('/api/assessments/submit', (req, res) => {
             if (totalX <= 0 && totalY < 0) mode = 'Hierarchical Collective';
             if (totalX > 0 && totalY < 0) mode = 'Distributed Collective';
 
+            // Save to history if session_id is provided
+            if (session_id) {
+                db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode) VALUES (?, ?, ?, ?, ?)`,
+                    [student_id, session_id, totalX, totalY, mode]);
+            }
+
             // Save back to student profile
             db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ? WHERE id = ?`, 
                 [totalX, totalY, mode, student_id], 
                 function(updateErr) {
                     if (updateErr) console.error("Error updating student coords", updateErr);
                     
-                    res.json({ success: true, result: { totalX, totalY, mode } });
-            });
+                    res.json({
+                        success: true,
+                        result: {
+                            x: totalX,
+                            y: totalY,
+                            mode: mode
+                        }
+                    });
+                }
+            );
         });
     });
 });

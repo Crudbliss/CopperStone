@@ -352,99 +352,160 @@
             <p class="page-subtitle">MATRIX evaluates your learning mode once every quarter. Your results map your position on the quadrant grid.</p>
         </div>
 
-        <div class="card">
-            <h3 class="card-header-title">ASSESSMENT TIMELINE</h3>
-            
-            <div class="timeline-container">
-                <div class="timeline-line"></div>
-                
-                <div class="timeline-node node-completed">
-                    <div class="node-icon"><svg><use href="#icon-check"></use></svg></div>
-                    <p class="node-title">Q1</p>
-                    <p class="node-date">January 15, 2026</p>
-                    <span class="node-pill">HI</span>
-                    <span class="node-score">88%</span>
-                </div>
-
-                <div class="timeline-node node-completed">
-                    <div class="node-icon"><svg><use href="#icon-check"></use></svg></div>
-                    <p class="node-title">Q2</p>
-                    <p class="node-date">April 10, 2026</p>
-                    <span class="node-pill">HI</span>
-                    <span class="node-score">91%</span>
-                </div>
-
-                <div class="timeline-node node-current">
-                    <div class="node-icon"><svg><use href="#icon-clock"></use></svg></div>
-                    <p class="node-title">Q3</p>
-                    <p class="node-date">July 2026</p>
-                </div>
-
-                <div class="timeline-node node-locked">
-                    <div class="node-icon"><svg><use href="#icon-lock"></use></svg></div>
-                    <p class="node-title">Q4</p>
-                    <p class="node-date">October 2026</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="card card-upcoming">
-            <div class="upcoming-icon-bg">
-                <svg width="24" height="24"><use href="#icon-clipboard"></use></svg>
-            </div>
-            
-            <span class="pill-upcoming">Q3 • UPCOMING</span>
-            <h2 class="upcoming-title">3rd Quarter Learning Mode Assessment</h2>
-            <p class="upcoming-sub">Opens July 2026 • Estimated 20-30 minutes</p>
-            
-            <div class="upcoming-status-row">
-                <div class="status-item">
-                    <svg><use href="#icon-alert"></use></svg>
-                    <span>Assessment not yet open</span>
-                </div>
-                <div class="status-item">
-                    <svg><use href="#icon-clock"></use></svg>
-                    <span>Opens: July 2026</span>
-                </div>
-            </div>
-
-            <a href="test-content.html" class="btn-preview" style="text-decoration: none; width: fit-content;">
-                <svg width="14" height="14"><use href="#icon-play"></use></svg>
-                Take Q3 Assessment
-            </a>
-        </div>
-
-        <div class="card">
-            <h3 class="card-header-title">PREVIOUS RESULTS</h3>
-            
-            <div class="results-list">
-                <div class="result-item">
-                    <div class="result-icon">
-                        <svg width="16" height="16"><use href="#icon-check"></use></svg>
-                    </div>
-                    <div class="result-info">
-                        <h4 class="result-title">Quarter 1 Assessment</h4>
-                        <p class="result-date">January 15, 2026</p>
-                    </div>
-                    <span class="result-badge">Hierarchical Individual</span>
-                    <span class="result-score">88%</span>
-                </div>
-
-                <div class="result-item">
-                    <div class="result-icon">
-                        <svg width="16" height="16"><use href="#icon-check"></use></svg>
-                    </div>
-                    <div class="result-info">
-                        <h4 class="result-title">Quarter 2 Assessment</h4>
-                        <p class="result-date">April 10, 2026</p>
-                    </div>
-                    <span class="result-badge">Hierarchical Individual</span>
-                    <span class="result-score">91%</span>
-                </div>
-            </div>
+        <div id="dynamic-content">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted);">Loading assessment status...</div>
         </div>
 
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) return;
+            const user = JSON.parse(userStr);
+
+            try {
+                // Fetch active sessions and history
+                const [activeRes, historyRes] = await Promise.all([
+                    fetch('/api/students/' + user.id + '/active-sessions'),
+                    fetch('/api/students/' + user.id + '/history')
+                ]);
+
+                const activeSessions = await activeRes.json();
+                const history = await historyRes.json();
+                
+                renderAssessmentPage(activeSessions, history);
+                
+            } catch (err) {
+                console.error("Failed to load assessments", err);
+                document.getElementById('dynamic-content').innerHTML = '<div style="color: #f87171; text-align: center; padding: 20px;">Failed to load assessment data.</div>';
+            }
+        });
+
+        function getModeInitials(mode) {
+            if(!mode) return '--';
+            if(mode === 'Hierarchical Individual') return 'HI';
+            if(mode === 'Distributed Individual') return 'DI';
+            if(mode === 'Hierarchical Collective') return 'HC';
+            if(mode === 'Distributed Collective') return 'DC';
+            return '--';
+        }
+
+        function renderAssessmentPage(activeSessions, history) {
+            let html = '';
+            
+            // 1. Render Timeline (Static Q1-Q4 for visual effect, but filled with real data)
+            html += `<div class="card">
+                        <h3 class="card-header-title">ASSESSMENT TIMELINE</h3>
+                        <div class="timeline-container"><div class="timeline-line"></div>`;
+                        
+            const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+            quarters.forEach(q => {
+                // Check if this quarter exists in history
+                const histItem = history.find(h => h.quarter_name.includes(q));
+                const activeItem = activeSessions.find(s => s.quarter_name.includes(q));
+                
+                if (histItem) {
+                    const dateStr = new Date(histItem.taken_at).toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+                    const initials = getModeInitials(histItem.learning_mode);
+                    html += `
+                        <div class="timeline-node node-completed">
+                            <div class="node-icon"><svg><use href="#icon-check"></use></svg></div>
+                            <p class="node-title">${q}</p>
+                            <p class="node-date">${dateStr}</p>
+                            <span class="node-pill">${initials}</span>
+                        </div>
+                    `;
+                } else if (activeItem) {
+                    html += `
+                        <div class="timeline-node node-current">
+                            <div class="node-icon"><svg><use href="#icon-clock"></use></svg></div>
+                            <p class="node-title">${q}</p>
+                            <p class="node-date">Current</p>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="timeline-node node-locked">
+                            <div class="node-icon"><svg><use href="#icon-lock"></use></svg></div>
+                            <p class="node-title">${q}</p>
+                            <p class="node-date">Upcoming</p>
+                        </div>
+                    `;
+                }
+            });
+            html += `</div></div>`;
+
+            // 2. Render Active/Upcoming Assessment Card
+            if (activeSessions.length > 0) {
+                const active = activeSessions[0]; // just grab the first active
+                let deadlineStr = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', {month: 'long', year: 'numeric'}) : 'No deadline';
+                
+                html += `
+                    <div class="card card-upcoming">
+                        <div class="upcoming-icon-bg">
+                            <svg width="24" height="24"><use href="#icon-clipboard"></use></svg>
+                        </div>
+                        
+                        <span class="pill-upcoming" style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green);">ACTIVE NOW</span>
+                        <h2 class="upcoming-title">${active.course_subj_name} - ${active.quarter_name}</h2>
+                        <p class="upcoming-sub">Estimated 20-30 minutes</p>
+                        
+                        <div class="upcoming-status-row">
+                            <div class="status-item" style="color: var(--matrix-green);">
+                                <svg style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>
+                                <span>Assessment is open</span>
+                            </div>
+                            <div class="status-item">
+                                <svg><use href="#icon-clock"></use></svg>
+                                <span>Deadline: ${deadlineStr}</span>
+                            </div>
+                        </div>
+
+                        <a href="test-content.html" class="btn-preview" style="text-decoration: none; width: fit-content; background-color: rgba(74, 222, 128, 0.15); color: var(--matrix-green); border-color: var(--matrix-green);">
+                            <svg width="14" height="14" style="color: var(--matrix-green);"><use href="#icon-play"></use></svg>
+                            Take Assessment
+                        </a>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="card card-upcoming" style="background-color: var(--bg-card); border: 1px solid var(--border-light);">
+                        <h2 class="upcoming-title" style="color: var(--matrix-blue);">No Active Assessments</h2>
+                        <p class="upcoming-sub" style="margin-bottom: 0;">Your teachers have not opened any assessment sessions for you at this time.</p>
+                    </div>
+                `;
+            }
+
+            // 3. Render Previous Results
+            if (history.length > 0) {
+                html += `
+                    <div class="card">
+                        <h3 class="card-header-title">PREVIOUS RESULTS</h3>
+                        <div class="results-list">
+                `;
+                
+                history.forEach(h => {
+                    const dateStr = new Date(h.taken_at).toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+                    html += `
+                        <div class="result-item">
+                            <div class="result-icon">
+                                <svg width="16" height="16"><use href="#icon-check"></use></svg>
+                            </div>
+                            <div class="result-info">
+                                <h4 class="result-title">${h.course_subj_name} - ${h.quarter_name}</h4>
+                                <p class="result-date">${dateStr}</p>
+                            </div>
+                            <span class="result-badge">${h.learning_mode}</span>
+                        </div>
+                    `;
+                });
+                
+                html += `</div></div>`;
+            }
+
+            document.getElementById('dynamic-content').innerHTML = html;
+        }
+    </script>
 </body>
 </html>

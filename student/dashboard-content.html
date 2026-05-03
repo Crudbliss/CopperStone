@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Content</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         /* --- CSS VARIABLES (Theme Colors) --- */
         :root {
@@ -14,7 +16,7 @@
             --bg-yellow: #1a1c16;
             --bg-green: #0e1b1d;
             --hd-color: #0a1e2c;
-            
+
             --matrix-yellow: #d8a61a;
             --matrix-yellow-hover: #eab308;
             --matrix-dg: #4a8f4b;
@@ -22,7 +24,7 @@
             --matrix-blue: #38bdf8;
             --matrix-orange: #fb923c;
             --matrix-purple: #c084fc;
-            
+
             --text-main: #ffffff;
             --text-muted: #8b9eb0;
             --border-light: rgba(255, 255, 255, 0.05);
@@ -38,13 +40,16 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: transparent; /* Allows parent background to show */
+            background-color: transparent;
+            /* Allows parent background to show */
             color: var(--text-main);
             /* Removed flex and hidden overflow so it scrolls properly inside iframe */
         }
 
-        .svg-defs { display: none; }
-        
+        .svg-defs {
+            display: none;
+        }
+
         svg {
             display: inline-block;
             vertical-align: middle;
@@ -145,11 +150,23 @@
             font-weight: 700;
             line-height: 1.2;
         }
-        
-        .stat-title.lg { font-size: 26px; font-weight: 800; }
-        
-        .stat-label { font-size: 12px; font-weight: 600; color: var(--text-main); }
-        .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+        .stat-title.lg {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .stat-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
 
         /* --- BOTTOM GRID --- */
         .bottom-grid {
@@ -200,26 +217,29 @@
             grid-template-rows: 1fr 1fr;
         }
 
-        .q-cell { 
-            position: relative; 
+        .q-cell {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
-        .q-cell.top-left { 
-            border-right: 1px solid var(--border-lighter); 
-            border-bottom: 1px solid var(--border-lighter); 
+
+        .q-cell.top-left {
+            border-right: 1px solid var(--border-lighter);
+            border-bottom: 1px solid var(--border-lighter);
             background-color: rgba(74, 222, 128, 0.04);
         }
-        .q-cell.top-right { 
-            border-bottom: 1px solid var(--border-lighter); 
+
+        .q-cell.top-right {
+            border-bottom: 1px solid var(--border-lighter);
             background-color: rgba(56, 189, 248, 0.04);
         }
-        .q-cell.bottom-left { 
-            border-right: 1px solid var(--border-lighter); 
+
+        .q-cell.bottom-left {
+            border-right: 1px solid var(--border-lighter);
             background-color: rgba(251, 146, 60, 0.04);
         }
+
         .q-cell.bottom-right {
             background-color: rgba(192, 132, 252, 0.04);
         }
@@ -237,9 +257,18 @@
             letter-spacing: 1px;
         }
 
-        .axis-y-top { left: -28px; top: 25%; transform: translateY(-50%) rotate(-90deg); }
-        .axis-y-bot { left: -28px; top: 75%; transform: translateY(-50%) rotate(-90deg); }
-        
+        .axis-y-top {
+            left: -28px;
+            top: 25%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
+        .axis-y-bot {
+            left: -28px;
+            top: 75%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
         .axis-x-container {
             position: absolute;
             bottom: -32px;
@@ -395,44 +424,85 @@
             transition: color 0.2s ease;
         }
 
-        .action-item:hover span, 
+        .action-item:hover span,
         .action-item:hover svg {
             color: var(--matrix-yellow);
         }
 
         /* Utilities */
-        .text-matrix-green { color: var(--matrix-green); }
-        .text-matrix-blue { color: var(--matrix-blue); }
-        .text-matrix-orange { color: var(--matrix-orange); }
+        .text-matrix-green {
+            color: var(--matrix-green);
+        }
 
+        .text-matrix-blue {
+            color: var(--matrix-blue);
+        }
+
+        .text-matrix-orange {
+            color: var(--matrix-orange);
+        }
     </style>
 </head>
+
 <body>
 
     <svg class="svg-defs">
-        <symbol id="icon-speedometer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M13 7h-2v5.41l3.3 3.3 1.41-1.41L13 11.59z"/></symbol>
-        <symbol id="icon-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></symbol>
-        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></symbol>
-        <symbol id="icon-linechart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></symbol>
-        <symbol id="icon-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
-        <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></symbol>
-        <symbol id="icon-books-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v4H4zM4 14h16v4H4z"/></symbol>
-        <symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></symbol>
+        <symbol id="icon-speedometer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+            <path d="M13 7h-2v5.41l3.3 3.3 1.41-1.41L13 11.59z" />
+        </symbol>
+        <symbol id="icon-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </symbol>
+        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </symbol>
+        <symbol id="icon-linechart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </symbol>
+        <symbol id="icon-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </symbol>
+        <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </symbol>
+        <symbol id="icon-books-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h16v4H4zM4 14h16v4H4z" />
+        </symbol>
+        <symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5l7 7-7 7" />
+        </symbol>
     </svg>
 
     <main class="content-container">
-        
+
         <div class="glass-card welcome-banner">
             <div class="welcome-text-box">
                 <p class="welcome-eyebrow">Welcome Back</p>
                 <h2 class="welcome-title" id="welcome-student-name">Loading... <span>👋</span></h2>
                 <p class="welcome-sub" id="welcome-student-details">Loading...</p>
             </div>
-            <a href="qa-content.html" class="btn-primary" onclick="updateParentSidebar(1)" style="text-decoration: none; display: inline-flex; width: fit-content;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: scale(1.30);">
-                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                </svg>                    
-                Q3 Assessment
+            <a href="qa-content.html" class="btn-primary" onclick="updateParentSidebar(1)"
+                style="text-decoration: none; display: inline-flex; width: fit-content;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="transform: scale(1.30);">
+                    <path
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Check Assessment
             </a>
         </div>
 
@@ -440,12 +510,17 @@
         <div class="glass-card" style="padding: 24px; border-color: rgba(74, 222, 128, 0.3);" id="active-class-card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h3 style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">My Active Class</h3>
-                    <h2 id="active-class-title" style="font-size: 20px; font-weight: 800; color: var(--matrix-green);">Loading class details...</h2>
-                    <p id="active-class-teacher" style="font-size: 14px; color: var(--text-main); margin-top: 4px;">Please wait...</p>
+                    <h3
+                        style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+                        My Active Class</h3>
+                    <h2 id="active-class-title" style="font-size: 20px; font-weight: 800; color: var(--matrix-green);">
+                        Loading class details...</h2>
+                    <p id="active-class-teacher" style="font-size: 14px; color: var(--text-main); margin-top: 4px;">
+                        Please wait...</p>
                 </div>
                 <div style="text-align: right;" id="active-class-sy-container">
-                    <span id="active-class-sy" style="font-size: 13px; font-weight: 600; color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(216, 166, 26, 0.3);">...</span>
+                    <span id="active-class-sy"
+                        style="font-size: 13px; font-weight: 600; color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(216, 166, 26, 0.3);">...</span>
                 </div>
             </div>
         </div>
@@ -457,31 +532,31 @@
                 <p class="stat-sub">Current quadrant</p>
             </div>
             <div class="glass-card stat-card">
-                <p class="stat-title lg" style="color: var(--matrix-green);">2/4</p>
+                <p class="stat-title lg" id="stat-assessments-done" style="color: var(--matrix-green);">0/4</p>
                 <p class="stat-label">Assessments Done</p>
                 <p class="stat-sub">This school year</p>
             </div>
             <div class="glass-card stat-card">
-                <p class="stat-title lg text-matrix-blue">91%</p>
-                <p class="stat-label">Q2 Score</p>
-                <p class="stat-sub">Last assessment</p>
+                <p class="stat-title lg text-matrix-blue" id="stat-last-assessment" style="font-size: 20px;">--</p>
+                <p class="stat-label" id="stat-last-label">Last Result</p>
+                <p class="stat-sub">Most recent</p>
             </div>
             <div class="glass-card stat-card">
-                <p class="stat-title text-matrix-orange">Upcoming</p>
-                <p class="stat-label">Q3 Status</p>
-                <p class="stat-sub">Next assessment</p>
+                <p class="stat-title text-matrix-orange" id="stat-next-status">Locked</p>
+                <p class="stat-label" id="stat-next-label">Next Assessment</p>
+                <p class="stat-sub">Upcoming status</p>
             </div>
         </div>
 
         <div class="bottom-grid">
-            
+
             <div class="glass-card quadrant-card">
                 <h3 class="section-title">Your Quadrant Position</h3>
-                
+
                 <div class="quadrant-map-container">
-    
+
                     <div style="position: relative; width: 100%; max-width: 340px;">
-                        
+
                         <div class="axis-label axis-y-top">INDIVIDUAL</div>
                         <div class="axis-label axis-y-bot">COLLECTIVE</div>
 
@@ -500,10 +575,10 @@
                                     <span class="q-label text-matrix-purple">D. Collective</span>
                                 </div>
                             </div>
-                            
+
                             <div class="data-point" id="quadrant-dot"></div>
                         </div>
-                        
+
                         <div class="axis-x-container">
                             <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
                             <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
@@ -516,22 +591,25 @@
             </div>
 
             <div class="right-stack">
-                
+
                 <div class="glass-card dominant-mode-card" id="dm-card" style="background-color: var(--bg-green);">
                     <div class="dm-header">
                         <div class="dm-icon-wrapper">
-                            <svg width="28" height="28"><use href="#icon-books-stack"></use></svg>
+                            <svg width="28" height="28">
+                                <use href="#icon-books-stack"></use>
+                            </svg>
                         </div>
                         <div class="dm-title-box">
                             <p>Your Dominant Mode</p>
                             <h4 id="dm-title">Hierarchical Individual</h4>
                         </div>
                     </div>
-                    
+
                     <p class="dm-description" id="dm-desc">
-                        You learn best through structured, teacher-directed instruction in a solo setting. Clear guidelines and direct authority from an instructor help you thrive.
+                        You learn best through structured, teacher-directed instruction in a solo setting. Clear
+                        guidelines and direct authority from an instructor help you thrive.
                     </p>
-                    
+
                     <div class="dm-tags" id="dm-tags">
                         <span class="tag">Structured lessons</span>
                         <span class="tag">Direct instruction</span>
@@ -545,17 +623,23 @@
                     <div class="action-links">
                         <a href="modules-content.html" class="action-item" onclick="updateParentSidebar(2)">
                             <span>View your personalized modules</span>
-                            <svg><use href="#icon-arrow-right"></use></svg>
+                            <svg>
+                                <use href="#icon-arrow-right"></use>
+                            </svg>
                         </a>
-                        
+
                         <a href="qa-content.html" class="action-item" onclick="updateParentSidebar(1)">
                             <span>See your Q3 assessment details</span>
-                            <svg><use href="#icon-arrow-right"></use></svg>
+                            <svg>
+                                <use href="#icon-arrow-right"></use>
+                            </svg>
                         </a>
-                        
+
                         <a href="progress-content.html" class="action-item" onclick="updateParentSidebar(3)">
                             <span>Check your quarterly progress</span>
-                            <svg><use href="#icon-arrow-right"></use></svg>
+                            <svg>
+                                <use href="#icon-arrow-right"></use>
+                            </svg>
                         </a>
                     </div>
                 </div>
@@ -566,15 +650,15 @@
         <script>
             document.addEventListener('DOMContentLoaded', async () => {
                 const userStr = localStorage.getItem('currentUser');
-                if(!userStr) return; // Allow parent layout to handle redirection if missing
+                if (!userStr) return; // Allow parent layout to handle redirection if missing
 
                 try {
                     const user = JSON.parse(userStr);
-                    
+
                     // 1. Populate Welcome Banner
                     const fullName = `${user.name} ${user.last_name || ''}`.trim();
                     document.getElementById('welcome-student-name').innerHTML = `${fullName} <span>👋</span>`;
-                    
+
                     const pYr = user.year_level ? `${user.year_level} Year` : '';
                     const progSec = (user.program || '') + (user.section ? `-${user.section}` : '');
                     const detailsStr = `${user.student_no || 'ID Unknown'} · ${progSec} · ${pYr}`;
@@ -583,23 +667,23 @@
                     // 2. Fetch Active Class from API
                     const res = await fetch(`/api/students/${user.id}/classes`);
                     const classes = await res.json();
-                    
+
                     const titleEl = document.getElementById('active-class-title');
                     const teacherEl = document.getElementById('active-class-teacher');
                     const syEl = document.getElementById('active-class-sy');
                     const syContainer = document.getElementById('active-class-sy-container');
-                    
+
                     // Filter for active classes only (is_archived = 0)
                     const activeClasses = classes.filter(c => c.is_archived === 0);
-                    
+
                     if (activeClasses.length > 0) {
                         const myClass = activeClasses[0]; // Strict 1-class rule
-                        
+
                         let courseStr = myClass.course_subj_name;
-                        if(myClass.year_level || myClass.section) {
+                        if (myClass.year_level || myClass.section) {
                             courseStr += ` ${myClass.year_level || ''}-${myClass.section || ''}`;
                         }
-                        
+
                         titleEl.textContent = courseStr;
                         titleEl.style.color = "var(--matrix-green)";
                         teacherEl.textContent = `Assigned Teacher: Prof. ${myClass.teacher_first_name} ${myClass.teacher_last_name || ''}`;
@@ -611,55 +695,55 @@
                         teacherEl.textContent = "You are not currently enrolled in any active classes. Please wait for your instructor.";
                         syContainer.style.display = 'none';
                     }
-                    
+
                     // 3. Populate Mode from cached profile
                     const profileStr = localStorage.getItem('studentProfile');
-                    if(profileStr) {
+                    if (profileStr) {
                         const profile = JSON.parse(profileStr);
                         const mode = profile.learning_mode;
-                        
+
                         const statText = document.getElementById('stat-mode-text');
                         const dmTitle = document.getElementById('dm-title');
                         const dmDesc = document.getElementById('dm-desc');
                         const dmTags = document.getElementById('dm-tags');
                         const dmCard = document.getElementById('dm-card');
                         const dot = document.getElementById('quadrant-dot');
-                        
-                        if(mode) {
+
+                        if (mode) {
                             let shortMode = 'Unknown';
                             let color = 'var(--matrix-green)';
                             let bg = 'var(--bg-green)';
                             let desc = '';
                             let tags = '';
-                            
-                            if(mode === 'Hierarchical Individual') {
+
+                            if (mode === 'Hierarchical Individual') {
                                 shortMode = 'H. Individual'; color = 'var(--matrix-green)'; bg = 'rgba(74, 222, 128, 0.05)';
                                 desc = 'You learn best through structured, teacher-directed instruction in a solo setting. Clear guidelines and direct authority from an instructor help you thrive.';
                                 tags = '<span class="tag">Structured lessons</span><span class="tag">Direct instruction</span><span class="tag">Solo study</span><span class="tag">Teacher-led</span>';
-                            } else if(mode === 'Distributed Individual') {
+                            } else if (mode === 'Distributed Individual') {
                                 shortMode = 'D. Individual'; color = 'var(--matrix-blue)'; bg = 'rgba(56, 189, 248, 0.05)';
                                 desc = 'You prefer working independently but thrive when given the freedom to explore topics your own way. You rely on self-direction and personal curiosity.';
                                 tags = '<span class="tag">Self-directed</span><span class="tag">Exploratory</span><span class="tag">Solo study</span><span class="tag">Flexible</span>';
-                            } else if(mode === 'Hierarchical Collective') {
+                            } else if (mode === 'Hierarchical Collective') {
                                 shortMode = 'H. Collective'; color = 'var(--matrix-orange)'; bg = 'rgba(251, 146, 60, 0.05)';
                                 desc = 'You learn best in a group setting that is guided by a teacher or clear structure. Assigned roles and clear rubrics in team projects help you succeed.';
                                 tags = '<span class="tag">Group work</span><span class="tag">Structured teams</span><span class="tag">Clear roles</span><span class="tag">Teacher-guided</span>';
-                            } else if(mode === 'Distributed Collective') {
+                            } else if (mode === 'Distributed Collective') {
                                 shortMode = 'D. Collective'; color = 'var(--matrix-purple)'; bg = 'rgba(192, 132, 252, 0.05)';
                                 desc = 'You thrive in open, collaborative environments where peers share ideas freely. Brainstorming, peer-reviews, and decentralized teamwork are your strengths.';
                                 tags = '<span class="tag">Collaborative</span><span class="tag">Peer-led</span><span class="tag">Open discussion</span><span class="tag">Flexible groups</span>';
                             }
-                            
+
                             statText.textContent = shortMode;
                             statText.style.color = color;
-                            
+
                             dmTitle.textContent = mode;
                             dmTitle.style.color = color;
                             dmCard.style.backgroundColor = bg;
                             dmCard.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
                             dmDesc.textContent = desc;
                             dmTags.innerHTML = tags;
-                            
+
                             // Style inner elements
                             const iconWrap = dmCard.querySelector('.dm-icon-wrapper');
                             if (iconWrap) {
@@ -671,19 +755,19 @@
                                 t.style.color = color;
                                 t.style.borderColor = `color-mix(in srgb, ${color} 20%, transparent)`;
                             });
-                            
+
                             // Calculate Plot
                             let xPct = ((profile.x_coord + 5) / 10) * 100;
                             let yPct = ((5 - profile.y_coord) / 10) * 100;
                             xPct = Math.max(5, Math.min(95, xPct));
                             yPct = Math.max(5, Math.min(95, yPct));
-                            
+
                             dot.style.display = 'block';
                             dot.style.left = xPct + '%';
                             dot.style.top = yPct + '%';
                             dot.style.borderColor = color;
                             dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${color} 60%, transparent)`;
-                            
+
                         } else {
                             statText.textContent = 'Not Assessed';
                             statText.style.color = 'var(--text-muted)';
@@ -694,8 +778,64 @@
                             dmCard.style.backgroundColor = 'transparent';
                         }
                     }
-                    
-                } catch(e) { console.error(e); }
+
+                    // 4. Populate Dynamic Stats (Assessments Done, Last Result, Next Assessment)
+                    try {
+                        const [activeRes, historyRes] = await Promise.all([
+                            fetch('/api/students/' + user.id + '/active-sessions'),
+                            fetch('/api/students/' + user.id + '/history')
+                        ]);
+
+                        const activeSessions = await activeRes.json();
+                        const history = await historyRes.json();
+
+                        // Assessments Done
+                        const doneCount = history.length;
+                        document.getElementById('stat-assessments-done').textContent = `${doneCount}/4`;
+
+                        // Last Assessment
+                        const lastResultEl = document.getElementById('stat-last-assessment');
+                        const lastLabelEl = document.getElementById('stat-last-label');
+                        if (history.length > 0) {
+                            const last = history[history.length - 1]; // sorted ascending
+                            let shortMode = last.learning_mode.split(' ').map(w => w[0]).join(''); // HI, DI, HC, DC
+                            lastResultEl.textContent = shortMode;
+                            lastLabelEl.textContent = last.quarter_name;
+                        } else {
+                            lastResultEl.textContent = '--';
+                            lastLabelEl.textContent = 'No History';
+                        }
+
+                        // Next Assessment
+                        const nextStatusEl = document.getElementById('stat-next-status');
+                        const nextLabelEl = document.getElementById('stat-next-label');
+
+                        if (activeSessions.length > 0) {
+                            const active = activeSessions[0];
+                            nextStatusEl.textContent = 'Open Now';
+                            nextStatusEl.style.color = 'var(--matrix-green)';
+                            nextLabelEl.textContent = active.quarter_name;
+                        } else {
+                            // Guess next based on history
+                            const quarters = ['Q1 Assessment', 'Q2 Assessment', 'Q3 Assessment', 'Q4 Assessment'];
+                            let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q.substring(0, 2))));
+
+                            if (nextQ) {
+                                nextStatusEl.textContent = 'Locked';
+                                nextStatusEl.style.color = 'var(--text-dark-muted)';
+                                nextLabelEl.textContent = nextQ;
+                            } else {
+                                nextStatusEl.textContent = 'Complete';
+                                nextStatusEl.style.color = 'var(--matrix-blue)';
+                                nextLabelEl.textContent = 'All Done';
+                            }
+                        }
+
+                    } catch (statErr) {
+                        console.error('Failed to load stats', statErr);
+                    }
+
+                } catch (e) { console.error(e); }
             });
 
             function updateParentSidebar(activeIndex) {
@@ -712,4 +852,5 @@
         </script>
     </main>
 </body>
+
 </html>

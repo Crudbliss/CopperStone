@@ -283,7 +283,10 @@
             </div>
 
             <div class="search-filter-bar">
-                <button class="btn-add-student" onclick="openEnrollModal()">+ Add Student</button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-add-student" onclick="openEnrollModal()">+ Add Student</button>
+                    <button class="btn-add-student" onclick="openAssessmentModal()" style="background: var(--matrix-blue); color: #000; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer;">Manage Assessments</button>
+                </div>
                 <div class="search-box">
                     <svg width="16" height="16"><use href="#icon-search"></use></svg>
                     <input type="text" placeholder="Search by name or ID...">
@@ -388,6 +391,44 @@
         </div>
     </div>
 
+    <!-- Assessment Modal -->
+    <div id="assessmentModal" class="modal-backdrop">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Manage Assessments</h3>
+                <button class="btn-close" onclick="closeAssessmentModal()">&times;</button>
+            </div>
+            
+            <div style="margin-bottom: 24px;">
+                <h4 style="color: var(--matrix-blue); margin-bottom: 12px; font-size: 14px;">Open New Session</h4>
+                <form id="assessmentForm" style="display: flex; gap: 12px; align-items: flex-end;">
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label>Quarter / Title</label>
+                        <select id="quarter_name" required style="background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; width: 100%;">
+                            <option value="" disabled selected>Select Assessment</option>
+                            <option value="Q1 Assessment">Q1 Assessment</option>
+                            <option value="Q2 Assessment">Q2 Assessment</option>
+                            <option value="Q3 Assessment">Q3 Assessment</option>
+                            <option value="Q4 Assessment">Q4 Assessment</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label>Deadline (Optional)</label>
+                        <input type="date" id="deadline" style="background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; width: 100%;">
+                    </div>
+                    <button type="submit" style="background: var(--matrix-blue); color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">Open</button>
+                </form>
+            </div>
+
+            <div>
+                <h4 style="color: var(--matrix-green); margin-bottom: 12px; font-size: 14px;">Assessment History</h4>
+                <div id="sessionsList" style="max-height: 200px; overflow-y: auto;">
+                    <!-- Active sessions injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const classId = urlParams.get('id');
@@ -419,6 +460,87 @@
 
         enrollModal.addEventListener('click', (e) => {
             if (e.target === enrollModal) closeEnrollModal();
+        });
+
+        // --- Assessment Management ---
+        const assessmentModal = document.getElementById('assessmentModal');
+        
+        function openAssessmentModal() {
+            assessmentModal.style.display = 'flex';
+            loadSessions();
+        }
+
+        function closeAssessmentModal() {
+            assessmentModal.style.display = 'none';
+        }
+
+        assessmentModal.addEventListener('click', (e) => {
+            if (e.target === assessmentModal) closeAssessmentModal();
+        });
+
+        async function loadSessions() {
+            try {
+                const res = await fetch(`/api/classes/${classId}/sessions`);
+                const sessions = await res.json();
+                
+                // Disable already created options
+                const quarterSelect = document.getElementById('quarter_name');
+                if (quarterSelect) {
+                    Array.from(quarterSelect.options).forEach(opt => {
+                        if (opt.value) {
+                            opt.disabled = sessions.some(s => s.quarter_name === opt.value);
+                        }
+                    });
+                }
+                
+                const list = document.getElementById('sessionsList');
+                list.innerHTML = '';
+                
+                if (sessions.length === 0) {
+                    list.innerHTML = '<div style="color: var(--text-muted); font-size: 13px;">No assessment sessions created yet.</div>';
+                    return;
+                }
+                
+                sessions.forEach(s => {
+                    const status = s.is_active ? '<span style="color: #4ade80;">Active</span>' : '<span style="color: var(--text-muted);">Closed</span>';
+                    const deadline = s.deadline ? new Date(s.deadline).toLocaleDateString() : 'No deadline';
+                    const actionBtn = s.is_active ? `<button onclick="closeSession(${s.id})" style="background: rgba(248, 113, 113, 0.1); color: #f87171; border: 1px solid #f87171; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">Close Session</button>` : '';
+                    
+                    list.innerHTML += `
+                        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 600;">${s.quarter_name}</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">Deadline: ${deadline} • ${status}</div>
+                            </div>
+                            <div>${actionBtn}</div>
+                        </div>
+                    `;
+                });
+            } catch(e) { console.error(e); }
+        }
+
+        async function closeSession(sessionId) {
+            if(!confirm("Are you sure you want to close this session? Students will no longer be able to take it.")) return;
+            try {
+                await fetch(`/api/sessions/${sessionId}/close`, { method: 'PUT' });
+                loadSessions();
+            } catch(e) { console.error(e); }
+        }
+
+        document.getElementById('assessmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const quarter_name = document.getElementById('quarter_name').value;
+            const deadline = document.getElementById('deadline').value;
+            
+            try {
+                await fetch(`/api/classes/${classId}/sessions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ quarter_name, deadline })
+                });
+                document.getElementById('assessmentForm').reset();
+                loadSessions();
+            } catch(e) { console.error(e); }
         });
 
         // Fetch and load the specific class metadata
