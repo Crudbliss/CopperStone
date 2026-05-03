@@ -137,8 +137,9 @@
         
         .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
         label { font-size: 13px; color: #8b9eb0; }
-        input { background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; font-family: 'Poppins', sans-serif;}
-        input:focus { outline: none; border-color: var(--matrix-yellow); }
+        input, select { background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; font-family: 'Poppins', sans-serif; width: 100%; appearance: none;}
+        input:focus, select:focus { outline: none; border-color: var(--matrix-yellow); }
+        select option { background: #0a1e2d; color: #fff; }
         .btn-submit { background: var(--matrix-yellow); color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Poppins', sans-serif;}
         .btn-submit:hover { background: #e0a31c; }
     </style>
@@ -177,12 +178,22 @@
             </div>
             <form id="addClassForm">
                 <div class="form-group">
-                    <label>Course Name</label>
-                    <input type="text" id="course_subj_name" placeholder="e.g. BSIT" required>
+                    <label>Program</label>
+                    <select id="course_subj_name" required>
+                        <option value="" disabled selected>Select Program</option>
+                        <option value="BSIT">BSIT</option>
+                        <option value="BSCS">BSCS</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Year Level</label>
-                    <input type="text" id="year_level" placeholder="e.g. 3" required>
+                    <select id="year_level" required>
+                        <option value="" disabled selected>Select Year Level</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Section</label>
