@@ -489,10 +489,12 @@
 
     <main class="content-container">
 
-        <div class="glass-card welcome-banner" style="display: flex; flex-direction: row; align-items: stretch; padding: 0; overflow: hidden; border-color: rgba(74, 222, 128, 0.3);">
+        <div class="glass-card welcome-banner"
+            style="display: flex; flex-direction: row; align-items: stretch; padding: 0; overflow: hidden; border-color: rgba(212, 160, 23, 0.2);">
             <!-- Left side: Welcome & Class Info -->
-            <div style="flex: 1; padding: 24px 32px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 32px;">
-                
+            <div
+                style="flex: 1; padding: 24px 32px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 32px;">
+
                 <!-- Welcome -->
                 <div class="welcome-text-box" style="flex: 1;">
                     <p class="welcome-eyebrow">Welcome Back</p>
@@ -506,19 +508,26 @@
                 <!-- Active Class -->
                 <div id="active-class-card" style="flex: 1; display: flex; align-items: center; gap: 16px;">
                     <div style="flex: 1;">
-                        <h3 style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">My Active Class</h3>
-                        <h2 id="active-class-title" style="font-size: 18px; font-weight: 700; color: var(--matrix-green); margin-bottom: 2px;">Loading class details...</h2>
-                        <p id="active-class-teacher" style="font-size: 13px; color: var(--text-muted);">Please wait...</p>
+                        <h3
+                            style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
+                            My Active Class</h3>
+                        <h2 id="active-class-title"
+                            style="font-size: 18px; font-weight: 700; color: var(--matrix-green); margin-bottom: 2px;">
+                            Loading class details...</h2>
+                        <p id="active-class-teacher" style="font-size: 13px; color: var(--text-muted);">Please wait...
+                        </p>
                     </div>
                     <div id="active-class-sy-container">
-                        <span id="active-class-sy" style="font-size: 11px; font-weight: 700; color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(216, 166, 26, 0.3);">...</span>
+                        <span id="active-class-sy"
+                            style="font-size: 11px; font-weight: 700; color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(216, 166, 26, 0.3);">...</span>
                     </div>
                 </div>
 
             </div>
 
             <!-- Right side: Assessment Button -->
-            <div style="padding: 32px; background: rgba(74, 222, 128, 0.05); border-left: 1px solid rgba(74, 222, 128, 0.1); display: flex; align-items: center; justify-content: center; min-width: 250px;">
+            <div
+                style="padding: 32px; background: var(--bg-yellow); display: flex; align-items: center; justify-content: center; min-width: 250px;">
                 <a href="qa-content.html" class="btn-primary" onclick="updateParentSidebar(1)"
                     style="text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 32px; width: 100%; text-align: center;">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
