@@ -300,6 +300,21 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('currentUser');
+            if(userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    if (user.role !== 'admin') {
+                        alert('Unauthorized access. Please log in with an admin account.');
+                        window.location.href = '../index.html';
+                        return;
+                    }
+                } catch(e) { console.error(e); }
+            } else {
+                window.location.href = '../index.html'; // Basic protection
+                return;
+            }
+
             const sidebarLinks = document.querySelectorAll('.sidebar-link');
             const pageTitle = document.getElementById('page-title');
 

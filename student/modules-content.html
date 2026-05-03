@@ -321,229 +321,206 @@
         <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></symbol>
     </svg>
 
-    <div class="modules-container">
-        
-        <div class="page-header">
-            <div class="header-title-row">
-                <span>📚</span>
-                <h1 class="page-title">Your Dominant Mode Modules</h1>
-            </div>
-            <p class="page-subtitle">Personalized for your <span class="highlight-green">Hierarchical Individual</span> learning style — techniques that align with how you naturally learn best.</p>
+    <div class="modules-container" id="modules-root">
+        <div style="text-align: center; color: var(--text-muted); padding: 40px;">
+            <p>Loading personalized modules...</p>
         </div>
-
-        <div class="module-grid">
-            <div class="module-card">
-                <div class="card-top">
-                    <span class="module-icon">✏️</span>
-                    <div class="tags-row">
-                        <span class="tag tag-beginner">Beginner</span>
-                        <span class="tag tag-topic">Note-Taking</span>
-                    </div>
-                </div>
-                <h3 class="module-title">Cornell Note-Taking System</h3>
-                <p class="module-desc">Master the Cornell method to organize lectures and textbook content into powerful study notes.</p>
-                <div class="card-bottom">
-                    <svg><use href="#icon-clock"></use></svg> 45 min
-                </div>
-            </div>
-
-            <div class="module-card">
-                <div class="card-top">
-                    <span class="module-icon">🎬</span>
-                    <div class="tags-row">
-                        <span class="tag tag-beginner">Beginner</span>
-                        <span class="tag tag-topic">Comprehension</span>
-                    </div>
-                </div>
-                <h3 class="module-title">Active Lecture Comprehension</h3>
-                <p class="module-desc">Techniques for absorbing and retaining information from teacher-led lessons and recorded lectures.</p>
-                <div class="card-bottom">
-                    <svg><use href="#icon-clock"></use></svg> 30 min
-                </div>
-            </div>
-
-            <div class="module-card">
-                <div class="card-top">
-                    <span class="module-icon">📖</span>
-                    <div class="tags-row">
-                        <span class="tag tag-intermediate">Intermediate</span>
-                        <span class="tag tag-topic">Retention</span>
-                    </div>
-                </div>
-                <h3 class="module-title">Structured Self-Review Methods</h3>
-                <p class="module-desc">Spaced repetition and sequential review strategies to reinforce material learned from direct instruction.</p>
-                <div class="card-bottom">
-                    <svg><use href="#icon-clock"></use></svg> 20 min
-                </div>
-            </div>
-
-            <div class="module-card">
-                <div class="card-top">
-                    <span class="module-icon">🔧</span>
-                    <div class="tags-row">
-                        <span class="tag tag-intermediate">Intermediate</span>
-                        <span class="tag tag-topic">Problem-Solving</span>
-                    </div>
-                </div>
-                <h3 class="module-title">Step-by-Step Problem Frameworks</h3>
-                <p class="module-desc">Systematic approaches to breaking down complex IT problems using structured logical flow.</p>
-                <div class="card-bottom">
-                    <svg><use href="#icon-clock"></use></svg> 60 min
-                </div>
-            </div>
-        </div>
-
-        <div class="section-divider">
-            <span>STRENGTHEN YOUR OTHER MODES</span>
-        </div>
-        <p class="section-desc">These modules target your weaker quadrants. Strengthening them builds cognitive adaptability and makes you a more versatile learner.</p>
-
-
-        <div class="gap-section gap-purple">
-            <div class="gap-header">
-                <span class="gap-pill">PRIMARY GAP</span>
-                <h3 class="gap-title"><span>🧠</span> Distributed Collective</h3>
-            </div>
-            
-            <div class="gap-info-box">
-                <p class="gap-description">You excel in peer-driven, inquiry-based group settings. Shared leadership, open-ended discussions, and co-creation of knowledge define your ideal learning environment.</p>
-                <div>
-                    <h4 class="tips-header">💡 Strengthening Tips:</h4>
-                    <ul class="tips-list">
-                        <li>Practice sitting through a fully lecture-based class session with focused note-taking</li>
-                        <li>Follow a strictly structured textbook chapter from start to finish, solo</li>
-                        <li>Accept a clearly defined role in a group project rather than co-leading</li>
-                        <li>Submit individual work to a teacher and request direct, authoritative feedback</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="module-grid">
-                <div class="module-card">
-                    <div class="card-top">
-                        <span class="module-icon">✏️</span>
-                        <div class="tags-row">
-                            <span class="tag tag-intermediate">Intermediate</span>
-                            <span class="tag tag-purple-outline">Teaching</span>
-                        </div>
-                    </div>
-                    <h3 class="module-title">Peer Teaching Circles</h3>
-                    <p class="module-desc">Lead and participate in sessions where each member teaches a topic to the group, deepening mutual understanding.</p>
-                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 60 min</div>
-                </div>
-
-                <div class="module-card">
-                    <div class="card-top">
-                        <span class="module-icon">🔧</span>
-                        <div class="tags-row">
-                            <span class="tag tag-advanced">Advanced</span>
-                            <span class="tag tag-purple-outline">Project-Based</span>
-                        </div>
-                    </div>
-                    <h3 class="module-title">Open Inquiry IT Projects</h3>
-                    <p class="module-desc">Collaborate on group projects where the problem, solution, and process are defined collectively by the team.</p>
-                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 120 min</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="gap-section gap-blue">
-            <div class="gap-header">
-                <span class="gap-pill">SECONDARY GAP</span>
-                <h3 class="gap-title"><span>💻</span> Distributed Individual</h3>
-            </div>
-            
-            <div class="gap-info-box">
-                <p class="gap-description">You are an autonomous, self-directed learner who thrives when given freedom to explore. You excel through technology-enabled discovery at your own pace.</p>
-                <div>
-                    <h4 class="tips-header">💡 Strengthening Tips:</h4>
-                    <ul class="tips-list">
-                        <li>Attend structured group study sessions at least once a week</li>
-                        <li>Ask a teacher or mentor to set a guided learning path for one subject</li>
-                        <li>Practice following a syllabus strictly for one quarter</li>
-                        <li>Volunteer to lead a structured presentation in your IT class</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="module-grid">
-                <div class="module-card">
-                    <div class="card-top">
-                        <span class="module-icon">✏️</span>
-                        <div class="tags-row">
-                            <span class="tag tag-beginner">Beginner</span>
-                            <span class="tag tag-blue-outline">Planning</span>
-                        </div>
-                    </div>
-                    <h3 class="module-title">Building Your Learning Roadmap</h3>
-                    <p class="module-desc">Create a self-directed study plan using curated online courses, documentation, and open resources.</p>
-                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 40 min</div>
-                </div>
-
-                <div class="module-card">
-                    <div class="card-top">
-                        <span class="module-icon">🔧</span>
-                        <div class="tags-row">
-                            <span class="tag tag-advanced">Advanced</span>
-                            <span class="tag tag-blue-outline">Project-Based</span>
-                        </div>
-                    </div>
-                    <h3 class="module-title">Portfolio Project Development</h3>
-                    <p class="module-desc">Channel your independent learning into a personal IT project that demonstrates your growing skills.</p>
-                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 90 min</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="gap-section gap-orange">
-            <div class="gap-header">
-                <span class="gap-pill">TERTIARY GAP</span>
-                <h3 class="gap-title">🤝 Hierarchical Collective</h3>
-            </div>
-            
-            <div class="gap-info-box">
-                <p class="gap-description">You flourish in teacher-guided group environments. Structured collaborative activities, clear roles, and instructor oversight bring out your best performance.</p>
-                <div>
-                    <h4 class="tips-header">💡 Strengthening Tips:</h4>
-                    <ul class="tips-list">
-                        <li>Dedicate one study session per week to completely solo, unguided review</li>
-                        <li>Practice making independent academic decisions without seeking teacher approval first</li>
-                        <li>Start a personal IT project with no group members or assigned roles</li>
-                        <li>Try self-paced online courses and pace yourself without external deadlines</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="module-grid">
-                <div class="module-card">
-                    <div class="card-top">
-                        <span class="module-icon">✏️</span>
-                        <div class="tags-row">
-                            <span class="tag tag-beginner">Beginner</span>
-                            <span class="tag tag-orange-outline">Collaboration</span>
-                        </div>
-                    </div>
-                    <h3 class="module-title">Structured Group Study Design</h3>
-                    <p class="module-desc">Organize effective study groups with clearly defined roles, agendas, and teacher-set objectives.</p>
-                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 50 min</div>
-                </div>
-
-                <div class="module-card">
-                    <div class="card-top">
-                        <span class="module-icon">🎬</span>
-                        <div class="tags-row">
-                            <span class="tag tag-intermediate">Intermediate</span>
-                            <span class="tag tag-orange-outline">Discussion</span>
-                        </div>
-                    </div>
-                    <h3 class="module-title">Socratic Dialogue Techniques</h3>
-                    <p class="module-desc">Participate meaningfully in instructor-led class discussions using structured questioning frameworks.</p>
-                    <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> 35 min</div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
+    <script>
+        const modesData = {
+            "Hierarchical Individual": {
+                id: "hi",
+                colorName: "green",
+                icon: "📚",
+                title: "Hierarchical Individual",
+                desc: "techniques that align with how you naturally learn best through structured, teacher-directed instruction.",
+                gapDesc: "You learn best through structured, teacher-directed instruction in a solo setting. Clear guidelines and direct authority from an instructor help you thrive.",
+                tips: [
+                    "Practice sitting through a fully lecture-based class session with focused note-taking",
+                    "Follow a strictly structured textbook chapter from start to finish, solo",
+                    "Submit individual work to a teacher and request direct, authoritative feedback",
+                    "Create a strict daily study schedule and adhere to it"
+                ],
+                modules: [
+                    { icon: "✏️", tagClass: "tag-beginner", tagText: "Beginner", topic: "Note-Taking", title: "Cornell Note-Taking System", desc: "Master the Cornell method to organize lectures and textbook content into powerful study notes.", time: "45 min" },
+                    { icon: "🎬", tagClass: "tag-beginner", tagText: "Beginner", topic: "Comprehension", title: "Active Lecture Comprehension", desc: "Techniques for absorbing and retaining information from teacher-led lessons and recorded lectures.", time: "30 min" },
+                    { icon: "📖", tagClass: "tag-intermediate", tagText: "Intermediate", topic: "Retention", title: "Structured Self-Review Methods", desc: "Spaced repetition and sequential review strategies to reinforce material learned from direct instruction.", time: "20 min" },
+                    { icon: "🔧", tagClass: "tag-intermediate", tagText: "Intermediate", topic: "Problem-Solving", title: "Step-by-Step Problem Frameworks", desc: "Systematic approaches to breaking down complex IT problems using structured logical flow.", time: "60 min" }
+                ]
+            },
+            "Distributed Individual": {
+                id: "di",
+                colorName: "blue",
+                icon: "💻",
+                title: "Distributed Individual",
+                desc: "techniques that align with your preference for autonomous, self-directed exploration.",
+                gapDesc: "You are an autonomous, self-directed learner who thrives when given freedom to explore. You excel through technology-enabled discovery at your own pace.",
+                tips: [
+                    "Dedicate one study session per week to completely solo, unguided review",
+                    "Practice making independent academic decisions without seeking teacher approval first",
+                    "Start a personal IT project with no assigned rules or rubrics",
+                    "Try self-paced online courses and pace yourself without external deadlines"
+                ],
+                modules: [
+                    { icon: "✏️", tagClass: "tag-beginner", tagText: "Beginner", topic: "Planning", title: "Building Your Learning Roadmap", desc: "Create a self-directed study plan using curated online courses, documentation, and open resources.", time: "40 min" },
+                    { icon: "🔧", tagClass: "tag-advanced", tagText: "Advanced", topic: "Project-Based", title: "Portfolio Project Development", desc: "Channel your independent learning into a personal IT project that demonstrates your growing skills.", time: "90 min" }
+                ]
+            },
+            "Hierarchical Collective": {
+                id: "hc",
+                colorName: "orange",
+                icon: "🤝",
+                title: "Hierarchical Collective",
+                desc: "techniques that align with your preference for structured, teacher-guided team environments.",
+                gapDesc: "You flourish in teacher-guided group environments. Structured collaborative activities, clear roles, and instructor oversight bring out your best performance.",
+                tips: [
+                    "Attend structured group study sessions at least once a week",
+                    "Volunteer to take a specific, clearly defined role in your next group project",
+                    "Ask a teacher or mentor to set a guided learning path for your study group",
+                    "Practice evaluating peer work using a strict teacher-provided rubric"
+                ],
+                modules: [
+                    { icon: "✏️", tagClass: "tag-beginner", tagText: "Beginner", topic: "Collaboration", title: "Structured Group Study Design", desc: "Organize effective study groups with clearly defined roles, agendas, and teacher-set objectives.", time: "50 min" },
+                    { icon: "🎬", tagClass: "tag-intermediate", tagText: "Intermediate", topic: "Discussion", title: "Socratic Dialogue Techniques", desc: "Participate meaningfully in instructor-led class discussions using structured questioning frameworks.", time: "35 min" }
+                ]
+            },
+            "Distributed Collective": {
+                id: "dc",
+                colorName: "purple",
+                icon: "🧠",
+                title: "Distributed Collective",
+                desc: "techniques that align with your preference for open, peer-driven, collaborative environments.",
+                gapDesc: "You excel in peer-driven, inquiry-based group settings. Shared leadership, open-ended discussions, and co-creation of knowledge define your ideal learning environment.",
+                tips: [
+                    "Join an open brainstorming session or hackathon without predefined roles",
+                    "Engage in peer-review circles where feedback flows freely among students",
+                    "Co-lead a flexible group project where the team decides the direction",
+                    "Participate in debate clubs or open academic forums"
+                ],
+                modules: [
+                    { icon: "✏️", tagClass: "tag-intermediate", tagText: "Intermediate", topic: "Teaching", title: "Peer Teaching Circles", desc: "Lead and participate in sessions where each member teaches a topic to the group, deepening mutual understanding.", time: "60 min" },
+                    { icon: "🔧", tagClass: "tag-advanced", tagText: "Advanced", topic: "Project-Based", title: "Open Inquiry IT Projects", desc: "Collaborate on group projects where the problem, solution, and process are defined collectively by the team.", time: "120 min" }
+                ]
+            }
+        };
+
+        const modeOpposites = {
+            "Hierarchical Individual": "Distributed Collective",
+            "Distributed Collective": "Hierarchical Individual",
+            "Distributed Individual": "Hierarchical Collective",
+            "Hierarchical Collective": "Distributed Individual"
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const root = document.getElementById('modules-root');
+            const profileStr = localStorage.getItem('studentProfile');
+            
+            if (!profileStr) {
+                root.innerHTML = `
+                    <div style="text-align: center; color: var(--matrix-orange); padding: 40px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-light);">
+                        <h3 style="margin-bottom: 10px;">Not Assessed</h3>
+                        <p style="color: var(--text-muted);">Please complete the Learning Mode Assessment to unlock your personalized modules.</p>
+                    </div>`;
+                return;
+            }
+
+            const profile = JSON.parse(profileStr);
+            const domModeName = profile.learning_mode || "Hierarchical Individual";
+            
+            if (!modesData[domModeName]) {
+                root.innerHTML = '<p>Unknown learning mode.</p>';
+                return;
+            }
+
+            const domMode = modesData[domModeName];
+            
+            // Determine Gaps
+            const primaryGapName = modeOpposites[domModeName];
+            const primaryGap = modesData[primaryGapName];
+            
+            const remainingNames = Object.keys(modesData).filter(m => m !== domModeName && m !== primaryGapName);
+            const secondaryGap = modesData[remainingNames[0]];
+            const tertiaryGap = modesData[remainingNames[1]];
+
+            // Generate HTML
+            let html = `
+                <div class="page-header">
+                    <div class="header-title-row">
+                        <span>${domMode.icon}</span>
+                        <h1 class="page-title">Your Dominant Mode Modules</h1>
+                    </div>
+                    <p class="page-subtitle">Personalized for your <span style="color: var(--matrix-${domMode.colorName}); font-weight: 700;">${domMode.title}</span> learning style — ${domMode.desc}</p>
+                </div>
+
+                <div class="module-grid">
+                    ${domMode.modules.map(m => `
+                        <div class="module-card">
+                            <div class="card-top">
+                                <span class="module-icon">${m.icon}</span>
+                                <div class="tags-row">
+                                    <span class="tag ${m.tagClass}">${m.tagText}</span>
+                                    <span class="tag tag-topic">${m.topic}</span>
+                                </div>
+                            </div>
+                            <h3 class="module-title">${m.title}</h3>
+                            <p class="module-desc">${m.desc}</p>
+                            <div class="card-bottom">
+                                <svg><use href="#icon-clock"></use></svg> ${m.time}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="section-divider">
+                    <span>STRENGTHEN YOUR OTHER MODES</span>
+                </div>
+                <p class="section-desc">These modules target your weaker quadrants. Strengthening them builds cognitive adaptability and makes you a more versatile learner.</p>
+            `;
+
+            // Gap Sections Builder
+            const buildGap = (gapLevel, gapData) => `
+                <div class="gap-section gap-${gapData.colorName}">
+                    <div class="gap-header">
+                        <span class="gap-pill">${gapLevel} GAP</span>
+                        <h3 class="gap-title"><span>${gapData.icon}</span> ${gapData.title}</h3>
+                    </div>
+                    
+                    <div class="gap-info-box">
+                        <p class="gap-description">${gapData.gapDesc}</p>
+                        <div>
+                            <h4 class="tips-header">💡 Strengthening Tips:</h4>
+                            <ul class="tips-list">
+                                ${gapData.tips.map(t => `<li>${t}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="module-grid">
+                        ${gapData.modules.map(m => `
+                            <div class="module-card">
+                                <div class="card-top">
+                                    <span class="module-icon">${m.icon}</span>
+                                    <div class="tags-row">
+                                        <span class="tag ${m.tagClass}">${m.tagText}</span>
+                                        <span class="tag tag-${gapData.colorName}-outline">${m.topic}</span>
+                                    </div>
+                                </div>
+                                <h3 class="module-title">${m.title}</h3>
+                                <p class="module-desc">${m.desc}</p>
+                                <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> ${m.time}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            html += buildGap("PRIMARY", primaryGap);
+            html += buildGap("SECONDARY", secondaryGap);
+            html += buildGap("TERTIARY", tertiaryGap);
+
+            root.innerHTML = html;
+        });
+    </script>
 </body>
 </html>

@@ -314,11 +314,16 @@
             if(userStr) {
                 try {
                     const user = JSON.parse(userStr);
+                    if (user.role !== 'teacher') {
+                        alert('Unauthorized access. Please log in with a teacher account.');
+                        window.location.href = '../index.html';
+                        return;
+                    }
                     document.getElementById('sidebar-teacher-name').textContent = "Prof. " + user.name;
                     document.getElementById('sidebar-teacher-avatar').textContent = user.name.substring(0, 2).toUpperCase();
                 } catch(e) { console.error(e); }
             } else {
-                window.location.href = '../login.html'; // Basic protection
+                window.location.href = '../index.html'; // Basic protection
             }
         });
     </script>
