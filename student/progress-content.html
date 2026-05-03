@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Mode Progress Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         /* --- CSS VARIABLES (Theme Colors) --- */
         :root {
             --bg-base: #060f17;
             --bg-panel: #0a1e2d;
             --bg-card: #12181f;
-            
+
             --matrix-yellow: #d8a61a;
             --matrix-yellow-hover: #eab308;
             --matrix-green: #4ade80;
             --matrix-blue: #38bdf8;
             --matrix-orange: #fb923c;
             --matrix-purple: #c084fc;
-            
+
             --text-main: #ffffff;
             --text-muted: #8b9eb0;
-            
+
             --border-light: rgba(255, 255, 255, 0.05);
             --border-lighter: rgba(255, 255, 255, 0.1);
         }
@@ -35,13 +37,16 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: transparent; /* Allows parent background to show */
+            background-color: transparent;
+            /* Allows parent background to show */
             color: var(--text-main);
             /* Removed flex and hidden overflow so it scrolls properly inside iframe */
         }
 
-        .svg-defs { display: none; }
-        
+        .svg-defs {
+            display: none;
+        }
+
         svg {
             display: inline-block;
             vertical-align: middle;
@@ -62,13 +67,13 @@
         .page-header {
             margin-bottom: 8px;
         }
-        
+
         .page-title {
             font-size: 22px;
             font-weight: 800;
             margin-bottom: 8px;
         }
-        
+
         .page-subtitle {
             font-size: 13px;
             color: var(--text-muted);
@@ -102,12 +107,12 @@
             align-items: center;
             justify-content: space-between;
         }
-        
+
         .quarter-label {
             font-size: 16px;
             font-weight: 700;
         }
-        
+
         .dominant-mode-label {
             font-size: 11px;
             font-weight: 700;
@@ -121,7 +126,7 @@
             justify-content: center;
             position: relative;
         }
-        
+
         .quadrant-graph {
             position: relative;
             width: 100%;
@@ -142,15 +147,26 @@
             grid-template-rows: 1fr 1fr;
         }
 
-        .q-cell { 
-            position: relative; 
-            border: 1px solid var(--border-lighter); 
+        .q-cell {
+            position: relative;
+            border: 1px solid var(--border-lighter);
         }
-        
-        .q-cell.top-left { background-color: rgba(74, 222, 128, 0.04); }
-        .q-cell.top-right { background-color: rgba(56, 189, 248, 0.04); }
-        .q-cell.bottom-left { background-color: rgba(251, 146, 60, 0.04); }
-        .q-cell.bottom-right { background-color: rgba(192, 132, 252, 0.04); }
+
+        .q-cell.top-left {
+            background-color: rgba(74, 222, 128, 0.04);
+        }
+
+        .q-cell.top-right {
+            background-color: rgba(56, 189, 248, 0.04);
+        }
+
+        .q-cell.bottom-left {
+            background-color: rgba(251, 146, 60, 0.04);
+        }
+
+        .q-cell.bottom-right {
+            background-color: rgba(192, 132, 252, 0.04);
+        }
 
         .data-point {
             position: absolute;
@@ -173,9 +189,20 @@
             letter-spacing: 0.5px;
         }
 
-        .axis-y-left { left: 110px; top: 25%; font-size: 10px; transform: translateY(-50%) rotate(-90deg); }
-        .axis-y-right { left: 110px; top: 75%; font-size: 10px; transform: translateY(-50%) rotate(-90deg); }
-        
+        .axis-y-left {
+            left: 110px;
+            top: 25%;
+            font-size: 10px;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
+        .axis-y-right {
+            left: 110px;
+            top: 75%;
+            font-size: 10px;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
         .axis-x-bottom {
             position: absolute;
             bottom: -28px;
@@ -194,7 +221,7 @@
             color: var(--text-muted);
             font-weight: 500;
         }
-        
+
         .score-percentage {
             font-size: 13px;
             font-weight: 700;
@@ -219,13 +246,13 @@
             width: 48px;
             height: 48px;
         }
-        
+
         .q3-title {
             font-size: 16px;
             font-weight: 700;
             color: var(--text-main);
         }
-        
+
         .q3-subtitle {
             font-size: 12px;
             color: var(--text-muted);
@@ -238,6 +265,7 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
+            margin-top: 24px;
         }
 
         .coord-card-header {
@@ -256,7 +284,7 @@
 
         .coord-data-box {
             padding: 16px;
-            background-color: rgba(255,255,255, 0.02);
+            background-color: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-light);
             border-radius: 8px;
             display: flex;
@@ -302,14 +330,19 @@
         /* SVG definitions logic - including them for standalone use */
     </style>
 </head>
+
 <body>
 
     <svg class="svg-defs">
-        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></symbol>
+        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+        </symbol>
     </svg>
 
     <div class="content-container">
-        
+
         <div class="page-header">
             <h1 class="page-title">Learning Mode Progress</h1>
             <p class="page-subtitle">Track how your quadrant position evolves across each quarterly assessment.</p>
@@ -336,9 +369,9 @@
 
                 const activeSessions = await activeRes.json();
                 const history = await historyRes.json();
-                
+
                 renderProgressPage(activeSessions, history);
-                
+
             } catch (err) {
                 console.error("Failed to load progress data", err);
                 document.getElementById('dynamic-content').innerHTML = '<div style="color: #f87171; text-align: center; padding: 20px;">Failed to load progress data.</div>';
@@ -346,10 +379,10 @@
         });
 
         function getModeColor(mode) {
-            if(mode === 'Hierarchical Individual') return 'var(--matrix-green)';
-            if(mode === 'Distributed Individual') return 'var(--matrix-blue)';
-            if(mode === 'Hierarchical Collective') return 'var(--matrix-orange)';
-            if(mode === 'Distributed Collective') return 'var(--matrix-purple)';
+            if (mode === 'Hierarchical Individual') return 'var(--matrix-green)';
+            if (mode === 'Distributed Individual') return 'var(--matrix-blue)';
+            if (mode === 'Hierarchical Collective') return 'var(--matrix-orange)';
+            if (mode === 'Distributed Collective') return 'var(--matrix-purple)';
             return 'var(--matrix-green)';
         }
 
@@ -385,18 +418,18 @@
 
         function renderProgressPage(activeSessions, history) {
             let html = '<div class="progress-grid-2-1">';
-            
+
             // Render History Cards
             history.forEach(h => {
-                const dateStr = new Date(h.taken_at).toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+                const dateStr = new Date(h.taken_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
                 const modeColor = getModeColor(h.learning_mode);
                 const pct = Math.round((Math.max(Math.abs(h.x_coord || 0), Math.abs(h.y_coord || 0)) / 5) * 100);
-                
+
                 html += `
                     <div class="glass-card progress-quad-card">
                         <div class="prog-card-header">
                             <span class="quarter-label">${h.quarter_name}</span>
-                            <span class="dominant-mode-label" style="color: ${modeColor};">${h.learning_mode}</span>
+                            <span class="dominant-mode-label" style="color: ${modeColor}; background-color: color-mix(in srgb, ${modeColor} 10%, transparent); padding: 6px 12px; border-radius: 6px; font-weight: 700;">${h.learning_mode}</span>
                         </div>
                         
                         ${getQuadrantGridHtml(h.x_coord, h.y_coord, modeColor)}
@@ -409,17 +442,15 @@
                 `;
             });
 
-            html += '</div>';
-
             // Next Quarter State
             const quarters = ['Q1 Assessment', 'Q2 Assessment', 'Q3 Assessment', 'Q4 Assessment'];
             let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q.substring(0, 2))));
-            
+
             if (activeSessions.length > 0) {
                 const active = activeSessions[0];
-                const d = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', {month: 'long', year: 'numeric'}) : 'Open Now';
+                const d = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Open Now';
                 html += `
-                    <div class="glass-card card-prog-quarter-3" style="border-color: var(--matrix-green); background-color: rgba(74, 222, 128, 0.05);">
+                    <div class="glass-card card-prog-quarter-3" style="border: 1px dashed var(--border-light); border-color: rgba(74, 222, 128, 0.4); background-color: rgba(74, 222, 128, 0.05);">
                         <svg class="prog-clock-icon" style="color: var(--matrix-green);"><use href="#icon-clock"></use></svg>
                         <div class="q3-title" style="color: var(--matrix-green);">${active.quarter_name}</div>
                         <div class="q3-subtitle" style="color: var(--matrix-green);">Deadline: ${d}</div>
@@ -427,13 +458,15 @@
                 `;
             } else if (nextQ) {
                 html += `
-                    <div class="glass-card card-prog-quarter-3">
+                    <div class="glass-card card-prog-quarter-3" style="border: 1px dashed var(--border-light); background-color: rgba(255, 255, 255, 0.02);">
                         <svg class="prog-clock-icon"><use href="#icon-clock"></use></svg>
                         <div class="q3-title">${nextQ}</div>
-                        <div class="q3-subtitle">Upcoming</div>
+                        <div class="q3-subtitle">Opens soon</div>
                     </div>
                 `;
             }
+
+            html += '</div>';
 
             // Coordinate Movement Logic
             if (history.length >= 2) {
@@ -448,7 +481,7 @@
 
                 html += `
                     <div class="glass-card coord-movement-card">
-                        <div class="coord-card-header">COORDINATE MOVEMENT (${prev.quarter_name.substring(0,2)} &rarr; ${last.quarter_name.substring(0,2)})</div>
+                        <div class="coord-card-header">COORDINATE MOVEMENT (${prev.quarter_name.substring(0, 2)} &rarr; ${last.quarter_name.substring(0, 2)})</div>
                         
                         <div class="coord-boxes-row">
                             <div class="coord-data-box">
@@ -457,7 +490,7 @@
                                     <span class="coord-box-value">${last.x_coord.toFixed(2)}</span>
                                     <span class="${getDeltaClass(deltaX)}">${getDeltaStr(deltaX)}</span>
                                 </div>
-                                <span class="coord-box-comparison">from ${prev.quarter_name.substring(0,2)}: ${prev.x_coord.toFixed(2)}</span>
+                                <span class="coord-box-comparison">from ${prev.quarter_name.substring(0, 2)}: ${prev.x_coord.toFixed(2)}</span>
                             </div>
 
                             <div class="coord-data-box">
@@ -466,7 +499,7 @@
                                     <span class="coord-box-value">${last.y_coord.toFixed(2)}</span>
                                     <span class="${getDeltaClass(deltaY)}">${getDeltaStr(deltaY)}</span>
                                 </div>
-                                <span class="coord-box-comparison">from ${prev.quarter_name.substring(0,2)}: ${prev.y_coord.toFixed(2)}</span>
+                                <span class="coord-box-comparison">from ${prev.quarter_name.substring(0, 2)}: ${prev.y_coord.toFixed(2)}</span>
                             </div>
                         </div>
                     </div>
@@ -483,4 +516,5 @@
         }
     </script>
 </body>
+
 </html>
