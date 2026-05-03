@@ -36,6 +36,9 @@
             
             --bg-orange-faint: rgba(251, 146, 60, 0.05);
             --border-orange-faint: rgba(251, 146, 60, 0.2);
+            
+            --bg-green-faint: rgba(74, 222, 128, 0.05);
+            --border-green-faint: rgba(74, 222, 128, 0.2);
         }
 
         /* --- RESET & BASE --- */
@@ -308,10 +311,18 @@
         .gap-orange .tips-header { color: var(--matrix-orange); }
         .gap-orange .tips-list li::before { content: '→'; color: var(--matrix-orange); }
 
+        /* Green (Quaternary) */
+        .gap-green .gap-pill { background-color: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); }
+        .gap-green .gap-title { color: var(--matrix-green); }
+        .gap-green .gap-info-box { background-color: var(--bg-green-faint); border-color: var(--border-green-faint); }
+        .gap-green .tips-header { color: var(--matrix-green); }
+        .gap-green .tips-list li::before { content: '→'; color: var(--matrix-green); }
+
         /* For the specific gap tag colors */
         .tag-purple-outline { border: 1px solid rgba(192, 132, 252, 0.3); color: #c084fc; background: none;}
         .tag-blue-outline { border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; background: none;}
         .tag-orange-outline { border: 1px solid rgba(251, 146, 60, 0.3); color: #fb923c; background: none;}
+        .tag-green-outline { border: 1px solid rgba(74, 222, 128, 0.3); color: #4ade80; background: none;}
 
     </style>
 </head>

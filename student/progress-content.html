@@ -315,105 +315,172 @@
             <p class="page-subtitle">Track how your quadrant position evolves across each quarterly assessment.</p>
         </div>
 
-        <div class="progress-grid-2-1">
-            
-            <div class="glass-card progress-quad-card">
-                <div class="prog-card-header">
-                    <span class="quarter-label">Quarter 1</span>
-                    <span class="dominant-mode-label">Hierarchical Individual</span>
-                </div>
-                
-                <div class="quadrant-map-outer">
-                    <div class="axis-label axis-y-left">INDIVIDUAL</div>
-                    <div class="axis-label axis-y-right">COLLECTIVE</div>
-
-                    <div class="quadrant-graph">
-                        <div class="quadrant-grid-lines">
-                            <div class="q-cell top-left"></div>
-                            <div class="q-cell top-right"></div>
-                            <div class="q-cell bottom-left"></div>
-                            <div class="q-cell bottom-right"></div>
-                        </div>
-                        <div class="data-point" style="top: 30%; left: 30%;"></div>
-                    </div>
-                    
-                    <div class="axis-x-bottom">
-                        <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
-                        <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
-                    </div>
-                </div>
-
-                <div class="prog-card-footer">
-                    <span>January 15, 2026</span>
-                    <span class="score-percentage">88%</span>
-                </div>
-            </div>
-
-            <div class="glass-card progress-quad-card">
-                <div class="prog-card-header">
-                    <span class="quarter-label">Quarter 2</span>
-                    <span class="dominant-mode-label">Hierarchical Individual</span>
-                </div>
-                
-                <div class="quadrant-map-outer">
-                    <div class="axis-label axis-y-left">INDIVIDUAL</div>
-                    <div class="axis-label axis-y-right">COLLECTIVE</div>
-
-                    <div class="quadrant-graph">
-                        <div class="quadrant-grid-lines">
-                            <div class="q-cell top-left"></div>
-                            <div class="q-cell top-right"></div>
-                            <div class="q-cell bottom-left"></div>
-                            <div class="q-cell bottom-right"></div>
-                        </div>
-                        <div class="data-point" style="top: 40%; left: 45%;"></div>
-                    </div>
-                    
-                    <div class="axis-x-bottom">
-                        <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
-                        <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
-                    </div>
-                </div>
-
-                <div class="prog-card-footer">
-                    <span>April 10, 2026</span>
-                    <span class="score-percentage">91%</span>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="glass-card card-prog-quarter-3">
-            <svg class="prog-clock-icon"><use href="#icon-clock"></use></svg>
-            <div class="q3-title">Quarter 3</div>
-            <div class="q3-subtitle">Opens July 2026</div>
-        </div>
-
-        <div class="glass-card coord-movement-card">
-            <div class="coord-card-header">COORDINATE MOVEMENT (Q1 → Q2)</div>
-            
-            <div class="coord-boxes-row">
-                <div class="coord-data-box">
-                    <span class="coord-box-label">X (Hierarchical ↔ Distributed)</span>
-                    <div class="coord-box-value-row">
-                        <span class="coord-box-value">-0.35</span>
-                        <span class="coord-box-delta-pos">+0.15</span>
-                    </div>
-                    <span class="coord-box-comparison">from Q1: -0.50</span>
-                </div>
-
-                <div class="coord-data-box">
-                    <span class="coord-box-label">Y (Collective ↔ Individual)</span>
-                    <div class="coord-box-value-row">
-                        <span class="coord-box-value">0.50</span>
-                        <span class="coord-box-delta-neg">-0.15</span>
-                    </div>
-                    <span class="coord-box-comparison">from Q1: 0.65</span>
-                </div>
-            </div>
+        <div id="dynamic-content">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted);">Loading progress data...</div>
         </div>
 
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) return;
+            const user = JSON.parse(userStr);
+
+            try {
+                // Fetch active sessions and history
+                const [activeRes, historyRes] = await Promise.all([
+                    fetch('/api/students/' + user.id + '/active-sessions'),
+                    fetch('/api/students/' + user.id + '/history')
+                ]);
+
+                const activeSessions = await activeRes.json();
+                const history = await historyRes.json();
+                
+                renderProgressPage(activeSessions, history);
+                
+            } catch (err) {
+                console.error("Failed to load progress data", err);
+                document.getElementById('dynamic-content').innerHTML = '<div style="color: #f87171; text-align: center; padding: 20px;">Failed to load progress data.</div>';
+            }
+        });
+
+        function getModeColor(mode) {
+            if(mode === 'Hierarchical Individual') return 'var(--matrix-green)';
+            if(mode === 'Distributed Individual') return 'var(--matrix-blue)';
+            if(mode === 'Hierarchical Collective') return 'var(--matrix-orange)';
+            if(mode === 'Distributed Collective') return 'var(--matrix-purple)';
+            return 'var(--matrix-green)';
+        }
+
+        function getQuadrantGridHtml(x, y, modeColor) {
+            // Map coordinates (-5 to 5) to percentages (5% to 95%)
+            let xPct = ((x + 5) / 10) * 100;
+            let yPct = ((5 - y) / 10) * 100;
+            xPct = Math.max(5, Math.min(95, xPct));
+            yPct = Math.max(5, Math.min(95, yPct));
+
+            return `
+                <div class="quadrant-map-outer">
+                    <div class="axis-label axis-y-left">INDIVIDUAL</div>
+                    <div class="axis-label axis-y-right">COLLECTIVE</div>
+
+                    <div class="quadrant-graph">
+                        <div class="quadrant-grid-lines">
+                            <div class="q-cell top-left"></div>
+                            <div class="q-cell top-right"></div>
+                            <div class="q-cell bottom-left"></div>
+                            <div class="q-cell bottom-right"></div>
+                        </div>
+                        <div class="data-point" style="top: ${yPct}%; left: ${xPct}%; border-color: ${modeColor}; box-shadow: 0 0 16px 4px color-mix(in srgb, ${modeColor} 30%, transparent);"></div>
+                    </div>
+                    
+                    <div class="axis-x-bottom">
+                        <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
+                        <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderProgressPage(activeSessions, history) {
+            let html = '<div class="progress-grid-2-1">';
+            
+            // Render History Cards
+            history.forEach(h => {
+                const dateStr = new Date(h.taken_at).toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+                const modeColor = getModeColor(h.learning_mode);
+                const pct = Math.round((Math.max(Math.abs(h.x_coord || 0), Math.abs(h.y_coord || 0)) / 5) * 100);
+                
+                html += `
+                    <div class="glass-card progress-quad-card">
+                        <div class="prog-card-header">
+                            <span class="quarter-label">${h.quarter_name}</span>
+                            <span class="dominant-mode-label" style="color: ${modeColor};">${h.learning_mode}</span>
+                        </div>
+                        
+                        ${getQuadrantGridHtml(h.x_coord, h.y_coord, modeColor)}
+
+                        <div class="prog-card-footer">
+                            <span>${dateStr}</span>
+                            <span class="score-percentage" style="color: ${modeColor};">${pct}%</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+
+            // Next Quarter State
+            const quarters = ['Q1 Assessment', 'Q2 Assessment', 'Q3 Assessment', 'Q4 Assessment'];
+            let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q.substring(0, 2))));
+            
+            if (activeSessions.length > 0) {
+                const active = activeSessions[0];
+                const d = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', {month: 'long', year: 'numeric'}) : 'Open Now';
+                html += `
+                    <div class="glass-card card-prog-quarter-3" style="border-color: var(--matrix-green); background-color: rgba(74, 222, 128, 0.05);">
+                        <svg class="prog-clock-icon" style="color: var(--matrix-green);"><use href="#icon-clock"></use></svg>
+                        <div class="q3-title" style="color: var(--matrix-green);">${active.quarter_name}</div>
+                        <div class="q3-subtitle" style="color: var(--matrix-green);">Deadline: ${d}</div>
+                    </div>
+                `;
+            } else if (nextQ) {
+                html += `
+                    <div class="glass-card card-prog-quarter-3">
+                        <svg class="prog-clock-icon"><use href="#icon-clock"></use></svg>
+                        <div class="q3-title">${nextQ}</div>
+                        <div class="q3-subtitle">Upcoming</div>
+                    </div>
+                `;
+            }
+
+            // Coordinate Movement Logic
+            if (history.length >= 2) {
+                const last = history[history.length - 1];
+                const prev = history[history.length - 2];
+
+                const deltaX = (last.x_coord - prev.x_coord).toFixed(2);
+                const deltaY = (last.y_coord - prev.y_coord).toFixed(2);
+
+                const getDeltaClass = (val) => parseFloat(val) >= 0 ? 'coord-box-delta-pos' : 'coord-box-delta-neg';
+                const getDeltaStr = (val) => parseFloat(val) > 0 ? '+' + val : val;
+
+                html += `
+                    <div class="glass-card coord-movement-card">
+                        <div class="coord-card-header">COORDINATE MOVEMENT (${prev.quarter_name.substring(0,2)} &rarr; ${last.quarter_name.substring(0,2)})</div>
+                        
+                        <div class="coord-boxes-row">
+                            <div class="coord-data-box">
+                                <span class="coord-box-label">X (Hierarchical &harr; Distributed)</span>
+                                <div class="coord-box-value-row">
+                                    <span class="coord-box-value">${last.x_coord.toFixed(2)}</span>
+                                    <span class="${getDeltaClass(deltaX)}">${getDeltaStr(deltaX)}</span>
+                                </div>
+                                <span class="coord-box-comparison">from ${prev.quarter_name.substring(0,2)}: ${prev.x_coord.toFixed(2)}</span>
+                            </div>
+
+                            <div class="coord-data-box">
+                                <span class="coord-box-label">Y (Collective &harr; Individual)</span>
+                                <div class="coord-box-value-row">
+                                    <span class="coord-box-value">${last.y_coord.toFixed(2)}</span>
+                                    <span class="${getDeltaClass(deltaY)}">${getDeltaStr(deltaY)}</span>
+                                </div>
+                                <span class="coord-box-comparison">from ${prev.quarter_name.substring(0,2)}: ${prev.y_coord.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (history.length === 1) {
+                html += `
+                    <div class="glass-card coord-movement-card" style="text-align: center; color: var(--text-muted); align-items: center;">
+                        <p style="font-size: 14px;">Take another assessment to track your coordinate movement!</p>
+                    </div>
+                `;
+            }
+
+            document.getElementById('dynamic-content').innerHTML = html;
+        }
+    </script>
 </body>
 </html>
