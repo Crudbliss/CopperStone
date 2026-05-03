@@ -335,10 +335,10 @@
 
         <div class="sidebar-footer">
             <div class="sidebar-user">
-                <div class="user-avatar">MS</div>
+                <div class="user-avatar" id="sidebar-student-avatar">--</div>
                 <div class="user-details">
-                    <h4>Maria Santos</h4>
-                    <p>BSIT 3-1</p>
+                    <h4 id="sidebar-student-name">Student</h4>
+                    <p id="sidebar-student-program">Loading...</p>
                 </div>
             </div>
             
@@ -387,6 +387,37 @@
                     this.classList.add('active');
                 });
             });
+
+            // Load dynamic user data
+            const userStr = localStorage.getItem('currentUser');
+            if(userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    
+                    // Set full name
+                    const fullName = `${user.name} ${user.last_name || ''}`.trim();
+                    document.getElementById('sidebar-student-name').textContent = fullName;
+                    
+                    // Set initials
+                    if (user.name) {
+                        const init1 = user.name.charAt(0);
+                        const init2 = user.last_name ? user.last_name.charAt(0) : '';
+                        document.getElementById('sidebar-student-avatar').textContent = (init1 + init2).toUpperCase() || '--';
+                    }
+                    
+                    // Set program
+                    const prog = user.program || 'Student';
+                    const yr = user.year_level || '';
+                    const sec = user.section || '';
+                    let progStr = prog;
+                    if (yr || sec) progStr += ` ${yr}-${sec}`;
+                    
+                    document.getElementById('sidebar-student-program').textContent = progStr;
+                    
+                } catch(e) { console.error(e); }
+            } else {
+                window.location.href = '../login.html';
+            }
         });
     </script>
 </body>

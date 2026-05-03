@@ -198,7 +198,19 @@ app.post('/api/login', async (req, res) => {
         if (student) {
             const match = await bcrypt.compare(password, student.password_hash);
             if (match) {
-                return res.json({ success: true, role: 'student', user: { id: student.id, name: student.first_name, no: student.student_no } });
+                return res.json({ 
+                    success: true, 
+                    role: 'student', 
+                    user: { 
+                        id: student.id, 
+                        name: student.first_name, 
+                        last_name: student.last_name,
+                        student_no: student.student_no,
+                        program: student.program,
+                        year_level: student.year_level,
+                        section: student.section
+                    } 
+                });
             } else {
                 return res.status(401).json({ error: 'Invalid password' });
             }
@@ -211,7 +223,15 @@ app.post('/api/login', async (req, res) => {
             if (teacher) {
                 const match = await bcrypt.compare(password, teacher.password_hash);
                 if (match) {
-                    return res.json({ success: true, role: 'teacher', user: { id: teacher.id, name: teacher.first_name } });
+                    return res.json({ 
+                        success: true, 
+                        role: 'teacher', 
+                        user: { 
+                            id: teacher.id, 
+                            name: teacher.first_name,
+                            last_name: teacher.last_name
+                        } 
+                    });
                 } else {
                     return res.status(401).json({ error: 'Invalid password' });
                 }
@@ -308,14 +328,30 @@ app.post('/api/enroll', (req, res) => {
         return res.status(400).json({ error: 'student_id and class_id are required' });
     }
 
-    db.run(`INSERT INTO enrollments (student_id, class_id) VALUES (?, ?)`, [student_id, class_id], function(err) {
-        if (err) {
-            if (err.message.includes('UNIQUE constraint failed')) {
-                return res.status(409).json({ error: 'Student is already enrolled in this class' });
-            }
-            return res.status(500).json({ error: err.message });
+    // Enforce rule: A student can only be enrolled in ONE active class at a time
+    const checkSql = `
+        SELECT c.id 
+        FROM enrollments e
+        JOIN classes c ON e.class_id = c.id
+        WHERE e.student_id = ? AND c.is_archived = 0
+    `;
+    
+    db.get(checkSql, [student_id], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        if (row) {
+            return res.status(409).json({ error: 'Student is already enrolled in an active class' });
         }
-        res.status(201).json({ success: true, message: 'Successfully enrolled' });
+
+        db.run(`INSERT INTO enrollments (student_id, class_id) VALUES (?, ?)`, [student_id, class_id], function(err) {
+            if (err) {
+                if (err.message.includes('UNIQUE constraint failed')) {
+                    return res.status(409).json({ error: 'Student is already enrolled in this class' });
+                }
+                return res.status(500).json({ error: err.message });
+            }
+            res.status(201).json({ success: true, message: 'Successfully enrolled' });
+        });
     });
 });
 

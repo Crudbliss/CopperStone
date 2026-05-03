@@ -304,12 +304,12 @@
         <div class="glass-card card-profile">
             
             <div class="profile-top-row">
-                <div class="profile-avatar-lg">MS</div>
+                <div class="profile-avatar-lg" id="profile-avatar">--</div>
                 <div class="profile-details">
-                    <h2 class="profile-name">Maria Santos</h2>
-                    <p class="profile-id">2022-10345</p>
+                    <h2 class="profile-name" id="profile-name">Loading...</h2>
+                    <p class="profile-id" id="profile-id">----</p>
                     <div class="profile-status-pill">
-                        <span>📚</span> Hierarchical Individual
+                        <span>📚</span> <span id="profile-mode">Hierarchical Individual</span>
                     </div>
                 </div>
             </div>
@@ -317,19 +317,19 @@
             <div class="profile-info-grid">
                 <div class="info-box">
                     <span class="info-label">Program</span>
-                    <span class="info-value">BS Information Technology</span>
+                    <span class="info-value" id="profile-program">Loading...</span>
                 </div>
                 <div class="info-box">
                     <span class="info-label">Year Level</span>
-                    <span class="info-value">3rd Year</span>
+                    <span class="info-value" id="profile-year">Loading...</span>
                 </div>
                 <div class="info-box">
                     <span class="info-label">Section</span>
-                    <span class="info-value">BSIT 3-1</span>
+                    <span class="info-value" id="profile-section">Loading...</span>
                 </div>
                 <div class="info-box">
                     <span class="info-label">Email</span>
-                    <span class="info-value">maria.santos@student.olfu.edu.ph</span>
+                    <span class="info-value" id="profile-email">Loading...</span>
                 </div>
             </div>
 
@@ -415,5 +415,37 @@
 
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('currentUser');
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    
+                    // Name and Initials
+                    const fName = user.name || '';
+                    const lName = user.last_name || '';
+                    document.getElementById('profile-name').textContent = `${fName} ${lName}`.trim();
+                    document.getElementById('profile-avatar').textContent = (fName.charAt(0) + lName.charAt(0)).toUpperCase() || '--';
+                    
+                    // ID
+                    document.getElementById('profile-id').textContent = user.student_no || 'Unknown ID';
+                    
+                    // Info Grid
+                    document.getElementById('profile-program').textContent = user.program || '--';
+                    document.getElementById('profile-year').textContent = user.year_level ? `${user.year_level} Year` : '--';
+                    document.getElementById('profile-section').textContent = user.section || '--';
+                    
+                    // Generate dummy email from names
+                    let email = `${fName.toLowerCase()}.${lName.toLowerCase()}@student.olfu.edu.ph`.replace(/\s/g, '');
+                    if (!fName && !lName) email = 'student@olfu.edu.ph';
+                    document.getElementById('profile-email').textContent = email;
+                    
+                } catch(e) {
+                    console.error(e);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
