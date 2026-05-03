@@ -33,8 +33,15 @@ db.serialize(() => {
         email TEXT UNIQUE NOT NULL,
         password_hash TEXT NOT NULL,
         is_current INTEGER DEFAULT 1,
+        x_coord REAL DEFAULT 0,
+        y_coord REAL DEFAULT 0,
+        learning_mode TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
+    )`, () => {
+        db.run(`ALTER TABLE students ADD COLUMN x_coord REAL DEFAULT 0`, () => {});
+        db.run(`ALTER TABLE students ADD COLUMN y_coord REAL DEFAULT 0`, () => {});
+        db.run(`ALTER TABLE students ADD COLUMN learning_mode TEXT`, () => {});
+    });
 
     // 2. Teachers Table
     db.run(`CREATE TABLE IF NOT EXISTS teachers (
@@ -373,7 +380,7 @@ app.get('/api/students/:id/classes', (req, res) => {
 // GET /api/classes/:id/students - Get all students enrolled in a specific class
 app.get('/api/classes/:id/students', (req, res) => {
     const sql = `
-        SELECT s.id, s.student_no, s.first_name, s.last_name, s.email, s.program, s.year_level, s.section
+        SELECT s.id, s.student_no, s.first_name, s.last_name, s.email, s.program, s.year_level, s.section, s.x_coord, s.y_coord, s.learning_mode
         FROM students s
         JOIN enrollments e ON s.id = e.student_id
         WHERE e.class_id = ?
@@ -445,8 +452,48 @@ app.delete('/api/questions/:id', (req, res) => {
     });
 });
 
+// POST /api/assessments/submit - Submit answers and calculate learning mode
+app.post('/api/assessments/submit', (req, res) => {
+    const { student_id, answers } = req.body;
+    
+    if (!student_id || !answers || !Array.isArray(answers) || answers.length === 0) {
+        return res.status(400).json({ error: 'Missing student_id or answers' });
+    }
 
+    let totalX = 0;
+    let totalY = 0;
 
+    const placeholders = answers.map(() => '?').join(',');
+    db.all(`SELECT id, question_id, x_value, y_value FROM answers WHERE id IN (${placeholders})`, answers, (err, answerRows) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        db.serialize(() => {
+            const stmt = db.prepare(`INSERT INTO student_responses (student_id, question_id, answer_id) VALUES (?, ?, ?)`);
+            
+            answerRows.forEach(row => {
+                stmt.run([student_id, row.question_id, row.id]);
+                totalX += row.x_value;
+                totalY += row.y_value;
+            });
+            stmt.finalize();
+
+            let mode = 'Unknown';
+            if (totalX <= 0 && totalY >= 0) mode = 'Hierarchical Individual';
+            if (totalX > 0 && totalY >= 0) mode = 'Distributed Individual';
+            if (totalX <= 0 && totalY < 0) mode = 'Hierarchical Collective';
+            if (totalX > 0 && totalY < 0) mode = 'Distributed Collective';
+
+            // Save back to student profile
+            db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ? WHERE id = ?`, 
+                [totalX, totalY, mode, student_id], 
+                function(updateErr) {
+                    if (updateErr) console.error("Error updating student coords", updateErr);
+                    
+                    res.json({ success: true, result: { totalX, totalY, mode } });
+            });
+        });
+    });
+});
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

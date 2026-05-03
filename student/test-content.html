@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #060f17;
+            --bg-card: #12181f;
+            --bg-hover: #1a222a;
+            
+            --matrix-yellow: #d8a61a;
+            --matrix-green: #4ade80;
+            --matrix-blue: #38bdf8;
+            
+            --text-main: #ffffff;
+            --text-muted: #8b9eb0;
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-active: rgba(74, 222, 128, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .header {
+            margin-bottom: 12px;
+        }
+
+        .header h1 { font-size: 24px; font-weight: 700; }
+        .header p { font-size: 14px; color: var(--text-muted); }
+
+        /* The Questions container */
+        #questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .question-title {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .answers-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer-option {
+            background-color: var(--bg-base);
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .answer-option:hover {
+            border-color: var(--matrix-blue);
+            background-color: var(--bg-hover);
+        }
+
+        .answer-option.selected {
+            border-color: var(--matrix-green);
+            background-color: rgba(74, 222, 128, 0.05);
+        }
+
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--text-muted);
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .answer-option.selected .radio-circle {
+            border-color: var(--matrix-green);
+        }
+
+        .answer-option.selected .radio-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background-color: var(--matrix-green);
+            border-radius: 50%;
+        }
+
+        .answer-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-submit {
+            background-color: var(--matrix-green);
+            color: var(--bg-base);
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-top: 16px;
+        }
+
+        .btn-submit:hover { opacity: 0.9; }
+        .btn-submit:disabled {
+            background-color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Result Screen overlay */
+        #result-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg-base);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .result-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+        }
+
+        .result-mode {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--matrix-green);
+            margin-bottom: 12px;
+        }
+
+        .result-sub {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            max-width: 400px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container" id="test-container">
+        <div class="header">
+            <h1>Learning Mode Assessment</h1>
+            <p>Answer all questions below to determine your position on the quadrant.</p>
+        </div>
+
+        <div id="questions-container">
+            <!-- Questions injected here -->
+            <p style="color: var(--text-muted);">Loading questions...</p>
+        </div>
+
+        <button class="btn-submit" id="btn-submit" disabled>Submit Assessment</button>
+    </div>
+
+    <div id="result-screen">
+        <div class="result-icon">🎯</div>
+        <h3>Assessment Complete!</h3>
+        <p style="color: var(--text-muted); margin-top: 8px;">Your Learning Mode is:</p>
+        <div class="result-mode" id="final-mode">Loading...</div>
+        <p class="result-sub">Your profile and dashboard have been updated with your new quadrant coordinate.</p>
+        <button class="btn-submit" onclick="window.location.href='dashboard-content.html'; updateParentSidebar(0);">Return to Dashboard</button>
+    </div>
+
+    <script>
+        let selectedAnswers = {}; // { questionId: answerId }
+        let totalQuestions = 0;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('questions-container');
+            const submitBtn = document.getElementById('btn-submit');
+
+            try {
+                // Fetch questions
+                const res = await fetch('/api/questions');
+                const questions = await res.json();
+                totalQuestions = questions.length;
+                container.innerHTML = '';
+
+                questions.forEach((q, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'question-card';
+                    
+                    let html = `<div class="question-title">${index + 1}. ${q.title}</div>`;
+                    html += `<div class="answers-grid">`;
+                    
+                    q.answers.forEach(a => {
+                        html += `
+                            <div class="answer-option" data-qid="${q.id}" data-aid="${a.id}">
+                                <div class="radio-circle"></div>
+                                <div class="answer-text">${a.text}</div>
+                            </div>
+                        `;
+                    });
+
+                    html += `</div>`;
+                    card.innerHTML = html;
+                    container.appendChild(card);
+                });
+
+                // Attach click listeners to options
+                document.querySelectorAll('.answer-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const qid = this.getAttribute('data-qid');
+                        const aid = this.getAttribute('data-aid');
+
+                        // Deselect siblings
+                        const siblings = this.parentElement.querySelectorAll('.answer-option');
+                        siblings.forEach(s => s.classList.remove('selected'));
+
+                        // Select this
+                        this.classList.add('selected');
+                        selectedAnswers[qid] = parseInt(aid);
+
+                        // Check if all answered
+                        if (Object.keys(selectedAnswers).length === totalQuestions) {
+                            submitBtn.disabled = false;
+                        }
+                    });
+                });
+
+            } catch(e) {
+                container.innerHTML = `<p style="color: red;">Error loading questions.</p>`;
+                console.error(e);
+            }
+        });
+
+        document.getElementById('btn-submit').addEventListener('click', async () => {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) {
+                alert("You are not logged in!");
+                return;
+            }
+            const user = JSON.parse(userStr);
+            const answersArray = Object.values(selectedAnswers);
+
+            try {
+                const res = await fetch('/api/assessments/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        student_id: user.id,
+                        answers: answersArray
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('test-container').style.display = 'none';
+                    const resultScreen = document.getElementById('result-screen');
+                    resultScreen.style.display = 'flex';
+                    document.getElementById('final-mode').textContent = data.result.mode;
+                } else {
+                    alert('Error: ' + data.error);
+                }
+
+            } catch(e) {
+                console.error(e);
+                alert("Network error.");
+            }
+        });
+
+        // Helper to sync sidebar when returning to dashboard
+        function updateParentSidebar(activeIndex) {
+            if (window.parent && window.parent.document) {
+                const sidebarLinks = window.parent.document.querySelectorAll('.sidebar-link');
+                if (sidebarLinks && sidebarLinks.length > 0) {
+                    sidebarLinks.forEach(link => link.classList.remove('active'));
+                    if (sidebarLinks[activeIndex]) {
+                        sidebarLinks[activeIndex].classList.add('active');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
