@@ -431,10 +431,32 @@
                     // ID
                     document.getElementById('profile-id').textContent = user.student_no || 'Unknown ID';
                     
+                    // Format Program
+                    let fullProgram = user.program || '--';
+                    if (fullProgram.toUpperCase() === 'BSIT') fullProgram = 'BS in Information Technology';
+                    if (fullProgram.toUpperCase() === 'BSCS') fullProgram = 'BS in Computer Science';
+                    
+                    // Format Year Level
+                    let yearFormatted = '--';
+                    if (user.year_level) {
+                        const yr = String(user.year_level);
+                        if (yr === '1') yearFormatted = '1st Year';
+                        else if (yr === '2') yearFormatted = '2nd Year';
+                        else if (yr === '3') yearFormatted = '3rd Year';
+                        else if (yr === '4') yearFormatted = '4th Year';
+                        else yearFormatted = `${yr}th Year`;
+                    }
+
+                    // Format Section
+                    let sectionFormatted = '--';
+                    if (user.program && user.year_level && user.section) {
+                        sectionFormatted = `${user.program.toUpperCase()} ${user.year_level}-${user.section}`;
+                    }
+
                     // Info Grid
-                    document.getElementById('profile-program').textContent = user.program || '--';
-                    document.getElementById('profile-year').textContent = user.year_level ? `${user.year_level} Year` : '--';
-                    document.getElementById('profile-section').textContent = user.section || '--';
+                    document.getElementById('profile-program').textContent = fullProgram;
+                    document.getElementById('profile-year').textContent = yearFormatted;
+                    document.getElementById('profile-section').textContent = sectionFormatted;
                     
                     // Generate dummy email from names
                     let email = `${fName.toLowerCase()}.${lName.toLowerCase()}@student.olfu.edu.ph`.replace(/\s/g, '');
