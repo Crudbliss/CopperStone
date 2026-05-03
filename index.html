@@ -852,6 +852,7 @@
                 
                 // Keep the admin backdoor
                 if (email === 'admin' && password === 'admin') {
+                    localStorage.setItem('currentUser', JSON.stringify({ role: 'admin', name: 'Administrator' }));
                     window.location.href = 'admin/a-dashboard.html';
                     return;
                 }
@@ -871,6 +872,7 @@
                     
                     if (data.success) {
                         // Save user profile for the dashboard to use
+                        data.user.role = data.role;
                         localStorage.setItem('currentUser', JSON.stringify(data.user));
                         
                         // Let the server tell us where they belong
