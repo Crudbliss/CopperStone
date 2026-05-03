@@ -256,10 +256,10 @@
 
         <div class="sidebar-footer">
             <div class="sidebar-user">
-                <div class="user-avatar">AD</div>
+                <div class="user-avatar" id="sidebar-teacher-avatar">--</div>
                 <div class="user-details">
-                    <h4>Prof. Ana Dela Cruz</h4>
-                    <p>IT Professional Elective 3</p>
+                    <h4 id="sidebar-teacher-name">Prof.</h4>
+                    <p>Teacher Portal</p>
                 </div>
             </div>
             
@@ -308,6 +308,18 @@
                     }
                 });
             });
+
+            // Load dynamic user data
+            const userStr = localStorage.getItem('currentUser');
+            if(userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    document.getElementById('sidebar-teacher-name').textContent = "Prof. " + user.name;
+                    document.getElementById('sidebar-teacher-avatar').textContent = user.name.substring(0, 2).toUpperCase();
+                } catch(e) { console.error(e); }
+            } else {
+                window.location.href = '../login.html'; // Basic protection
+            }
         });
     </script>
 </body>

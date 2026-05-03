@@ -238,6 +238,16 @@ app.get('/api/classes', (req, res) => {
     });
 });
 
+// GET /api/classes/details/:id - Fetch single class details
+app.get('/api/classes/details/:id', (req, res) => {
+    const sql = `SELECT * FROM classes WHERE id = ?`;
+    db.get(sql, [req.params.id], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!row) return res.status(404).json({ error: 'Class not found' });
+        res.json(row);
+    });
+});
+
 // GET /api/classes/teacher/:teacher_id - Fetch classes for a specific teacher
 app.get('/api/classes/teacher/:teacher_id', (req, res) => {
     // Only return non-archived classes by default

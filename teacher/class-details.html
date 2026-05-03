@@ -277,6 +277,11 @@
         
         <div class="left-col">
             
+            <div class="class-header" style="margin-bottom: 24px;">
+                <h2 id="class-title-display" style="color: var(--text-main); font-weight: 800; font-size: 24px; margin-bottom: 4px;">Loading Class...</h2>
+                <p id="class-subtitle-display" style="color: var(--matrix-yellow); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">School Year</p>
+            </div>
+
             <div class="search-filter-bar">
                 <button class="btn-add-student" onclick="openEnrollModal()">+ Add Student</button>
                 <div class="search-box">
@@ -390,6 +395,14 @@
         const studentListEl = document.getElementById('studentList');
         const noStudentsMsg = document.getElementById('noStudentsMsg');
         
+        // Initialization
+        if (classId) {
+            loadClassDetails(classId);
+            loadClassStudents(classId);
+        } else {
+            studentListEl.innerHTML = '<div style="color: #fb923c; padding: 20px;">No class selected. Return to the Students tab.</div>';
+        }
+
         const detailPlaceholder = document.getElementById('detailPlaceholder');
         const detailPanel = document.getElementById('detailPanel');
         const enrollModal = document.getElementById('enrollModal');
@@ -407,6 +420,32 @@
         enrollModal.addEventListener('click', (e) => {
             if (e.target === enrollModal) closeEnrollModal();
         });
+
+        // Fetch and load the specific class metadata
+        async function loadClassDetails(classId) {
+            try {
+                const res = await fetch('/api/classes/details/' + classId);
+                if (!res.ok) throw new Error("Failed to fetch class details");
+                
+                const cls = await res.json();
+                
+                // Construct the title: Program Year-Section
+                const program = cls.course_subj_name || 'Unknown Class';
+                const yl = cls.year_level || '';
+                const sec = cls.section || '';
+                let titleStr = program;
+                if (yl || sec) titleStr += ` ${yl}-${sec}`;
+
+                // Inject into the new header
+                document.getElementById('class-title-display').textContent = titleStr;
+                document.getElementById('class-subtitle-display').textContent = 'S.Y. ' + (cls.school_year || '');
+                
+            } catch (err) {
+                console.error(err);
+                document.getElementById('class-title-display').textContent = "Class details unavailable";
+                document.getElementById('class-subtitle-display').textContent = "";
+            }
+        }
 
         // Load all students for the dropdown
         async function loadAllStudentsForDropdown() {

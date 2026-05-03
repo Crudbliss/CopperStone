@@ -288,8 +288,8 @@
         
         <div class="glass-card welcome-banner">
             <p class="welcome-eyebrow">WELCOME BACK</p>
-            <h2 class="welcome-title">Prof. Ana Dela Cruz <span>👋</span></h2>
-            <p class="welcome-sub">IT Professional Elective 3 · BSIT 3-1 · Q2 Assessment Complete</p>
+            <h2 class="welcome-title" id="welcome-teacher-name">Prof. <span>👋</span></h2>
+            <p class="welcome-sub" id="welcome-teacher-email">Loading...</p>
         </div>
 
         <div class="stats-grid">
@@ -419,6 +419,20 @@
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const userStr = localStorage.getItem('currentUser');
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    document.getElementById('welcome-teacher-name').innerHTML = `Prof. ${user.name} <span>👋</span>`;
+                    document.getElementById('welcome-teacher-email').textContent = "Teacher Portal Overview";
+                } catch(e) { console.error(e); }
+            } else {
+                document.getElementById('welcome-teacher-name').innerHTML = `Welcome <span>👋</span>`;
+                document.getElementById('welcome-teacher-email').textContent = "Please log in";
+            }
+        });
+
         // Function to navigate to the class details page and update the parent sidebar
         function navigateToStudents() {
             if (window.parent && window.parent.document) {
