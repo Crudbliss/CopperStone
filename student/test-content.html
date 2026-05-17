@@ -225,8 +225,49 @@
         </div>
 
         <div id="questions-container">
-            <!-- Questions injected here -->
-            <p style="color: var(--text-muted);">Loading questions...</p>
+            <div class="question-card">
+                <div class="question-title">1. On a scale of 1 to 10, how well do you perform on standardized multiple-choice quizzes?</div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-top:-8px;">This metric reflects your ability to digest hierarchical information.</p>
+                <div class="slider-container" style="margin-top: 16px;">
+                    <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_quiz">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                        <span>1 (Poorly)</span><span id="val_quiz" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">2. On a scale of 1 to 10, how effectively do you contribute to group presentations?</div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-top:-8px;">This metric reflects your collective learning traits.</p>
+                <div class="slider-container" style="margin-top: 16px;">
+                    <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_group">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                        <span>1 (Poorly)</span><span id="val_group" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">3. On a scale of 1 to 10, how comfortable are you writing independent research papers?</div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-top:-8px;">This metric reflects your distributed (self-guided) learning traits.</p>
+                <div class="slider-container" style="margin-top: 16px;">
+                    <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_research">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                        <span>1 (Poorly)</span><span id="val_research" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title">4. On a scale of 1 to 10, how well do you complete daily independent seatwork?</div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-top:-8px;">This metric reflects your individual learning traits.</p>
+                <div class="slider-container" style="margin-top: 16px;">
+                    <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_seatwork">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                        <span>1 (Poorly)</span><span id="val_seatwork" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <button class="btn-submit" id="btn-submit" disabled>Submit Assessment</button>
@@ -247,11 +288,31 @@
         <button class="btn-submit" onclick="updateParentSidebar(0); window.location.href='dashboard-content.html';">Return to Dashboard</button>
     </div>
 
+    <style>
+        /* Slider styling */
+        .metric-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--bg-base);
+            outline: none;
+            border: 1px solid var(--border-light);
+        }
+        .metric-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--matrix-green);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+        }
+    </style>
     <script>
-        let selectedAnswers = {}; // { questionId: answerId }
         const submitBtn = document.getElementById('btn-submit');
         let activeSession = null;
-        let totalQuestions = 0;
 
         document.addEventListener('DOMContentLoaded', async () => {
             // Check for active sessions first
@@ -305,59 +366,15 @@
             // Now load the actual questions
             const container = document.getElementById('questions-container');
 
-            try {
-                // Fetch questions
-                const res = await fetch('/api/questions');
-                const questions = await res.json();
-                totalQuestions = questions.length;
-                container.innerHTML = '';
-
-                questions.forEach((q, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'question-card';
-                    
-                    let html = `<div class="question-title">${index + 1}. ${q.title}</div>`;
-                    html += `<div class="answers-grid">`;
-                    
-                    q.answers.forEach(a => {
-                        html += `
-                            <div class="answer-option" data-qid="${q.id}" data-aid="${a.id}">
-                                <div class="radio-circle"></div>
-                                <div class="answer-text">${a.text}</div>
-                            </div>
-                        `;
-                    });
-
-                    html += `</div>`;
-                    card.innerHTML = html;
-                    container.appendChild(card);
+            // No need to fetch questions from API anymore, we hardcoded the 4 academic metrics.
+            submitBtn.disabled = false; // Enable by default since sliders have default values
+            
+            // Add listeners to update the span values dynamically
+            ['quiz', 'group', 'research', 'seatwork'].forEach(metric => {
+                document.getElementById('score_' + metric).addEventListener('input', (e) => {
+                    document.getElementById('val_' + metric).textContent = e.target.value;
                 });
-
-                // Attach click listeners to options
-                document.querySelectorAll('.answer-option').forEach(option => {
-                    option.addEventListener('click', function() {
-                        const qid = this.getAttribute('data-qid');
-                        const aid = this.getAttribute('data-aid');
-
-                        // Deselect siblings
-                        const siblings = this.parentElement.querySelectorAll('.answer-option');
-                        siblings.forEach(s => s.classList.remove('selected'));
-
-                        // Select this
-                        this.classList.add('selected');
-                        selectedAnswers[qid] = parseInt(aid);
-
-                        // Check if all answered
-                        if (Object.keys(selectedAnswers).length === totalQuestions) {
-                            submitBtn.disabled = false;
-                        }
-                    });
-                });
-
-            } catch(e) {
-                container.innerHTML = `<p style="color: red;">Error loading questions.</p>`;
-                console.error(e);
-            }
+            });
         });
 
         document.getElementById('btn-submit').addEventListener('click', async () => {
@@ -367,7 +384,14 @@
                 return;
             }
             const user = JSON.parse(userStr);
-            const answersArray = Object.values(selectedAnswers);
+            
+            // Normalize inputs to 0.1 - 1.0 range (like the AI expects)
+            const scores = {
+                quiz_score: parseInt(document.getElementById('score_quiz').value) / 10,
+                group_score: parseInt(document.getElementById('score_group').value) / 10,
+                research_score: parseInt(document.getElementById('score_research').value) / 10,
+                seatwork_score: parseInt(document.getElementById('score_seatwork').value) / 10
+            };
 
             try {
                 document.getElementById('test-container').style.display = 'none';
@@ -375,13 +399,14 @@
 
                 const payload = {
                     student_id: user.id,
-                    answers: answersArray
+                    scores: scores
                 };
                 if (activeSession) {
                     payload.session_id = activeSession.session_id;
                 }
 
-                const res = await fetch('/api/assessments/submit', {
+                // Send to the new FKNN endpoint
+                const res = await fetch('/api/assessments/submit-fknn', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)

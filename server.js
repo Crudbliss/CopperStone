@@ -544,6 +544,83 @@ app.get('/api/students/:id/history', (req, res) => {
     });
 });
 
+// POST /api/assessments/submit-fknn - Submit academic scores and calculate using FKNN
+app.post('/api/assessments/submit-fknn', (req, res) => {
+    const { student_id, session_id, scores } = req.body;
+    
+    if (!student_id || !scores) {
+        return res.status(400).json({ error: 'Missing student_id or scores' });
+    }
+
+    db.all(`SELECT * FROM ai_training_data`, [], (err, trainingData) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (trainingData.length === 0) return res.status(500).json({ error: "No training data found." });
+
+        const K = 5;
+        let distances = trainingData.map(data => {
+            let dist = Math.sqrt(
+                Math.pow(scores.quiz_score - data.quiz_score, 2) +
+                Math.pow(scores.group_score - data.group_score, 2) +
+                Math.pow(scores.research_score - data.research_score, 2) +
+                Math.pow(scores.seatwork_score - data.seatwork_score, 2)
+            );
+            return { mode: data.target_quadrant, distance: dist };
+        });
+
+        distances.sort((a, b) => a.distance - b.distance);
+        const nearest = distances.slice(0, K);
+
+        let memberships = {
+            'Hierarchical-Individual': 0,
+            'Distributed-Individual': 0,
+            'Hierarchical-Collective': 0,
+            'Distributed-Collective': 0
+        };
+
+        let totalWeight = 0;
+        nearest.forEach(neighbor => {
+            let weight = neighbor.distance === 0 ? 1000 : (1 / Math.pow(neighbor.distance, 2));
+            if (memberships[neighbor.mode] !== undefined) {
+                memberships[neighbor.mode] += weight;
+                totalWeight += weight;
+            }
+        });
+
+        let dominantMode = 'Hierarchical Individual';
+        let maxWeight = -1;
+        for (let m in memberships) {
+            if (memberships[m] > maxWeight) {
+                maxWeight = memberships[m];
+                dominantMode = m.replace('-', ' ');
+            }
+        }
+
+        // Generate coordinates so the rest of the dashboard (scatter plots, etc) doesn't break
+        let finalX = 0; let finalY = 0;
+        if (dominantMode.includes('Hierarchical')) finalX = -3; else finalX = 3;
+        if (dominantMode.includes('Individual')) finalY = 3; else finalY = -3;
+
+        db.serialize(() => {
+            if (session_id) {
+                db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode) VALUES (?, ?, ?, ?, ?)`,
+                    [student_id, session_id, finalX, finalY, dominantMode]);
+            }
+
+            db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ? WHERE id = ?`, 
+                [finalX, finalY, dominantMode, student_id], 
+                function(updateErr) {
+                    if (updateErr) console.error("Error updating student coords", updateErr);
+                    res.json({
+                        success: true,
+                        result: { x: finalX, y: finalY, mode: dominantMode, fuzzy: memberships }
+                    });
+                }
+            );
+        });
+    });
+});
+
+
 // POST /api/assessments/submit - Submit answers and calculate learning mode
 app.post('/api/assessments/submit', (req, res) => {
     const { student_id, session_id, answers } = req.body;
