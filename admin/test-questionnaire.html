@@ -169,7 +169,6 @@
         .ql-bl { bottom: 20px; left: 20px; color: var(--matrix-orange); } /* HC */
         .ql-br { bottom: 20px; right: 20px; color: var(--matrix-purple); } /* DC */
 
-        /* The Dot */
         .result-dot {
             position: absolute;
             width: 16px;
@@ -180,6 +179,91 @@
             box-shadow: 0 0 10px var(--matrix-blue);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 10;
+        }
+
+        /* Toggles */
+        .mode-toggle {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            background: rgba(255,255,255,0.02);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            justify-content: center;
+        }
+        .toggle-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .toggle-btn.active {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: rgba(56, 189, 248, 0.3);
+            color: var(--matrix-blue);
+        }
+
+        /* Sliders */
+        .slider-container { margin-top: 16px; }
+        .metric-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--bg-base);
+            outline: none;
+            border: 1px solid var(--border-light);
+        }
+        .metric-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--matrix-green);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+        }
+        .question-card {
+            background-color: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        .btn-submit {
+            background-color: var(--matrix-green);
+            color: var(--bg-base);
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 16px;
+        }
+        
+        .fuzzy-bar-container {
+            width: 100%;
+            height: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .fuzzy-fill {
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
         }
     </style>
 </head>
@@ -196,39 +280,117 @@
 
         <div class="glass-card">
             
-            <div id="testView">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
+            <div class="mode-toggle">
+                <button class="toggle-btn active" id="btnModeOld" onclick="switchMode('old')">Old System (Situational)</button>
+                <button class="toggle-btn" id="btnModeNew" onclick="switchMode('new')">New System (AI Sliders)</button>
+            </div>
+
+            <!-- OLD SYSTEM VIEW -->
+            <div id="oldSystemWrapper">
+                <div id="testView">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    
+                    <div id="questionCounter" style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px;">Question 1 of X</div>
+                    <div class="question-title" id="questionTitle">Loading...</div>
+                    
+                    <div class="answers-grid" id="answersGrid"></div>
                 </div>
-                
-                <div id="questionCounter" style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px;">Question 1 of X</div>
-                <div class="question-title" id="questionTitle">Loading...</div>
-                
-                <div class="answers-grid" id="answersGrid">
-                    <!-- Answers rendered here -->
+
+                <div id="resultsView">
+                    <h2 class="result-title">Test Complete</h2>
+                    <div class="result-quadrant" id="resultQuadrantText">Calculating...</div>
+                    <div class="result-scores" id="resultScoresText">X: 0.00 | Y: 0.00</div>
+
+                    <div class="graph-container">
+                        <div class="axis-x"></div><div class="axis-y"></div>
+                        <div class="label label-top">Individual (-Y)</div><div class="label label-bottom">Collective (+Y)</div>
+                        <div class="label label-left">Hierarchical (-X)</div><div class="label label-right">Distributed (+X)</div>
+                        <div class="quadrant-label ql-tl">HI</div><div class="quadrant-label ql-tr">DI</div>
+                        <div class="quadrant-label ql-bl">HC</div><div class="quadrant-label ql-br">DC</div>
+                        <div class="result-dot" id="resultDot" style="top: 50%; left: 50%;"></div>
+                    </div>
                 </div>
             </div>
 
-            <div id="resultsView">
-                <h2 class="result-title">Test Complete</h2>
-                <div class="result-quadrant" id="resultQuadrantText">Calculating...</div>
-                <div class="result-scores" id="resultScoresText">X: 0.00 | Y: 0.00</div>
-
-                <div class="graph-container">
-                    <div class="axis-x"></div>
-                    <div class="axis-y"></div>
+            <!-- NEW SYSTEM VIEW -->
+            <div id="newSystemWrapper" style="display: none;">
+                <div id="aiTestView">
+                    <h3 style="margin-bottom: 24px; color: var(--matrix-blue);">AI Academic Evaluation</h3>
                     
-                    <div class="label label-top">Individual (-Y)</div>
-                    <div class="label label-bottom">Collective (+Y)</div>
-                    <div class="label label-left">Hierarchical (-X)</div>
-                    <div class="label label-right">Distributed (+X)</div>
-                    
-                    <div class="quadrant-label ql-tl">HI</div>
-                    <div class="quadrant-label ql-tr">DI</div>
-                    <div class="quadrant-label ql-bl">HC</div>
-                    <div class="quadrant-label ql-br">DC</div>
+                    <div class="question-card">
+                        <div style="font-weight:600;">1. Multiple-Choice Quizzes (Hierarchical)</div>
+                        <div class="slider-container">
+                            <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_quiz">
+                            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-top:8px;">
+                                <span>1 (Poorly)</span><span id="val_quiz" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="result-dot" id="resultDot" style="top: 50%; left: 50%;"></div>
+                    <div class="question-card">
+                        <div style="font-weight:600;">2. Group Presentations (Collective)</div>
+                        <div class="slider-container">
+                            <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_group">
+                            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-top:8px;">
+                                <span>1 (Poorly)</span><span id="val_group" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-card">
+                        <div style="font-weight:600;">3. Research Papers (Distributed)</div>
+                        <div class="slider-container">
+                            <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_research">
+                            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-top:8px;">
+                                <span>1 (Poorly)</span><span id="val_research" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-card">
+                        <div style="font-weight:600;">4. Independent Seatwork (Individual)</div>
+                        <div class="slider-container">
+                            <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_seatwork">
+                            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-top:8px;">
+                                <span>1 (Poorly)</span><span id="val_seatwork" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-submit" id="btn-submit-ai" onclick="submitAI()">Simulate AI Calculation</button>
+                </div>
+
+                <div id="aiResultsView" style="display:none; text-align: center;">
+                    <h2 class="result-title">AI FKNN Result</h2>
+                    <div class="result-quadrant" id="aiResultQuadrantText" style="color: var(--matrix-blue); margin-bottom:24px;">Calculating...</div>
+                    
+                    <div style="text-align: left; max-width: 400px; margin: 0 auto;">
+                        <h4 style="margin-bottom: 16px; color: var(--text-muted);">Fuzzy Memberships</h4>
+                        
+                        <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+                            <span>Hierarchical-Individual</span><span id="pct-hi" style="font-weight:bold;">0%</span>
+                        </div>
+                        <div class="fuzzy-bar-container"><div id="bar-hi" class="fuzzy-fill" style="background:var(--matrix-green); width:0%;"></div></div>
+                        
+                        <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+                            <span>Distributed-Individual</span><span id="pct-di" style="font-weight:bold;">0%</span>
+                        </div>
+                        <div class="fuzzy-bar-container"><div id="bar-di" class="fuzzy-fill" style="background:var(--matrix-blue); width:0%;"></div></div>
+                        
+                        <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+                            <span>Hierarchical-Collective</span><span id="pct-hc" style="font-weight:bold;">0%</span>
+                        </div>
+                        <div class="fuzzy-bar-container"><div id="bar-hc" class="fuzzy-fill" style="background:var(--matrix-orange); width:0%;"></div></div>
+                        
+                        <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+                            <span>Distributed-Collective</span><span id="pct-dc" style="font-weight:bold;">0%</span>
+                        </div>
+                        <div class="fuzzy-bar-container"><div id="bar-dc" class="fuzzy-fill" style="background:var(--matrix-purple); width:0%;"></div></div>
+                    </div>
+                    
+                    <button class="btn-submit" onclick="resetAI()" style="width: auto; padding: 10px 20px; font-size:14px; margin-top:32px; background:transparent; border:1px solid var(--border-light); color:white;">Test Again</button>
                 </div>
             </div>
 
@@ -252,14 +414,101 @@
             if(!questions || questions.length === 0) {
                 document.getElementById('testView').innerHTML = `
                     <div style="text-align: center; color: var(--text-muted);">
-                        No active questions found. Please go back and add some questions first.
+                        No active situational questions found in sessionStorage.
                     </div>
                 `;
-                return;
+            } else {
+                renderQuestion();
             }
 
-            renderQuestion();
+            // Slider listeners
+            ['quiz', 'group', 'research', 'seatwork'].forEach(metric => {
+                document.getElementById('score_' + metric).addEventListener('input', (e) => {
+                    document.getElementById('val_' + metric).textContent = e.target.value;
+                });
+            });
         });
+
+        function switchMode(mode) {
+            document.getElementById('btnModeOld').classList.remove('active');
+            document.getElementById('btnModeNew').classList.remove('active');
+            
+            if(mode === 'old') {
+                document.getElementById('btnModeOld').classList.add('active');
+                document.getElementById('oldSystemWrapper').style.display = 'block';
+                document.getElementById('newSystemWrapper').style.display = 'none';
+            } else {
+                document.getElementById('btnModeNew').classList.add('active');
+                document.getElementById('oldSystemWrapper').style.display = 'none';
+                document.getElementById('newSystemWrapper').style.display = 'block';
+            }
+        }
+
+        async function submitAI() {
+            const btn = document.getElementById('btn-submit-ai');
+            btn.textContent = "Processing...";
+            btn.disabled = true;
+
+            const scores = {
+                quiz_score: parseInt(document.getElementById('score_quiz').value) / 10,
+                group_score: parseInt(document.getElementById('score_group').value) / 10,
+                research_score: parseInt(document.getElementById('score_research').value) / 10,
+                seatwork_score: parseInt(document.getElementById('score_seatwork').value) / 10
+            };
+
+            try {
+                const res = await fetch('/api/ai/simulate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scores })
+                });
+                const data = await res.json();
+                
+                if(data.success) {
+                    document.getElementById('aiTestView').style.display = 'none';
+                    document.getElementById('aiResultsView').style.display = 'block';
+                    
+                    document.getElementById('aiResultQuadrantText').textContent = data.result.mode;
+                    
+                    // Fuzzy percentages
+                    const fuzzy = data.result.fuzzy;
+                    let total = 0;
+                    for(let k in fuzzy) total += fuzzy[k];
+                    
+                    const calculatePct = (val) => total > 0 ? Math.round((val / total) * 100) : 0;
+                    
+                    const hiPct = calculatePct(fuzzy['Hierarchical-Individual']);
+                    const diPct = calculatePct(fuzzy['Distributed-Individual']);
+                    const hcPct = calculatePct(fuzzy['Hierarchical-Collective']);
+                    const dcPct = calculatePct(fuzzy['Distributed-Collective']);
+
+                    document.getElementById('pct-hi').textContent = hiPct + '%';
+                    document.getElementById('bar-hi').style.width = hiPct + '%';
+                    
+                    document.getElementById('pct-di').textContent = diPct + '%';
+                    document.getElementById('bar-di').style.width = diPct + '%';
+                    
+                    document.getElementById('pct-hc').textContent = hcPct + '%';
+                    document.getElementById('bar-hc').style.width = hcPct + '%';
+                    
+                    document.getElementById('pct-dc').textContent = dcPct + '%';
+                    document.getElementById('bar-dc').style.width = dcPct + '%';
+                } else {
+                    alert("Simulation Error: " + data.error);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Network error.");
+            }
+
+            btn.textContent = "Simulate AI Calculation";
+            btn.disabled = false;
+        }
+
+        function resetAI() {
+            document.getElementById('aiTestView').style.display = 'block';
+            document.getElementById('aiResultsView').style.display = 'none';
+        }
 
         function renderQuestion() {
             const q = questions[currentIndex];

@@ -134,6 +134,29 @@ db.serialize(() => {
         FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE,
         FOREIGN KEY(session_id) REFERENCES assessment_sessions(id) ON DELETE CASCADE
     )`);
+
+    // 10. AI Settings
+    db.run(`CREATE TABLE IF NOT EXISTS ai_settings (
+        setting_key TEXT PRIMARY KEY,
+        setting_value TEXT
+    )`, () => {
+        // Initialize default settings if empty
+        db.get("SELECT count(*) as count FROM ai_settings", (err, row) => {
+            if (!err && row && row.count === 0) {
+                const defaults = [
+                    ['k_value', '5'],
+                    ['weight_quiz', '1.0'],
+                    ['weight_group', '1.0'],
+                    ['weight_research', '1.0'],
+                    ['weight_seatwork', '1.0'],
+                    ['distance_metric', 'euclidean']
+                ];
+                const stmt = db.prepare("INSERT INTO ai_settings (setting_key, setting_value) VALUES (?, ?)");
+                defaults.forEach(d => stmt.run(d));
+                stmt.finalize();
+            }
+        });
+    });
 });
 
 // --- API ENDPOINTS ---
@@ -544,6 +567,65 @@ app.get('/api/students/:id/history', (req, res) => {
     });
 });
 
+// --- AI HELPER FUNCTION ---
+function calculateFKNN(scores, trainingData, settings) {
+    const K = parseInt(settings.k_value) || 5;
+    const wQuiz = parseFloat(settings.weight_quiz) || 1.0;
+    const wGroup = parseFloat(settings.weight_group) || 1.0;
+    const wResearch = parseFloat(settings.weight_research) || 1.0;
+    const wSeatwork = parseFloat(settings.weight_seatwork) || 1.0;
+    const metric = settings.distance_metric || 'euclidean';
+
+    let distances = trainingData.map(data => {
+        let dQ = Math.abs(scores.quiz_score - data.quiz_score) * wQuiz;
+        let dG = Math.abs(scores.group_score - data.group_score) * wGroup;
+        let dR = Math.abs(scores.research_score - data.research_score) * wResearch;
+        let dS = Math.abs(scores.seatwork_score - data.seatwork_score) * wSeatwork;
+
+        let dist = 0;
+        if (metric === 'euclidean') {
+            dist = Math.sqrt(dQ*dQ + dG*dG + dR*dR + dS*dS);
+        } else if (metric === 'manhattan') {
+            dist = dQ + dG + dR + dS;
+        } else if (metric === 'chebyshev') {
+            dist = Math.max(dQ, dG, dR, dS);
+        } else {
+            dist = Math.sqrt(dQ*dQ + dG*dG + dR*dR + dS*dS); // fallback
+        }
+
+        return { mode: data.target_quadrant, distance: dist };
+    });
+
+    distances.sort((a, b) => a.distance - b.distance);
+    const nearest = distances.slice(0, K);
+
+    let memberships = {
+        'Hierarchical-Individual': 0,
+        'Distributed-Individual': 0,
+        'Hierarchical-Collective': 0,
+        'Distributed-Collective': 0
+    };
+
+    let totalWeight = 0;
+    nearest.forEach(neighbor => {
+        let weight = neighbor.distance === 0 ? 1000 : (1 / Math.pow(neighbor.distance, 2));
+        if (memberships[neighbor.mode] !== undefined) {
+            memberships[neighbor.mode] += weight;
+            totalWeight += weight;
+        }
+    });
+
+    let dominantMode = 'Hierarchical Individual';
+    let maxWeight = -1;
+    for (let m in memberships) {
+        if (memberships[m] > maxWeight) {
+            maxWeight = memberships[m];
+            dominantMode = m.replace('-', ' ');
+        }
+    }
+    return { dominantMode, memberships };
+}
+
 // POST /api/assessments/submit-fknn - Submit academic scores and calculate using FKNN
 app.post('/api/assessments/submit-fknn', (req, res) => {
     const { student_id, session_id, scores } = req.body;
@@ -552,70 +634,39 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
         return res.status(400).json({ error: 'Missing student_id or scores' });
     }
 
-    db.all(`SELECT * FROM ai_training_data`, [], (err, trainingData) => {
+    db.all(`SELECT * FROM ai_settings`, [], (err, settingsRows) => {
         if (err) return res.status(500).json({ error: err.message });
-        if (trainingData.length === 0) return res.status(500).json({ error: "No training data found." });
+        let settings = {};
+        settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
 
-        const K = 5;
-        let distances = trainingData.map(data => {
-            let dist = Math.sqrt(
-                Math.pow(scores.quiz_score - data.quiz_score, 2) +
-                Math.pow(scores.group_score - data.group_score, 2) +
-                Math.pow(scores.research_score - data.research_score, 2) +
-                Math.pow(scores.seatwork_score - data.seatwork_score, 2)
-            );
-            return { mode: data.target_quadrant, distance: dist };
-        });
+        db.all(`SELECT * FROM ai_training_data`, [], (err, trainingData) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (trainingData.length === 0) return res.status(500).json({ error: "No training data found." });
 
-        distances.sort((a, b) => a.distance - b.distance);
-        const nearest = distances.slice(0, K);
+            const { dominantMode, memberships } = calculateFKNN(scores, trainingData, settings);
 
-        let memberships = {
-            'Hierarchical-Individual': 0,
-            'Distributed-Individual': 0,
-            'Hierarchical-Collective': 0,
-            'Distributed-Collective': 0
-        };
+            // Generate coordinates so the rest of the dashboard (scatter plots, etc) doesn't break
+            let finalX = 0; let finalY = 0;
+            if (dominantMode.includes('Hierarchical')) finalX = -3; else finalX = 3;
+            if (dominantMode.includes('Individual')) finalY = 3; else finalY = -3;
 
-        let totalWeight = 0;
-        nearest.forEach(neighbor => {
-            let weight = neighbor.distance === 0 ? 1000 : (1 / Math.pow(neighbor.distance, 2));
-            if (memberships[neighbor.mode] !== undefined) {
-                memberships[neighbor.mode] += weight;
-                totalWeight += weight;
-            }
-        });
-
-        let dominantMode = 'Hierarchical Individual';
-        let maxWeight = -1;
-        for (let m in memberships) {
-            if (memberships[m] > maxWeight) {
-                maxWeight = memberships[m];
-                dominantMode = m.replace('-', ' ');
-            }
-        }
-
-        // Generate coordinates so the rest of the dashboard (scatter plots, etc) doesn't break
-        let finalX = 0; let finalY = 0;
-        if (dominantMode.includes('Hierarchical')) finalX = -3; else finalX = 3;
-        if (dominantMode.includes('Individual')) finalY = 3; else finalY = -3;
-
-        db.serialize(() => {
-            if (session_id) {
-                db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode) VALUES (?, ?, ?, ?, ?)`,
-                    [student_id, session_id, finalX, finalY, dominantMode]);
-            }
-
-            db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ? WHERE id = ?`, 
-                [finalX, finalY, dominantMode, student_id], 
-                function(updateErr) {
-                    if (updateErr) console.error("Error updating student coords", updateErr);
-                    res.json({
-                        success: true,
-                        result: { x: finalX, y: finalY, mode: dominantMode, fuzzy: memberships }
-                    });
+            db.serialize(() => {
+                if (session_id) {
+                    db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode) VALUES (?, ?, ?, ?, ?)`,
+                        [student_id, session_id, finalX, finalY, dominantMode]);
                 }
-            );
+
+                db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ? WHERE id = ?`, 
+                    [finalX, finalY, dominantMode, student_id], 
+                    function(updateErr) {
+                        if (updateErr) console.error("Error updating student coords", updateErr);
+                        res.json({
+                            success: true,
+                            result: { x: finalX, y: finalY, mode: dominantMode, fuzzy: memberships }
+                        });
+                    }
+                );
+            });
         });
     });
 });
@@ -677,6 +728,109 @@ app.post('/api/assessments/submit', (req, res) => {
         });
     });
 });
+
+// POST /api/ai/simulate - Admin endpoint to test FKNN math without saving to DB
+app.post('/api/ai/simulate', (req, res) => {
+    const { scores } = req.body;
+    
+    if (!scores) return res.status(400).json({ error: 'Missing scores' });
+
+    db.all(`SELECT * FROM ai_settings`, [], (err, settingsRows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        let settings = {};
+        settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
+
+        db.all(`SELECT * FROM ai_training_data`, [], (err, trainingData) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (trainingData.length === 0) return res.status(500).json({ error: "No training data found." });
+
+            const { dominantMode, memberships } = calculateFKNN(scores, trainingData, settings);
+
+            res.json({
+                success: true,
+                result: { mode: dominantMode, fuzzy: memberships }
+            });
+        });
+    });
+});
+
+// POST /api/ai/upload-start - Clear old data before chunking
+app.post('/api/ai/upload-start', (req, res) => {
+    db.run(`DELETE FROM ai_training_data`, (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
+// POST /api/ai/upload-chunk - Upload a chunk of dataset
+app.post('/api/ai/upload-chunk', (req, res) => {
+    const { data } = req.body;
+    if (!data || !Array.isArray(data)) return res.status(400).json({ error: 'Invalid data' });
+
+    db.serialize(() => {
+        const stmt = db.prepare(`INSERT INTO ai_training_data (quiz_score, group_score, research_score, seatwork_score, target_quadrant) VALUES (?, ?, ?, ?, ?)`);
+        let insertedCount = 0;
+        
+        data.forEach(row => {
+            stmt.run([row.quiz_score, row.group_score, row.research_score, row.seatwork_score, row.target_quadrant], function(insertErr) {
+                if (!insertErr) insertedCount++;
+            });
+        });
+        
+        stmt.finalize(() => {
+            res.json({ success: true, count: insertedCount });
+        });
+    });
+});
+
+// GET /api/ai/settings - Fetch AI model configuration
+app.get('/api/ai/settings', (req, res) => {
+    db.all(`SELECT * FROM ai_settings`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        let config = {};
+        rows.forEach(r => config[r.setting_key] = r.setting_value);
+        res.json(config);
+    });
+});
+
+// POST /api/ai/settings - Update AI model configuration
+app.post('/api/ai/settings', (req, res) => {
+    const settings = req.body;
+    db.serialize(() => {
+        const stmt = db.prepare(`INSERT OR REPLACE INTO ai_settings (setting_key, setting_value) VALUES (?, ?)`);
+        for (let key in settings) {
+            stmt.run([key, String(settings[key])]);
+        }
+        stmt.finalize(() => {
+            res.json({ success: true });
+        });
+    });
+});
+
+// GET /api/ai/stats - Fetch current dataset distribution
+app.get('/api/ai/stats', (req, res) => {
+    db.all(`SELECT target_quadrant as mode, COUNT(*) as count FROM ai_training_data GROUP BY target_quadrant`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        let total = 0;
+        rows.forEach(r => total += r.count);
+        res.json({ total, distribution: rows });
+    });
+});
+
+// GET /api/ai/download - Download active AI dataset as CSV
+app.get('/api/ai/download', (req, res) => {
+    db.all(`SELECT quiz_score, group_score, research_score, seatwork_score, target_quadrant FROM ai_training_data`, [], (err, rows) => {
+        if (err) return res.status(500).send("Database error");
+        let csv = "Quiz_Score,Group_Score,Research_Score,Seatwork_Score,Target_Quadrant\n";
+        rows.forEach(r => {
+            csv += `${r.quiz_score},${r.group_score},${r.research_score},${r.seatwork_score},${r.target_quadrant}\n`;
+        });
+        res.header('Content-Type', 'text/csv');
+        res.attachment('current_model_dataset.csv');
+        return res.send(csv);
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
