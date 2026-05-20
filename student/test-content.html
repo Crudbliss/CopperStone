@@ -40,20 +40,43 @@
             gap: 24px;
         }
 
-        .header {
-            margin-bottom: 12px;
-        }
-
+        .header { margin-bottom: 12px; }
         .header h1 { font-size: 24px; font-weight: 700; }
         .header p { font-size: 14px; color: var(--text-muted); }
 
-        /* The Questions container */
-        #questions-container {
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
+        /* --- PROGRESS BAR --- */
+        .progress-wrapper {
+            margin-bottom: 8px;
         }
 
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .progress-info .current { color: var(--matrix-green); }
+
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--matrix-green);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        /* --- QUESTION CARD --- */
         .question-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-light);
@@ -62,6 +85,12 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
+            animation: fadeSlideIn 0.35s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .question-title {
@@ -100,8 +129,7 @@
         }
 
         .radio-circle {
-            width: 20px;
-            height: 20px;
+            width: 20px; height: 20px;
             border-radius: 50%;
             border: 2px solid var(--text-muted);
             flex-shrink: 0;
@@ -115,20 +143,14 @@
 
         .answer-option.selected .radio-circle::after {
             content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 10px;
-            height: 10px;
+            width: 10px; height: 10px;
             background-color: var(--matrix-green);
             border-radius: 50%;
         }
 
-        .answer-text {
-            font-size: 14px;
-            font-weight: 500;
-        }
+        .answer-text { font-size: 14px; font-weight: 500; }
 
         .btn-submit {
             background-color: var(--matrix-green);
@@ -145,10 +167,7 @@
         }
 
         .btn-submit:hover { opacity: 0.9; }
-        .btn-submit:disabled {
-            background-color: var(--text-muted);
-            cursor: not-allowed;
-        }
+        .btn-submit:disabled { background-color: var(--text-muted); cursor: not-allowed; }
 
         /* Result Screen overlay */
         #result-screen {
@@ -164,24 +183,9 @@
             padding: 20px;
         }
 
-        .result-icon {
-            font-size: 64px;
-            margin-bottom: 24px;
-        }
-
-        .result-mode {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--matrix-green);
-            margin-bottom: 12px;
-        }
-
-        .result-sub {
-            font-size: 16px;
-            color: var(--text-muted);
-            margin-bottom: 32px;
-            max-width: 400px;
-        }
+        .result-icon { font-size: 64px; margin-bottom: 24px; }
+        .result-mode { font-size: 32px; font-weight: 800; color: var(--matrix-green); margin-bottom: 12px; }
+        .result-sub { font-size: 16px; color: var(--text-muted); margin-bottom: 32px; max-width: 400px; }
 
         /* Loading Screen overlay */
         #loading-screen {
@@ -198,8 +202,7 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
+            width: 50px; height: 50px;
             border: 4px solid rgba(74, 222, 128, 0.2);
             border-bottom-color: var(--matrix-green);
             border-radius: 50%;
@@ -213,7 +216,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
     </style>
 </head>
 <body>
@@ -221,11 +223,21 @@
     <div class="container" id="test-container">
         <div class="header">
             <h1>Learning Mode Assessment</h1>
-            <p>Answer all questions below to determine your position on the quadrant.</p>
+            <p>Answer each question to determine your position on the quadrant.</p>
+        </div>
+
+        <div class="progress-wrapper">
+            <div class="progress-info">
+                <span>Question <span class="current" id="progress-current">1</span> of <span id="progress-total">20</span></span>
+                <span id="progress-pct">0%</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
         </div>
 
         <div id="questions-container">
-            <!-- Questions will be injected here via JavaScript -->
+            <!-- Single question injected here -->
         </div>
 
         <button class="btn-submit" id="btn-submit" disabled>Submit Assessment</button>
@@ -246,28 +258,6 @@
         <button class="btn-submit" onclick="updateParentSidebar(0); window.location.href='dashboard-content.html';">Return to Dashboard</button>
     </div>
 
-    <style>
-        /* Slider styling */
-        .metric-slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: var(--bg-base);
-            outline: none;
-            border: 1px solid var(--border-light);
-        }
-        .metric-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--matrix-green);
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
-        }
-    </style>
     <script>
         const submitBtn = document.getElementById('btn-submit');
         let activeSession = null;
@@ -285,7 +275,7 @@
             { q: "HC", text: "I prefer study sessions where one designated 'smart' student tutors the rest of the group like a teacher." },
             { q: "HC", text: "I prefer group coding where the professor actively monitors and corrects our logic in real-time." },
             { q: "DI", text: "I often spend hours reading documentation for programming languages not taught in our curriculum." },
-            { q: "DI", text: "If the professor’s code example is inefficient, I will silently rewrite it my own way during the lecture." },
+            { q: "DI", text: "If the professor's code example is inefficient, I will silently rewrite it my own way during the lecture." },
             { q: "DI", text: "I prefer to disable notifications on my phone and Discord so I can write code in isolation for hours." },
             { q: "DI", text: "I learn best by purposely breaking a working program just to see what the error messages look like." },
             { q: "DI", text: "I prefer to design my own database schema from scratch rather than modifying a provided template." },
@@ -296,81 +286,93 @@
             { q: "DC", text: "Brainstorming logic with peers helps me understand material better than a formal lecture." }
         ];
 
-        let answers = {}; // Store answers by index
+        let answers = {};
+        let shuffledQuestions = [];
+        let currentQuestionIndex = 0;
 
-        function renderQuestions() {
+        function updateProgress() {
+            const answered = Object.keys(answers).length;
+            const total = surveyQuestions.length;
+            const pct = Math.round((answered / total) * 100);
+
+            document.getElementById('progress-current').textContent = Math.min(answered + 1, total);
+            document.getElementById('progress-total').textContent = total;
+            document.getElementById('progress-pct').textContent = pct + '%';
+            document.getElementById('progress-fill').style.width = pct + '%';
+        }
+
+        function showQuestion(index) {
             const container = document.getElementById('questions-container');
-            container.innerHTML = '';
-            
-            // Randomize order
-            const shuffled = surveyQuestions.map((val, i) => ({val, i})).sort(() => Math.random() - 0.5);
+            const item = shuffledQuestions[index];
+            const qNum = index + 1;
 
-            shuffled.forEach((item, displayIndex) => {
-                const qNum = displayIndex + 1;
-                const html = `
-                    <div class="question-card" id="qcard-${item.i}">
-                        <div class="question-title">${qNum}. ${item.val.text}</div>
-                        <div class="answers-grid">
-                            <label class="answer-option">
-                                <input type="radio" name="q-${item.i}" value="1" style="display:none;">
-                                <div class="radio-circle"></div>
-                                <div class="answer-text">Strongly Disagree (1)</div>
-                            </label>
-                            <label class="answer-option">
-                                <input type="radio" name="q-${item.i}" value="2" style="display:none;">
-                                <div class="radio-circle"></div>
-                                <div class="answer-text">Disagree (2)</div>
-                            </label>
-                            <label class="answer-option">
-                                <input type="radio" name="q-${item.i}" value="4" style="display:none;">
-                                <div class="radio-circle"></div>
-                                <div class="answer-text">Agree (4)</div>
-                            </label>
-                            <label class="answer-option">
-                                <input type="radio" name="q-${item.i}" value="5" style="display:none;">
-                                <div class="radio-circle"></div>
-                                <div class="answer-text">Strongly Agree (5)</div>
-                            </label>
-                        </div>
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-title">${qNum}. ${item.val.text}</div>
+                    <div class="answers-grid">
+                        <label class="answer-option" data-value="1">
+                            <div class="radio-circle"></div>
+                            <div class="answer-text">Strongly Disagree (1)</div>
+                        </label>
+                        <label class="answer-option" data-value="2">
+                            <div class="radio-circle"></div>
+                            <div class="answer-text">Disagree (2)</div>
+                        </label>
+                        <label class="answer-option" data-value="4">
+                            <div class="radio-circle"></div>
+                            <div class="answer-text">Agree (4)</div>
+                        </label>
+                        <label class="answer-option" data-value="5">
+                            <div class="radio-circle"></div>
+                            <div class="answer-text">Strongly Agree (5)</div>
+                        </label>
                     </div>
-                `;
-                container.insertAdjacentHTML('beforeend', html);
-            });
+                </div>
+            `;
 
-            // Add event listeners for radios
-            const options = document.querySelectorAll('.answer-option');
-            options.forEach(opt => {
-                opt.addEventListener('click', (e) => {
-                    const radio = opt.querySelector('input[type="radio"]');
-                    const name = radio.name;
-                    
-                    // Remove selected class from siblings
-                    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-                        r.closest('.answer-option').classList.remove('selected');
-                    });
-                    
+            // Re-select if user navigated back (not applicable here, but safe)
+            if (answers[item.i] !== undefined) {
+                const prev = container.querySelector(`.answer-option[data-value="${answers[item.i]}"]`);
+                if (prev) prev.classList.add('selected');
+            }
+
+            // Attach click listeners
+            container.querySelectorAll('.answer-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    container.querySelectorAll('.answer-option').forEach(o => o.classList.remove('selected'));
                     opt.classList.add('selected');
-                    
-                    // Save answer
-                    const qIndex = parseInt(name.split('-')[1]);
-                    answers[qIndex] = parseInt(radio.value);
-                    
-                    checkSubmitReady();
+
+                    const val = parseInt(opt.dataset.value);
+                    answers[item.i] = val;
+
+                    updateProgress();
+
+                    // Auto-advance after a short delay
+                    setTimeout(() => {
+                        if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                            currentQuestionIndex++;
+                            showQuestion(currentQuestionIndex);
+                        } else {
+                            // Last question answered — show submit
+                            submitBtn.disabled = false;
+                            submitBtn.style.display = 'block';
+                        }
+                    }, 350);
                 });
             });
         }
 
-        function checkSubmitReady() {
-            const answeredCount = Object.keys(answers).length;
-            if (answeredCount === surveyQuestions.length) {
-                submitBtn.disabled = false;
-            } else {
-                submitBtn.disabled = true;
-            }
+        function renderQuestions() {
+            shuffledQuestions = surveyQuestions.map((val, i) => ({val, i})).sort(() => Math.random() - 0.5);
+            currentQuestionIndex = 0;
+            answers = {};
+            submitBtn.disabled = true;
+            submitBtn.style.display = 'none';
+            updateProgress();
+            showQuestion(0);
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Check for active sessions first
             const userStr = localStorage.getItem('currentUser');
             if (!userStr) return;
             const user = JSON.parse(userStr);
@@ -393,10 +395,8 @@
                     return;
                 }
                 
-                // For simplicity, just grab the first active session
                 activeSession = sessions[0];
 
-                // Check if already completed
                 const alreadyTook = history.some(h => h.session_id === activeSession.session_id);
                 if (alreadyTook) {
                     document.getElementById('test-container').innerHTML = `
@@ -408,7 +408,6 @@
                     return;
                 }
                 
-                // Show which session this is
                 const header = document.querySelector('.header h1');
                 if(header) {
                     header.innerHTML = `Behavioral Learning Mode Assessment <span style="font-size: 14px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 4px 10px; border-radius: 20px; vertical-align: middle; margin-left: 10px;">${activeSession.course_subj_name} - ${activeSession.quarter_name}</span>`;
@@ -423,17 +422,10 @@
 
         document.getElementById('btn-submit').addEventListener('click', async () => {
             const userStr = localStorage.getItem('currentUser');
-            if (!userStr) {
-                alert("You are not logged in!");
-                return;
-            }
+            if (!userStr) { alert("You are not logged in!"); return; }
             const user = JSON.parse(userStr);
             
-            // Calculate Quadrant Scores
-            let hi_score = 0;
-            let hc_score = 0;
-            let di_score = 0;
-            let dc_score = 0;
+            let hi_score = 0, hc_score = 0, di_score = 0, dc_score = 0;
 
             for (let i = 0; i < surveyQuestions.length; i++) {
                 const q = surveyQuestions[i].q;
@@ -444,26 +436,15 @@
                 if(q === 'DC') dc_score += score;
             }
 
-            const payloadScores = {
-                hi_score: hi_score,
-                hc_score: hc_score,
-                di_score: di_score,
-                dc_score: dc_score
-            };
+            const payloadScores = { hi_score, hc_score, di_score, dc_score };
 
             try {
                 document.getElementById('test-container').style.display = 'none';
                 document.getElementById('loading-screen').style.display = 'flex';
 
-                const payload = {
-                    student_id: user.id,
-                    scores: payloadScores
-                };
-                if (activeSession) {
-                    payload.session_id = activeSession.session_id;
-                }
+                const payload = { student_id: user.id, scores: payloadScores };
+                if (activeSession) payload.session_id = activeSession.session_id;
 
-                // Send to the new FKNN endpoint
                 const res = await fetch('/api/assessments/submit-fknn', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -472,11 +453,9 @@
 
                 const data = await res.json();
 
-                // Add a small delay to let the user see the "analyzing" screen (looks more professional)
                 setTimeout(() => {
                     document.getElementById('loading-screen').style.display = 'none';
                     if (data.success) {
-                        // Update local storage so dashboard knows!
                         const profileStr = localStorage.getItem('studentProfile');
                         if (profileStr) {
                             const profile = JSON.parse(profileStr);

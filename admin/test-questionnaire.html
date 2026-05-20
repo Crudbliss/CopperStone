@@ -68,12 +68,51 @@
             width: 100%;
         }
 
+        /* --- PROGRESS BAR --- */
+        .progress-wrapper {
+            margin-bottom: 24px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .progress-info .current { color: var(--matrix-blue); }
+
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--matrix-blue);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        /* --- QUESTION CARD --- */
         .question-card {
             background-color: rgba(255,255,255,0.02);
             border: 1px solid var(--border-light);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 16px;
+            animation: fadeSlideIn 0.35s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .answer-btn {
@@ -84,9 +123,10 @@
             color: white;
             font-family: 'Poppins', sans-serif;
             font-size: 15px;
-            text-align: left;
+            text-align: center;
             cursor: pointer;
             transition: all 0.2s;
+            flex: 1;
         }
         .answer-btn:hover {
             background: rgba(56, 189, 248, 0.1);
@@ -154,11 +194,21 @@
                 <h3 style="margin-bottom: 8px; color: var(--matrix-blue);">20-Item Questionnaire Simulator</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">This simulates the exact experience a student has. The 20 answers will be translated into 4 quadrant scores and fed directly into the FKNN Algorithm.</p>
                 
-                <div id="questions-container">
-                    <!-- Questions injected here -->
+                <div class="progress-wrapper">
+                    <div class="progress-info">
+                        <span>Question <span class="current" id="progress-current">1</span> of <span id="progress-total">20</span></span>
+                        <span id="progress-pct">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
                 </div>
 
-                <button class="btn-submit" id="btn-submit-ai" disabled>Simulate AI Calculation</button>
+                <div id="questions-container">
+                    <!-- Single question injected here -->
+                </div>
+
+                <button class="btn-submit" id="btn-submit-ai" disabled style="display:none;">Simulate AI Calculation</button>
             </div>
 
             <div id="aiResultsView" style="display:none; text-align: center;">
@@ -208,7 +258,7 @@
             { q: "HC", text: "I prefer study sessions where one designated 'smart' student tutors the rest of the group like a teacher." },
             { q: "HC", text: "I prefer group coding where the professor actively monitors and corrects our logic in real-time." },
             { q: "DI", text: "I often spend hours reading documentation for programming languages not taught in our curriculum." },
-            { q: "DI", text: "If the professor’s code example is inefficient, I will silently rewrite it my own way during the lecture." },
+            { q: "DI", text: "If the professor's code example is inefficient, I will silently rewrite it my own way during the lecture." },
             { q: "DI", text: "I prefer to disable notifications on my phone and Discord so I can write code in isolation for hours." },
             { q: "DI", text: "I learn best by purposely breaking a working program just to see what the error messages look like." },
             { q: "DI", text: "I prefer to design my own database schema from scratch rather than modifying a provided template." },
@@ -220,78 +270,89 @@
         ];
 
         let answers = {};
+        let shuffledQuestions = [];
+        let currentQuestionIndex = 0;
         const submitBtn = document.getElementById('btn-submit-ai');
+
+        function updateProgress() {
+            const answered = Object.keys(answers).length;
+            const total = surveyQuestions.length;
+            const pct = Math.round((answered / total) * 100);
+
+            document.getElementById('progress-current').textContent = Math.min(answered + 1, total);
+            document.getElementById('progress-total').textContent = total;
+            document.getElementById('progress-pct').textContent = pct + '%';
+            document.getElementById('progress-fill').style.width = pct + '%';
+        }
+
+        function showQuestion(index) {
+            const container = document.getElementById('questions-container');
+            const item = shuffledQuestions[index];
+            const qNum = index + 1;
+
+            container.innerHTML = `
+                <div class="question-card">
+                    <div style="font-weight:600; margin-bottom:16px; font-size: 15px;">${qNum}. ${item.val.text}</div>
+                    <div style="display:flex; flex-direction:row; gap:8px;">
+                        <label class="answer-btn" data-value="1">Strongly Disagree</label>
+                        <label class="answer-btn" data-value="2">Disagree</label>
+                        <label class="answer-btn" data-value="4">Agree</label>
+                        <label class="answer-btn" data-value="5">Strongly Agree</label>
+                    </div>
+                </div>
+            `;
+
+            // Re-select if already answered
+            if (answers[item.i] !== undefined) {
+                const prev = container.querySelector(`.answer-btn[data-value="${answers[item.i]}"]`);
+                if (prev) {
+                    prev.style.background = 'rgba(56, 189, 248, 0.1)';
+                    prev.style.borderColor = 'var(--matrix-blue)';
+                }
+            }
+
+            // Attach click listeners
+            container.querySelectorAll('.answer-btn').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    container.querySelectorAll('.answer-btn').forEach(o => {
+                        o.style.background = 'rgba(255, 255, 255, 0.03)';
+                        o.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    });
+                    opt.style.background = 'rgba(56, 189, 248, 0.1)';
+                    opt.style.borderColor = 'var(--matrix-blue)';
+
+                    const val = parseInt(opt.dataset.value);
+                    answers[item.i] = val;
+
+                    updateProgress();
+
+                    // Auto-advance after a short delay
+                    setTimeout(() => {
+                        if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                            currentQuestionIndex++;
+                            showQuestion(currentQuestionIndex);
+                        } else {
+                            // Last question answered — show submit
+                            submitBtn.disabled = false;
+                            submitBtn.style.display = 'block';
+                        }
+                    }, 350);
+                });
+            });
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             renderQuestions();
         });
 
         function renderQuestions() {
-            const container = document.getElementById('questions-container');
-            container.innerHTML = '';
+            shuffledQuestions = surveyQuestions.map((val, i) => ({val, i})).sort(() => Math.random() - 0.5);
+            currentQuestionIndex = 0;
             answers = {};
             submitBtn.disabled = true;
-            
-            // Randomize
-            const shuffled = surveyQuestions.map((val, i) => ({val, i})).sort(() => Math.random() - 0.5);
-
-            shuffled.forEach((item, displayIndex) => {
-                const qNum = displayIndex + 1;
-                const html = `
-                    <div class="question-card" id="qcard-${item.i}">
-                        <div style="font-weight:600; margin-bottom:12px;">${qNum}. ${item.val.text}</div>
-                        <div class="answers-grid" style="display:flex; flex-direction:row; gap:8px;">
-                            <label class="answer-btn" style="flex:1; text-align:center; padding:10px;">
-                                <input type="radio" name="q-${item.i}" value="1" style="display:none;">
-                                Strongly Disagree
-                            </label>
-                            <label class="answer-btn" style="flex:1; text-align:center; padding:10px;">
-                                <input type="radio" name="q-${item.i}" value="2" style="display:none;">
-                                Disagree
-                            </label>
-                            <label class="answer-btn" style="flex:1; text-align:center; padding:10px;">
-                                <input type="radio" name="q-${item.i}" value="4" style="display:none;">
-                                Agree
-                            </label>
-                            <label class="answer-btn" style="flex:1; text-align:center; padding:10px;">
-                                <input type="radio" name="q-${item.i}" value="5" style="display:none;">
-                                Strongly Agree
-                            </label>
-                        </div>
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', html);
-            });
-
-            // Add event listeners for radios
-            const options = document.querySelectorAll('.answer-btn');
-            options.forEach(opt => {
-                opt.addEventListener('click', (e) => {
-                    const radio = opt.querySelector('input[type="radio"]');
-                    const name = radio.name;
-                    
-                    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-                        r.closest('.answer-btn').style.background = 'rgba(255, 255, 255, 0.03)';
-                        r.closest('.answer-btn').style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                    });
-                    
-                    opt.style.background = 'rgba(56, 189, 248, 0.1)';
-                    opt.style.borderColor = 'var(--matrix-blue)';
-                    
-                    const qIndex = parseInt(name.split('-')[1]);
-                    answers[qIndex] = parseInt(radio.value);
-                    
-                    checkSubmitReady();
-                });
-            });
-        }
-
-        function checkSubmitReady() {
-            if (Object.keys(answers).length === surveyQuestions.length) {
-                submitBtn.disabled = false;
-            } else {
-                submitBtn.disabled = true;
-            }
+            submitBtn.style.display = 'none';
+            updateProgress();
+            showQuestion(0);
         }
 
         submitBtn.addEventListener('click', async () => {
@@ -322,7 +383,6 @@
                     
                     document.getElementById('aiResultQuadrantText').textContent = data.result.mode;
                     
-                    // Fuzzy percentages
                     const fuzzy = data.result.fuzzy;
                     let total = 0;
                     for(let k in fuzzy) total += fuzzy[k];
@@ -358,7 +418,7 @@
             document.getElementById('aiResultsView').style.display = 'none';
             document.getElementById('aiTestView').style.display = 'block';
             submitBtn.textContent = "Simulate AI Calculation";
-            renderQuestions(); // reset all questions and scroll to top
+            renderQuestions();
             window.scrollTo(0,0);
         }
     </script>
