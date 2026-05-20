@@ -73,9 +73,62 @@
         }
 
         .nav-logo-icon {
-            background-color: var(--matrix-yellow); color: #ffffff;
-            width: 34px; height: 34px; border-radius: 8px; font-size: 14px;
-            display: flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px; border-radius: 8px;
+            object-fit: contain;
+        }
+
+        /* --- DROPDOWN MENU --- */
+        .nav-dropdown-wrapper {
+            position: relative;
+        }
+
+        .btn-menu {
+            font-family: 'Poppins', sans-serif; background: transparent;
+            border: none; padding: 6px; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+        }
+
+        .btn-menu:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            border: 2px solid; background: transparent;
+        }
+
+        .menu-dot.green { border-color: #4ade80; }
+        .menu-dot.blue { border-color: #38bdf8; }
+        .menu-dot.orange { border-color: #fb923c; }
+        .menu-dot.purple { border-color: #c084fc; }
+
+        .dropdown-menu {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: var(--nav-bg); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px; min-width: 180px; padding: 8px 0;
+            opacity: 0; pointer-events: none; transform: translateY(-8px);
+            transition: all 0.2s ease; z-index: 2000;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+        }
+
+        .dropdown-menu.active {
+            opacity: 1; pointer-events: auto; transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: block; padding: 12px 20px; color: var(--text-gray);
+            text-decoration: none; font-size: 14px; font-weight: 600;
+            transition: all 0.15s; letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05); color: white;
+        }
+
+        .dropdown-divider {
+            height: 1px; background: rgba(255, 255, 255, 0.08); margin: 4px 12px;
         }
 
         .nav-actions { display: flex; gap: 16px; }
@@ -444,12 +497,24 @@
 
     <nav>
         <div class="nav-logo">
-            <div class="nav-logo-icon">M</div>
+            <img src="images/matrix_logo.png" alt="Matrix Logo" class="nav-logo-icon">
             MATRIX
         </div>
         <div class="nav-actions">
-            <button class="btn-ghost" onclick="openRoleSelectModal()">Log In</button>
-            <button class="btn-primary" onclick="openRoleSelectModal()">Get Started</button>
+            <button class="btn-primary" onclick="openRoleSelectModal()">Log In</button>
+            <div class="nav-dropdown-wrapper">
+                <button class="btn-menu" onclick="toggleDropdown()">
+                    <div class="menu-dot green"></div>
+                    <div class="menu-dot blue"></div>
+                    <div class="menu-dot orange"></div>
+                    <div class="menu-dot purple"></div>
+                </button>
+                <div class="dropdown-menu" id="navDropdown">
+                    <a href="#" class="dropdown-item" onclick="scrollToAbout()">About Us</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item">Help</a>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -642,7 +707,7 @@
 
     <footer>
         <div class="nav-logo">
-            <div class="nav-logo-icon">M</div>
+            <img src="images/matrix_logo.png" alt="Matrix Logo" class="nav-logo-icon">
             MATRIX
         </div>
         <div class="footer-copyright">
@@ -838,6 +903,24 @@
             if (event.target === roleSelectModal) {
                 closeRoleSelectModal();
             }
+        }
+
+        // --- NAV DROPDOWN MENU ---
+        function toggleDropdown() {
+            document.getElementById('navDropdown').classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const wrapper = document.querySelector('.nav-dropdown-wrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                document.getElementById('navDropdown').classList.remove('active');
+            }
+        });
+
+        function scrollToAbout() {
+            document.querySelector('.framework').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('navDropdown').classList.remove('active');
         }
 
         // Admin and API login check
