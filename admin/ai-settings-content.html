@@ -283,7 +283,7 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const csv = event.target.result;
-                    const lines = csv.trim().split('\\n');
+                    const lines = csv.trim().split('\n');
                     
                     // Simple validation
                     if(lines.length < 2) {
