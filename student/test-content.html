@@ -225,49 +225,7 @@
         </div>
 
         <div id="questions-container">
-            <div class="question-card">
-                <div class="question-title">1. On a scale of 1 to 10, how well do you perform on standardized multiple-choice quizzes?</div>
-                <p style="font-size: 13px; color: var(--text-muted); margin-top:-8px;">This metric reflects your ability to digest hierarchical information.</p>
-                <div class="slider-container" style="margin-top: 16px;">
-                    <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_quiz">
-                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
-                        <span>1 (Poorly)</span><span id="val_quiz" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="question-card">
-                <div class="question-title">2. On a scale of 1 to 10, how effectively do you contribute to group presentations?</div>
-                <p style="font-size: 13px; color: var(--text-muted); margin-top:-8px;">This metric reflects your collective learning traits.</p>
-                <div class="slider-container" style="margin-top: 16px;">
-                    <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_group">
-                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
-                        <span>1 (Poorly)</span><span id="val_group" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="question-card">
-                <div class="question-title">3. On a scale of 1 to 10, how comfortable are you writing independent research papers?</div>
-                <p style="font-size: 13px; color: var(--text-muted); margin-top:-8px;">This metric reflects your distributed (self-guided) learning traits.</p>
-                <div class="slider-container" style="margin-top: 16px;">
-                    <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_research">
-                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
-                        <span>1 (Poorly)</span><span id="val_research" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="question-card">
-                <div class="question-title">4. On a scale of 1 to 10, how well do you complete daily independent seatwork?</div>
-                <p style="font-size: 13px; color: var(--text-muted); margin-top:-8px;">This metric reflects your individual learning traits.</p>
-                <div class="slider-container" style="margin-top: 16px;">
-                    <input type="range" min="1" max="10" value="5" class="metric-slider" id="score_seatwork">
-                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
-                        <span>1 (Poorly)</span><span id="val_seatwork" style="font-weight:bold; color:var(--matrix-green); font-size: 16px;">5</span><span>10 (Excellent)</span>
-                    </div>
-                </div>
-            </div>
+            <!-- Questions will be injected here via JavaScript -->
         </div>
 
         <button class="btn-submit" id="btn-submit" disabled>Submit Assessment</button>
@@ -314,6 +272,103 @@
         const submitBtn = document.getElementById('btn-submit');
         let activeSession = null;
 
+        // 20 Questions from the PDF
+        const surveyQuestions = [
+            { q: "HI", text: "I feel highly anxious if a programming assignment does not come with a detailed grading rubric." },
+            { q: "HI", text: "When I get stuck on a coding error, my first instinct is to check the official textbook or syllabus rather than asking peers." },
+            { q: "HI", text: "I prefer courses where my final grade is based on one major solo exam rather than group presentations." },
+            { q: "HI", text: "If a professor says 'use whatever software you want,' I usually ask them to pick one for me." },
+            { q: "HI", text: "When a server crashes during a lab, I wait for the professor to outline troubleshooting steps before I start." },
+            { q: "HC", text: "I feel most confident submitting a team project if the professor has approved our initial wireframes first." },
+            { q: "HC", text: "When forming a group, the first thing I do is assign a 'Project Manager' to keep everyone in line." },
+            { q: "HC", text: "If my team argues over database structures, I defer to the professor's opinion to settle the debate." },
+            { q: "HC", text: "I prefer study sessions where one designated 'smart' student tutors the rest of the group like a teacher." },
+            { q: "HC", text: "I prefer group coding where the professor actively monitors and corrects our logic in real-time." },
+            { q: "DI", text: "I often spend hours reading documentation for programming languages not taught in our curriculum." },
+            { q: "DI", text: "If the professor’s code example is inefficient, I will silently rewrite it my own way during the lecture." },
+            { q: "DI", text: "I prefer to disable notifications on my phone and Discord so I can write code in isolation for hours." },
+            { q: "DI", text: "I learn best by purposely breaking a working program just to see what the error messages look like." },
+            { q: "DI", text: "I prefer to design my own database schema from scratch rather than modifying a provided template." },
+            { q: "DC", text: "I frequently post screenshots of my broken code on Discord or Reddit to see how others would fix it." },
+            { q: "DC", text: "In a group project, I don't care who is 'Leader' as long as everyone is contributing code to the repo." },
+            { q: "DC", text: "My best ideas for system features usually happen during casual, random chats with friends." },
+            { q: "DC", text: "I actively contribute to open-source projects or join Hackathons to see how other programmers think." },
+            { q: "DC", text: "Brainstorming logic with peers helps me understand material better than a formal lecture." }
+        ];
+
+        let answers = {}; // Store answers by index
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            // Randomize order
+            const shuffled = surveyQuestions.map((val, i) => ({val, i})).sort(() => Math.random() - 0.5);
+
+            shuffled.forEach((item, displayIndex) => {
+                const qNum = displayIndex + 1;
+                const html = `
+                    <div class="question-card" id="qcard-${item.i}">
+                        <div class="question-title">${qNum}. ${item.val.text}</div>
+                        <div class="answers-grid">
+                            <label class="answer-option">
+                                <input type="radio" name="q-${item.i}" value="1" style="display:none;">
+                                <div class="radio-circle"></div>
+                                <div class="answer-text">Strongly Disagree (1)</div>
+                            </label>
+                            <label class="answer-option">
+                                <input type="radio" name="q-${item.i}" value="2" style="display:none;">
+                                <div class="radio-circle"></div>
+                                <div class="answer-text">Disagree (2)</div>
+                            </label>
+                            <label class="answer-option">
+                                <input type="radio" name="q-${item.i}" value="4" style="display:none;">
+                                <div class="radio-circle"></div>
+                                <div class="answer-text">Agree (4)</div>
+                            </label>
+                            <label class="answer-option">
+                                <input type="radio" name="q-${item.i}" value="5" style="display:none;">
+                                <div class="radio-circle"></div>
+                                <div class="answer-text">Strongly Agree (5)</div>
+                            </label>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+
+            // Add event listeners for radios
+            const options = document.querySelectorAll('.answer-option');
+            options.forEach(opt => {
+                opt.addEventListener('click', (e) => {
+                    const radio = opt.querySelector('input[type="radio"]');
+                    const name = radio.name;
+                    
+                    // Remove selected class from siblings
+                    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                        r.closest('.answer-option').classList.remove('selected');
+                    });
+                    
+                    opt.classList.add('selected');
+                    
+                    // Save answer
+                    const qIndex = parseInt(name.split('-')[1]);
+                    answers[qIndex] = parseInt(radio.value);
+                    
+                    checkSubmitReady();
+                });
+            });
+        }
+
+        function checkSubmitReady() {
+            const answeredCount = Object.keys(answers).length;
+            if (answeredCount === surveyQuestions.length) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             // Check for active sessions first
             const userStr = localStorage.getItem('currentUser');
@@ -356,25 +411,14 @@
                 // Show which session this is
                 const header = document.querySelector('.header h1');
                 if(header) {
-                    header.innerHTML = `Learning Mode Assessment <span style="font-size: 14px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 4px 10px; border-radius: 20px; vertical-align: middle; margin-left: 10px;">${activeSession.course_subj_name} - ${activeSession.quarter_name}</span>`;
+                    header.innerHTML = `Behavioral Learning Mode Assessment <span style="font-size: 14px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 4px 10px; border-radius: 20px; vertical-align: middle; margin-left: 10px;">${activeSession.course_subj_name} - ${activeSession.quarter_name}</span>`;
                 }
+
+                renderQuestions();
 
             } catch (err) {
                 console.error("Failed to check sessions", err);
             }
-
-            // Now load the actual questions
-            const container = document.getElementById('questions-container');
-
-            // No need to fetch questions from API anymore, we hardcoded the 4 academic metrics.
-            submitBtn.disabled = false; // Enable by default since sliders have default values
-            
-            // Add listeners to update the span values dynamically
-            ['quiz', 'group', 'research', 'seatwork'].forEach(metric => {
-                document.getElementById('score_' + metric).addEventListener('input', (e) => {
-                    document.getElementById('val_' + metric).textContent = e.target.value;
-                });
-            });
         });
 
         document.getElementById('btn-submit').addEventListener('click', async () => {
@@ -385,12 +429,26 @@
             }
             const user = JSON.parse(userStr);
             
-            // Normalize inputs to 0.1 - 1.0 range (like the AI expects)
-            const scores = {
-                quiz_score: parseInt(document.getElementById('score_quiz').value) / 10,
-                group_score: parseInt(document.getElementById('score_group').value) / 10,
-                research_score: parseInt(document.getElementById('score_research').value) / 10,
-                seatwork_score: parseInt(document.getElementById('score_seatwork').value) / 10
+            // Calculate Quadrant Scores
+            let hi_score = 0;
+            let hc_score = 0;
+            let di_score = 0;
+            let dc_score = 0;
+
+            for (let i = 0; i < surveyQuestions.length; i++) {
+                const q = surveyQuestions[i].q;
+                const score = answers[i] || 0;
+                if(q === 'HI') hi_score += score;
+                if(q === 'HC') hc_score += score;
+                if(q === 'DI') di_score += score;
+                if(q === 'DC') dc_score += score;
+            }
+
+            const payloadScores = {
+                hi_score: hi_score,
+                hc_score: hc_score,
+                di_score: di_score,
+                dc_score: dc_score
             };
 
             try {
@@ -399,7 +457,7 @@
 
                 const payload = {
                     student_id: user.id,
-                    scores: scores
+                    scores: payloadScores
                 };
                 if (activeSession) {
                     payload.session_id = activeSession.session_id;

@@ -20,6 +20,10 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 // Create tables if they don't exist
 db.serialize(() => {
+    // Enable WAL mode and busy timeout to prevent SQLITE_BUSY errors
+    db.run('PRAGMA journal_mode = WAL;');
+    db.run('PRAGMA busy_timeout = 5000;');
+    
     // 1. Students Table
     db.run(`CREATE TABLE IF NOT EXISTS students (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,10 +41,10 @@ db.serialize(() => {
         y_coord REAL DEFAULT 0,
         learning_mode TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`, () => {
-        db.run(`ALTER TABLE students ADD COLUMN x_coord REAL DEFAULT 0`, () => {});
-        db.run(`ALTER TABLE students ADD COLUMN y_coord REAL DEFAULT 0`, () => {});
-        db.run(`ALTER TABLE students ADD COLUMN learning_mode TEXT`, () => {});
+    )`, (err) => {
+        db.run(`ALTER TABLE students ADD COLUMN x_coord REAL DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE students ADD COLUMN y_coord REAL DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE students ADD COLUMN learning_mode TEXT`, (err) => {});
     });
 
     // 2. Teachers Table
@@ -65,12 +69,12 @@ db.serialize(() => {
         is_archived INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE SET NULL
-    )`, () => {
+    )`, (err) => {
         // Safely attempt to add new columns to an existing table if they don't exist
-        db.run(`ALTER TABLE classes ADD COLUMN year_level TEXT`, () => {});
-        db.run(`ALTER TABLE classes ADD COLUMN section TEXT`, () => {});
-        db.run(`ALTER TABLE classes ADD COLUMN school_year TEXT`, () => {});
-        db.run(`ALTER TABLE classes ADD COLUMN is_archived INTEGER DEFAULT 0`, () => {});
+        db.run(`ALTER TABLE classes ADD COLUMN year_level TEXT`, (err) => {});
+        db.run(`ALTER TABLE classes ADD COLUMN section TEXT`, (err) => {});
+        db.run(`ALTER TABLE classes ADD COLUMN school_year TEXT`, (err) => {});
+        db.run(`ALTER TABLE classes ADD COLUMN is_archived INTEGER DEFAULT 0`, (err) => {});
     });
 
     // 4. Enrollments Table (Many-to-Many: Students to Classes)
@@ -576,11 +580,19 @@ function calculateFKNN(scores, trainingData, settings) {
     const wSeatwork = parseFloat(settings.weight_seatwork) || 1.0;
     const metric = settings.distance_metric || 'euclidean';
 
+    // Fallback for legacy payloads during browser caching
+    if (scores.hi_score === undefined && scores.quiz_score !== undefined) {
+        scores.hi_score = scores.quiz_score * 25; // Scale from 0-1 to 0-25
+        scores.hc_score = scores.group_score * 25;
+        scores.di_score = scores.research_score * 25;
+        scores.dc_score = scores.seatwork_score * 25;
+    }
+
     let distances = trainingData.map(data => {
-        let dQ = Math.abs(scores.quiz_score - data.quiz_score) * wQuiz;
-        let dG = Math.abs(scores.group_score - data.group_score) * wGroup;
-        let dR = Math.abs(scores.research_score - data.research_score) * wResearch;
-        let dS = Math.abs(scores.seatwork_score - data.seatwork_score) * wSeatwork;
+        let dQ = Math.abs(scores.hi_score - data.hi_score) * wQuiz;
+        let dG = Math.abs(scores.hc_score - data.hc_score) * wGroup;
+        let dR = Math.abs(scores.di_score - data.di_score) * wResearch;
+        let dS = Math.abs(scores.dc_score - data.dc_score) * wSeatwork;
 
         let dist = 0;
         if (metric === 'euclidean') {
@@ -768,16 +780,22 @@ app.post('/api/ai/upload-chunk', (req, res) => {
     if (!data || !Array.isArray(data)) return res.status(400).json({ error: 'Invalid data' });
 
     db.serialize(() => {
-        const stmt = db.prepare(`INSERT INTO ai_training_data (quiz_score, group_score, research_score, seatwork_score, target_quadrant) VALUES (?, ?, ?, ?, ?)`);
+        db.run('BEGIN TRANSACTION');
+        const stmt = db.prepare(`INSERT INTO ai_training_data (hi_score, hc_score, di_score, dc_score, target_quadrant) VALUES (?, ?, ?, ?, ?)`);
         let insertedCount = 0;
         
         data.forEach(row => {
-            stmt.run([row.quiz_score, row.group_score, row.research_score, row.seatwork_score, row.target_quadrant], function(insertErr) {
+            stmt.run([row.hi_score, row.hc_score, row.di_score, row.dc_score, row.target_quadrant], function(insertErr) {
                 if (!insertErr) insertedCount++;
             });
         });
         
-        stmt.finalize(() => {
+        stmt.finalize();
+        db.run('COMMIT', (err) => {
+            if (err) {
+                db.run('ROLLBACK');
+                return res.status(500).json({ success: false, error: err.message });
+            }
             res.json({ success: true, count: insertedCount });
         });
     });
@@ -819,11 +837,11 @@ app.get('/api/ai/stats', (req, res) => {
 
 // GET /api/ai/download - Download active AI dataset as CSV
 app.get('/api/ai/download', (req, res) => {
-    db.all(`SELECT quiz_score, group_score, research_score, seatwork_score, target_quadrant FROM ai_training_data`, [], (err, rows) => {
+    db.all(`SELECT hi_score, hc_score, di_score, dc_score, target_quadrant FROM ai_training_data`, [], (err, rows) => {
         if (err) return res.status(500).send("Database error");
-        let csv = "Quiz_Score,Group_Score,Research_Score,Seatwork_Score,Target_Quadrant\n";
+        let csv = "hi_score,hc_score,di_score,dc_score,target_quadrant\n";
         rows.forEach(r => {
-            csv += `${r.quiz_score},${r.group_score},${r.research_score},${r.seatwork_score},${r.target_quadrant}\n`;
+            csv += `${r.hi_score},${r.hc_score},${r.di_score},${r.dc_score},${r.target_quadrant}\n`;
         });
         res.header('Content-Type', 'text/csv');
         res.attachment('current_model_dataset.csv');

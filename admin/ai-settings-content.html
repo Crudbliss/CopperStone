@@ -3,56 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Settings</title>
+    <title>AI Settings - CopperStone Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-base: #060f17;
-            --bg-panel: #0a1e2d;
-            --bg-card: #12181f;
+            --bg-panel: #0d161f;
             --matrix-green: #4ade80;
             --matrix-blue: #38bdf8;
             --matrix-orange: #fb923c;
             --matrix-purple: #c084fc;
-            --text-main: #ffffff;
+            --text-main: #e2e8f0;
             --text-muted: #8b9eb0;
-            --border-light: rgba(255, 255, 255, 0.08);
+            --border-light: rgba(255,255,255,0.05);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background-color: transparent;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-base);
             color: var(--text-main);
             padding: 40px;
         }
 
-        .header-section { margin-bottom: 32px; }
-        .header-section h2 { font-size: 24px; font-weight: 700; }
-        .header-section p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+        h2 { font-weight: 700; font-size: 28px; margin-bottom: 8px; }
+        h3 { font-weight: 600; font-size: 18px; margin-bottom: 16px; color: white; border-bottom: 1px solid var(--border-light); padding-bottom: 12px; }
+        p { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; }
 
         .card {
-            background-color: var(--bg-card);
+            background-color: var(--bg-panel);
             border: 1px solid var(--border-light);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 32px;
             margin-bottom: 24px;
         }
 
-        .upload-area {
-            border: 2px dashed var(--border-light);
+        .btn {
+            background-color: var(--matrix-blue);
+            color: var(--bg-base);
+            border: none;
+            padding: 12px 24px;
             border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn:hover { filter: brightness(1.2); }
+        .btn:disabled { background-color: var(--text-muted); cursor: not-allowed; }
+
+        .upload-area {
+            border: 2px dashed rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
             padding: 40px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            background-color: var(--bg-panel);
-            margin-top: 16px;
+            background: rgba(56, 189, 248, 0.02);
+            margin-bottom: 24px;
         }
-
         .upload-area:hover {
             border-color: var(--matrix-blue);
-            background-color: rgba(56, 189, 248, 0.05);
+            background: rgba(56, 189, 248, 0.05);
         }
 
         .upload-icon {
@@ -61,40 +74,20 @@
         }
 
         .upload-text {
-            font-size: 16px;
             font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
         }
-
-        .upload-sub {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 8px;
-        }
-
-        .btn {
-            background-color: var(--matrix-green);
-            color: var(--bg-base);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 24px;
-            display: inline-block;
-        }
-
-        .btn:disabled {
-            background-color: var(--text-muted);
-            cursor: not-allowed;
-        }
+        .upload-sub { font-size: 12px; color: var(--text-muted); }
 
         #file-input { display: none; }
-        
+
         .status-box {
-            margin-top: 24px;
             padding: 16px;
             border-radius: 8px;
+            margin-top: 16px;
+            font-size: 13px;
+            font-weight: 600;
             display: none;
         }
         .status-box.success {
@@ -108,7 +101,6 @@
             color: #f87171;
         }
 
-        /* Loading & Terminal UI */
         .loading-container {
             margin-top: 32px;
             display: none;
@@ -166,54 +158,51 @@
 
     <div class="header-section" style="display:flex; justify-content:space-between; align-items:flex-end;">
         <div>
-            <h2>AI Settings & Configuration</h2>
-            <p>Manage the Fuzzy K-Nearest Neighbors (FKNN) algorithm parameters and training data.</p>
+            <h2>AI Dataset Management</h2>
+            <p>Manage the AI training dataset used by the FKNN algorithm.</p>
         </div>
         <button class="btn" style="margin-top:0;" onclick="window.location.href='/api/ai/download'">Download Current Dataset (.csv)</button>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
         
-        <!-- Algorithm Configuration -->
+        <!-- Upload Dataset -->
         <div class="card" style="margin-bottom: 0;">
-            <h3>Algorithm Tuning</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Adjust the mathematical logic of the AI model.</p>
-            
-            <div style="margin-bottom: 16px;">
-                <label style="font-size: 13px; font-weight: 600;">K-Value (Nearest Neighbors): <span id="k_val_display" style="color:var(--matrix-blue);">5</span></label>
-                <input type="range" id="input_k_value" min="1" max="15" value="5" style="width: 100%; margin-top: 8px;">
-            </div>
+            <h3>Upload Dataset</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+                The CSV file must contain exactly 5 columns in order: <br>
+                <code style="color:var(--matrix-blue);">hi_score, hc_score, di_score, dc_score, target_quadrant</code>
+            </p>
 
-            <div style="margin-bottom: 16px;">
-                <label style="font-size: 13px; font-weight: 600;">Distance Metric</label>
-                <select id="input_distance" style="width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-panel); color: white; border: 1px solid var(--border-light); margin-top: 8px;">
-                    <option value="euclidean">Euclidean (Standard)</option>
-                    <option value="manhattan">Manhattan (Grid)</option>
-                    <option value="chebyshev">Chebyshev (Max Dist)</option>
-                </select>
+            <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
+                <svg class="upload-icon" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                </svg>
+                <div class="upload-text" id="file-name-display">Click to browse or drag and drop a CSV file</div>
+                <div class="upload-sub">Only synthetic_training_data.csv is supported</div>
             </div>
+            <input type="file" id="file-input" accept=".csv">
 
-            <h4 style="font-size:14px; margin-top: 24px; margin-bottom:12px; color:var(--text-muted);">Feature Weights</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div>
-                    <label style="font-size:12px;">Quiz Score Multiplier</label>
-                    <input type="number" step="0.1" id="input_w_quiz" value="1.0" style="width: 100%; padding: 8px; border-radius: 6px; background: var(--bg-panel); color: white; border: 1px solid var(--border-light);">
+            <button class="btn" id="upload-btn" disabled style="width: 100%;">Train AI Model</button>
+
+            <div id="status-message" class="status-box"></div>
+
+            <!-- Progress UI -->
+            <div class="loading-container" id="loading-container">
+                <div class="stats-row">
+                    <span>Progress: <span class="stats-value" id="lbl-pct">0%</span></span>
+                    <span>ETA: <span class="stats-value" id="lbl-eta">Calculating...</span></span>
+                    <span>Rows: <span class="stats-value" id="lbl-rows">0 / 0</span></span>
                 </div>
-                <div>
-                    <label style="font-size:12px;">Group Score Multiplier</label>
-                    <input type="number" step="0.1" id="input_w_group" value="1.0" style="width: 100%; padding: 8px; border-radius: 6px; background: var(--bg-panel); color: white; border: 1px solid var(--border-light);">
+                
+                <div class="progress-bar-container">
+                    <div class="progress-fill" id="progress-fill"></div>
                 </div>
-                <div>
-                    <label style="font-size:12px;">Research Multiplier</label>
-                    <input type="number" step="0.1" id="input_w_research" value="1.0" style="width: 100%; padding: 8px; border-radius: 6px; background: var(--bg-panel); color: white; border: 1px solid var(--border-light);">
-                </div>
-                <div>
-                    <label style="font-size:12px;">Seatwork Multiplier</label>
-                    <input type="number" step="0.1" id="input_w_seatwork" value="1.0" style="width: 100%; padding: 8px; border-radius: 6px; background: var(--bg-panel); color: white; border: 1px solid var(--border-light);">
+
+                <div class="terminal-log" id="terminal-log">
+                    <div class="log-entry">Waiting to start...</div>
                 </div>
             </div>
-            
-            <button class="btn" style="width: 100%; margin-top: 24px;" onclick="saveSettings()">Save Configuration</button>
         </div>
 
         <!-- Live Database Stats -->
@@ -227,44 +216,6 @@
             <div id="distribution-bars">
                 <!-- Bars injected here -->
                 <p style="color:var(--text-muted); font-size:13px;">Loading stats...</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>Upload Dataset</h3>
-        <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
-            The CSV file must contain the following columns in order: <br>
-            <code style="color:var(--matrix-blue);">Quiz_Score, Group_Score, Research_Score, Seatwork_Score, Target_Quadrant</code>
-        </p>
-
-        <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
-            <svg class="upload-icon" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-            </svg>
-            <div class="upload-text" id="file-name-display">Click to browse or drag and drop a CSV file</div>
-            <div class="upload-sub">Only .csv files are supported</div>
-        </div>
-        <input type="file" id="file-input" accept=".csv">
-
-        <button class="btn" id="upload-btn" disabled>Train AI Model</button>
-
-        <div id="status-message" class="status-box"></div>
-
-        <!-- Progress UI -->
-        <div class="loading-container" id="loading-container">
-            <div class="stats-row">
-                <span>Progress: <span class="stats-value" id="lbl-pct">0%</span></span>
-                <span>ETA: <span class="stats-value" id="lbl-eta">Calculating...</span></span>
-                <span>Rows: <span class="stats-value" id="lbl-rows">0 / 0</span></span>
-            </div>
-            
-            <div class="progress-bar-container">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-
-            <div class="terminal-log" id="terminal-log">
-                <div class="log-entry">Waiting to start...</div>
             </div>
         </div>
 
@@ -283,22 +234,10 @@
         // --- Fetch Stats and Settings on Load ---
         async function loadDashboard() {
             try {
-                // Fetch Settings
-                const resSet = await fetch('/api/ai/settings');
-                const settings = await resSet.json();
-                
-                document.getElementById('input_k_value').value = settings.k_value || 5;
-                document.getElementById('k_val_display').textContent = settings.k_value || 5;
-                document.getElementById('input_distance').value = settings.distance_metric || 'euclidean';
-                document.getElementById('input_w_quiz').value = settings.weight_quiz || 1.0;
-                document.getElementById('input_w_group').value = settings.weight_group || 1.0;
-                document.getElementById('input_w_research').value = settings.weight_research || 1.0;
-                document.getElementById('input_w_seatwork').value = settings.weight_seatwork || 1.0;
-
                 // Fetch Stats
                 const resStat = await fetch('/api/ai/stats');
                 const stats = await resStat.json();
-                document.getElementById('stat-total').textContent = stats.total;
+                document.getElementById('stat-total').textContent = stats.total.toLocaleString();
 
                 const barsContainer = document.getElementById('distribution-bars');
                 barsContainer.innerHTML = '';
@@ -319,7 +258,7 @@
                         barsContainer.innerHTML += `
                             <div style="margin-bottom:12px;">
                                 <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-                                    <span>${d.mode} (${d.count})</span>
+                                    <span>${d.mode} (${d.count.toLocaleString()})</span>
                                     <span style="font-weight:bold; color:${c};">${pct}%</span>
                                 </div>
                                 <div style="width:100%; height:8px; background:rgba(255,255,255,0.05); border-radius:4px; overflow:hidden;">
@@ -334,36 +273,6 @@
             }
         }
 
-        document.getElementById('input_k_value').addEventListener('input', (e) => {
-            document.getElementById('k_val_display').textContent = e.target.value;
-        });
-
-        async function saveSettings() {
-            const payload = {
-                k_value: document.getElementById('input_k_value').value,
-                distance_metric: document.getElementById('input_distance').value,
-                weight_quiz: document.getElementById('input_w_quiz').value,
-                weight_group: document.getElementById('input_w_group').value,
-                weight_research: document.getElementById('input_w_research').value,
-                weight_seatwork: document.getElementById('input_w_seatwork').value,
-            };
-
-            try {
-                const res = await fetch('/api/ai/settings', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if(res.ok) {
-                    alert("AI Configuration saved successfully!");
-                } else {
-                    alert("Failed to save configuration.");
-                }
-            } catch(e) {
-                alert("Network error saving configuration.");
-            }
-        }
-
         loadDashboard(); // Init
 
         fileInput.addEventListener('change', (e) => {
@@ -374,7 +283,7 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const csv = event.target.result;
-                    const lines = csv.trim().split('\n');
+                    const lines = csv.trim().split('\\n');
                     
                     // Simple validation
                     if(lines.length < 2) {
@@ -388,10 +297,10 @@
                         const cols = lines[i].split(',');
                         if(cols.length === 5) {
                             rows.push({
-                                quiz_score: parseFloat(cols[0]),
-                                group_score: parseFloat(cols[1]),
-                                research_score: parseFloat(cols[2]),
-                                seatwork_score: parseFloat(cols[3]),
+                                hi_score: parseFloat(cols[0]),
+                                hc_score: parseFloat(cols[1]),
+                                di_score: parseFloat(cols[2]),
+                                dc_score: parseFloat(cols[3]),
                                 target_quadrant: cols[4].trim()
                             });
                         }
@@ -403,7 +312,7 @@
                     } else {
                         parsedData = rows;
                         uploadBtn.disabled = false;
-                        showStatus('success', 'File validated! Ready to train model with ' + rows.length + ' records.');
+                        showStatus('success', 'File validated! Ready to train model with ' + rows.length.toLocaleString() + ' records.');
                     }
                 };
                 reader.readAsText(file);
@@ -444,12 +353,11 @@
                 logTerminal(`Database cleared. Beginning chunked upload...`);
 
                 // 2. Upload in chunks
-                const chunkSize = 20; // Small chunks so we can see progress and get ETAs
+                const chunkSize = 250; // Increased chunk size for 14,000 row datasets
                 let processed = 0;
                 let startTime = Date.now();
 
                 for (let i = 0; i < parsedData.length; i += chunkSize) {
-                    let chunkStart = Date.now();
                     const chunk = parsedData.slice(i, i + chunkSize);
                     
                     const res = await fetch('/api/ai/upload-chunk', {
@@ -482,15 +390,10 @@
                     } else {
                         document.getElementById('lbl-eta').textContent = Math.ceil(etaMs / 1000) + ' seconds';
                     }
-
-                    // Artificial delay just so the user can enjoy the loading bar and read logs for small files
-                    if (totalRows < 1000) {
-                        await new Promise(r => setTimeout(r, 250));
-                    }
                 }
 
                 logTerminal(`Model successfully trained!`, 'success');
-                showStatus('success', 'Model successfully trained and updated with ' + totalRows + ' records.');
+                showStatus('success', 'Model successfully trained and updated with ' + totalRows.toLocaleString() + ' records.');
                 document.getElementById('lbl-eta').textContent = 'Finished';
                 
                 // Refresh dashboard to show new stats
