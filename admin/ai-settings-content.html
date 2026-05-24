@@ -13,6 +13,7 @@
             --matrix-blue: #38bdf8;
             --matrix-orange: #fb923c;
             --matrix-purple: #c084fc;
+            --matrix-red: #f87171;
             --text-main: #e2e8f0;
             --text-muted: #8b9eb0;
             --border-light: rgba(255,255,255,0.05);
@@ -49,9 +50,16 @@
             cursor: pointer;
             transition: all 0.2s;
             font-family: 'Poppins', sans-serif;
+            display: inline-block;
         }
         .btn:hover { filter: brightness(1.2); }
         .btn:disabled { background-color: var(--text-muted); cursor: not-allowed; }
+        
+        .btn-danger { background-color: rgba(248, 113, 113, 0.1); color: var(--matrix-red); border: 1px solid rgba(248, 113, 113, 0.3); }
+        .btn-danger:hover { background-color: rgba(248, 113, 113, 0.2); }
+        
+        .btn-outline { background-color: transparent; border: 1px solid var(--border-light); color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--matrix-blue); color: var(--matrix-blue); }
 
         .upload-area {
             border: 2px dashed rgba(56, 189, 248, 0.3);
@@ -61,25 +69,16 @@
             cursor: pointer;
             transition: all 0.2s;
             background: rgba(56, 189, 248, 0.02);
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
         .upload-area:hover {
             border-color: var(--matrix-blue);
             background: rgba(56, 189, 248, 0.05);
         }
 
-        .upload-icon {
-            color: var(--matrix-blue);
-            margin-bottom: 16px;
-        }
-
-        .upload-text {
-            font-weight: 600;
-            color: white;
-            margin-bottom: 8px;
-        }
+        .upload-icon { color: var(--matrix-blue); margin-bottom: 16px; }
+        .upload-text { font-weight: 600; color: white; margin-bottom: 8px; }
         .upload-sub { font-size: 12px; color: var(--text-muted); }
-
         #file-input { display: none; }
 
         .status-box {
@@ -90,190 +89,331 @@
             font-weight: 600;
             display: none;
         }
-        .status-box.success {
-            background-color: rgba(74, 222, 128, 0.1);
-            border: 1px solid rgba(74, 222, 128, 0.3);
-            color: var(--matrix-green);
-        }
-        .status-box.error {
-            background-color: rgba(248, 113, 113, 0.1);
-            border: 1px solid rgba(248, 113, 113, 0.3);
-            color: #f87171;
-        }
+        .status-box.success { background-color: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.3); color: var(--matrix-green); }
+        .status-box.error { background-color: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.3); color: var(--matrix-red); }
 
-        .loading-container {
-            margin-top: 32px;
-            display: none;
-        }
-
-        .stats-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-main);
-        }
-
+        .loading-container { margin-top: 24px; display: none; }
+        .stats-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
         .stats-value { color: var(--matrix-blue); }
-
-        .progress-bar-container {
-            width: 100%;
-            height: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--matrix-blue);
-            width: 0%;
-            transition: width 0.2s ease;
-        }
+        .progress-bar-container { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; overflow: hidden; margin-bottom: 16px; }
+        .progress-fill { height: 100%; background: var(--matrix-blue); width: 0%; transition: width 0.2s ease; }
 
         .terminal-log {
-            background: #000;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            padding: 16px;
-            height: 150px;
-            overflow-y: auto;
-            font-family: monospace;
-            font-size: 12px;
-            color: #4ade80;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+            background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+            padding: 16px; height: 150px; overflow-y: auto; font-family: monospace; font-size: 12px;
+            color: #4ade80; display: flex; flex-direction: column; gap: 4px;
         }
 
-        .log-entry { opacity: 0.8; }
-        .log-entry.error { color: #f87171; }
-        .log-entry.warn { color: #fb923c; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+        .form-control {
+            width: 100%; background: var(--bg-base); border: 1px solid var(--border-light);
+            color: white; padding: 12px; border-radius: 8px; font-family: 'Poppins', sans-serif;
+        }
 
+        .data-table-wrapper {
+            width: 100%; overflow-x: auto; border: 1px solid var(--border-light); border-radius: 8px;
+            background: var(--bg-base); margin-top: 16px;
+        }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .data-table th, .data-table td { padding: 8px 12px; border-bottom: 1px solid var(--border-light); text-align: left; white-space: nowrap; }
+        .data-table th { background: rgba(255,255,255,0.02); color: var(--text-muted); font-weight: 500; }
+        
+        .metric-card {
+            background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 8px; padding: 16px; text-align: center;
+        }
+        .metric-value { font-size: 32px; font-weight: 700; color: var(--matrix-blue); }
+        .metric-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        .chart-img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border-light); margin-top: 16px; }
+
+        .toggle-container { display: flex; gap: 16px; margin-bottom: 16px; }
+        .toggle-option {
+            flex: 1; padding: 12px; text-align: center; border: 1px solid var(--border-light);
+            border-radius: 8px; cursor: pointer; color: var(--text-muted); font-size: 13px; font-weight: 500;
+        }
+        .toggle-option.active {
+            background: rgba(56, 189, 248, 0.1); border-color: var(--matrix-blue); color: var(--matrix-blue);
+        }
     </style>
 </head>
 <body>
 
-    <div class="header-section" style="display:flex; justify-content:space-between; align-items:flex-end;">
+    <div class="header-section" style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 32px;">
         <div>
-            <h2>AI Dataset Management</h2>
-            <p>Manage the AI training dataset used by the FKNN algorithm.</p>
+            <h2>AI Command Center</h2>
+            <p style="margin-bottom: 0;">Manage the 28-dimension FKNN dataset, tweak algorithm rules, and run live diagnostics.</p>
         </div>
-        <button class="btn" style="margin-top:0;" onclick="window.location.href='/api/ai/download'">Download Current Dataset (.csv)</button>
+        <div style="display:flex; gap: 12px;">
+            <button class="btn btn-outline" onclick="window.location.href='/api/ai/download'">Export Dataset</button>
+            <button class="btn btn-danger" id="btn-clear-dataset">Clear Dataset</button>
+        </div>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
         
-        <!-- Upload Dataset -->
+        <!-- Left Column: Upload -->
         <div class="card" style="margin-bottom: 0;">
-            <h3>Upload Dataset</h3>
+            <h3>Dataset Ingestion</h3>
             <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
-                The CSV file must contain exactly 5 columns in order: <br>
-                <code style="color:var(--matrix-blue);">hi_score, hc_score, di_score, dc_score, target_quadrant</code>
+                Upload a CSV with exactly 29 columns: <code style="color:var(--matrix-blue);">q1, q2... q28, target_quadrant</code>
             </p>
+
+            <div class="toggle-container">
+                <div class="toggle-option active" id="toggle-append" onclick="setUploadMode('append')">Append to Existing Data</div>
+                <div class="toggle-option" id="toggle-overwrite" onclick="setUploadMode('overwrite')">Overwrite Database</div>
+            </div>
 
             <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
                 <svg class="upload-icon" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
                 </svg>
-                <div class="upload-text" id="file-name-display">Click to browse or drag and drop a CSV file</div>
-                <div class="upload-sub">Only synthetic_training_data.csv is supported</div>
+                <div class="upload-text" id="file-name-display">Click to browse or drag and drop</div>
+                <div class="upload-sub">Supports .csv datasets</div>
             </div>
             <input type="file" id="file-input" accept=".csv">
 
-            <button class="btn" id="upload-btn" disabled style="width: 100%;">Train AI Model</button>
-
+            <button class="btn" id="upload-btn" disabled style="width: 100%;">Upload & Inject Data</button>
             <div id="status-message" class="status-box"></div>
 
-            <!-- Progress UI -->
             <div class="loading-container" id="loading-container">
                 <div class="stats-row">
                     <span>Progress: <span class="stats-value" id="lbl-pct">0%</span></span>
                     <span>ETA: <span class="stats-value" id="lbl-eta">Calculating...</span></span>
                     <span>Rows: <span class="stats-value" id="lbl-rows">0 / 0</span></span>
                 </div>
-                
                 <div class="progress-bar-container">
                     <div class="progress-fill" id="progress-fill"></div>
                 </div>
+            </div>
+        </div>
 
-                <div class="terminal-log" id="terminal-log">
-                    <div class="log-entry">Waiting to start...</div>
+        <!-- Right Column: Settings & Live Stats -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            
+            <!-- Algorithm Settings -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3>Algorithm Configuration</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>K-Value (Neighbors)</label>
+                        <input type="number" id="setting-k" class="form-control" min="1" max="50" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label>Distance Metric</label>
+                        <select id="setting-metric" class="form-control">
+                            <option value="euclidean">Euclidean (Straight Line)</option>
+                            <option value="manhattan">Manhattan (Grid / Taxi)</option>
+                            <option value="chebyshev">Chebyshev</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn" id="btn-save-settings" style="width: 100%;">Apply Mathematical Rules</button>
+            </div>
+
+            <!-- Basic Stats -->
+            <div class="card" style="flex: 1; margin-bottom: 0;">
+                <h3>Live Dataset Distribution</h3>
+                <h1 id="stat-total" style="font-size: 36px; color: var(--matrix-green); margin-bottom: 4px;">0</h1>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Total Training Records</p>
+                <div id="distribution-bars">
+                    <p style="color:var(--text-muted); font-size:13px;">Loading stats...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Live Diagnostics Panel -->
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-light); padding-bottom:12px; margin-bottom: 24px;">
+            <h3 style="border:none; margin:0; padding:0;">AI Engine Diagnostics</h3>
+            <button class="btn" id="btn-run-diagnostics">Spawn Python Engine & Run Diagnostics</button>
+        </div>
+
+        <div id="diagnostics-loader" style="display:none; text-align:center; padding: 40px;">
+            <p style="color: var(--matrix-blue); font-weight:600;">Python Engine is running...</p>
+            <p style="font-size:12px; color:var(--text-muted);">Training Random Forest and FKNN. Generating visual reports.</p>
+        </div>
+
+        <div id="diagnostics-results" style="display:none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                <div class="metric-card">
+                    <div class="metric-value" id="diag-rf-acc">--%</div>
+                    <div class="metric-label">Random Forest Accuracy</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="diag-fknn-acc" style="color: var(--matrix-green);">--%</div>
+                    <div class="metric-label">FKNN Diagnostic Accuracy</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: white; font-size: 14px; margin-bottom: 8px;">Feature Importance (Top 28)</h4>
+                    <p style="font-size: 12px; color: var(--text-muted);">Generated live by Scikit-Learn Random Forest.</p>
+                    <img id="img-feature" src="" class="chart-img" alt="Feature Importance Chart" onerror="this.style.display='none'">
+                </div>
+                <div>
+                    <h4 style="color: white; font-size: 14px; margin-bottom: 8px;">Convergence (Confusion Matrix)</h4>
+                    <p style="font-size: 12px; color: var(--text-muted);">Verifies the algorithms accurately separate the Elmore quadrants.</p>
+                    <img id="img-confusion" src="" class="chart-img" alt="Confusion Matrix Chart" onerror="this.style.display='none'">
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Live Database Stats -->
-        <div class="card" style="margin-bottom: 0;">
-            <h3>Live Dataset Distribution</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Current balance of training data in the system.</p>
-            
-            <h1 id="stat-total" style="font-size: 36px; color: var(--matrix-green); margin-bottom: 4px;">0</h1>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 24px;">Total Training Records</p>
-
-            <div id="distribution-bars">
-                <!-- Bars injected here -->
-                <p style="color:var(--text-muted); font-size:13px;">Loading stats...</p>
-            </div>
+    <!-- Data Preview Table -->
+    <div class="card">
+        <h3>Dataset Preview (Top 100 Rows)</h3>
+        <p style="font-size: 13px; color: var(--text-muted);">Raw memory vectors the AI uses for distance calculations.</p>
+        
+        <div class="data-table-wrapper">
+            <table class="data-table" id="data-preview-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <!-- 28 Columns will be injected -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="30" style="text-align:center;">Loading...</td></tr>
+                </tbody>
+            </table>
         </div>
-
     </div>
 
     <script>
-        const fileInput = document.getElementById('file-input');
-        const uploadBtn = document.getElementById('upload-btn');
-        const fileNameDisplay = document.getElementById('file-name-display');
-        const statusBox = document.getElementById('status-message');
-        const loadingContainer = document.getElementById('loading-container');
-        const terminalLog = document.getElementById('terminal-log');
-        
+        // --- State ---
+        let uploadMode = 'append'; // or 'overwrite'
         let parsedData = null;
 
-        // --- Fetch Stats and Settings on Load ---
+        function setUploadMode(mode) {
+            uploadMode = mode;
+            document.getElementById('toggle-append').className = 'toggle-option' + (mode === 'append' ? ' active' : '');
+            document.getElementById('toggle-overwrite').className = 'toggle-option' + (mode === 'overwrite' ? ' active' : '');
+        }
+
+        // --- Fetch Stats, Settings, Data Preview ---
         async function loadDashboard() {
             try {
-                // Fetch Stats
+                // Settings
+                const resSet = await fetch('/api/ai/settings');
+                const settings = await resSet.json();
+                if(settings.k_value) document.getElementById('setting-k').value = settings.k_value;
+                if(settings.distance_metric) document.getElementById('setting-metric').value = settings.distance_metric;
+
+                // Stats
                 const resStat = await fetch('/api/ai/stats');
                 const stats = await resStat.json();
                 document.getElementById('stat-total').textContent = stats.total.toLocaleString();
+                renderDistribution(stats);
 
-                const barsContainer = document.getElementById('distribution-bars');
-                barsContainer.innerHTML = '';
-                
-                if (stats.total === 0) {
-                    barsContainer.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">Database is empty.</p>';
-                } else {
-                    const colors = {
-                        'Hierarchical-Individual': 'var(--matrix-green)',
-                        'Distributed-Individual': 'var(--matrix-blue)',
-                        'Hierarchical-Collective': 'var(--matrix-orange)',
-                        'Distributed-Collective': 'var(--matrix-purple)'
-                    };
-                    
-                    stats.distribution.forEach(d => {
-                        const pct = Math.round((d.count / stats.total) * 100);
-                        const c = colors[d.mode] || '#ffffff';
-                        barsContainer.innerHTML += `
-                            <div style="margin-bottom:12px;">
-                                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-                                    <span>${d.mode} (${d.count.toLocaleString()})</span>
-                                    <span style="font-weight:bold; color:${c};">${pct}%</span>
-                                </div>
-                                <div style="width:100%; height:8px; background:rgba(255,255,255,0.05); border-radius:4px; overflow:hidden;">
-                                    <div style="height:100%; width:${pct}%; background:${c};"></div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
+                // Data Preview
+                const resData = await fetch('/api/ai/training-data');
+                const data = await resData.json();
+                renderDataTable(data);
+
             } catch (err) {
                 console.error("Failed to load dashboard", err);
             }
         }
 
+        function renderDistribution(stats) {
+            const barsContainer = document.getElementById('distribution-bars');
+            barsContainer.innerHTML = '';
+            
+            if (stats.total === 0) {
+                barsContainer.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">Database is empty.</p>';
+            } else {
+                const colors = {
+                    'Hierarchical Individual': 'var(--matrix-green)',
+                    'Distributed Individual': 'var(--matrix-blue)',
+                    'Hierarchical Collective': 'var(--matrix-orange)',
+                    'Distributed Collective': 'var(--matrix-purple)'
+                };
+                
+                stats.distribution.forEach(d => {
+                    const pct = Math.round((d.count / stats.total) * 100);
+                    const c = colors[d.mode] || '#ffffff';
+                    barsContainer.innerHTML += `
+                        <div style="margin-bottom:12px;">
+                            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                                <span>${d.mode} (${d.count.toLocaleString()})</span>
+                                <span style="font-weight:bold; color:${c};">${pct}%</span>
+                            </div>
+                            <div style="width:100%; height:8px; background:rgba(255,255,255,0.05); border-radius:4px; overflow:hidden;">
+                                <div style="height:100%; width:${pct}%; background:${c};"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function renderDataTable(data) {
+            const thead = document.querySelector('#data-preview-table thead tr');
+            const tbody = document.querySelector('#data-preview-table tbody');
+            
+            // Build Headers
+            let headHTML = '<th>ID</th>';
+            for(let i=1; i<=28; i++) headHTML += `<th>q${i}</th>`;
+            headHTML += '<th>Target Mode</th>';
+            thead.innerHTML = headHTML;
+
+            // Build Body
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="30" style="text-align:center;">No training data exists in the database.</td></tr>`;
+                return;
+            }
+
+            let bodyHTML = '';
+            data.forEach(row => {
+                let tr = `<tr><td>${row.id}</td>`;
+                for(let i=1; i<=28; i++) tr += `<td>${row['q'+i]}</td>`;
+                tr += `<td style="color:var(--matrix-blue); font-weight:600;">${row.target_quadrant}</td></tr>`;
+                bodyHTML += tr;
+            });
+            tbody.innerHTML = bodyHTML;
+        }
+
         loadDashboard(); // Init
+
+        // --- Settings Save ---
+        document.getElementById('btn-save-settings').addEventListener('click', async () => {
+            const btn = document.getElementById('btn-save-settings');
+            btn.textContent = 'Saving...';
+            const payload = {
+                k_value: document.getElementById('setting-k').value,
+                distance_metric: document.getElementById('setting-metric').value
+            };
+            try {
+                await fetch('/api/ai/settings', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                btn.textContent = 'Saved!';
+                setTimeout(() => btn.textContent = 'Apply Mathematical Rules', 2000);
+            } catch(e) { alert("Failed to save settings"); }
+        });
+
+        // --- Clear Dataset ---
+        document.getElementById('btn-clear-dataset').addEventListener('click', async () => {
+            if(confirm("Are you sure you want to completely wipe the AI's training dataset? It will not be able to diagnose students until you upload a new one.")) {
+                await fetch('/api/ai/training-data', { method: 'DELETE' });
+                alert("Dataset cleared.");
+                loadDashboard();
+            }
+        });
+
+        // --- CSV Upload Logic ---
+        const fileInput = document.getElementById('file-input');
+        const uploadBtn = document.getElementById('upload-btn');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        const statusBox = document.getElementById('status-message');
+        const loadingContainer = document.getElementById('loading-container');
 
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -285,81 +425,60 @@
                     const csv = event.target.result;
                     const lines = csv.trim().split('\n');
                     
-                    // Simple validation
                     if(lines.length < 2) {
-                        showStatus('error', 'CSV file appears to be empty or missing data rows.');
-                        return;
+                        showStatus('error', 'CSV is empty.'); return;
                     }
                     
                     const rows = [];
-                    // Skip header row (i = 1)
+                    // Parse 29 columns
                     for(let i = 1; i < lines.length; i++) {
                         const cols = lines[i].split(',');
-                        if(cols.length === 5) {
-                            rows.push({
-                                hi_score: parseFloat(cols[0]),
-                                hc_score: parseFloat(cols[1]),
-                                di_score: parseFloat(cols[2]),
-                                dc_score: parseFloat(cols[3]),
-                                target_quadrant: cols[4].trim()
-                            });
+                        if(cols.length === 29) {
+                            let obj = {};
+                            for(let j=1; j<=28; j++) obj[`q${j}`] = parseFloat(cols[j-1]);
+                            obj.target_quadrant = cols[28].trim();
+                            rows.push(obj);
                         }
                     }
                     
                     if(rows.length === 0) {
-                        showStatus('error', 'Could not parse any valid rows. Please check the columns.');
+                        showStatus('error', 'Could not parse 29 columns. Make sure you have q1-q28 and target_quadrant.');
                         uploadBtn.disabled = true;
                     } else {
                         parsedData = rows;
                         uploadBtn.disabled = false;
-                        showStatus('success', 'File validated! Ready to train model with ' + rows.length.toLocaleString() + ' records.');
+                        showStatus('success', `Validated ${rows.length.toLocaleString()} records! Ready to ingest.`);
                     }
                 };
                 reader.readAsText(file);
             }
         });
 
-        function logTerminal(msg, type = 'normal') {
-            const el = document.createElement('div');
-            el.className = 'log-entry ' + (type !== 'normal' ? type : '');
-            el.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-            terminalLog.appendChild(el);
-            terminalLog.scrollTop = terminalLog.scrollHeight;
-        }
-
         uploadBtn.addEventListener('click', async () => {
             if(!parsedData) return;
-            
             uploadBtn.disabled = true;
-            uploadBtn.textContent = 'Training...';
             statusBox.style.display = 'none';
-            
             loadingContainer.style.display = 'block';
-            terminalLog.innerHTML = '';
-            document.getElementById('progress-fill').style.width = '0%';
-            document.getElementById('lbl-pct').textContent = '0%';
             
             const totalRows = parsedData.length;
-            document.getElementById('lbl-rows').textContent = `0 / ${totalRows}`;
-            logTerminal(`Initializing training with ${totalRows} records...`);
+            document.getElementById('progress-fill').style.width = '0%';
 
             try {
-                logTerminal(`Clearing previous model weights...`);
-                // 1. Clear old data
-                const startRes = await fetch('/api/ai/upload-start', { method: 'POST' });
+                // 1. Start Upload (handles Append vs Overwrite)
+                const startRes = await fetch('/api/ai/upload-start', { 
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ overwrite: uploadMode === 'overwrite' })
+                });
                 const startData = await startRes.json();
-                if(!startData.success) throw new Error("Failed to clear database");
+                if(!startData.success) throw new Error("Failed to initialize database");
                 
-                logTerminal(`Database cleared. Beginning chunked upload...`);
-
                 // 2. Upload in chunks
-                const chunkSize = 250; // Increased chunk size for 14,000 row datasets
+                const chunkSize = 500;
                 let processed = 0;
-                let startTime = Date.now();
 
                 for (let i = 0; i < parsedData.length; i += chunkSize) {
                     const chunk = parsedData.slice(i, i + chunkSize);
-                    
                     const res = await fetch('/api/ai/upload-chunk', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -368,43 +487,21 @@
                     
                     const chunkData = await res.json();
                     if(!chunkData.success) throw new Error("Chunk failed to upload");
-                    
                     processed += chunk.length;
                     
-                    // Update UI
+                    // UI
                     const pct = Math.round((processed / totalRows) * 100);
                     document.getElementById('progress-fill').style.width = pct + '%';
                     document.getElementById('lbl-pct').textContent = pct + '%';
                     document.getElementById('lbl-rows').textContent = `${processed} / ${totalRows}`;
-                    
-                    logTerminal(`Ingested chunk ${Math.floor(i/chunkSize)+1}. Rows: ${processed}/${totalRows}`);
-
-                    // Calculate ETA
-                    const elapsed = Date.now() - startTime;
-                    const timePerItem = elapsed / processed;
-                    const remaining = totalRows - processed;
-                    let etaMs = timePerItem * remaining;
-                    
-                    if (etaMs < 1000) {
-                        document.getElementById('lbl-eta').textContent = 'Less than 1 sec';
-                    } else {
-                        document.getElementById('lbl-eta').textContent = Math.ceil(etaMs / 1000) + ' seconds';
-                    }
                 }
 
-                logTerminal(`Model successfully trained!`, 'success');
-                showStatus('success', 'Model successfully trained and updated with ' + totalRows.toLocaleString() + ' records.');
-                document.getElementById('lbl-eta').textContent = 'Finished';
-                
-                // Refresh dashboard to show new stats
+                showStatus('success', `Dataset successfully ingested! Added ${totalRows.toLocaleString()} rows.`);
                 loadDashboard();
 
             } catch (err) {
-                logTerminal(err.message, 'error');
-                showStatus('error', err.message || 'Network error occurred while uploading.');
+                showStatus('error', err.message);
             }
-            
-            uploadBtn.textContent = 'Train AI Model';
             uploadBtn.disabled = false;
         });
 
@@ -413,6 +510,44 @@
             statusBox.style.display = 'block';
             statusBox.textContent = message;
         }
+
+        // --- Run Diagnostics ---
+        document.getElementById('btn-run-diagnostics').addEventListener('click', async () => {
+            const loader = document.getElementById('diagnostics-loader');
+            const results = document.getElementById('diagnostics-results');
+            const btn = document.getElementById('btn-run-diagnostics');
+            
+            btn.disabled = true;
+            results.style.display = 'none';
+            loader.style.display = 'block';
+
+            try {
+                const res = await fetch('/api/ai/train-metrics', { method: 'POST' });
+                const data = await res.json();
+
+                if(!data.success) {
+                    alert("Diagnostics Failed: " + data.error);
+                } else {
+                    document.getElementById('diag-rf-acc').textContent = data.metrics.rf_accuracy.toFixed(1) + '%';
+                    document.getElementById('diag-fknn-acc').textContent = data.metrics.fknn_accuracy.toFixed(1) + '%';
+                    
+                    // Cache bust the images to force reload
+                    const ts = new Date().getTime();
+                    document.getElementById('img-feature').src = `/admin/images/feature_importance.png?t=${ts}`;
+                    document.getElementById('img-confusion').src = `/admin/images/confusion_matrix.png?t=${ts}`;
+                    
+                    document.getElementById('img-feature').style.display = 'block';
+                    document.getElementById('img-confusion').style.display = 'block';
+                    
+                    results.style.display = 'block';
+                }
+            } catch(e) {
+                alert("Network error running Python engine.");
+            }
+
+            loader.style.display = 'none';
+            btn.disabled = false;
+        });
     </script>
 </body>
 </html>

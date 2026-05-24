@@ -228,7 +228,7 @@
 
         <div class="progress-wrapper">
             <div class="progress-info">
-                <span>Question <span class="current" id="progress-current">1</span> of <span id="progress-total">20</span></span>
+                <span>Question <span class="current" id="progress-current">1</span> of <span id="progress-total">28</span></span>
                 <span id="progress-pct">0%</span>
             </div>
             <div class="progress-track">
@@ -264,26 +264,47 @@
 
         // 20 Questions from the PDF
         const surveyQuestions = [
-            { q: "HI", text: "I feel highly anxious if a programming assignment does not come with a detailed grading rubric." },
-            { q: "HI", text: "When I get stuck on a coding error, my first instinct is to check the official textbook or syllabus rather than asking peers." },
-            { q: "HI", text: "I prefer courses where my final grade is based on one major solo exam rather than group presentations." },
-            { q: "HI", text: "If a professor says 'use whatever software you want,' I usually ask them to pick one for me." },
-            { q: "HI", text: "When a server crashes during a lab, I wait for the professor to outline troubleshooting steps before I start." },
-            { q: "HC", text: "I feel most confident submitting a team project if the professor has approved our initial wireframes first." },
-            { q: "HC", text: "When forming a group, the first thing I do is assign a 'Project Manager' to keep everyone in line." },
-            { q: "HC", text: "If my team argues over database structures, I defer to the professor's opinion to settle the debate." },
-            { q: "HC", text: "I prefer study sessions where one designated 'smart' student tutors the rest of the group like a teacher." },
-            { q: "HC", text: "I prefer group coding where the professor actively monitors and corrects our logic in real-time." },
-            { q: "DI", text: "I often spend hours reading documentation for programming languages not taught in our curriculum." },
-            { q: "DI", text: "If the professor's code example is inefficient, I will silently rewrite it my own way during the lecture." },
-            { q: "DI", text: "I prefer to disable notifications on my phone and Discord so I can write code in isolation for hours." },
-            { q: "DI", text: "I learn best by purposely breaking a working program just to see what the error messages look like." },
-            { q: "DI", text: "I prefer to design my own database schema from scratch rather than modifying a provided template." },
-            { q: "DC", text: "I frequently post screenshots of my broken code on Discord or Reddit to see how others would fix it." },
-            { q: "DC", text: "In a group project, I don't care who is 'Leader' as long as everyone is contributing code to the repo." },
-            { q: "DC", text: "My best ideas for system features usually happen during casual, random chats with friends." },
-            { q: "DC", text: "I actively contribute to open-source projects or join Hackathons to see how other programmers think." },
-            { q: "DC", text: "Brainstorming logic with peers helps me understand material better than a formal lecture." }
+            // 1. What is the purpose of learning?
+            { q: "HI", text: "The purpose of learning is to gain access to knowledge that is valued in society." },
+            { q: "DC", text: "The purpose of learning is to know how to participate in a community with others of diverse, competing, and broadly distributed viewpoints." },
+            { q: "DI", text: "The purpose of learning is to live up to one's unique individual potential." },
+            { q: "HC", text: "The purpose of learning is to socialize citizens for participation in democracy." },
+            
+            // 2. What is worth learning?
+            { q: "DC", text: "What is worth learning is determined by communities that are formed around mutual interest." },
+            { q: "DI", text: "What is worth learning can only be determined by the individual for her/himself." },
+            { q: "HC", text: "What is worth learning are the knowledge and skills necessary to be an effective participant in a democratic society." },
+            { q: "HI", text: "What is worth learning is measured by clear standards and assessments." },
+            
+            // 3. How do people learn best?
+            { q: "DC", text: "People learn best when motivated by pursuing shared interests, values, and preferences with others." },
+            { q: "DI", text: "People learn best when they make individual choices about what they learn." },
+            { q: "HI", text: "People learn best in educational institutions that provide them with competent teachers." },
+            { q: "HC", text: "People learn best when they participate in a strong community with shared values about what to learn and how to learn." },
+            
+            // 4. What are individuals responsible for in learning?
+            { q: "HI", text: "Individuals are responsible for acquiring the knowledge and skills that teachers and schools teach them." },
+            { q: "DI", text: "Individuals are responsible for initiating and choosing what and how they learn." },
+            { q: "DC", text: "Individuals are responsible for joining networks or communities in order to learn what they want." },
+            { q: "HC", text: "Individuals are responsible for playing an active role in supporting the learning and participation of others in their community." },
+            
+            // 5. How does learning occur?
+            { q: "DC", text: "Learning occurs when individuals engage in activities that have meaning to them and contribute to their own as well as a communal knowledge base." },
+            { q: "HI", text: "Learning occurs when experts provide scaffolding and sequencing to build knowledge and skill." },
+            { q: "DI", text: "Learning occurs when individuals have to make sense of competing and diverse sources of knowledge, skill and expertise." },
+            { q: "HC", text: "Learning occurs through socialization by participating in a community with strong, clear values and norms." },
+            
+            // 6. What is the definition of learning?
+            { q: "DC", text: "Learning is a collective activity requiring cooperation among people with diverse knowledge and skills." },
+            { q: "DI", text: "Learning is an innate biological imperative that is driven by individual interests." },
+            { q: "HC", text: "Learning is a social activity guided by experts who create learning opportunities." },
+            { q: "HI", text: "Learning is the transfer of knowledge and skill from an expert to a novice." },
+            
+            // 7. What constitutes successful learning?
+            { q: "DI", text: "Successful learning can only be defined by the individual learner." },
+            { q: "DC", text: "Successful learning means an exchange of ideas among learners in a community." },
+            { q: "HI", text: "Successful learning is expressed via certification or recognition from an institution or expert." },
+            { q: "HC", text: "Successful learning is expressed via recognition by and positive participation in a community." }
         ];
 
         let answers = {};
@@ -310,21 +331,21 @@
                 <div class="question-card">
                     <div class="question-title">${qNum}. ${item.val.text}</div>
                     <div class="answers-grid">
-                        <label class="answer-option" data-value="1">
+                        <label class="answer-option" data-value="4">
                             <div class="radio-circle"></div>
-                            <div class="answer-text">Strongly Disagree (1)</div>
+                            <div class="answer-text">Strongly Agree</div>
+                        </label>
+                        <label class="answer-option" data-value="3">
+                            <div class="radio-circle"></div>
+                            <div class="answer-text">Agree</div>
                         </label>
                         <label class="answer-option" data-value="2">
                             <div class="radio-circle"></div>
-                            <div class="answer-text">Disagree (2)</div>
+                            <div class="answer-text">Somewhat Agree</div>
                         </label>
-                        <label class="answer-option" data-value="4">
+                        <label class="answer-option" data-value="1">
                             <div class="radio-circle"></div>
-                            <div class="answer-text">Agree (4)</div>
-                        </label>
-                        <label class="answer-option" data-value="5">
-                            <div class="radio-circle"></div>
-                            <div class="answer-text">Strongly Agree (5)</div>
+                            <div class="answer-text">Disagree</div>
                         </label>
                     </div>
                 </div>
@@ -373,6 +394,18 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isPreview = urlParams.get('preview') === 'true';
+
+            if (isPreview) {
+                const header = document.querySelector('.header h1');
+                if(header) {
+                    header.innerHTML = `Behavioral Learning Mode Assessment <span style="font-size: 14px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 4px 10px; border-radius: 20px; vertical-align: middle; margin-left: 10px;">Admin Preview Mode</span>`;
+                }
+                renderQuestions();
+                return;
+            }
+
             const userStr = localStorage.getItem('currentUser');
             if (!userStr) return;
             const user = JSON.parse(userStr);
@@ -421,28 +454,53 @@
         });
 
         document.getElementById('btn-submit').addEventListener('click', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isPreview = urlParams.get('preview') === 'true';
+
+            // Build 28-element array
+            let answersArray = [];
+            for (let i = 0; i < surveyQuestions.length; i++) {
+                answersArray.push(answers[i] || 0);
+            }
+
+            if (isPreview) {
+                try {
+                    document.getElementById('test-container').style.display = 'none';
+                    document.getElementById('loading-screen').style.display = 'flex';
+
+                    const res = await fetch('/api/ai/simulate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ answersArray: answersArray })
+                    });
+                    const data = await res.json();
+
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').style.display = 'none';
+                        if (data.success) {
+                            const resultScreen = document.getElementById('result-screen');
+                            resultScreen.style.display = 'flex';
+                            document.getElementById('final-mode').textContent = data.result.mode;
+                        } else {
+                            alert('Simulation Error: ' + data.error);
+                            document.getElementById('test-container').style.display = 'flex';
+                        }
+                    }, 1500);
+                } catch(e) {
+                    alert("Network error.");
+                }
+                return;
+            }
+
             const userStr = localStorage.getItem('currentUser');
             if (!userStr) { alert("You are not logged in!"); return; }
             const user = JSON.parse(userStr);
-            
-            let hi_score = 0, hc_score = 0, di_score = 0, dc_score = 0;
-
-            for (let i = 0; i < surveyQuestions.length; i++) {
-                const q = surveyQuestions[i].q;
-                const score = answers[i] || 0;
-                if(q === 'HI') hi_score += score;
-                if(q === 'HC') hc_score += score;
-                if(q === 'DI') di_score += score;
-                if(q === 'DC') dc_score += score;
-            }
-
-            const payloadScores = { hi_score, hc_score, di_score, dc_score };
 
             try {
                 document.getElementById('test-container').style.display = 'none';
                 document.getElementById('loading-screen').style.display = 'flex';
 
-                const payload = { student_id: user.id, scores: payloadScores };
+                const payload = { student_id: user.id, answersArray: answersArray };
                 if (activeSession) payload.session_id = activeSession.session_id;
 
                 const res = await fetch('/api/assessments/submit-fknn', {

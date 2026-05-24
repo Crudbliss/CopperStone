@@ -7,7 +7,8 @@ const bcrypt = require('bcrypt');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Serve all files in the current directory as static web files
 app.use(express.static(__dirname));
 
@@ -161,6 +162,17 @@ db.serialize(() => {
             }
         });
     });
+
+    // 11. AI Training Data (28 Questions)
+    let aiCols = "";
+    for(let i=1; i<=28; i++) {
+        aiCols += `q${i} REAL, `;
+    }
+    db.run(`CREATE TABLE IF NOT EXISTS ai_training_data (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ${aiCols}
+        target_quadrant TEXT
+    )`);
 });
 
 // --- API ENDPOINTS ---
@@ -572,37 +584,31 @@ app.get('/api/students/:id/history', (req, res) => {
 });
 
 // --- AI HELPER FUNCTION ---
-function calculateFKNN(scores, trainingData, settings) {
+function calculateFKNN(answersArray, trainingData, settings) {
     const K = parseInt(settings.k_value) || 5;
-    const wQuiz = parseFloat(settings.weight_quiz) || 1.0;
-    const wGroup = parseFloat(settings.weight_group) || 1.0;
-    const wResearch = parseFloat(settings.weight_research) || 1.0;
-    const wSeatwork = parseFloat(settings.weight_seatwork) || 1.0;
     const metric = settings.distance_metric || 'euclidean';
 
-    // Fallback for legacy payloads during browser caching
-    if (scores.hi_score === undefined && scores.quiz_score !== undefined) {
-        scores.hi_score = scores.quiz_score * 25; // Scale from 0-1 to 0-25
-        scores.hc_score = scores.group_score * 25;
-        scores.di_score = scores.research_score * 25;
-        scores.dc_score = scores.seatwork_score * 25;
-    }
-
     let distances = trainingData.map(data => {
-        let dQ = Math.abs(scores.hi_score - data.hi_score) * wQuiz;
-        let dG = Math.abs(scores.hc_score - data.hc_score) * wGroup;
-        let dR = Math.abs(scores.di_score - data.di_score) * wResearch;
-        let dS = Math.abs(scores.dc_score - data.dc_score) * wSeatwork;
-
         let dist = 0;
+        
         if (metric === 'euclidean') {
-            dist = Math.sqrt(dQ*dQ + dG*dG + dR*dR + dS*dS);
+            let sumSq = 0;
+            for(let i=1; i<=28; i++) {
+                let d = Math.abs((answersArray[i-1] || 0) - data[`q${i}`]);
+                sumSq += (d * d);
+            }
+            dist = Math.sqrt(sumSq);
         } else if (metric === 'manhattan') {
-            dist = dQ + dG + dR + dS;
+            for(let i=1; i<=28; i++) {
+                dist += Math.abs((answersArray[i-1] || 0) - data[`q${i}`]);
+            }
         } else if (metric === 'chebyshev') {
-            dist = Math.max(dQ, dG, dR, dS);
-        } else {
-            dist = Math.sqrt(dQ*dQ + dG*dG + dR*dR + dS*dS); // fallback
+            let maxD = 0;
+            for(let i=1; i<=28; i++) {
+                let d = Math.abs((answersArray[i-1] || 0) - data[`q${i}`]);
+                if (d > maxD) maxD = d;
+            }
+            dist = maxD;
         }
 
         return { mode: data.target_quadrant, distance: dist };
@@ -612,10 +618,10 @@ function calculateFKNN(scores, trainingData, settings) {
     const nearest = distances.slice(0, K);
 
     let memberships = {
-        'Hierarchical-Individual': 0,
-        'Distributed-Individual': 0,
-        'Hierarchical-Collective': 0,
-        'Distributed-Collective': 0
+        'Hierarchical Individual': 0,
+        'Distributed Individual': 0,
+        'Hierarchical Collective': 0,
+        'Distributed Collective': 0
     };
 
     let totalWeight = 0;
@@ -632,7 +638,7 @@ function calculateFKNN(scores, trainingData, settings) {
     for (let m in memberships) {
         if (memberships[m] > maxWeight) {
             maxWeight = memberships[m];
-            dominantMode = m.replace('-', ' ');
+            dominantMode = m;
         }
     }
     return { dominantMode, memberships };
@@ -640,10 +646,10 @@ function calculateFKNN(scores, trainingData, settings) {
 
 // POST /api/assessments/submit-fknn - Submit academic scores and calculate using FKNN
 app.post('/api/assessments/submit-fknn', (req, res) => {
-    const { student_id, session_id, scores } = req.body;
+    const { student_id, session_id, answersArray } = req.body;
     
-    if (!student_id || !scores) {
-        return res.status(400).json({ error: 'Missing student_id or scores' });
+    if (!student_id || !answersArray || answersArray.length !== 28) {
+        return res.status(400).json({ error: 'Missing student_id or incomplete answersArray (requires 28 elements)' });
     }
 
     db.all(`SELECT * FROM ai_settings`, [], (err, settingsRows) => {
@@ -655,7 +661,7 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
             if (err) return res.status(500).json({ error: err.message });
             if (trainingData.length === 0) return res.status(500).json({ error: "No training data found." });
 
-            const { dominantMode, memberships } = calculateFKNN(scores, trainingData, settings);
+            const { dominantMode, memberships } = calculateFKNN(answersArray, trainingData, settings);
 
             // Generate coordinates so the rest of the dashboard (scatter plots, etc) doesn't break
             let finalX = 0; let finalY = 0;
@@ -743,9 +749,9 @@ app.post('/api/assessments/submit', (req, res) => {
 
 // POST /api/ai/simulate - Admin endpoint to test FKNN math without saving to DB
 app.post('/api/ai/simulate', (req, res) => {
-    const { scores } = req.body;
+    const { answersArray } = req.body;
     
-    if (!scores) return res.status(400).json({ error: 'Missing scores' });
+    if (!answersArray || answersArray.length !== 28) return res.status(400).json({ error: 'Missing answersArray or incomplete' });
 
     db.all(`SELECT * FROM ai_settings`, [], (err, settingsRows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -756,7 +762,7 @@ app.post('/api/ai/simulate', (req, res) => {
             if (err) return res.status(500).json({ error: err.message });
             if (trainingData.length === 0) return res.status(500).json({ error: "No training data found." });
 
-            const { dominantMode, memberships } = calculateFKNN(scores, trainingData, settings);
+            const { dominantMode, memberships } = calculateFKNN(answersArray, trainingData, settings);
 
             res.json({
                 success: true,
@@ -768,9 +774,30 @@ app.post('/api/ai/simulate', (req, res) => {
 
 // POST /api/ai/upload-start - Clear old data before chunking
 app.post('/api/ai/upload-start', (req, res) => {
+    const { overwrite } = req.body;
+    if (overwrite) {
+        db.run(`DELETE FROM ai_training_data`, (err) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ success: true, message: "Dataset cleared." });
+        });
+    } else {
+        res.json({ success: true, message: "Appending to dataset." });
+    }
+});
+
+// DELETE /api/ai/training-data - Clear all data
+app.delete('/api/ai/training-data', (req, res) => {
     db.run(`DELETE FROM ai_training_data`, (err) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ success: true });
+        res.json({ success: true, message: "Dataset completely deleted." });
+    });
+});
+
+// GET /api/ai/training-data - Fetch top 100 rows for preview
+app.get('/api/ai/training-data', (req, res) => {
+    db.all(`SELECT * FROM ai_training_data ORDER BY id DESC LIMIT 100`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
     });
 });
 
@@ -781,11 +808,17 @@ app.post('/api/ai/upload-chunk', (req, res) => {
 
     db.serialize(() => {
         db.run('BEGIN TRANSACTION');
-        const stmt = db.prepare(`INSERT INTO ai_training_data (hi_score, hc_score, di_score, dc_score, target_quadrant) VALUES (?, ?, ?, ?, ?)`);
-        let insertedCount = 0;
+        let cols = []; let qs = [];
+        for(let i=1; i<=28; i++) { cols.push(`q${i}`); qs.push(`?`); }
+        const stmt = db.prepare(`INSERT INTO ai_training_data (${cols.join(',')}, target_quadrant) VALUES (${qs.join(',')}, ?)`);
         
+        let insertedCount = 0;
         data.forEach(row => {
-            stmt.run([row.hi_score, row.hc_score, row.di_score, row.dc_score, row.target_quadrant], function(insertErr) {
+            let values = [];
+            for(let i=1; i<=28; i++) values.push(row[`q${i}`]);
+            values.push(row.target_quadrant);
+
+            stmt.run(values, function(insertErr) {
                 if (!insertErr) insertedCount++;
             });
         });
@@ -797,6 +830,41 @@ app.post('/api/ai/upload-chunk', (req, res) => {
                 return res.status(500).json({ success: false, error: err.message });
             }
             res.json({ success: true, count: insertedCount });
+        });
+    });
+});
+
+// POST /api/ai/train-metrics - Spawns Python script to generate charts
+app.post('/api/ai/train-metrics', (req, res) => {
+    const { exec } = require('child_process');
+    // Export sqlite to CSV first so python can read it 
+    db.all(`SELECT * FROM ai_training_data`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: "Failed to read data" });
+        if (rows.length < 50) return res.status(400).json({ error: "Need at least 50 rows to train model." });
+
+        const fs = require('fs');
+        let csv = "q1,q2,q3,q4,q5,q6,q7,q8,q9,q10,q11,q12,q13,q14,q15,q16,q17,q18,q19,q20,q21,q22,q23,q24,q25,q26,q27,q28,target_quadrant\n";
+        rows.forEach(r => {
+            for(let i=1; i<=28; i++) csv += `${r['q'+i]},`;
+            csv += `${r.target_quadrant}\n`;
+        });
+        fs.writeFileSync('current_dataset.csv', csv);
+
+        // Run Python script
+        exec('python train_model.py', (err, stdout, stderr) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: "Python script failed. Is python installed?", details: stderr });
+            }
+            try {
+                // Parse stdout for JSON
+                const jsonStr = stdout.split('---JSON_START---')[1].split('---JSON_END---')[0];
+                const metrics = JSON.parse(jsonStr);
+                res.json({ success: true, metrics });
+            } catch (e) {
+                console.error(e);
+                res.status(500).json({ error: "Failed to parse Python output", raw: stdout });
+            }
         });
     });
 });
@@ -837,11 +905,15 @@ app.get('/api/ai/stats', (req, res) => {
 
 // GET /api/ai/download - Download active AI dataset as CSV
 app.get('/api/ai/download', (req, res) => {
-    db.all(`SELECT hi_score, hc_score, di_score, dc_score, target_quadrant FROM ai_training_data`, [], (err, rows) => {
+    db.all(`SELECT * FROM ai_training_data`, [], (err, rows) => {
         if (err) return res.status(500).send("Database error");
-        let csv = "hi_score,hc_score,di_score,dc_score,target_quadrant\n";
+        let csv = "";
+        for(let i=1; i<=28; i++) csv += `q${i},`;
+        csv += "target_quadrant\n";
+        
         rows.forEach(r => {
-            csv += `${r.hi_score},${r.hc_score},${r.di_score},${r.dc_score},${r.target_quadrant}\n`;
+            for(let i=1; i<=28; i++) csv += `${r['q'+i]},`;
+            csv += `${r.target_quadrant}\n`;
         });
         res.header('Content-Type', 'text/csv');
         res.attachment('current_model_dataset.csv');

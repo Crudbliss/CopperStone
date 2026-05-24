@@ -933,12 +933,6 @@
                 const password = document.getElementById('modalPassword').value;
                 const btnSubmit = loginForm.querySelector('.btn-submit');
                 
-                // Keep the admin backdoor
-                if (email === 'admin' && password === 'admin') {
-                    localStorage.setItem('currentUser', JSON.stringify({ role: 'admin', name: 'Administrator' }));
-                    window.location.href = 'admin/a-dashboard.html';
-                    return;
-                }
 
                 // Call the real backend API
                 const originalText = btnSubmit.textContent;
