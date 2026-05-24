@@ -406,10 +406,9 @@
                         <label>Quarter / Title</label>
                         <select id="quarter_name" required style="background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; width: 100%;">
                             <option value="" disabled selected>Select Assessment</option>
-                            <option value="Q1 Assessment">Q1 Assessment</option>
-                            <option value="Q2 Assessment">Q2 Assessment</option>
-                            <option value="Q3 Assessment">Q3 Assessment</option>
-                            <option value="Q4 Assessment">Q4 Assessment</option>
+                            <option value="Prelim">Prelim</option>
+                            <option value="Midterm">Midterm</option>
+                            <option value="Final">Final</option>
                         </select>
                     </div>
                     <div class="form-group" style="flex: 1; margin-bottom: 0;">
@@ -552,7 +551,7 @@
                 const cls = await res.json();
                 
                 // Construct the title: Program Year-Section
-                const program = cls.course_subj_name || 'Unknown Class';
+                const program = cls.prog_name || 'Unknown Class';
                 const yl = cls.year_level || '';
                 const sec = cls.section || '';
                 let titleStr = program;

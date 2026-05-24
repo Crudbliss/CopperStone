@@ -56,16 +56,18 @@ db.serialize(() => {
         mi TEXT,
         email TEXT UNIQUE NOT NULL,
         password_hash TEXT NOT NULL,
+        learning_mode TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
     // 3. Classes Table
     db.run(`CREATE TABLE IF NOT EXISTS classes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        course_subj_name TEXT NOT NULL,
+        prog_name TEXT NOT NULL,
         year_level TEXT,
         section TEXT,
         school_year TEXT,
+        learning_mode TEXT,
         teacher_id INTEGER,
         is_archived INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -76,6 +78,7 @@ db.serialize(() => {
         db.run(`ALTER TABLE classes ADD COLUMN section TEXT`, (err) => {});
         db.run(`ALTER TABLE classes ADD COLUMN school_year TEXT`, (err) => {});
         db.run(`ALTER TABLE classes ADD COLUMN is_archived INTEGER DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE classes ADD COLUMN learning_mode TEXT`, (err) => {});
     });
 
     // 4. Enrollments Table (Many-to-Many: Students to Classes)
@@ -211,7 +214,7 @@ app.post('/api/students/register', async (req, res) => {
 
 // POST /api/teachers/register - Register a new teacher
 app.post('/api/teachers/register', async (req, res) => {
-    const { first_name, last_name, mi, email, password } = req.body;
+    const { first_name, last_name, mi, email, password, learning_mode } = req.body;
     
     // Basic validation
     if (!first_name || !last_name || !email || !password) {
@@ -223,10 +226,10 @@ app.post('/api/teachers/register', async (req, res) => {
         const saltRounds = 10;
         const password_hash = await bcrypt.hash(password, saltRounds);
 
-        const sql = `INSERT INTO teachers (first_name, last_name, mi, email, password_hash) 
-                     VALUES (?, ?, ?, ?, ?)`;
+        const sql = `INSERT INTO teachers (first_name, last_name, mi, email, password_hash, learning_mode) 
+                     VALUES (?, ?, ?, ?, ?, ?)`;
         
-        db.run(sql, [first_name, last_name, mi, email, password_hash], function(err) {
+        db.run(sql, [first_name, last_name, mi, email, password_hash, learning_mode || null], function(err) {
             if (err) {
                 if (err.message.includes('UNIQUE constraint failed')) {
                     return res.status(409).json({ error: 'Email already exists' });
@@ -250,9 +253,19 @@ app.get('/api/students', (req, res) => {
 
 // GET /api/teachers - Fetch all teachers
 app.get('/api/teachers', (req, res) => {
-    db.all(`SELECT id, first_name, last_name, mi, email, created_at FROM teachers`, [], (err, rows) => {
+    db.all(`SELECT id, first_name, last_name, mi, email, learning_mode, created_at FROM teachers`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(rows);
+    });
+});
+
+// PUT /api/teachers/:id/learning_mode - Update a teacher's learning mode
+app.put('/api/teachers/:id/learning_mode', (req, res) => {
+    const { learning_mode } = req.body;
+    db.run(`UPDATE teachers SET learning_mode = ? WHERE id = ?`, [learning_mode, req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        if (this.changes === 0) return res.status(404).json({ error: 'Teacher not found' });
+        res.json({ success: true });
     });
 });
 
@@ -388,13 +401,13 @@ app.delete('/api/classes/:id', (req, res) => {
 
 // POST /api/classes - Create a new class
 app.post('/api/classes', (req, res) => {
-    const { course_subj_name, year_level, section, school_year, teacher_id } = req.body;
-    if (!course_subj_name || !teacher_id) {
-        return res.status(400).json({ error: 'course_subj_name and teacher_id are required' });
+    const { prog_name, year_level, section, school_year, learning_mode, teacher_id } = req.body;
+    if (!prog_name || !teacher_id) {
+        return res.status(400).json({ error: 'prog_name and teacher_id are required' });
     }
     
-    db.run(`INSERT INTO classes (course_subj_name, year_level, section, school_year, teacher_id) VALUES (?, ?, ?, ?, ?)`, 
-        [course_subj_name, year_level, section, school_year, teacher_id], function(err) {
+    db.run(`INSERT INTO classes (prog_name, year_level, section, school_year, learning_mode, teacher_id) VALUES (?, ?, ?, ?, ?, ?)`, 
+        [prog_name, year_level, section, school_year, learning_mode || null, teacher_id], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.status(201).json({ success: true, class_id: this.lastID });
     });
@@ -555,7 +568,7 @@ app.put('/api/sessions/:id/close', (req, res) => {
 // GET /api/students/:id/active-sessions - Get active sessions for a student
 app.get('/api/students/:id/active-sessions', (req, res) => {
     const sql = `
-        SELECT s.id as session_id, s.quarter_name, s.deadline, c.course_subj_name, c.id as class_id
+        SELECT s.id as session_id, s.quarter_name, s.deadline, c.prog_name as course_subj_name, c.id as class_id
         FROM assessment_sessions s
         JOIN enrollments e ON s.class_id = e.class_id
         JOIN classes c ON s.class_id = c.id
@@ -570,7 +583,7 @@ app.get('/api/students/:id/active-sessions', (req, res) => {
 // GET /api/students/:id/history - Get assessment history
 app.get('/api/students/:id/history', (req, res) => {
     const sql = `
-        SELECT h.*, s.quarter_name, c.course_subj_name 
+        SELECT h.*, s.quarter_name, c.prog_name as course_subj_name 
         FROM assessment_history h
         JOIN assessment_sessions s ON h.session_id = s.id
         JOIN classes c ON s.class_id = c.id

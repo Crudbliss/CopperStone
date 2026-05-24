@@ -644,7 +644,7 @@
                         </a>
 
                         <a href="qa-content.html" class="action-item" onclick="updateParentSidebar(1)">
-                            <span>See your Q3 assessment details</span>
+                            <span>See your assessment details</span>
                             <svg>
                                 <use href="#icon-arrow-right"></use>
                             </svg>
@@ -806,7 +806,7 @@
 
                         // Assessments Done
                         const doneCount = history.length;
-                        document.getElementById('stat-assessments-done').textContent = `${doneCount}/4`;
+                        document.getElementById('stat-assessments-done').textContent = `${doneCount}/3`;
 
                         // Last Assessment
                         const lastResultEl = document.getElementById('stat-last-assessment');
@@ -838,8 +838,8 @@
                             nextAssessmentText = `${active.quarter_name} closes ${d.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}`;
                         } else {
                             // Guess next based on history
-                            const quarters = ['Q1 Assessment', 'Q2 Assessment', 'Q3 Assessment', 'Q4 Assessment'];
-                            let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q.substring(0, 2))));
+                            const quarters = ['Prelim', 'Midterm', 'Final'];
+                            let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q)));
 
                             if (nextQ) {
                                 nextStatusEl.textContent = 'Locked';

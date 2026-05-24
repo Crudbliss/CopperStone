@@ -518,13 +518,13 @@
                 }
 
                 // Render locked
-                const quarters = ['Q1 Assessment', 'Q2 Assessment', 'Q3 Assessment', 'Q4 Assessment'];
+                const quarters = ['Prelim', 'Midterm', 'Final'];
                 quarters.forEach(q => {
-                    const isDone = history.some(h => h.quarter_name.includes(q.substring(0, 2)));
+                    const isDone = history.some(h => h.quarter_name.includes(q));
                     let isActive = false;
                     if (activeSessions.length > 0) {
                         const active = activeSessions[0];
-                        isActive = active.quarter_name.includes(q.substring(0, 2)) && !history.some(h => h.session_id === active.session_id);
+                        isActive = active.quarter_name.includes(q) && !history.some(h => h.session_id === active.session_id);
                     }
                     
                     if (!isDone && !isActive) {

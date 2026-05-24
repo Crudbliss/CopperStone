@@ -223,7 +223,17 @@
             <form id="addClassForm">
                 <div class="form-group">
                     <label>Program</label>
-                    <input type="text" id="course_subj_name" placeholder="e.g. BSIT" required>
+                    <input type="text" id="prog_name" placeholder="e.g. BSIT" required>
+                </div>
+                <div class="form-group">
+                    <label>Learning Mode</label>
+                    <select id="learning_mode" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 6px; color: #fff; width: 100%; font-family: 'Poppins', sans-serif;" required>
+                        <option value="" disabled selected>Select Learning Mode</option>
+                        <option value="HI">HI</option>
+                        <option value="HC">HC</option>
+                        <option value="DI">DI</option>
+                        <option value="DC">DC</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Year Level</label>
@@ -288,16 +298,15 @@
                     card.className = 'class-card';
                     card.onclick = () => window.location.href = 'class-details.html?id=' + c.id;
                     
-                    const course = c.course_subj_name || 'Unknown Course';
-                    const yl = c.year_level || '';
+                    const program = c.prog_name || 'Unknown Program';
+                    const lm = c.learning_mode || 'None';
                     const sec = c.section || '';
                     const sy = c.school_year || '';
                     
-                    // Format: [Course] [Yearlvl]-[Section]
-                    let titleStr = course;
-                    if (yl || sec) {
-                        titleStr += ` ${yl}-${sec}`;
-                    }
+                    // class-title: "Prog_name"
+                    let titleStr = program;
+                    // class-desc: "learning_mode-section school_year"
+                    let descStr = `${lm}-${sec} ${sy}`;
 
                     card.innerHTML = `
                         <div class="card-actions">
@@ -310,7 +319,7 @@
                         </div>
                         <div class="card-info">
                             <h3 class="class-title">${titleStr}</h3>
-                            <p class="class-desc">${sy}</p>
+                            <p class="class-desc">${descStr}</p>
                         </div>
                     `;
                     classesGrid.appendChild(card);
@@ -346,7 +355,8 @@
             msg.textContent = '';
             
             const data = {
-                course_subj_name: document.getElementById('course_subj_name').value,
+                prog_name: document.getElementById('prog_name').value,
+                learning_mode: document.getElementById('learning_mode').value,
                 year_level: document.getElementById('year_level').value,
                 section: document.getElementById('section').value,
                 school_year: document.getElementById('school_year').value,

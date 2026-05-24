@@ -374,11 +374,12 @@
             color: var(--theme-primary); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
         }
         .modal-title { font-size: 22px; font-weight: 700; margin-bottom: 2px; color: white; }
-        .modal-switch-role {
-            background: none; border: none; color: var(--text-muted); text-decoration: underline;
-            font-size: 13px; cursor: pointer; font-family: 'Poppins', sans-serif; padding: 0; margin: 0;
+        .modal-switch-role-icon {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 10px; width: 40px; height: 40px; display: flex; align-items: center; 
+            justify-content: center; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
         }
-        .modal-switch-role:hover { color: white; }
+        .modal-switch-role-icon:hover { color: white; background: rgba(255, 255, 255, 0.1); }
 
         .modal-form .form-group { margin-bottom: 24px; }
         .modal-form label { display: block; color: var(--text-gray); font-size: 14px; font-weight: 500; margin-bottom: 8px; }
@@ -770,14 +771,25 @@
                 </svg>
             </button>
             
-            <div class="modal-header">
-                <div class="modal-role-icon">
-                    <svg width="24" height="24" id="modalRoleIcon"><use href="#icon-student"></use></svg>
+            <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 32px; width: 100%;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div class="modal-role-icon">
+                        <svg width="24" height="24" id="modalRoleIcon"><use href="#icon-student"></use></svg>
+                    </div>
+                    <div>
+                        <h3 class="modal-title" id="modalTitle">Student Login</h3>
+                        <p id="modalSubtitle" style="color: var(--text-muted); font-size: 13px; margin: 0;">BSIT Student Portal</p>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="modal-title" id="modalTitle">Student Login</h3>
-                    <button type="button" class="modal-switch-role" onclick="toggleRole()">Switch role</button>
-                </div>
+                
+                <button type="button" class="modal-switch-role-icon" onclick="toggleRole()" title="Switch Role">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="17 1 21 5 17 9"></polyline>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                        <polyline points="7 23 3 19 7 15"></polyline>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                    </svg>
+                </button>
             </div>
 
             <form id="loginForm" action="student/s-dashboard.html" class="modal-form">
@@ -845,6 +857,7 @@
             const content = document.getElementById('loginModalContent');
             const icon = document.getElementById('modalRoleIcon');
             const title = document.getElementById('modalTitle');
+            const subtitle = document.getElementById('modalSubtitle');
             const email = document.getElementById('modalEmail');
             const loginForm = document.getElementById('loginForm'); // <-- 1. Get the form
 
@@ -860,6 +873,7 @@
                 
                 icon.innerHTML = '<use href="#icon-student"></use>';
                 title.textContent = 'Student Login';
+                subtitle.textContent = 'Student Portal';
                 email.placeholder = 'maria.santos@student.olfu.edu.ph';
                 email.value = ''; 
                 
@@ -871,6 +885,7 @@
                 
                 icon.innerHTML = '<use href="#icon-teacher"></use>';
                 title.textContent = 'Teacher Login';
+                subtitle.textContent = 'Faculty Portal';
                 email.placeholder = 'a.delacruz@olfu.edu.ph';
                 email.value = ''; 
                 

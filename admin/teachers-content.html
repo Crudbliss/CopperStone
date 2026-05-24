@@ -38,8 +38,8 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         label { font-size: 13px; color: #8b9eb0; }
-        input { background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; }
-        input:focus { outline: none; border-color: #38bdf8; }
+        input, select { background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; }
+        input:focus, select:focus { outline: none; border-color: #38bdf8; }
     </style>
 </head>
 <body>
@@ -52,9 +52,9 @@
         
         <table>
             <thead>
-                <tr>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Learning Mode</th>
                 </tr>
             </thead>
             <tbody id="teacherTableBody">
@@ -77,6 +77,16 @@
                     <div class="form-group"><label>Middle Initial</label><input type="text" id="mi"></div>
                     <div class="form-group"><label>Email</label><input type="email" id="email" required></div>
                     <div class="form-group"><label>Password</label><input type="password" id="password" required></div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Assigned Learning Mode</label>
+                        <select id="learning_mode">
+                            <option value="">-- No Mode Assigned --</option>
+                            <option value="HI">Hierarchical Individual (HI)</option>
+                            <option value="HC">Hierarchical Collective (HC)</option>
+                            <option value="DI">Distributed Individual (DI)</option>
+                            <option value="DC">Distributed Collective (DC)</option>
+                        </select>
+                    </div>
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
                     <button type="button" onclick="closeModal()" style="background: transparent; color: #8b9eb0; border: 1px solid rgba(255,255,255,0.2);">Cancel</button>
@@ -122,11 +132,37 @@
                     tr.innerHTML = `
                         <td>${t.first_name} ${t.mi || ''} ${t.last_name}</td>
                         <td>${t.email}</td>
+                        <td>
+                            <select onchange="updateTeacherMode(${t.id}, this.value)" style="background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 6px 10px; border-radius: 4px; color: #fff; font-size: 12px; cursor: pointer; outline: none;">
+                                <option value="" ${!t.learning_mode ? 'selected' : ''}>-- Unassigned --</option>
+                                <option value="HI" ${t.learning_mode === 'HI' ? 'selected' : ''}>HI</option>
+                                <option value="HC" ${t.learning_mode === 'HC' ? 'selected' : ''}>HC</option>
+                                <option value="DI" ${t.learning_mode === 'DI' ? 'selected' : ''}>DI</option>
+                                <option value="DC" ${t.learning_mode === 'DC' ? 'selected' : ''}>DC</option>
+                            </select>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
             } catch (err) {
                 console.error("Error loading teachers:", err);
+            }
+        }
+        
+        async function updateTeacherMode(id, mode) {
+            try {
+                const res = await fetch(`/api/teachers/${id}/learning_mode`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ learning_mode: mode || null })
+                });
+                if (!res.ok) {
+                    alert("Failed to update learning mode.");
+                    loadTeachers(); // Revert back
+                }
+            } catch(e) {
+                console.error(e);
+                alert("Server error updating learning mode.");
             }
         }
         
@@ -144,7 +180,8 @@
                 last_name: document.getElementById('last_name').value,
                 mi: document.getElementById('mi').value,
                 email: document.getElementById('email').value,
-                password: document.getElementById('password').value
+                password: document.getElementById('password').value,
+                learning_mode: document.getElementById('learning_mode').value
             };
 
             try {

@@ -66,7 +66,8 @@
         <table>
             <thead>
                 <tr>
-                    <th>Class Name</th>
+                    <th>Program</th>
+                    <th>Learning Mode</th>
                     <th>Year & Section</th>
                     <th>School Year</th>
                     <th>Assigned Teacher</th>
@@ -90,10 +91,20 @@
             <form id="addClassForm">
                 <div class="form-group">
                     <label>Program</label>
-                    <select id="course_subj_name" required>
+                    <select id="prog_name" required>
                         <option value="" disabled selected>Select Program</option>
                         <option value="BSIT">BSIT</option>
                         <option value="BSCS">BSCS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Assigned Learning Mode</label>
+                    <select id="learning_mode" required>
+                        <option value="" disabled selected>Select Learning Mode</option>
+                        <option value="HI">Hierarchical Individual (HI)</option>
+                        <option value="HC">Hierarchical Collective (HC)</option>
+                        <option value="DI">Distributed Individual (DI)</option>
+                        <option value="DC">Distributed Collective (DC)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -183,7 +194,8 @@
                     const tr = document.createElement('tr');
                     const teacherName = c.teacher_first_name ? `${c.teacher_first_name} ${c.teacher_last_name}` : '<i style="color:#fb923c">Unassigned</i>';
                     
-                    const program = c.course_subj_name || '-';
+                    const program = c.prog_name || '-';
+                    const learningMode = c.learning_mode || 'None';
                     const yl = c.year_level || '';
                     const sec = c.section || '';
                     const sy = c.school_year || '-';
@@ -205,6 +217,11 @@
 
                     tr.innerHTML = `
                         <td><strong>${program}</strong></td>
+                        <td>
+                            <span style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                                ${learningMode}
+                            </span>
+                        </td>
                         <td>${ylsec}</td>
                         <td>${sy}</td>
                         <td>${teacherName}</td>
@@ -248,7 +265,8 @@
             msg.textContent = '';
             
             const data = {
-                course_subj_name: document.getElementById('course_subj_name').value,
+                prog_name: document.getElementById('prog_name').value,
+                learning_mode: document.getElementById('learning_mode').value,
                 year_level: document.getElementById('year_level').value,
                 section: document.getElementById('section').value,
                 school_year: document.getElementById('school_year').value,
