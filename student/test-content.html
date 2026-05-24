@@ -169,6 +169,131 @@
         .btn-submit:hover { opacity: 0.9; }
         .btn-submit:disabled { background-color: var(--text-muted); cursor: not-allowed; }
 
+        /* --- QUADRANT MAP --- */
+        .quadrant-card {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto 32px;
+            background: rgba(255,255,255,0.02); 
+            border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .quadrant-map-container {
+            flex: 1;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quadrant-graph {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .quadrant-grid-lines {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        .q-cell {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .q-cell.top-left {
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(74, 222, 128, 0.04);
+        }
+
+        .q-cell.top-right {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(56, 189, 248, 0.04);
+        }
+
+        .q-cell.bottom-left {
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(251, 146, 60, 0.04);
+        }
+
+        .q-cell.bottom-right {
+            background-color: rgba(192, 132, 252, 0.04);
+        }
+
+        .q-label {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .axis-label {
+            position: absolute;
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .axis-y-top {
+            left: -28px;
+            top: 25%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
+        .axis-y-bot {
+            left: -28px;
+            top: 75%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
+        .axis-x-container {
+            position: absolute;
+            bottom: -32px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .data-point {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            background-color: var(--bg-card);
+            border-radius: 50%;
+            border: 4px solid var(--matrix-green);
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 0 20px 5px rgba(74, 222, 128, 0.3);
+            display: none;
+            transition: all 0.5s ease;
+        }
+
+        /* Utilities */
+        .text-matrix-green { color: var(--matrix-green); }
+        .text-matrix-blue { color: var(--matrix-blue); }
+        .text-matrix-orange { color: #fb923c; }
+        .text-matrix-purple { color: #c084fc; }
+
         /* Result Screen overlay */
         #result-screen {
             display: none;
@@ -254,7 +379,42 @@
         <h3>Assessment Complete!</h3>
         <p style="color: var(--text-muted); margin-top: 8px;">Your Learning Mode is:</p>
         <div class="result-mode" id="final-mode">Loading...</div>
-        <p class="result-sub">Your profile and dashboard have been updated with your new quadrant coordinate.</p>
+        
+        <p id="mode-description" style="max-width: 600px; font-size: 14px; margin: 0 auto 24px; color: var(--text-main); background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);"></p>
+        
+        <div class="quadrant-card" id="quadrant-card-container" style="display: none;">
+            <div class="quadrant-map-container">
+                <div style="position: relative; width: 100%; max-width: 340px;">
+                    <div class="axis-label axis-y-top">INDIVIDUAL</div>
+                    <div class="axis-label axis-y-bot">COLLECTIVE</div>
+
+                    <div class="quadrant-graph">
+                        <div class="quadrant-grid-lines">
+                            <div class="q-cell top-left">
+                                <span class="q-label text-matrix-green">H. Individual</span>
+                            </div>
+                            <div class="q-cell top-right">
+                                <span class="q-label text-matrix-blue">D. Individual</span>
+                            </div>
+                            <div class="q-cell bottom-left">
+                                <span class="q-label text-matrix-orange">H. Collective</span>
+                            </div>
+                            <div class="q-cell bottom-right">
+                                <span class="q-label text-matrix-purple">D. Collective</span>
+                            </div>
+                        </div>
+
+                        <div class="data-point" id="quadrant-dot"></div>
+                    </div>
+
+                    <div class="axis-x-container">
+                        <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
+                        <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <button class="btn-submit" onclick="updateParentSidebar(0); window.location.href='dashboard-content.html';">Return to Dashboard</button>
     </div>
 
@@ -481,6 +641,7 @@
                             const resultScreen = document.getElementById('result-screen');
                             resultScreen.style.display = 'flex';
                             document.getElementById('final-mode').textContent = data.result.mode;
+                            renderFuzzyGraph(data.result.mode, data.result.fuzzy);
                         } else {
                             alert('Simulation Error: ' + data.error);
                             document.getElementById('test-container').style.display = 'flex';
@@ -526,17 +687,80 @@
                         const resultScreen = document.getElementById('result-screen');
                         resultScreen.style.display = 'flex';
                         document.getElementById('final-mode').textContent = data.result.mode;
+                        renderFuzzyGraph(data.result.mode, data.result.fuzzy);
                     } else {
-                        alert('Error: ' + data.error);
+                        alert('Error submitting assessment');
                         document.getElementById('test-container').style.display = 'flex';
                     }
                 }, 1500);
-
-            } catch(e) {
-                console.error(e);
-                alert("Network error.");
+            } catch (err) {
+                console.error("Submit error", err);
+                alert("Network error occurred.");
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('test-container').style.display = 'flex';
             }
         });
+
+        // Function to render the 4-quadrant graph and description
+        function renderFuzzyGraph(mode, fuzzyDict) {
+            // Set Description
+            const descEl = document.getElementById('mode-description');
+            if(mode === 'Hierarchical Individual') {
+                descEl.textContent = "You thrive in structured environments where knowledge is transferred from an expert. You prefer clear goals, certification, and independent mastery of standard curriculum.";
+            } else if(mode === 'Distributed Individual') {
+                descEl.textContent = "You learn best by pursuing your own unique interests. You are self-directed, preferring informal environments where you control what and how you learn to achieve personal growth.";
+            } else if(mode === 'Hierarchical Collective') {
+                descEl.textContent = "You prefer learning in structured group settings. You value shared civic responsibility, group cohesion, and learning the traditions of a community under expert guidance.";
+            } else if(mode === 'Distributed Collective') {
+                descEl.textContent = "You excel in collaborative, network-driven environments. You learn by co-creating knowledge with diverse peers to solve shared problems, rather than relying on a single authority.";
+            } else {
+                descEl.textContent = "Based on Elmore's framework, this is your optimal learning environment.";
+            }
+
+            // If fuzzyDict is missing (e.g. standard submission fallback), we can't plot accurately
+            if (!fuzzyDict) {
+                document.getElementById('quadrant-card-container').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('quadrant-card-container').style.display = 'flex';
+
+            // Calculate Total Weight for normalization
+            let totalWeight = 0;
+            for(let key in fuzzyDict) { totalWeight += fuzzyDict[key]; }
+            if (totalWeight === 0) totalWeight = 1;
+
+            // Normalize weights to percentages (0.0 to 1.0)
+            const pHI = (fuzzyDict['Hierarchical Individual'] || 0) / totalWeight;
+            const pDI = (fuzzyDict['Distributed Individual'] || 0) / totalWeight;
+            const pHC = (fuzzyDict['Hierarchical Collective'] || 0) / totalWeight;
+            const pDC = (fuzzyDict['Distributed Collective'] || 0) / totalWeight;
+
+            // X: Hierarchical (0) vs Distributed (100) -> -1 to 1 becomes 0 to 100%
+            // Y: Individual (0) vs Collective (100) -> Individual is top (0%), Collective is bottom (100%)
+            // We can derive from percentages directly:
+            // Left (HI, HC) vs Right (DI, DC)
+            let xPct = (pDI + pDC) * 100; // 0% if fully hierarchical, 100% if fully distributed
+            
+            // Top (HI, DI) vs Bottom (HC, DC)
+            let yPct = (pHC + pDC) * 100; // 0% if fully individual, 100% if fully collective
+
+            // Clamp to stay within bounds
+            xPct = Math.max(5, Math.min(95, xPct));
+            yPct = Math.max(5, Math.min(95, yPct));
+
+            let color = 'var(--matrix-green)';
+            if (mode === 'Distributed Individual') color = 'var(--matrix-blue)';
+            if (mode === 'Hierarchical Collective') color = '#fb923c';
+            if (mode === 'Distributed Collective') color = '#c084fc';
+
+            const dot = document.getElementById('quadrant-dot');
+            dot.style.display = 'block';
+            dot.style.left = xPct + '%';
+            dot.style.top = yPct + '%';
+            dot.style.borderColor = color;
+            dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${color} 60%, transparent)`;
+        }
 
         // Helper to sync sidebar when returning to dashboard
         function updateParentSidebar(activeIndex) {
