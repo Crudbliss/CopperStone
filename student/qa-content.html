@@ -346,6 +346,7 @@
             color: var(--matrix-green);
         }
     </style>
+    <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
 
 <body>
@@ -435,14 +436,13 @@
         function renderAssessmentPage(activeSessions, history) {
             let html = '';
 
-            // 1. Render Timeline (Static Q1-Q4 for visual effect, but filled with real data)
+            // 1. Render Timeline
             html += `<div class="card">
                         <h3 class="card-header-title">ASSESSMENT TIMELINE</h3>
                         <div class="timeline-container"><div class="timeline-line"></div>`;
 
             const quarters = ['Prelim', 'Midterm', 'Final'];
             quarters.forEach(q => {
-                // Check if this quarter exists in history
                 const histItem = history.find(h => h.quarter_name.includes(q));
                 const activeItem = activeSessions.find(s => s.quarter_name.includes(q));
 
@@ -481,18 +481,24 @@
 
             // 2. Render Active/Upcoming Assessment Card
             if (activeSessions.length > 0) {
-                const active = activeSessions[0]; // just grab the first active
+                const active = activeSessions[0];
                 const alreadyTook = history.some(h => h.session_id === active.session_id);
                 let deadlineStr = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'No deadline';
 
                 if (alreadyTook) {
+                    const completedHistItem = history.find(h => h.session_id === active.session_id);
+                    const modeParam = completedHistItem ? encodeURIComponent(completedHistItem.learning_mode) : '';
                     html += `
                         <div class="card card-upcoming" style="background-color: var(--bg-card); border: 1px solid var(--border-light);">
                             <div class="upcoming-icon-bg" style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green);">
                                 <svg width="24" height="24"><use href="#icon-check"></use></svg>
                             </div>
                             <h2 class="upcoming-title" style="color: var(--matrix-green);">Assessment Completed</h2>
-                            <p class="upcoming-sub" style="margin-bottom: 0;">You have already completed the assessment for ${active.course_subj_name} - ${active.quarter_name}.</p>
+                            <p class="upcoming-sub" style="margin-bottom: 16px;">You have already completed the assessment for ${active.course_subj_name} - ${active.quarter_name}.</p>
+                            <a href="test-content.html?view_results=true&mode=${modeParam}" class="btn-preview" style="text-decoration: none; width: fit-content; background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green); border-color: rgba(74, 222, 128, 0.3);">
+                                <svg width="14" height="14"><use href="#icon-check"></use></svg>
+                                View Results
+                            </a>
                         </div>
                     `;
                 } else {
@@ -501,11 +507,9 @@
                             <div class="upcoming-icon-bg">
                                 <svg width="24" height="24"><use href="#icon-clipboard"></use></svg>
                             </div>
-                            
                             <span class="pill-upcoming" style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green);">ACTIVE NOW</span>
                             <h2 class="upcoming-title">${active.course_subj_name} - ${active.quarter_name}</h2>
                             <p class="upcoming-sub">Estimated 20-30 minutes</p>
-                            
                             <div class="upcoming-status-row">
                                 <div class="status-item" style="color: var(--matrix-green);">
                                     <svg style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>
@@ -516,7 +520,6 @@
                                     <span>Deadline: ${deadlineStr}</span>
                                 </div>
                             </div>
-
                             <a href="test-content.html" class="btn-preview" style="text-decoration: none; width: fit-content; background-color: rgba(74, 222, 128, 0.15); color: var(--matrix-green); border-color: var(--matrix-green);">
                                 <svg width="14" height="14" style="color: var(--matrix-green);"><use href="#icon-play"></use></svg>
                                 Take Assessment
@@ -540,10 +543,10 @@
                         <h3 class="card-header-title">PREVIOUS RESULTS</h3>
                         <div class="results-list">
                 `;
-
                 history.forEach(h => {
                     const dateStr = new Date(h.taken_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
                     const pct = Math.round((Math.max(Math.abs(h.x_coord || 0), Math.abs(h.y_coord || 0)) / 5) * 100);
+                    const modeParam = encodeURIComponent(h.learning_mode || '');
                     html += `
                         <div class="result-item">
                             <div class="result-icon">
@@ -554,17 +557,16 @@
                                 <p class="result-date">${dateStr}</p>
                             </div>
                             <span class="result-badge">${h.learning_mode}</span>
-                            <span class="result-score">${pct}%</span>
+                            <a href="test-content.html?view_results=true&mode=${modeParam}" class="result-score" style="text-decoration: none; color: var(--matrix-green); font-size: 11px; font-weight: 700; cursor: pointer;">View</a>
                         </div>
                     `;
                 });
-
                 html += `</div></div>`;
             }
 
             document.getElementById('dynamic-content').innerHTML = html;
         }
+
     </script>
 </body>
-
 </html>

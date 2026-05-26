@@ -702,19 +702,26 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
                 const modeShortcode = modeToShortcode[dominantMode] || dominantMode;
                 console.log(`Auto-assigning student ${student_id} | Mode: ${dominantMode} | Shortcode: ${modeShortcode}`);
 
-                db.get(`SELECT id FROM classes WHERE learning_mode = ? AND is_archived = 0 LIMIT 1`, [modeShortcode], (err, classRow) => {
+                db.get(`SELECT * FROM classes WHERE learning_mode = ? AND is_archived = 0 LIMIT 1`, [modeShortcode], (err, classRow) => {
                     if (err || !classRow) {
                         console.log("No active matching class found for shortcode:", modeShortcode);
                         return finishSubmission(null);
                     }
                     
                     const classId = classRow.id;
-                    console.log(`Found class id: ${classId}. Enrolling student...`);
+                    const classSection = classRow.section;
+                    console.log(`Found class id: ${classId}, section: ${classSection}. Enrolling student...`);
                     // Enroll the student (ignore duplicate error if already enrolled)
                     db.run(`INSERT OR IGNORE INTO enrollments (student_id, class_id) VALUES (?, ?)`, [student_id, classId], (enrollErr) => {
                         if (enrollErr) console.error("Error auto-enrolling student:", enrollErr);
                         else console.log(`Student ${student_id} enrolled in class ${classId}`);
                         
+                        // Fill in program (shortcode) and section from the assigned class
+                        db.run(`UPDATE students SET program = ?, section = ? WHERE id = ?`, [modeShortcode, classSection, student_id], (updateErr) => {
+                            if (updateErr) console.error("Error updating student program/section:", updateErr);
+                            else console.log(`Student ${student_id} program set to ${modeShortcode}, section ${classSection}`);
+                        });
+
                         // Ensure a 'Prelim' session exists for this class
                         db.get(`SELECT id FROM assessment_sessions WHERE class_id = ? AND quarter_name = 'Prelim'`, [classId], (err, sessionRow) => {
                             if (sessionRow) {

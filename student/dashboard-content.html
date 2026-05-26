@@ -547,14 +547,14 @@
                 <p class="stat-sub">Current quadrant</p>
             </div>
             <div class="glass-card stat-card">
-                <p class="stat-title lg" id="stat-assessments-done" style="color: var(--matrix-green);">0/4</p>
+                <p class="stat-title lg" id="stat-assessments-done" style="color: var(--matrix-green);">0/3</p>
                 <p class="stat-label">Assessments Done</p>
                 <p class="stat-sub">This school year</p>
             </div>
             <div class="glass-card stat-card">
                 <p class="stat-title lg text-matrix-blue" id="stat-last-assessment" style="font-size: 20px;">--</p>
                 <p class="stat-label" id="stat-last-label">Last Result</p>
-                <p class="stat-sub">Most recent</p>
+                <p class="stat-sub">Most recent assessment</p>
             </div>
             <div class="glass-card stat-card">
                 <p class="stat-title text-matrix-orange" id="stat-next-status">Locked</p>
@@ -644,7 +644,7 @@
                         </a>
 
                         <a href="qa-content.html" class="action-item" onclick="updateParentSidebar(1)">
-                            <span>See your assessment details</span>
+                            <span>See your Q3 assessment details</span>
                             <svg>
                                 <use href="#icon-arrow-right"></use>
                             </svg>
@@ -694,9 +694,10 @@
                     if (activeClasses.length > 0) {
                         const myClass = activeClasses[0]; // Strict 1-class rule
 
-                        let courseStr = myClass.course_subj_name;
-                        if (myClass.year_level || myClass.section) {
-                            courseStr += ` ${myClass.year_level || ''}-${myClass.section || ''}`;
+                        let courseStr = myClass.prog_name || 'Class';
+                        const pCode = user.program || '';
+                        if (pCode || myClass.section) {
+                            courseStr += ` ${pCode || ''}-${myClass.section || ''}`;
                         }
 
                         titleEl.textContent = courseStr;
@@ -825,7 +826,7 @@
                         const nextStatusEl = document.getElementById('stat-next-status');
                         const nextLabelEl = document.getElementById('stat-next-label');
                         const footerEl = document.getElementById('quadrant-footer-text');
-                        
+
                         let nextAssessmentText = '';
 
                         if (activeSessions.length > 0) {
@@ -833,13 +834,13 @@
                             nextStatusEl.textContent = 'Open Now';
                             nextStatusEl.style.color = 'var(--matrix-green)';
                             nextLabelEl.textContent = active.quarter_name;
-                            
+
                             const d = new Date(active.deadline || Date.now());
-                            nextAssessmentText = `${active.quarter_name} closes ${d.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}`;
+                            nextAssessmentText = `${active.quarter_name} closes ${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
                         } else {
                             // Guess next based on history
-                            const quarters = ['Prelim', 'Midterm', 'Final'];
-                            let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q)));
+                            const quarters = ['Q1 Assessment', 'Q2 Assessment', 'Q3 Assessment', 'Q4 Assessment'];
+                            let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q.substring(0, 2))));
 
                             if (nextQ) {
                                 nextStatusEl.textContent = 'Locked';

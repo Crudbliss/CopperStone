@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MATRIX | Student Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
     <style>
         /* --- CSS VARIABLES (Theme Colors) --- */
         :root {
@@ -66,8 +67,8 @@
         .main-wrapper {
             flex: 1;
             display: flex;
-            flex-direction: column; /* Stacks header and iframe */
-            overflow: hidden; /* Iframe will handle the scrolling */
+            flex-direction: column;
+            overflow: hidden;
         }
 
         /* --- SIDEBAR COMPONENTS --- */
@@ -130,7 +131,7 @@
             color: var(--matrix-yellow);
         }
 
-        /* --- UPDATED SIDEBAR FOOTER (USER + LOGOUT) --- */
+        /* --- SIDEBAR FOOTER (USER + LOGOUT) --- */
         .sidebar-footer {
             padding: 24px 20px;
             border-top: 1px solid var(--border-light);
@@ -148,9 +149,9 @@
         .user-avatar {
             width: 40px;
             height: 40px;
-            border-radius: 50%; /* Made circular per reference image */
-            background-color: rgba(216, 166, 26, 0.15); /* Dark faint yellow */
-            color: var(--matrix-yellow); /* Yellow text */
+            border-radius: 50%;
+            background-color: rgba(216, 166, 26, 0.15);
+            color: var(--matrix-yellow);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -288,7 +289,6 @@
         <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></symbol>
         <symbol id="icon-books-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v4H4zM4 14h16v4H4z"/></symbol>
         <symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></symbol>
-        
         <symbol id="icon-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
             <polyline points="16 17 21 12 16 7"></polyline>
@@ -374,17 +374,14 @@
 
             sidebarLinks.forEach(link => {
                 link.addEventListener('click', function() {
-                    // Remove active class from all links
                     sidebarLinks.forEach(l => l.classList.remove('active'));
-                    
-                    // Add active class to the clicked link
                     this.classList.add('active');
                 });
             });
 
             // Load dynamic user data
             const userStr = localStorage.getItem('currentUser');
-            if(userStr) {
+            if (userStr) {
                 try {
                     const user = JSON.parse(userStr);
                     if (user.role !== 'student') {
@@ -392,7 +389,7 @@
                         window.location.href = '../index.html';
                         return;
                     }
-                    
+
                     fetch('/api/students/' + user.id)
                         .then(res => res.json())
                         .then(data => {
@@ -404,33 +401,35 @@
                                 document.getElementById('content-frame').src = 'test-content.html';
                                 document.querySelector('.sidebar-nav').style.pointerEvents = 'none';
                                 document.querySelector('.sidebar-nav').style.opacity = '0.5';
-                                
-                                // Update sidebar active state
-                                const sidebarLinks = document.querySelectorAll('.sidebar-link');
                                 sidebarLinks.forEach(l => l.classList.remove('active'));
-                                if(sidebarLinks[1]) sidebarLinks[1].classList.add('active'); // Highlight Assessment
+                                if (sidebarLinks[1]) sidebarLinks[1].classList.add('active');
                             }
 
                             // Set full name
                             const fullName = `${data.first_name} ${data.last_name || ''}`.trim();
                             document.getElementById('sidebar-student-name').textContent = fullName;
-                            
+
                             // Set initials
                             if (data.first_name) {
                                 const init1 = data.first_name.charAt(0);
                                 const init2 = data.last_name ? data.last_name.charAt(0) : '';
                                 document.getElementById('sidebar-student-avatar').textContent = (init1 + init2).toUpperCase() || '--';
                             }
-                            
-                            // Set program
-                            const prog = data.program || 'Student';
-                            const yr = data.year_level || '';
+
+                            // Set program — show "HI-1" format if assigned, otherwise "Student"
+                            const prog = data.program || '';
                             const sec = data.section || '';
-                            let progStr = prog;
-                            if (yr || sec) progStr += ` ${yr}-${sec}`;
+                            let progStr;
+                            if (prog && sec) {
+                                progStr = `${prog}-${sec}`;
+                            } else if (prog) {
+                                progStr = prog;
+                            } else {
+                                progStr = 'Student';
+                            }
                             document.getElementById('sidebar-student-program').textContent = progStr;
 
-                            // Set Top Bar mode
+                            // Set Top Bar color based on mode
                             const modeText = data.learning_mode || 'Not Assessed';
                             document.getElementById('header-status-text').textContent = fullName;
 
@@ -446,12 +445,13 @@
                             pill.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
                             pill.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
                         })
-                        .catch(err => console.error("Failed to load student data", err));
+                        .catch(err => console.error('Failed to load student data', err));
                 } catch(e) { console.error(e); }
             } else {
                 window.location.href = '../index.html';
             }
         });
+
         // Listen for the mandatory initial assessment completion from the iframe
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'assessmentComplete') {
@@ -460,7 +460,6 @@
                     nav.style.pointerEvents = '';
                     nav.style.opacity = '';
                 }
-                // Set Dashboard link as active and navigate to it
                 const sidebarLinks = document.querySelectorAll('.sidebar-link');
                 sidebarLinks.forEach(l => l.classList.remove('active'));
                 if (sidebarLinks[0]) sidebarLinks[0].classList.add('active');

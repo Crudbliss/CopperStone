@@ -229,7 +229,7 @@
         }
 
 
-        /* --- Next Assessment Placeholder Card --- */
+        /* --- Quarter 3 Placeholder Card --- */
         .card-prog-quarter-3 {
             padding: 32px;
             text-align: center;
@@ -443,8 +443,8 @@
             });
 
             // Next Quarter State
-            const quarters = ['Prelim', 'Midterm', 'Final'];
-            let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q)));
+            const quarters = ['Q1 Assessment', 'Q2 Assessment', 'Q3 Assessment', 'Q4 Assessment'];
+            let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q.substring(0, 2))));
 
             if (activeSessions.length > 0) {
                 const active = activeSessions[0];
@@ -481,7 +481,7 @@
 
                 html += `
                     <div class="glass-card coord-movement-card">
-                        <div class="coord-card-header">COORDINATE MOVEMENT (${prev.quarter_name} &rarr; ${last.quarter_name})</div>
+                        <div class="coord-card-header">COORDINATE MOVEMENT (${prev.quarter_name.substring(0, 2)} &rarr; ${last.quarter_name.substring(0, 2)})</div>
                         
                         <div class="coord-boxes-row">
                             <div class="coord-data-box">
@@ -490,7 +490,7 @@
                                     <span class="coord-box-value">${last.x_coord.toFixed(2)}</span>
                                     <span class="${getDeltaClass(deltaX)}">${getDeltaStr(deltaX)}</span>
                                 </div>
-                                <span class="coord-box-comparison">from ${prev.quarter_name}: ${prev.x_coord.toFixed(2)}</span>
+                                <span class="coord-box-comparison">from ${prev.quarter_name.substring(0, 2)}: ${prev.x_coord.toFixed(2)}</span>
                             </div>
 
                             <div class="coord-data-box">
@@ -499,7 +499,7 @@
                                     <span class="coord-box-value">${last.y_coord.toFixed(2)}</span>
                                     <span class="${getDeltaClass(deltaY)}">${getDeltaStr(deltaY)}</span>
                                 </div>
-                                <span class="coord-box-comparison">from ${prev.quarter_name}: ${prev.y_coord.toFixed(2)}</span>
+                                <span class="coord-box-comparison">from ${prev.quarter_name.substring(0, 2)}: ${prev.y_coord.toFixed(2)}</span>
                             </div>
                         </div>
                     </div>

@@ -342,6 +342,7 @@
             100% { transform: rotate(360deg); }
         }
     </style>
+    <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
 <body>
 
@@ -556,6 +557,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const isPreview = urlParams.get('preview') === 'true';
+            const isViewResults = urlParams.get('view_results') === 'true';
 
             if (isPreview) {
                 const header = document.querySelector('.header h1');
@@ -563,6 +565,26 @@
                     header.innerHTML = `Behavioral Learning Mode Assessment <span style="font-size: 14px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 4px 10px; border-radius: 20px; vertical-align: middle; margin-left: 10px;">Admin Preview Mode</span>`;
                 }
                 renderQuestions();
+                return;
+            }
+
+            if (isViewResults) {
+                // Show the result screen directly without taking the test again
+                const mode = decodeURIComponent(urlParams.get('mode') || '');
+                document.getElementById('test-container').style.display = 'none';
+                const resultScreen = document.getElementById('result-screen');
+                resultScreen.style.display = 'flex';
+                document.getElementById('final-mode').textContent = mode || 'See your profile for details';
+                // Render fuzzy graph with equal weights since we don't have the raw fuzzy data
+                const fakeFuzzy = { 'Hierarchical Individual': 0, 'Hierarchical Collective': 0, 'Distributed Individual': 0, 'Distributed Collective': 0 };
+                if (mode && fakeFuzzy.hasOwnProperty(mode)) fakeFuzzy[mode] = 1;
+                renderFuzzyGraph(mode, fakeFuzzy);
+                // Add a "Back to Assessment" button on the result screen
+                const backBtn = document.createElement('button');
+                backBtn.textContent = '← Back to Assessment';
+                backBtn.style.cssText = 'margin-top: 16px; background: none; border: 1px solid var(--border-lighter); color: var(--text-muted); padding: 8px 20px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13px;';
+                backBtn.onclick = () => window.history.back();
+                resultScreen.appendChild(backBtn);
                 return;
             }
 
