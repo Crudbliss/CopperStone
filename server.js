@@ -280,59 +280,45 @@ app.get('/api/students/:id', (req, res) => {
 
 // POST /api/login - Universal login for Students and Teachers
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, requested_role } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
-    // 1. Check if user is a student
-    db.get(`SELECT * FROM students WHERE email = ?`, [email], async (err, student) => {
-        if (err) return res.status(500).json({ error: err.message });
-        
-        if (student) {
-            const match = await bcrypt.compare(password, student.password_hash);
-            if (match) {
-                return res.json({ 
-                    success: true, 
-                    role: 'student', 
-                    user: { 
-                        id: student.id, 
-                        name: student.first_name, 
-                        last_name: student.last_name,
-                        student_no: student.student_no,
-                        program: student.program,
-                        year_level: student.year_level,
-                        section: student.section
-                    } 
-                });
-            } else {
-                return res.status(401).json({ error: 'Invalid password' });
+    if (requested_role === 'student') {
+        db.get(`SELECT * FROM students WHERE email = ?`, [email], async (err, student) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (student) {
+                const match = await bcrypt.compare(password, student.password_hash);
+                if (match) {
+                    return res.json({ 
+                        success: true, 
+                        role: 'student', 
+                        user: { 
+                            id: student.id, name: student.first_name, last_name: student.last_name,
+                            student_no: student.student_no, program: student.program, year_level: student.year_level, section: student.section
+                        } 
+                    });
+                } else return res.status(401).json({ error: 'Invalid password' });
             }
-        }
-
-        // 2. If not a student, check if user is a teacher
+            return res.status(404).json({ error: 'Student not found' });
+        });
+    } else if (requested_role === 'teacher') {
         db.get(`SELECT * FROM teachers WHERE email = ?`, [email], async (err, teacher) => {
             if (err) return res.status(500).json({ error: err.message });
-
             if (teacher) {
                 const match = await bcrypt.compare(password, teacher.password_hash);
                 if (match) {
                     return res.json({ 
-                        success: true, 
-                        role: 'teacher', 
-                        user: { 
-                            id: teacher.id, 
-                            name: teacher.first_name,
-                            last_name: teacher.last_name
-                        } 
+                        success: true, role: 'teacher', 
+                        user: { id: teacher.id, name: teacher.first_name, last_name: teacher.last_name } 
                     });
-                } else {
-                    return res.status(401).json({ error: 'Invalid password' });
-                }
+                } else return res.status(401).json({ error: 'Invalid password' });
             }
-
-            // 3. User not found in either table
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error: 'Teacher not found' });
         });
-    });
+    } else {
+        // Fallback or missing role
+        return res.status(400).json({ error: 'Invalid login portal' });
+    }
 });
 
 // --- CLASS & ENROLLMENT APIs ---
