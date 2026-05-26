@@ -570,6 +570,23 @@
             if (!userStr) return;
             const user = JSON.parse(userStr);
 
+            // Determine if this is the mandatory initial assessment.
+            // Check cached profile first; fall back to a fresh API call.
+            let isMandatoryInitialTest = false;
+            try {
+                const profileStr = localStorage.getItem('studentProfile');
+                if (profileStr) {
+                    const profile = JSON.parse(profileStr);
+                    isMandatoryInitialTest = !profile.learning_mode;
+                } else {
+                    // Profile not cached yet (e.g. page loaded before s-dashboard.html populated it)
+                    const freshProfile = await fetch('/api/students/' + user.id).then(r => r.json());
+                    isMandatoryInitialTest = !freshProfile.learning_mode;
+                }
+            } catch(e) {
+                console.warn('Could not determine mandatory test status', e);
+            }
+
             try {
                 const [sessionRes, historyRes] = await Promise.all([
                     fetch('/api/students/' + user.id + '/active-sessions'),
@@ -578,6 +595,12 @@
                 const sessions = await sessionRes.json();
                 const history = await historyRes.json();
                 
+                if (isMandatoryInitialTest) {
+                    // New student with no quadrant — skip session check, go straight to questions
+                    renderQuestions();
+                    return;
+                }
+
                 if (!sessions || sessions.length === 0) {
                     document.getElementById('test-container').innerHTML = `
                         <div style="text-align: center; padding: 60px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-light);">
@@ -587,7 +610,7 @@
                     `;
                     return;
                 }
-                
+
                 activeSession = sessions[0];
 
                 const alreadyTook = history.some(h => h.session_id === activeSession.session_id);
@@ -600,9 +623,9 @@
                     `;
                     return;
                 }
-                
+
                 const header = document.querySelector('.header h1');
-                if(header) {
+                if (header) {
                     header.innerHTML = `Behavioral Learning Mode Assessment <span style="font-size: 14px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 4px 10px; border-radius: 20px; vertical-align: middle; margin-left: 10px;">${activeSession.course_subj_name} - ${activeSession.quarter_name}</span>`;
                 }
 
@@ -682,6 +705,11 @@
                             profile.y_coord = data.result.y;
                             profile.learning_mode = data.result.mode;
                             localStorage.setItem('studentProfile', JSON.stringify(profile));
+                        }
+
+                        // Notify parent s-dashboard to unlock sidebar navigation
+                        if (window.parent && window.parent !== window) {
+                            window.parent.postMessage({ type: 'assessmentComplete', mode: data.result.mode }, '*');
                         }
 
                         const resultScreen = document.getElementById('result-screen');

@@ -399,6 +399,18 @@
                             // Cache the real profile for child iframes
                             localStorage.setItem('studentProfile', JSON.stringify(data));
 
+                            // Enforce Mandatory Initial Assessment
+                            if (!data.learning_mode) {
+                                document.getElementById('content-frame').src = 'test-content.html';
+                                document.querySelector('.sidebar-nav').style.pointerEvents = 'none';
+                                document.querySelector('.sidebar-nav').style.opacity = '0.5';
+                                
+                                // Update sidebar active state
+                                const sidebarLinks = document.querySelectorAll('.sidebar-link');
+                                sidebarLinks.forEach(l => l.classList.remove('active'));
+                                if(sidebarLinks[1]) sidebarLinks[1].classList.add('active'); // Highlight Assessment
+                            }
+
                             // Set full name
                             const fullName = `${data.first_name} ${data.last_name || ''}`.trim();
                             document.getElementById('sidebar-student-name').textContent = fullName;
@@ -438,6 +450,20 @@
                 } catch(e) { console.error(e); }
             } else {
                 window.location.href = '../index.html';
+            }
+        });
+        // Listen for the mandatory initial assessment completion from the iframe
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'assessmentComplete') {
+                const nav = document.querySelector('.sidebar-nav');
+                if (nav) {
+                    nav.style.pointerEvents = '';
+                    nav.style.opacity = '';
+                }
+                // Set Dashboard link as active and navigate to it
+                const sidebarLinks = document.querySelectorAll('.sidebar-link');
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                if (sidebarLinks[0]) sidebarLinks[0].classList.add('active');
             }
         });
     </script>

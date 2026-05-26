@@ -667,23 +667,72 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
             if (dominantMode.includes('Hierarchical')) finalX = -3; else finalX = 3;
             if (dominantMode.includes('Individual')) finalY = 3; else finalY = -3;
 
-            db.serialize(() => {
-                if (session_id) {
-                    db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode) VALUES (?, ?, ?, ?, ?)`,
-                        [student_id, session_id, finalX, finalY, dominantMode]);
-                }
-
-                db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ? WHERE id = ?`, 
-                    [finalX, finalY, dominantMode, student_id], 
-                    function(updateErr) {
-                        if (updateErr) console.error("Error updating student coords", updateErr);
-                        res.json({
-                            success: true,
-                            result: { x: finalX, y: finalY, mode: dominantMode, fuzzy: memberships }
-                        });
+            const finishSubmission = (finalSessionId) => {
+                db.serialize(() => {
+                    if (finalSessionId) {
+                        db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode) VALUES (?, ?, ?, ?, ?)`,
+                            [student_id, finalSessionId, finalX, finalY, dominantMode]);
                     }
-                );
-            });
+
+                    db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ? WHERE id = ?`, 
+                        [finalX, finalY, dominantMode, student_id], 
+                        function(updateErr) {
+                            if (updateErr) console.error("Error updating student coords", updateErr);
+                            res.json({
+                                success: true,
+                                result: { x: finalX, y: finalY, mode: dominantMode, fuzzy: memberships }
+                            });
+                        }
+                    );
+                });
+            };
+
+            if (session_id) {
+                // Standard submission from existing session
+                finishSubmission(session_id);
+            } else {
+                // Mandatory Initial Assessment -> Auto-assign to a class matching their mode
+                // Classes store shortcodes: HI, HC, DI, DC
+                const modeToShortcode = {
+                    'Hierarchical Individual': 'HI',
+                    'Hierarchical Collective': 'HC',
+                    'Distributed Individual': 'DI',
+                    'Distributed Collective': 'DC'
+                };
+                const modeShortcode = modeToShortcode[dominantMode] || dominantMode;
+                console.log(`Auto-assigning student ${student_id} | Mode: ${dominantMode} | Shortcode: ${modeShortcode}`);
+
+                db.get(`SELECT id FROM classes WHERE learning_mode = ? AND is_archived = 0 LIMIT 1`, [modeShortcode], (err, classRow) => {
+                    if (err || !classRow) {
+                        console.log("No active matching class found for shortcode:", modeShortcode);
+                        return finishSubmission(null);
+                    }
+                    
+                    const classId = classRow.id;
+                    console.log(`Found class id: ${classId}. Enrolling student...`);
+                    // Enroll the student (ignore duplicate error if already enrolled)
+                    db.run(`INSERT OR IGNORE INTO enrollments (student_id, class_id) VALUES (?, ?)`, [student_id, classId], (enrollErr) => {
+                        if (enrollErr) console.error("Error auto-enrolling student:", enrollErr);
+                        else console.log(`Student ${student_id} enrolled in class ${classId}`);
+                        
+                        // Ensure a 'Prelim' session exists for this class
+                        db.get(`SELECT id FROM assessment_sessions WHERE class_id = ? AND quarter_name = 'Prelim'`, [classId], (err, sessionRow) => {
+                            if (sessionRow) {
+                                console.log(`Found existing Prelim session: ${sessionRow.id}`);
+                                finishSubmission(sessionRow.id);
+                            } else {
+                                // Create Prelim session automatically
+                                const deadline = new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0];
+                                db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, deadline) VALUES (?, 'Prelim', ?)`, [classId, deadline], function(err) {
+                                    if (err) console.error("Error auto-creating Prelim session:", err);
+                                    else console.log(`Created Prelim session: ${this.lastID}`);
+                                    finishSubmission(this.lastID);
+                                });
+                            }
+                        });
+                    });
+                });
+            }
         });
     });
 });
