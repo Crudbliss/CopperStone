@@ -415,7 +415,7 @@
             </div>
         </div>
 
-        <button class="btn-submit" onclick="updateParentSidebar(0); window.location.href='dashboard-content.html';">Return to Dashboard</button>
+        <button class="btn-submit" onclick="returnFromTest()">Return to Dashboard</button>
     </div>
 
     <script>
@@ -760,6 +760,15 @@
             dot.style.top = yPct + '%';
             dot.style.borderColor = color;
             dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${color} 60%, transparent)`;
+        }
+
+        function returnFromTest() {
+            if (window.location.search.includes('preview=true')) {
+                window.location.href = '../admin/questionnaires-content.html';
+            } else {
+                updateParentSidebar(0); 
+                window.location.href = 'dashboard-content.html';
+            }
         }
 
         // Helper to sync sidebar when returning to dashboard
