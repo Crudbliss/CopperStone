@@ -777,7 +777,10 @@ app.post('/api/ai/upload-start', (req, res) => {
     if (overwrite) {
         db.run(`DELETE FROM ai_training_data`, (err) => {
             if (err) return res.status(500).json({ error: err.message });
-            res.json({ success: true, message: "Dataset cleared." });
+            db.run(`DELETE FROM sqlite_sequence WHERE name='ai_training_data'`, (seqErr) => {
+                if (seqErr) console.error("Error resetting sequence:", seqErr);
+                res.json({ success: true, message: "Dataset cleared." });
+            });
         });
     } else {
         res.json({ success: true, message: "Appending to dataset." });
@@ -788,7 +791,10 @@ app.post('/api/ai/upload-start', (req, res) => {
 app.delete('/api/ai/training-data', (req, res) => {
     db.run(`DELETE FROM ai_training_data`, (err) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ success: true, message: "Dataset completely deleted." });
+        db.run(`DELETE FROM sqlite_sequence WHERE name='ai_training_data'`, (seqErr) => {
+            if (seqErr) console.error("Error resetting sequence:", seqErr);
+            res.json({ success: true, message: "Dataset completely deleted." });
+        });
     });
 });
 
