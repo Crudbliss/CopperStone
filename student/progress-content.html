@@ -344,8 +344,9 @@
     <div class="content-container">
 
         <div class="page-header">
-            <h1 class="page-title">Learning Mode Progress</h1>
-            <p class="page-subtitle">Track how your quadrant position evolves across each quarterly assessment.</p>
+            <h1 class="page-title">Personal Migration History</h1>
+            <p class="page-subtitle">Track how your learning mode distribution evolves across each quarterly assessment.
+            </p>
         </div>
 
         <div id="dynamic-content">
@@ -416,101 +417,256 @@
             `;
         }
 
+
+        function getPercentages(x_coord, y_coord) {
+            let normX = (x_coord + 5) / 10;
+            let normY = (y_coord + 5) / 10;
+            let HI = (1 - normX) * normY;
+            let DI = normX * normY;
+            let HC = (1 - normX) * (1 - normY);
+            let DC = normX * (1 - normY);
+            const total = HI + DI + HC + DC;
+            return {
+                HI: Math.round((HI / total) * 100),
+                DI: Math.round((DI / total) * 100),
+                HC: Math.round((HC / total) * 100),
+                DC: Math.round((DC / total) * 100)
+            };
+        }
+
         function renderProgressPage(activeSessions, history) {
-            let html = '<div class="progress-grid-2-1">';
 
-            // Render History Cards
-            history.forEach(h => {
-                const dateStr = new Date(h.taken_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                const modeColor = getModeColor(h.learning_mode);
-                const pct = Math.round((Math.max(Math.abs(h.x_coord || 0), Math.abs(h.y_coord || 0)) / 5) * 100);
+            let html = '';
 
-                html += `
-                    <div class="glass-card progress-quad-card">
-                        <div class="prog-card-header">
-                            <span class="quarter-label">${h.quarter_name}</span>
-                            <span class="dominant-mode-label" style="color: ${modeColor}; background-color: color-mix(in srgb, ${modeColor} 10%, transparent); padding: 6px 12px; border-radius: 6px; font-weight: 700;">${h.learning_mode}</span>
-                        </div>
-                        
-                        ${getQuadrantGridHtml(h.x_coord, h.y_coord, modeColor)}
-
-                        <div class="prog-card-footer">
-                            <span>${dateStr}</span>
-                            <span class="score-percentage" style="color: ${modeColor};">${pct}%</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Next Quarter State
-            const quarters = ['Q1 Assessment', 'Q2 Assessment', 'Q3 Assessment', 'Q4 Assessment'];
-            let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q.substring(0, 2))));
-
-            if (activeSessions.length > 0) {
-                const active = activeSessions[0];
-                const d = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Open Now';
-                html += `
-                    <div class="glass-card card-prog-quarter-3" style="border: 1px dashed var(--border-light); border-color: rgba(74, 222, 128, 0.4); background-color: rgba(74, 222, 128, 0.05);">
-                        <svg class="prog-clock-icon" style="color: var(--matrix-green);"><use href="#icon-clock"></use></svg>
-                        <div class="q3-title" style="color: var(--matrix-green);">${active.quarter_name}</div>
-                        <div class="q3-subtitle" style="color: var(--matrix-green);">Deadline: ${d}</div>
-                    </div>
-                `;
-            } else if (nextQ) {
-                html += `
-                    <div class="glass-card card-prog-quarter-3" style="border: 1px dashed var(--border-light); background-color: rgba(255, 255, 255, 0.02);">
-                        <svg class="prog-clock-icon"><use href="#icon-clock"></use></svg>
-                        <div class="q3-title">${nextQ}</div>
-                        <div class="q3-subtitle">Opens soon</div>
-                    </div>
-                `;
-            }
-
-            html += '</div>';
-
-            // Coordinate Movement Logic
-            if (history.length >= 2) {
+            // 1. Migration Insight
+            if (history.length > 0) {
+                const first = history[0];
                 const last = history[history.length - 1];
-                const prev = history[history.length - 2];
+                const firstPct = getPercentages(first.x_coord || 0, first.y_coord || 0);
+                const lastPct = getPercentages(last.x_coord || 0, last.y_coord || 0);
 
-                const deltaX = (last.x_coord - prev.x_coord).toFixed(2);
-                const deltaY = (last.y_coord - prev.y_coord).toFixed(2);
+                const domMode = last.learning_mode || 'Hierarchical Individual';
+                let shortModeName = domMode;
+                if (domMode === 'Hierarchical Individual') shortModeName = 'Hierarchical Individual';
+                if (domMode === 'Distributed Individual') shortModeName = 'Distributed Individual';
+                if (domMode === 'Hierarchical Collective') shortModeName = 'Hierarchical Collective';
+                if (domMode === 'Distributed Collective') shortModeName = 'Distributed Collective';
 
-                const getDeltaClass = (val) => parseFloat(val) >= 0 ? 'coord-box-delta-pos' : 'coord-box-delta-neg';
-                const getDeltaStr = (val) => parseFloat(val) > 0 ? '+' + val : val;
+                let domKey = 'HI';
+                if (domMode === 'Distributed Individual') domKey = 'DI';
+                if (domMode === 'Hierarchical Collective') domKey = 'HC';
+                if (domMode === 'Distributed Collective') domKey = 'DC';
+
+                const diff = lastPct[domKey] - firstPct[domKey];
+
+                let diffText = 'remained stable';
+                let diffColor = 'var(--text-muted)';
+                let diffIcon = '<circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line>';
+                let iconBg = 'rgba(255, 255, 255, 0.05)';
+                let iconColor = 'var(--text-muted)';
+                if (diff > 0) {
+                    diffText = `increased by ${Math.abs(diff)}%`;
+                    diffColor = 'var(--matrix-green)';
+                    diffIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="16 12 12 8 8 12"></polyline><line x1="12" y1="16" x2="12" y2="8"></line>';
+                    iconBg = 'rgba(74, 222, 128, 0.1)';
+                    iconColor = 'var(--matrix-green)';
+                } else if (diff < 0) {
+                    diffText = `decreased by ${Math.abs(diff)}%`;
+                    diffColor = 'var(--matrix-orange)';
+                    diffIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line>';
+                    iconBg = 'rgba(251, 146, 60, 0.1)';
+                    iconColor = 'var(--matrix-orange)';
+                }
 
                 html += `
-                    <div class="glass-card coord-movement-card">
-                        <div class="coord-card-header">COORDINATE MOVEMENT (${prev.quarter_name.substring(0, 2)} &rarr; ${last.quarter_name.substring(0, 2)})</div>
-                        
-                        <div class="coord-boxes-row">
-                            <div class="coord-data-box">
-                                <span class="coord-box-label">X (Hierarchical &harr; Distributed)</span>
-                                <div class="coord-box-value-row">
-                                    <span class="coord-box-value">${last.x_coord.toFixed(2)}</span>
-                                    <span class="${getDeltaClass(deltaX)}">${getDeltaStr(deltaX)}</span>
-                                </div>
-                                <span class="coord-box-comparison">from ${prev.quarter_name.substring(0, 2)}: ${prev.x_coord.toFixed(2)}</span>
-                            </div>
-
-                            <div class="coord-data-box">
-                                <span class="coord-box-label">Y (Collective &harr; Individual)</span>
-                                <div class="coord-box-value-row">
-                                    <span class="coord-box-value">${last.y_coord.toFixed(2)}</span>
-                                    <span class="${getDeltaClass(deltaY)}">${getDeltaStr(deltaY)}</span>
-                                </div>
-                                <span class="coord-box-comparison">from ${prev.quarter_name.substring(0, 2)}: ${prev.y_coord.toFixed(2)}</span>
-                            </div>
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 24px; display: flex; gap: 20px; align-items: flex-start; margin-bottom: 24px;">
+                        <div style="width: 48px; height: 48px; border-radius: 50%; background: ${iconBg}; color: ${iconColor}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${diffIcon}</svg>
+                        </div>
+                        <div>
+                            <h4 style="font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">MIGRATION INSIGHT</h4>
+                            <p style="font-size: 15px; line-height: 1.6; color: #a1b3be; margin: 0;">
+                                ${history.length > 1 ? `Your <strong style="color: var(--matrix-green);">${shortModeName}</strong> score has <strong style="color: ${diffColor};">${diffText}</strong> since your initial assessment — indicating a migration toward other learning modes.` : `Your initial assessment establishes your baseline. Complete more assessments to track migration.`}
+                            </p>
                         </div>
                     </div>
                 `;
-            } else if (history.length === 1) {
+
+                // 2. Mode Migration Graph
+                let ptsHI = [], ptsDI = [], ptsHC = [], ptsDC = [];
+                let labelsX = '';
+                const W = 800;
+                const H = 200;
+                const padX = 40;
+                const padY = 20;
+                const drawW = W - padX * 2;
+                const drawH = H - padY * 2;
+
+                history.forEach((h, i) => {
+                    let p = getPercentages(h.x_coord || 0, h.y_coord || 0);
+                    let x = history.length === 1 ? W / 2 : padX + (i / (history.length - 1)) * drawW;
+                    let yHI = (H - padY) - (p.HI / 100) * drawH;
+                    let yDI = (H - padY) - (p.DI / 100) * drawH;
+                    let yHC = (H - padY) - (p.HC / 100) * drawH;
+                    let yDC = (H - padY) - (p.DC / 100) * drawH;
+
+                    ptsHI.push(`${x},${yHI}`);
+                    ptsDI.push(`${x},${yDI}`);
+                    ptsHC.push(`${x},${yHC}`);
+                    ptsDC.push(`${x},${yDC}`);
+
+                    let qTitle = h.quarter_name;
+                    if (qTitle.toLowerCase().includes('prelim')) qTitle = 'Q1';
+                    else if (qTitle.toLowerCase().includes('midterm')) qTitle = 'Q2';
+                    else if (qTitle.toLowerCase().includes('final')) qTitle = 'Q3';
+                    else qTitle = 'Q4';
+
+                    labelsX += `<text x="${x}" y="${H - 2}" fill="var(--text-main)" font-size="12" text-anchor="middle" font-weight="600">${qTitle}</text>`;
+                });
+
                 html += `
-                    <div class="glass-card coord-movement-card" style="text-align: center; color: var(--text-muted); align-items: center;">
-                        <p style="font-size: 14px;">Take another assessment to track your coordinate movement!</p>
+                    <div class="card" style="margin-bottom: 24px; padding: 32px;">
+                        <h4 style="font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">LEARNING TIMELINE — QUADRANT DISTRIBUTION (%)</h4>
+                        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 32px;">Mode Migration Graph</h3>
+                        
+                        <div style="width: 100%; height: ${H}px; position: relative; margin-bottom: 32px;">
+                            <svg width="100%" height="100%" viewBox="0 0 ${W} ${H}" style="overflow: visible;">
+                                <!-- Grid Lines -->
+                                <line x1="30" y1="${padY}" x2="${W}" y2="${padY}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
+                                <line x1="30" y1="${padY + drawH * 0.25}" x2="${W}" y2="${padY + drawH * 0.25}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
+                                <line x1="30" y1="${padY + drawH * 0.5}" x2="${W}" y2="${padY + drawH * 0.5}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
+                                <line x1="30" y1="${padY + drawH * 0.75}" x2="${W}" y2="${padY + drawH * 0.75}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
+                                <line x1="30" y1="${H - padY}" x2="${W}" y2="${H - padY}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
+                                
+                                <!-- Y Labels -->
+                                <text x="20" y="${padY + 4}" fill="var(--text-main)" font-size="12" text-anchor="end">100</text>
+                                <text x="20" y="${padY + drawH * 0.25 + 4}" fill="var(--text-main)" font-size="12" text-anchor="end">75</text>
+                                <text x="20" y="${padY + drawH * 0.5 + 4}" fill="var(--text-main)" font-size="12" text-anchor="end">50</text>
+                                <text x="20" y="${padY + drawH * 0.75 + 4}" fill="var(--text-main)" font-size="12" text-anchor="end">25</text>
+                                <text x="20" y="${H - padY + 4}" fill="var(--text-main)" font-size="12" text-anchor="end">0</text>
+                                
+                                <!-- X Labels -->
+                                ${labelsX}
+                                
+                                <!-- Lines -->
+                                <polyline points="${ptsHI.join(' ')}" fill="none" stroke="var(--matrix-green)" stroke-width="2.5"></polyline>
+                                <polyline points="${ptsDI.join(' ')}" fill="none" stroke="var(--matrix-blue)" stroke-width="1.5" stroke-dasharray="4 4"></polyline>
+                                <polyline points="${ptsHC.join(' ')}" fill="none" stroke="var(--matrix-orange)" stroke-width="1.5" stroke-dasharray="4 4"></polyline>
+                                <polyline points="${ptsDC.join(' ')}" fill="none" stroke="var(--matrix-purple)" stroke-width="1.5" stroke-dasharray="4 4"></polyline>
+                                
+                                <!-- Points -->
+                                ${history.map((h, i) => {
+                    let p = getPercentages(h.x_coord || 0, h.y_coord || 0);
+                    let x = history.length === 1 ? W / 2 : padX + (i / (history.length - 1)) * drawW;
+                    let yHI = (H - padY) - (p.HI / 100) * drawH;
+                    let yDI = (H - padY) - (p.DI / 100) * drawH;
+                    let yHC = (H - padY) - (p.HC / 100) * drawH;
+                    let yDC = (H - padY) - (p.DC / 100) * drawH;
+                    return `
+                                        <circle cx="${x}" cy="${yHI}" r="5" fill="var(--matrix-green)"></circle>
+                                        <circle cx="${x}" cy="${yDI}" r="4" fill="var(--matrix-blue)"></circle>
+                                        <circle cx="${x}" cy="${yHC}" r="4" fill="var(--matrix-orange)"></circle>
+                                        <circle cx="${x}" cy="${yDC}" r="4" fill="var(--matrix-purple)"></circle>
+                                    `;
+                }).join('')}
+                            </svg>
+                        </div>
+                        
+                        <!-- Legend -->
+                        <div style="display: flex; justify-content: center; gap: 24px; font-size: 13px; font-weight: 600;">
+                            <div style="display: flex; align-items: center; gap: 8px; color: var(--matrix-green);"><div style="width:12px;height:2px;background:var(--matrix-green);position:relative;"><div style="position:absolute;top:-2px;left:4px;width:6px;height:6px;border-radius:50%;background:var(--matrix-green);"></div></div> H. Individual</div>
+                            <div style="display: flex; align-items: center; gap: 8px; color: var(--matrix-blue);"><div style="width:12px;height:0px;border-top:2px dashed var(--matrix-blue);position:relative;"><div style="position:absolute;top:-3px;left:4px;width:4px;height:4px;border-radius:50%;background:var(--matrix-blue);"></div></div> D. Individual</div>
+                            <div style="display: flex; align-items: center; gap: 8px; color: var(--matrix-orange);"><div style="width:12px;height:0px;border-top:2px dashed var(--matrix-orange);position:relative;"><div style="position:absolute;top:-3px;left:4px;width:4px;height:4px;border-radius:50%;background:var(--matrix-orange);"></div></div> H. Collective</div>
+                            <div style="display: flex; align-items: center; gap: 8px; color: var(--matrix-purple);"><div style="width:12px;height:0px;border-top:2px dashed var(--matrix-purple);position:relative;"><div style="position:absolute;top:-3px;left:4px;width:4px;height:4px;border-radius:50%;background:var(--matrix-purple);"></div></div> D. Collective</div>
+                        </div>
                     </div>
                 `;
+
+                // 3. Quarterly Snapshots
+                html += `
+                    <div class="card" style="padding: 32px;">
+                        <h4 style="font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px;">QUARTERLY SNAPSHOTS</h4>
+                        <div style="display: flex; flex-direction: column; gap: 24px;">
+                `;
+
+                history.forEach(h => {
+                    const p = getPercentages(h.x_coord || 0, h.y_coord || 0);
+                    let shortName = h.learning_mode || 'Hierarchical Individual';
+                    if (h.learning_mode === 'Hierarchical Individual') shortName = 'H. Individual';
+                    if (h.learning_mode === 'Distributed Individual') shortName = 'D. Individual';
+                    if (h.learning_mode === 'Hierarchical Collective') shortName = 'H. Collective';
+                    if (h.learning_mode === 'Distributed Collective') shortName = 'D. Collective';
+
+                    let iconEmoji = '📚';
+                    if (shortName === 'D. Individual') iconEmoji = '💻';
+                    if (shortName === 'H. Collective') iconEmoji = '🤝';
+                    if (shortName === 'D. Collective') iconEmoji = '🧠';
+
+                    let pillColor = 'var(--matrix-green)';
+                    let pillBg = 'rgba(74, 222, 128, 0.1)';
+                    if (shortName === 'D. Individual') { pillColor = 'var(--matrix-blue)'; pillBg = 'rgba(56, 189, 248, 0.1)'; }
+                    if (shortName === 'H. Collective') { pillColor = 'var(--matrix-orange)'; pillBg = 'rgba(251, 146, 60, 0.1)'; }
+                    if (shortName === 'D. Collective') { pillColor = 'var(--matrix-purple)'; pillBg = 'rgba(192, 132, 252, 0.1)'; }
+
+                    let qTitle = h.quarter_name;
+                    if (qTitle.toLowerCase().includes('prelim')) qTitle = 'Q1';
+                    else if (qTitle.toLowerCase().includes('midterm')) qTitle = 'Q2';
+                    else if (qTitle.toLowerCase().includes('final')) qTitle = 'Q3';
+                    else qTitle = 'Q4';
+
+                    html += `
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h3 style="font-size: 18px; font-weight: 700;">${qTitle}</h3>
+                                <span style="background: ${pillBg}; color: ${pillColor}; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 700;">
+                                    ${iconEmoji} ${shortName}
+                                </span>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+                                <!-- HI Box -->
+                                <div style="background: rgba(255,255,255,0.04); border-radius: 12px; height: 80px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: ${p.HI}%; background: rgba(74, 222, 128, 0.25); border-top: 2px solid var(--matrix-green);"></div>
+                                    <div style="position: relative; z-index: 1; text-align: center;">
+                                        <div style="font-size: 16px; font-weight: 800; color: #fff;">${p.HI}%</div>
+                                        <div style="font-size: 11px; font-weight: 700; color: var(--matrix-green); margin-top: 2px;">HI</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- DI Box -->
+                                <div style="background: rgba(255,255,255,0.04); border-radius: 12px; height: 80px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: ${p.DI}%; background: rgba(56, 189, 248, 0.25); border-top: 2px solid var(--matrix-blue);"></div>
+                                    <div style="position: relative; z-index: 1; text-align: center;">
+                                        <div style="font-size: 16px; font-weight: 800; color: #fff;">${p.DI}%</div>
+                                        <div style="font-size: 11px; font-weight: 700; color: var(--matrix-blue); margin-top: 2px;">DI</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- HC Box -->
+                                <div style="background: rgba(255,255,255,0.04); border-radius: 12px; height: 80px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: ${p.HC}%; background: rgba(251, 146, 60, 0.25); border-top: 2px solid var(--matrix-orange);"></div>
+                                    <div style="position: relative; z-index: 1; text-align: center;">
+                                        <div style="font-size: 16px; font-weight: 800; color: #fff;">${p.HC}%</div>
+                                        <div style="font-size: 11px; font-weight: 700; color: var(--matrix-orange); margin-top: 2px;">HC</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- DC Box -->
+                                <div style="background: rgba(255,255,255,0.04); border-radius: 12px; height: 80px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: ${p.DC}%; background: rgba(192, 132, 252, 0.25); border-top: 2px solid var(--matrix-purple);"></div>
+                                    <div style="position: relative; z-index: 1; text-align: center;">
+                                        <div style="font-size: 16px; font-weight: 800; color: #fff;">${p.DC}%</div>
+                                        <div style="font-size: 11px; font-weight: 700; color: var(--matrix-purple); margin-top: 2px;">DC</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
             }
+
 
             document.getElementById('dynamic-content').innerHTML = html;
         }

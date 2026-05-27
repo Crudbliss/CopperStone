@@ -492,13 +492,10 @@
 
                 // Render active
                 let hasActive = false;
-                if (activeSessions.length > 0) {
-                    const active = activeSessions[0];
-                    const alreadyTook = history.some(h => h.session_id === active.session_id);
-                    
-                    if (!alreadyTook) {
-                        hasActive = true;
-                        const d = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', {month: 'long', year: 'numeric'}) : 'Open Now';
+                const active = activeSessions.find(s => !history.some(h => h.session_id === s.session_id));
+                if (active) {
+                    hasActive = true;
+                    const d = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', {month: 'long', year: 'numeric'}) : 'Open Now';
                         list.innerHTML += `
                             <div class="history-item">
                                 <div class="history-item-left">
@@ -515,7 +512,6 @@
                                 </div>
                             </div>
                         `;
-                    }
                 }
 
                 // Render locked
@@ -523,9 +519,9 @@
                 quarters.forEach(q => {
                     const isDone = history.some(h => h.quarter_name.includes(q));
                     let isActive = false;
-                    if (activeSessions.length > 0) {
-                        const active = activeSessions[0];
-                        isActive = active.quarter_name.includes(q) && !history.some(h => h.session_id === active.session_id);
+                    const active = activeSessions.find(s => !history.some(h => h.session_id === s.session_id));
+                    if (active) {
+                        isActive = active.quarter_name.includes(q);
                     }
                     
                     if (!isDone && !isActive) {

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MATRIX | Student Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
     <style>
         /* --- CSS VARIABLES (Theme Colors) --- */
@@ -15,7 +17,7 @@
             --bg-yellow: #1a1c16;
             --bg-green: #0e1b1d;
             --hd-color: #0a1e2c;
-            
+
             --matrix-yellow: #d8a61a;
             --matrix-yellow-hover: #eab308;
             --matrix-dg: #4a8f4b;
@@ -23,7 +25,7 @@
             --matrix-blue: #38bdf8;
             --matrix-orange: #fb923c;
             --matrix-purple: #c084fc;
-            
+
             --text-main: #ffffff;
             --text-muted: #8b9eb0;
             --border-light: rgba(255, 255, 255, 0.05);
@@ -46,8 +48,10 @@
             overflow: hidden;
         }
 
-        .svg-defs { display: none; }
-        
+        .svg-defs {
+            display: none;
+        }
+
         svg {
             display: inline-block;
             vertical-align: middle;
@@ -76,20 +80,20 @@
             padding: 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
-        
+
         .logo-container {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
+
         .logo-icon {
             width: 32px;
             height: 32px;
             border-radius: 4px;
             object-fit: contain;
         }
-        
+
         .logo-text {
             font-size: 17px;
             font-weight: 800;
@@ -165,7 +169,7 @@
             line-height: 1.2;
             color: #ffffff;
         }
-        
+
         .user-details p {
             font-size: 12px;
             color: var(--text-muted);
@@ -238,7 +242,9 @@
             display: flex;
         }
 
-        .btn-icon:hover { color: var(--text-main); }
+        .btn-icon:hover {
+            color: var(--text-main);
+        }
 
         .status-pill {
             display: flex;
@@ -278,18 +284,50 @@
         }
     </style>
 </head>
+
 <body>
 
     <svg class="svg-defs">
-        <symbol id="icon-speedometer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M13 7h-2v5.41l3.3 3.3 1.41-1.41L13 11.59z"/></symbol>
-        <symbol id="icon-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></symbol>
-        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></symbol>
-        <symbol id="icon-linechart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></symbol>
-        <symbol id="icon-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
-        <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></symbol>
-        <symbol id="icon-books-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v4H4zM4 14h16v4H4z"/></symbol>
-        <symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></symbol>
-        <symbol id="icon-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <symbol id="icon-speedometer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+            <path d="M13 7h-2v5.41l3.3 3.3 1.41-1.41L13 11.59z" />
+        </symbol>
+        <symbol id="icon-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </symbol>
+        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </symbol>
+        <symbol id="icon-linechart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </symbol>
+        <symbol id="icon-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </symbol>
+        <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </symbol>
+        <symbol id="icon-books-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h16v4H4zM4 14h16v4H4z" />
+        </symbol>
+        <symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5l7 7-7 7" />
+        </symbol>
+        <symbol id="icon-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
             <polyline points="16 17 21 12 16 7"></polyline>
             <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -306,23 +344,33 @@
 
         <nav class="sidebar-nav">
             <a href="dashboard-content.html" target="content-frame" class="sidebar-link active">
-                <svg width="20" height="20"><use href="#icon-speedometer"></use></svg>
+                <svg width="20" height="20">
+                    <use href="#icon-speedometer"></use>
+                </svg>
                 <span>Dashboard</span>
             </a>
             <a href="qa-content.html" target="content-frame" class="sidebar-link">
-                <svg width="20" height="20"><use href="#icon-checklist"></use></svg>
+                <svg width="20" height="20">
+                    <use href="#icon-checklist"></use>
+                </svg>
                 <span>Assessment</span>
             </a>
             <a href="modules-content.html" target="content-frame" class="sidebar-link">
-                <svg width="20" height="20"><use href="#icon-book"></use></svg>
+                <svg width="20" height="20">
+                    <use href="#icon-book"></use>
+                </svg>
                 <span>My Modules</span>
             </a>
             <a href="progress-content.html" target="content-frame" class="sidebar-link">
-                <svg width="20" height="20"><use href="#icon-linechart"></use></svg>
-                <span>Progress</span>
+                <svg width="20" height="20">
+                    <use href="#icon-linechart"></use>
+                </svg>
+                <span>Migration History</span>
             </a>
             <a href="profile-content.html" target="content-frame" class="sidebar-link">
-                <svg width="20" height="20"><use href="#icon-person"></use></svg>
+                <svg width="20" height="20">
+                    <use href="#icon-person"></use>
+                </svg>
                 <span>Profile</span>
             </a>
         </nav>
@@ -335,29 +383,35 @@
                     <p id="sidebar-student-program">Loading...</p>
                 </div>
             </div>
-            
+
             <a href="../index.html" class="sign-out-link">
-                <svg width="18" height="18"><use href="#icon-logout"></use></svg>
+                <svg width="18" height="18">
+                    <use href="#icon-logout"></use>
+                </svg>
                 <span>Sign Out</span>
             </a>
         </div>
     </aside>
 
     <div class="main-wrapper">
-        
+
         <header class="top-header">
             <div class="header-title-box">
                 <span class="header-subtitle">Student Portal</span>
                 <span class="header-title">Dashboard</span>
             </div>
-            
+
             <div class="header-actions">
                 <button class="btn-icon">
-                    <svg width="20" height="20"><use href="#icon-bell"></use></svg>
+                    <svg width="20" height="20">
+                        <use href="#icon-bell"></use>
+                    </svg>
                 </button>
                 <div class="status-pill" id="header-status-pill">
                     <div class="status-dot-icon" id="header-status-dot">
-                        <svg width="10" height="10"><use href="#icon-books-stack"></use></svg>
+                        <svg width="10" height="10">
+                            <use href="#icon-books-stack"></use>
+                        </svg>
                     </div>
                     <span class="status-text" id="header-status-text">Loading...</span>
                 </div>
@@ -365,7 +419,7 @@
         </header>
 
         <iframe src="dashboard-content.html" name="content-frame" id="content-frame"></iframe>
-        
+
     </div>
 
     <script>
@@ -373,7 +427,7 @@
             const sidebarLinks = document.querySelectorAll('.sidebar-link');
 
             sidebarLinks.forEach(link => {
-                link.addEventListener('click', function() {
+                link.addEventListener('click', function () {
                     sidebarLinks.forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
                 });
@@ -446,7 +500,7 @@
                             pill.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
                         })
                         .catch(err => console.error('Failed to load student data', err));
-                } catch(e) { console.error(e); }
+                } catch (e) { console.error(e); }
             } else {
                 window.location.href = '../index.html';
             }
@@ -467,4 +521,5 @@
         });
     </script>
 </body>
+
 </html>

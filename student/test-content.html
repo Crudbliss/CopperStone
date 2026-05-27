@@ -927,14 +927,13 @@
                     return;
                 }
 
-                activeSession = sessions[0];
+                activeSession = sessions.find(s => !history.some(h => h.session_id === s.session_id));
 
-                const alreadyTook = history.some(h => h.session_id === activeSession.session_id);
-                if (alreadyTook) {
+                if (!activeSession) {
                     document.getElementById('test-container').innerHTML = `
                         <div style="text-align: center; padding: 60px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-light);">
-                            <h2 style="color: var(--matrix-green); margin-bottom: 12px;">Assessment Completed</h2>
-                            <p style="color: var(--text-muted);">You have already completed the assessment for ${activeSession.course_subj_name} - ${activeSession.quarter_name}. You cannot retake it.</p>
+                            <h2 style="color: var(--matrix-green); margin-bottom: 12px;">All Assessments Completed</h2>
+                            <p style="color: var(--text-muted);">You have already completed all currently active assessments. Great job!</p>
                         </div>
                     `;
                     return;

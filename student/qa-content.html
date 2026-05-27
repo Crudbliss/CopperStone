@@ -500,10 +500,9 @@
             html += `</div></div>`;
 
             // 2. Render Upcoming or Active Card
-            const active = activeSessions.length > 0 ? activeSessions[0] : null;
-            const alreadyTookActive = active ? history.some(h => h.session_id === active.session_id) : false;
+            const active = activeSessions.find(s => !history.some(h => h.session_id === s.session_id));
 
-            if (active && !alreadyTookActive) {
+            if (active) {
                 // Active and ready to take
                 const deadlineStr = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'No deadline';
                 
