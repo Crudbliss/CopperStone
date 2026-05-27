@@ -261,6 +261,324 @@
         select:focus { outline: none; border-color: var(--matrix-yellow); }
         option { background: #0a1e2d; }
 
+        /* --- HORIZONTAL TABS --- */
+        .class-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 28px;
+        }
+        .class-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .class-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.03); }
+        .class-tab.active {
+            background: rgba(216, 166, 26, 0.12);
+            color: var(--matrix-yellow);
+            box-shadow: 0 2px 8px rgba(216, 166, 26, 0.08);
+        }
+        .class-tab .tab-icon { width: 16px; height: 16px; opacity: 0.7; }
+        .class-tab.active .tab-icon { opacity: 1; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* --- MODULE CARDS --- */
+        .modules-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modules-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .btn-create-module {
+            background: linear-gradient(135deg, var(--matrix-yellow), #e0a31c);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-create-module:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(216, 166, 26, 0.3); }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 24px;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--matrix-yellow);
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+        .module-card:hover {
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .module-card:hover::before { opacity: 1; }
+
+        .module-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .module-card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.3;
+            flex: 1;
+            margin-right: 12px;
+        }
+        .stream-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .stream-badge.intervention { background: rgba(248, 113, 113, 0.12); color: #f87171; }
+        .stream-badge.mastery { background: rgba(74, 222, 128, 0.12); color: #4ade80; }
+
+        .module-card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .module-card-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .meta-item svg { width: 14px; height: 14px; opacity: 0.6; }
+        .meta-item strong { color: var(--text-main); font-weight: 600; }
+
+        .modules-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border: 1px dashed var(--border-lighter);
+            border-radius: 14px;
+        }
+        .modules-empty svg { width: 48px; height: 48px; color: var(--text-muted); opacity: 0.3; margin-bottom: 16px; }
+        .modules-empty h4 { font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
+        .modules-empty p { font-size: 13px; }
+
+        /* --- MODULE MODAL --- */
+        .module-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .module-form-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .module-form-group input,
+        .module-form-group select,
+        .module-form-group textarea {
+            background: #0a1e2d;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            transition: border-color 0.2s;
+        }
+        .module-form-group input:focus,
+        .module-form-group select:focus,
+        .module-form-group textarea:focus {
+            outline: none;
+            border-color: var(--matrix-yellow);
+        }
+        .module-form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .module-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* --- SUBMISSIONS / GRADEBOOK --- */
+        .gradebook-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .gradebook-filters select {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            min-width: 180px;
+        }
+        .gradebook-filters select:focus { outline: none; border-color: var(--matrix-yellow); }
+
+        .submission-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        .submission-card:hover {
+            border-color: rgba(255,255,255,0.15);
+            transform: translateX(3px);
+        }
+        .sub-left { display: flex; align-items: center; gap: 16px; flex: 1; }
+        .sub-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(216,166,26,0.1); color: var(--matrix-yellow);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 13px;
+        }
+        .sub-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .sub-info p { font-size: 12px; color: var(--text-muted); }
+        .sub-right { display: flex; align-items: center; gap: 16px; }
+        .status-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.needs-grading { background: #facc15; box-shadow: 0 0 8px rgba(250,204,21,0.4); }
+        .status-dot.graded { background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,0.4); }
+        .sub-score { font-size: 18px; font-weight: 800; color: var(--text-main); min-width: 40px; text-align: center; }
+        .btn-grade {
+            background: rgba(56,189,248,0.1);
+            color: var(--matrix-blue);
+            border: 1px solid rgba(56,189,248,0.3);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-grade:hover { background: rgba(56,189,248,0.2); }
+
+        /* --- ANNOUNCEMENTS --- */
+        .announce-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 14px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .announce-card:hover {
+            border-color: rgba(255,255,255,0.15);
+        }
+        .announce-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        .announce-title { font-size: 15px; font-weight: 700; flex: 1; margin-right: 12px; }
+        .announce-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+        .announce-body {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .announce-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .announce-audience {
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            background: rgba(216,166,26,0.1);
+            color: var(--matrix-yellow);
+            font-weight: 600;
+        }
+        .announce-views {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .announce-views svg { width: 14px; height: 14px; }
+
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
             body { padding: 16px; }
@@ -272,6 +590,9 @@
             .filter-group { flex-wrap: wrap; border-radius: 8px; }
             .filter-btn { flex: 1 1 auto; text-align: center; border-bottom: 1px solid var(--border-light); }
             .modal { padding: 16px; }
+            .class-tabs { flex-wrap: wrap; }
+            .modules-grid { grid-template-columns: 1fr; }
+            .module-form-row { grid-template-columns: 1fr; }
         }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
@@ -285,16 +606,68 @@
         <symbol id="icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="9 18 15 12 9 6"></polyline>
         </symbol>
+        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </symbol>
+        <symbol id="icon-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </symbol>
+        <symbol id="icon-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+        </symbol>
+        <symbol id="icon-megaphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11l18-5v12L3 13v-2z"></path>
+            <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path>
+        </symbol>
+        <symbol id="icon-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle>
+        </symbol>
+        <symbol id="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+        </symbol>
+        <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+        </symbol>
     </svg>
 
+    <!-- Page Header -->
+    <div class="class-header" style="margin-bottom: 20px; padding: 0 0 0 0;">
+        <h2 id="class-title-display-top" style="color: var(--text-main); font-weight: 800; font-size: 24px; margin-bottom: 4px;">Loading Class...</h2>
+        <p id="class-subtitle-display-top" style="color: var(--matrix-yellow); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">School Year</p>
+    </div>
+
+    <!-- Horizontal Tabs -->
+    <div class="class-tabs">
+        <button class="class-tab active" data-tab="roster">
+            <svg class="tab-icon"><use href="#icon-users"></use></svg>
+            <span>Master Roster</span>
+        </button>
+        <button class="class-tab" data-tab="modules">
+            <svg class="tab-icon"><use href="#icon-book"></use></svg>
+            <span>Modules</span>
+        </button>
+        <button class="class-tab" data-tab="gradebook">
+            <svg class="tab-icon"><use href="#icon-clipboard"></use></svg>
+            <span>Gradebook</span>
+        </button>
+        <button class="class-tab" data-tab="announcements">
+            <svg class="tab-icon"><use href="#icon-megaphone"></use></svg>
+            <span>Announcements</span>
+        </button>
+    </div>
+
+    <!-- TAB: ROSTER (existing content) -->
+    <div class="tab-content active" id="tab-roster">
     <div class="content-container">
         
         <div class="left-col">
-            
-            <div class="class-header" style="margin-bottom: 24px;">
-                <h2 id="class-title-display" style="color: var(--text-main); font-weight: 800; font-size: 24px; margin-bottom: 4px;">Loading Class...</h2>
-                <p id="class-subtitle-display" style="color: var(--matrix-yellow); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">School Year</p>
-            </div>
 
             <div class="search-filter-bar">
                 <div style="display: flex; gap: 8px;">
@@ -304,13 +677,6 @@
                 <div class="search-box">
                     <svg width="16" height="16"><use href="#icon-search"></use></svg>
                     <input type="text" placeholder="Search by name or ID...">
-                </div>
-                <div class="filter-group">
-                    <button class="filter-btn active">All</button>
-                    <button class="filter-btn">HI</button>
-                    <button class="filter-btn">DI</button>
-                    <button class="filter-btn">HC</button>
-                    <button class="filter-btn">DC</button>
                 </div>
             </div>
 
@@ -378,6 +744,178 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    </div> <!-- end tab-roster -->
+
+    <!-- TAB: MODULES -->
+    <div class="tab-content" id="tab-modules">
+        <div class="modules-header">
+            <h3>📚 Learning Modules</h3>
+            <button class="btn-create-module" onclick="openModuleModal()">
+                <svg width="16" height="16"><use href="#icon-plus"></use></svg>
+                Create Module
+            </button>
+        </div>
+        <div class="modules-grid" id="modulesGrid">
+            <!-- Module cards injected via JS -->
+        </div>
+        <div class="modules-empty" id="modulesEmpty" style="display:none;">
+            <svg><use href="#icon-book"></use></svg>
+            <h4>No modules yet</h4>
+            <p>Click "Create Module" to add your first lesson or task for this class.</p>
+        </div>
+    </div>
+
+    <!-- TAB: GRADEBOOK -->
+    <div class="tab-content" id="tab-gradebook">
+        <div class="modules-header">
+            <h3>📋 Submissions & Gradebook</h3>
+        </div>
+        <div class="gradebook-filters">
+            <select id="gradebookModuleFilter" onchange="loadSubmissions()">
+                <option value="">All Modules</option>
+            </select>
+            <select id="gradebookStatusFilter" onchange="loadSubmissions()">
+                <option value="">All Status</option>
+                <option value="Needs Grading">Needs Grading</option>
+                <option value="Graded">Graded</option>
+            </select>
+        </div>
+        <div id="submissionsList"></div>
+        <div class="modules-empty" id="submissionsEmpty" style="display:none;">
+            <svg><use href="#icon-clipboard"></use></svg>
+            <h4>No submissions yet</h4>
+            <p>When students submit their work for your modules, they'll appear here for grading.</p>
+        </div>
+    </div>
+
+    <!-- TAB: ANNOUNCEMENTS -->
+    <div class="tab-content" id="tab-announcements">
+        <div class="modules-header">
+            <h3>📢 Announcements</h3>
+            <button class="btn-create-module" onclick="openAnnouncementModal()">
+                <svg width="16" height="16"><use href="#icon-plus"></use></svg>
+                New Announcement
+            </button>
+        </div>
+        <div id="announcementsList"></div>
+        <div class="modules-empty" id="announcementsEmpty" style="display:none;">
+            <svg><use href="#icon-megaphone"></use></svg>
+            <h4>No announcements yet</h4>
+            <p>Click "New Announcement" to broadcast a message to your students.</p>
+        </div>
+    </div>
+
+    <!-- Grade Submission Modal -->
+    <div id="gradeModal" class="modal-backdrop">
+        <div class="modal" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3>Grade Submission</h3>
+                <button class="btn-close" onclick="closeGradeModal()">&times;</button>
+            </div>
+            <div id="gradeStudentInfo" style="margin-bottom: 16px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                <p style="font-size: 13px; color: var(--text-muted);">Student: <strong id="gradeStudentName" style="color: var(--text-main);"></strong></p>
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Module: <strong id="gradeModuleName" style="color: var(--text-main);"></strong></p>
+            </div>
+            <form id="gradeForm">
+                <input type="hidden" id="grade_submission_id">
+                <div class="module-form-group">
+                    <label>Score</label>
+                    <input type="number" id="grade_score" min="0" max="100" placeholder="0 - 100" required>
+                </div>
+                <div class="module-form-group">
+                    <label>Teacher Feedback</label>
+                    <textarea id="grade_feedback" placeholder="Write feedback for the student..."></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+                    <button type="button" onclick="closeGradeModal()" style="background: transparent; color: #8b9eb0; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 20px; cursor:pointer; font-family: 'Poppins', sans-serif;">Cancel</button>
+                    <button type="submit" class="btn-create-module" style="background: linear-gradient(135deg, var(--matrix-blue), #2196f3);">Save Grade</button>
+                </div>
+                <div id="gradeMessage" style="margin-top: 12px; font-size: 13px; font-weight: 500; text-align: right;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Announcement Modal -->
+    <div id="announcementModal" class="modal-backdrop">
+        <div class="modal" style="max-width: 540px;">
+            <div class="modal-header">
+                <h3>New Announcement</h3>
+                <button class="btn-close" onclick="closeAnnouncementModal()">&times;</button>
+            </div>
+            <form id="announcementForm">
+                <div class="module-form-group">
+                    <label>Title</label>
+                    <input type="text" id="ann_title" placeholder="e.g. Midterm Exam Reminders" required>
+                </div>
+                <div class="module-form-group">
+                    <label>Message</label>
+                    <textarea id="ann_body" placeholder="Write your announcement message here..." style="min-height: 120px;"></textarea>
+                </div>
+                <div class="module-form-group">
+                    <label>Target Audience</label>
+                    <select id="ann_audience" required>
+                        <option value="All">All Students</option>
+                        <option value="HI">HI — Hierarchical Individual</option>
+                        <option value="DI">DI — Distributed Individual</option>
+                        <option value="HC">HC — Hierarchical Collective</option>
+                        <option value="DC">DC — Distributed Collective</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+                    <button type="button" onclick="closeAnnouncementModal()" style="background: transparent; color: #8b9eb0; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 20px; cursor:pointer; font-family: 'Poppins', sans-serif;">Cancel</button>
+                    <button type="submit" class="btn-create-module">Post Announcement</button>
+                </div>
+                <div id="announcementMessage" style="margin-top: 12px; font-size: 13px; font-weight: 500; text-align: right;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Module Create Modal -->
+    <div id="moduleModal" class="modal-backdrop">
+        <div class="modal" style="max-width: 580px;">
+            <div class="modal-header">
+                <h3>Create New Module</h3>
+                <button class="btn-close" onclick="closeModuleModal()">&times;</button>
+            </div>
+            <form id="moduleForm">
+                <div class="module-form-group">
+                    <label>Module Title</label>
+                    <input type="text" id="mod_title" placeholder="e.g. IT Core Competency — Data Structures" required>
+                </div>
+                <div class="module-form-group">
+                    <label>Description</label>
+                    <textarea id="mod_description" placeholder="Brief overview of this module..."></textarea>
+                </div>
+                <div class="module-form-row">
+                    <div class="module-form-group">
+                        <label>Stream Type</label>
+                        <select id="mod_stream" required>
+                            <option value="" disabled selected>Select stream</option>
+                            <option value="Intervention">Intervention</option>
+                            <option value="Mastery">Mastery</option>
+                        </select>
+                    </div>
+                    <div class="module-form-group">
+                        <label>Passing Score</label>
+                        <input type="number" id="mod_passing" placeholder="e.g. 75" min="0" max="100" value="75">
+                    </div>
+                </div>
+                <div class="module-form-group">
+                    <label>Lesson Content</label>
+                    <textarea id="mod_content" placeholder="Write the lesson instructions, key concepts, and tasks here..." style="min-height: 140px;"></textarea>
+                </div>
+                <div class="module-form-group">
+                    <label>Upload PDF Attachment (optional)</label>
+                    <input type="file" id="mod_pdf" accept="application/pdf">
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+                    <button type="button" onclick="closeModuleModal()" style="background: transparent; color: #8b9eb0; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 20px; cursor:pointer; font-family: 'Poppins', sans-serif;">Cancel</button>
+                    <button type="submit" class="btn-create-module">Create Module</button>
+                </div>
+                <div id="moduleMessage" style="margin-top: 12px; font-size: 13px; font-weight: 500; text-align: right;"></div>
+            </form>
         </div>
     </div>
 
@@ -460,6 +998,7 @@
         } else {
             studentListEl.innerHTML = '<div style="color: #fb923c; padding: 20px;">No class selected. Return to the Students tab.</div>';
         }
+
 
         const detailPlaceholder = document.getElementById('detailPlaceholder');
         const detailPanel = document.getElementById('detailPanel');
@@ -587,6 +1126,25 @@
             } catch(e) { console.error(e); }
         });
 
+        // --- TAB SWITCHING ---
+        let currentClassData = null; // cache class metadata
+        const classTabs = document.querySelectorAll('.class-tab:not([disabled])');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        classTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                classTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const target = tab.dataset.tab;
+                tabContents.forEach(tc => tc.classList.remove('active'));
+                document.getElementById('tab-' + target).classList.add('active');
+
+                if (target === 'modules' && currentClassData) loadModules();
+                if (target === 'gradebook' && currentClassData) { populateGradebookModuleFilter(); loadSubmissions(); }
+                if (target === 'announcements') loadAnnouncements();
+            });
+        });
+
         // Fetch and load the specific class metadata
         async function loadClassDetails(classId) {
             try {
@@ -594,24 +1152,382 @@
                 if (!res.ok) throw new Error("Failed to fetch class details");
                 
                 const cls = await res.json();
+                currentClassData = cls;
                 
                 // Construct the title: Program Year-Section
                 const program = cls.prog_name || 'Unknown Class';
                 const yl = cls.year_level || '';
                 const sec = cls.section || '';
                 let titleStr = program;
+                const lm = cls.learning_mode || '';
+                if (lm) titleStr += ` ${lm}`;
                 if (yl || sec) titleStr += ` ${yl}-${sec}`;
-
-                // Inject into the new header
-                document.getElementById('class-title-display').textContent = titleStr;
-                document.getElementById('class-subtitle-display').textContent = 'S.Y. ' + (cls.school_year || '');
+                // Inject into the page header and roster header
+                document.getElementById('class-title-display-top').textContent = titleStr;
+                document.getElementById('class-subtitle-display-top').textContent = 'S.Y. ' + (cls.school_year || '');
                 
             } catch (err) {
                 console.error(err);
-                document.getElementById('class-title-display').textContent = "Class details unavailable";
-                document.getElementById('class-subtitle-display').textContent = "";
+                document.getElementById('class-title-display-top').textContent = "Class details unavailable";
+                document.getElementById('class-subtitle-display-top').textContent = "";
             }
         }
+
+        // --- MODULES LOGIC ---
+        const moduleModal = document.getElementById('moduleModal');
+
+        function openModuleModal() {
+            moduleModal.style.display = 'flex';
+            document.getElementById('moduleMessage').textContent = '';
+        }
+        function closeModuleModal() {
+            moduleModal.style.display = 'none';
+            document.getElementById('moduleForm').reset();
+        }
+        moduleModal.addEventListener('click', (e) => {
+            if (e.target === moduleModal) closeModuleModal();
+        });
+
+        async function loadModules() {
+            if (!currentClassData) return;
+            const grid = document.getElementById('modulesGrid');
+            const empty = document.getElementById('modulesEmpty');
+            
+            const quadrant = currentClassData.learning_mode || '';
+            const yearLevel = currentClassData.year_level || '';
+
+            try {
+                const res = await fetch(`/api/modules?quadrant_category=${encodeURIComponent(quadrant)}&target_year_level=${encodeURIComponent(yearLevel)}`);
+                const modules = await res.json();
+
+                grid.innerHTML = '';
+                if (modules.length === 0) {
+                    grid.style.display = 'none';
+                    empty.style.display = 'block';
+                    return;
+                }
+
+                grid.style.display = 'grid';
+                empty.style.display = 'none';
+
+                modules.forEach(mod => {
+                    const streamClass = (mod.stream_type || '').toLowerCase() === 'intervention' ? 'intervention' : 'mastery';
+                    const date = mod.created_at ? new Date(mod.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+                    const mediaLink = mod.media_file_url ? `<div class="meta-item"><a href="${mod.media_file_url}" target="_blank" style="color: var(--matrix-blue); text-decoration: none; display: flex; align-items: center; gap: 4px;"><svg><use href="#icon-book"></use></svg><strong>Attachment</strong></a></div>` : '';
+                    
+                    const card = document.createElement('div');
+                    card.className = 'module-card';
+                    card.innerHTML = `
+                        <div class="module-card-header">
+                            <div class="module-card-title">${mod.title}</div>
+                            <span class="stream-badge ${streamClass}">${mod.stream_type || 'N/A'}</span>
+                        </div>
+                        <div class="module-card-desc">${mod.description || 'No description provided.'}</div>
+                        <div class="module-card-meta">
+                            <div class="meta-item">
+                                <svg><use href="#icon-target"></use></svg>
+                                <span>Pass: <strong>${mod.passing_score || 0}%</strong></span>
+                            </div>
+                            <div class="meta-item">
+                                <svg><use href="#icon-calendar"></use></svg>
+                                <span>${date}</span>
+                            </div>
+                            <div class="meta-item">
+                                <svg><use href="#icon-users"></use></svg>
+                                <span>Year <strong>${mod.target_year_level || '—'}</strong></span>
+                            </div>
+                            ${mediaLink}
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch(e) {
+                console.error('Failed to load modules:', e);
+            }
+        }
+
+        document.getElementById('moduleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('moduleMessage');
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.textContent = 'Creating...';
+
+            // Get teacher from localStorage
+            let teacherId = null;
+            try {
+                const cu = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                teacherId = cu.id;
+            } catch(ex) {}
+
+            const formData = new FormData();
+            formData.append('teacher_id', teacherId);
+            formData.append('title', document.getElementById('mod_title').value);
+            formData.append('description', document.getElementById('mod_description').value);
+            formData.append('target_year_level', currentClassData ? currentClassData.year_level : '');
+            formData.append('stream_type', document.getElementById('mod_stream').value);
+            formData.append('passing_score', parseInt(document.getElementById('mod_passing').value) || 75);
+            formData.append('lesson_content', document.getElementById('mod_content').value);
+            formData.append('quadrant_category', currentClassData ? (currentClassData.learning_mode || '') : '');
+
+            const fileInput = document.getElementById('mod_pdf');
+            if (fileInput.files.length > 0) {
+                formData.append('pdf_file', fileInput.files[0]);
+            }
+
+            try {
+                const res = await fetch('/api/modules', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    msg.style.color = '#4ade80';
+                    msg.textContent = 'Module created successfully!';
+                    setTimeout(() => {
+                        closeModuleModal();
+                        loadModules();
+                    }, 600);
+                } else {
+                    msg.style.color = '#f87171';
+                    msg.textContent = result.error || 'Failed to create module.';
+                }
+            } catch(err) {
+                msg.style.color = '#f87171';
+                msg.textContent = 'Server error.';
+            }
+            btn.textContent = 'Create Module';
+        });
+
+        // --- GRADEBOOK / SUBMISSIONS LOGIC ---
+        const gradeModal = document.getElementById('gradeModal');
+
+        function openGradeModal(sub, moduleName) {
+            gradeModal.style.display = 'flex';
+            document.getElementById('gradeMessage').textContent = '';
+            document.getElementById('grade_submission_id').value = sub.id;
+            document.getElementById('gradeStudentName').textContent = `${sub.first_name} ${sub.last_name}`;
+            document.getElementById('gradeModuleName').textContent = moduleName || 'Module #' + sub.module_id;
+            document.getElementById('grade_score').value = sub.score || '';
+            document.getElementById('grade_feedback').value = sub.teacher_feedback || '';
+        }
+        function closeGradeModal() {
+            gradeModal.style.display = 'none';
+            document.getElementById('gradeForm').reset();
+        }
+        gradeModal.addEventListener('click', (e) => {
+            if (e.target === gradeModal) closeGradeModal();
+        });
+
+        async function populateGradebookModuleFilter() {
+            if (!currentClassData) return;
+            const quadrant = currentClassData.learning_mode || '';
+            const yearLevel = currentClassData.year_level || '';
+            try {
+                const res = await fetch(`/api/modules?quadrant_category=${encodeURIComponent(quadrant)}&target_year_level=${encodeURIComponent(yearLevel)}`);
+                const modules = await res.json();
+                const select = document.getElementById('gradebookModuleFilter');
+                select.innerHTML = '<option value="">All Modules</option>';
+                modules.forEach(m => {
+                    select.innerHTML += `<option value="${m.id}">${m.title}</option>`;
+                });
+            } catch(e) { console.error(e); }
+        }
+
+        async function loadSubmissions() {
+            const listEl = document.getElementById('submissionsList');
+            const emptyEl = document.getElementById('submissionsEmpty');
+            const moduleFilter = document.getElementById('gradebookModuleFilter').value;
+            const statusFilter = document.getElementById('gradebookStatusFilter').value;
+
+            let url = '/api/submissions?';
+            if (moduleFilter) url += `module_id=${moduleFilter}&`;
+
+            try {
+                const res = await fetch(url);
+                let submissions = await res.json();
+
+                // Client-side status filter
+                if (statusFilter) {
+                    submissions = submissions.filter(s => s.grading_status === statusFilter);
+                }
+
+                listEl.innerHTML = '';
+                if (submissions.length === 0) {
+                    listEl.style.display = 'none';
+                    emptyEl.style.display = 'block';
+                    return;
+                }
+
+                listEl.style.display = 'block';
+                emptyEl.style.display = 'none';
+
+                // Fetch module names for display
+                let moduleNames = {};
+                try {
+                    const quadrant = currentClassData ? currentClassData.learning_mode || '' : '';
+                    const yearLevel = currentClassData ? currentClassData.year_level || '' : '';
+                    const mRes = await fetch(`/api/modules?quadrant_category=${encodeURIComponent(quadrant)}&target_year_level=${encodeURIComponent(yearLevel)}`);
+                    const mods = await mRes.json();
+                    mods.forEach(m => moduleNames[m.id] = m.title);
+                } catch(e) {}
+
+                submissions.forEach(sub => {
+                    const initials = (sub.first_name || '?').charAt(0) + (sub.last_name || '?').charAt(0);
+                    const isGraded = sub.grading_status === 'Graded';
+                    const statusClass = isGraded ? 'graded' : 'needs-grading';
+                    const statusLabel = isGraded ? 'Graded' : 'Needs Grading';
+                    const date = sub.submitted_at ? new Date(sub.submitted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+                    const modName = moduleNames[sub.module_id] || 'Module #' + sub.module_id;
+
+                    const card = document.createElement('div');
+                    card.className = 'submission-card';
+                    card.innerHTML = `
+                        <div class="sub-left">
+                            <div class="sub-avatar">${initials}</div>
+                            <div class="sub-info">
+                                <h4>${sub.first_name} ${sub.last_name}</h4>
+                                <p>${modName} · ${date}</p>
+                            </div>
+                        </div>
+                        <div class="sub-right">
+                            <span class="status-dot ${statusClass}" title="${statusLabel}"></span>
+                            <span class="sub-score">${isGraded ? sub.score : '—'}</span>
+                            <button class="btn-grade" data-subid="${sub.id}">${isGraded ? 'Edit' : 'Grade'}</button>
+                        </div>
+                    `;
+                    card.querySelector('.btn-grade').addEventListener('click', () => openGradeModal(sub, modName));
+                    listEl.appendChild(card);
+                });
+            } catch(e) {
+                console.error('Failed to load submissions:', e);
+            }
+        }
+
+        document.getElementById('gradeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('gradeMessage');
+            const subId = document.getElementById('grade_submission_id').value;
+            const payload = {
+                score: parseInt(document.getElementById('grade_score').value),
+                teacher_feedback: document.getElementById('grade_feedback').value,
+                grading_status: 'Graded'
+            };
+            try {
+                const res = await fetch(`/api/submissions/${subId}/grade`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    msg.style.color = '#4ade80';
+                    msg.textContent = 'Grade saved!';
+                    setTimeout(() => { closeGradeModal(); loadSubmissions(); }, 500);
+                } else {
+                    msg.style.color = '#f87171';
+                    msg.textContent = 'Failed to save grade.';
+                }
+            } catch(err) {
+                msg.style.color = '#f87171';
+                msg.textContent = 'Server error.';
+            }
+        });
+
+        // --- ANNOUNCEMENTS LOGIC ---
+        const announcementModal = document.getElementById('announcementModal');
+
+        function openAnnouncementModal() {
+            announcementModal.style.display = 'flex';
+            document.getElementById('announcementMessage').textContent = '';
+        }
+        function closeAnnouncementModal() {
+            announcementModal.style.display = 'none';
+            document.getElementById('announcementForm').reset();
+        }
+        announcementModal.addEventListener('click', (e) => {
+            if (e.target === announcementModal) closeAnnouncementModal();
+        });
+
+        async function loadAnnouncements() {
+            const listEl = document.getElementById('announcementsList');
+            const emptyEl = document.getElementById('announcementsEmpty');
+            try {
+                const res = await fetch('/api/announcements');
+                const announcements = await res.json();
+
+                listEl.innerHTML = '';
+                if (announcements.length === 0) {
+                    listEl.style.display = 'none';
+                    emptyEl.style.display = 'block';
+                    return;
+                }
+
+                listEl.style.display = 'block';
+                emptyEl.style.display = 'none';
+
+                announcements.forEach(a => {
+                    const date = a.created_at ? new Date(a.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+                    const card = document.createElement('div');
+                    card.className = 'announce-card';
+                    card.innerHTML = `
+                        <div class="announce-card-header">
+                            <div class="announce-title">${a.title}</div>
+                            <div class="announce-date">${date}</div>
+                        </div>
+                        <div class="announce-body">${a.message_body || ''}</div>
+                        <div class="announce-footer">
+                            <span class="announce-audience">${a.target_audience || 'All'}</span>
+                            <span class="announce-views">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                ${a.view_count || 0} views
+                            </span>
+                        </div>
+                    `;
+                    listEl.appendChild(card);
+                });
+            } catch(e) {
+                console.error('Failed to load announcements:', e);
+            }
+        }
+
+        document.getElementById('announcementForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('announcementMessage');
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.textContent = 'Posting...';
+
+            let teacherId = null;
+            try {
+                const cu = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                teacherId = cu.id;
+            } catch(ex) {}
+
+            const payload = {
+                teacher_id: teacherId,
+                title: document.getElementById('ann_title').value,
+                message_body: document.getElementById('ann_body').value,
+                target_audience: document.getElementById('ann_audience').value
+            };
+
+            try {
+                const res = await fetch('/api/announcements', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    msg.style.color = '#4ade80';
+                    msg.textContent = 'Announcement posted!';
+                    setTimeout(() => { closeAnnouncementModal(); loadAnnouncements(); }, 600);
+                } else {
+                    msg.style.color = '#f87171';
+                    msg.textContent = 'Failed to post announcement.';
+                }
+            } catch(err) {
+                msg.style.color = '#f87171';
+                msg.textContent = 'Server error.';
+            }
+            btn.textContent = 'Post Announcement';
+        });
 
         // Load all students for the dropdown
         async function loadAllStudentsForDropdown() {

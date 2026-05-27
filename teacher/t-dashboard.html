@@ -293,10 +293,7 @@
                 <svg width="20" height="20"><use href="#icon-students"></use></svg>
                 <span>Students</span>
             </a>
-            <a href="reports-content.html" target="content-frame" class="sidebar-link" data-title="Reports">
-                <svg width="20" height="20"><use href="#icon-reports"></use></svg>
-                <span>Reports</span>
-            </a>
+
         </nav>
 
         <div class="sidebar-footer">
@@ -327,10 +324,23 @@
                 </div>
             </div>
             
-            <div class="header-actions">
-                <button class="btn-icon">
+            <div class="header-actions" style="position: relative;">
+                <button class="btn-icon" id="bell-toggle">
                     <svg width="20" height="20"><use href="#icon-bell"></use></svg>
                 </button>
+                
+                <!-- Notification Dropdown -->
+                <div id="notification-dropdown" style="display: none; position: absolute; top: 48px; right: 140px; width: 320px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+                    <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2);">
+                        <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text-main);">Notifications</h4>
+                        <span style="font-size: 11px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 2px 8px; border-radius: 10px; font-weight: 600;">0 New</span>
+                    </div>
+                    <div style="padding: 40px 16px; text-align: center; color: var(--text-muted);">
+                        <svg width="32" height="32" style="opacity: 0.2; margin-bottom: 12px; color: var(--text-main);"><use href="#icon-bell"></use></svg>
+                        <p style="margin: 0; font-size: 14px; font-weight: 500; color: var(--text-main);">You're all caught up!</p>
+                        <p style="margin: 6px 0 0 0; font-size: 12px; opacity: 0.7;">No new notifications right now.</p>
+                    </div>
+                </div>
                 <div class="status-pill">
                     <svg width="16" height="16" style="color: var(--matrix-green);"><use href="#icon-grad-cap"></use></svg>
                     <span class="status-text" id="header-status-text">BSIT 3-1 · 12 Students</span>
@@ -358,6 +368,26 @@
             sidebarOverlay.addEventListener('click', () => {
                 sidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
+            });
+
+            // Notification Bell Toggle
+            const bellToggle = document.getElementById('bell-toggle');
+            const notifDropdown = document.getElementById('notification-dropdown');
+            
+            bellToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (notifDropdown.style.display === 'none') {
+                    notifDropdown.style.display = 'block';
+                } else {
+                    notifDropdown.style.display = 'none';
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!notifDropdown.contains(e.target) && !bellToggle.contains(e.target)) {
+                    notifDropdown.style.display = 'none';
+                }
             });
 
             sidebarLinks.forEach(link => {

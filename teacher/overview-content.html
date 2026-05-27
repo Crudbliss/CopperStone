@@ -280,17 +280,24 @@
         .legend-val.val-orange { color: var(--matrix-orange); }
         .legend-val.val-purple { color: var(--matrix-purple); }
 
+        /* --- DASHBOARD LAYOUT --- */
+        .dashboard-layout {
+            display: grid; 
+            grid-template-columns: 2fr 1fr; 
+            gap: 24px; 
+            align-items: start;
+        }
+        .quick-actions-grid {
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 12px;
+        }
+
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
             body { padding: 16px; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .bottom-grid { grid-template-columns: 1fr; }
-            .quadrant-graph { max-width: 100%; aspect-ratio: auto; min-height: 250px; }
-            .chart-legend { grid-template-columns: 1fr; }
-            .bar-chart-wrapper { height: 200px; padding-left: 20px; }
-            .x-label { font-size: 8px; transform: rotate(-45deg); bottom: -30px; left: 0; }
-            .bars-container { padding-bottom: 36px; }
-            .y-axis { padding-bottom: 36px; }
+            .dashboard-layout { grid-template-columns: 1fr; }
+            .quick-actions-grid { grid-template-columns: 1fr; }
         }
 
     </style>
@@ -300,121 +307,132 @@
 
     <div class="content-container">
         
-        <div class="glass-card welcome-banner">
+        <div class="glass-card welcome-banner" style="margin-bottom: 24px;">
             <p class="welcome-eyebrow">WELCOME BACK</p>
             <h2 class="welcome-title" id="welcome-teacher-name">Prof. <span>👋</span></h2>
             <p class="welcome-sub" id="welcome-teacher-email">Loading...</p>
         </div>
 
-        <div class="stats-grid">
-            <div class="glass-card stat-card clickable" onclick="cycleClass()" title="Click to change class">
-                <span class="stat-val" id="stat-total-students-val">--</span>
-                <span class="stat-label">Total Students</span>
-                <span class="stat-sub" id="stat-total-students-sub">Loading...</span>
-            </div>
+        <div class="dashboard-layout">
             
-            <div class="glass-card stat-card">
-                <span class="stat-val" id="stat-avg-score-val">--</span>
-                <span class="stat-label">Avg. Score</span>
-                <span class="stat-sub" id="stat-avg-score-sub">Q2 average</span>
-            </div>
-            <div class="glass-card stat-card clickable" onclick="navigateToReports()" title="Go to Reports">
-                <span class="stat-val" id="stat-assessments-val">--</span>
-                <span class="stat-label">Assessments</span>
-                <span class="stat-sub" id="stat-assessments-sub">Loading...</span>
-            </div>
-            <div class="glass-card stat-card">
-                <span class="stat-val" id="stat-largest-mode-val">--</span>
-                <span class="stat-label">Largest Mode</span>
-                <span class="stat-sub" id="stat-largest-mode-sub">--</span>
-            </div>
-        </div>
-
-        <div class="bottom-grid">
-            
-            <div class="glass-card">
-                <h3 class="chart-title">Class Quadrant Map</h3>
+            <!-- Left Column -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
                 
-                <div class="quadrant-map-container">
-                    <div style="position: relative; width: 100%; max-width: 320px;">
-                        
-                        <div class="axis-label axis-y-top">INDIVIDUAL</div>
-                        <div class="axis-label axis-y-bot">COLLECTIVE</div>
-
-                        <div class="quadrant-graph" id="quadrant-graph-container">
-                            <div class="quadrant-grid-lines">
-                                <div class="q-cell top-left"><span class="q-label text-green">H. Individual</span></div>
-                                <div class="q-cell top-right"><span class="q-label text-blue">D. Individual</span></div>
-                                <div class="q-cell bottom-left"><span class="q-label text-orange">H. Collective</span></div>
-                                <div class="q-cell bottom-right"><span class="q-label text-purple">D. Collective</span></div>
-                            </div>
-                            <!-- Dots will be injected here -->
-                        </div>
-
-                        <div class="axis-x-container">
-                            <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
-                            <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
-                        </div>
+                <!-- Quick Actions -->
+                <div class="glass-card" style="padding: 24px;">
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text-main);">Quick Actions</h3>
+                    <div class="quick-actions-grid">
+                        <button class="btn-action" style="padding: 16px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; color: var(--matrix-blue); font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px;" onmouseover="this.style.background='rgba(56, 189, 248, 0.2)'" onmouseout="this.style.background='rgba(56, 189, 248, 0.1)'" onclick="navigateToStudents()">
+                            <svg width="24" height="24"><use href="#icon-users"></use></svg>
+                            Manage Classes
+                        </button>
+                        <button class="btn-action" style="padding: 16px; background: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.2); border-radius: 8px; color: var(--matrix-green); font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px;" onmouseover="this.style.background='rgba(74, 222, 128, 0.2)'" onmouseout="this.style.background='rgba(74, 222, 128, 0.1)'">
+                            <svg width="24" height="24"><use href="#icon-book"></use></svg>
+                            Create Module
+                        </button>
+                        <button class="btn-action" style="padding: 16px; background: rgba(251, 146, 60, 0.1); border: 1px solid rgba(251, 146, 60, 0.2); border-radius: 8px; color: var(--matrix-orange); font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px;" onmouseover="this.style.background='rgba(251, 146, 60, 0.2)'" onmouseout="this.style.background='rgba(251, 146, 60, 0.1)'">
+                            <svg width="24" height="24"><use href="#icon-target"></use></svg>
+                            New Assignment
+                        </button>
                     </div>
                 </div>
 
-                <p class="chart-footer">Each dot = 1 student · Click a dot or hover for name</p>
+                <!-- Recent Activity Feed -->
+                <div class="glass-card" style="padding: 24px;">
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 20px; color: var(--text-main);">Recent Activity</h3>
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        
+                        <div style="display: flex; gap: 16px; align-items: flex-start; padding-bottom: 16px; border-bottom: 1px solid var(--border-light);">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(74, 222, 128, 0.1); display: flex; align-items: center; justify-content: center; color: var(--matrix-green);">
+                                <svg width="20" height="20"><use href="#icon-checklist"></use></svg>
+                            </div>
+                            <div style="flex: 1;">
+                                <p style="font-size: 14px; color: var(--text-main); margin-bottom: 4px;"><strong>John Doe</strong> submitted <span style="color: var(--matrix-green);">Q1 Final Assessment</span></p>
+                                <p style="font-size: 12px; color: var(--text-muted);">BSIT HI-1 &middot; 2 hours ago</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 16px; align-items: flex-start; padding-bottom: 16px; border-bottom: 1px solid var(--border-light);">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(56, 189, 248, 0.1); display: flex; align-items: center; justify-content: center; color: var(--matrix-blue);">
+                                <svg width="20" height="20"><use href="#icon-book"></use></svg>
+                            </div>
+                            <div style="flex: 1;">
+                                <p style="font-size: 14px; color: var(--text-main); margin-bottom: 4px;">You published <strong>Data Structures Overview</strong></p>
+                                <p style="font-size: 12px; color: var(--text-muted);">Module &middot; 5 hours ago</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 16px; align-items: flex-start;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(192, 132, 252, 0.1); display: flex; align-items: center; justify-content: center; color: var(--matrix-purple);">
+                                <svg width="20" height="20"><use href="#icon-users"></use></svg>
+                            </div>
+                            <div style="flex: 1;">
+                                <p style="font-size: 14px; color: var(--text-main); margin-bottom: 4px;"><strong>5 new students</strong> joined BSCS DC-2</p>
+                                <p style="font-size: 12px; color: var(--text-muted);">Enrollment &middot; 1 day ago</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
 
-            <div class="glass-card">
-                <h3 class="chart-title">Quadrant Distribution</h3>
+            <!-- Right Column -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
                 
-                <div class="bar-chart-wrapper">
-                    <div class="y-axis" id="y-axis-labels">
-                        <span>--</span>
-                        <span>--</span>
-                        <span>--</span>
-                        <span>--</span>
-                        <span>0</span>
+                <!-- Needs Grading -->
+                <div class="glass-card" style="padding: 24px; border-top: 4px solid var(--matrix-orange);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main);">Needs Grading</h3>
+                        <span style="background: rgba(251, 146, 60, 0.2); color: var(--matrix-orange); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700;">12 Pending</span>
                     </div>
                     
-                    <div class="bars-container">
-                        <div class="bar-column">
-                            <div class="bar green" id="bar-green" style="height: 0%;"></div>
-                            <span class="x-label">H. Individual</span>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 2px;">Algorithm Analysis Lab</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">BSIT HI-1 &middot; 8 submissions</p>
+                            </div>
+                            <button style="background: none; border: none; color: var(--matrix-yellow); cursor: pointer;"><svg width="20" height="20"><use href="#icon-arrow-right"></use></svg></button>
                         </div>
-                        <div class="bar-column">
-                            <div class="bar blue" id="bar-blue" style="height: 0%;"></div>
-                            <span class="x-label">D. Individual</span>
-                        </div>
-                        <div class="bar-column">
-                            <div class="bar orange" id="bar-orange" style="height: 0%;"></div>
-                            <span class="x-label">H. Collective</span>
-                        </div>
-                        <div class="bar-column">
-                            <div class="bar purple" id="bar-purple" style="height: 0%;"></div>
-                            <span class="x-label">D. Collective</span>
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 2px;">Midterm Essays</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">BSCS DC-2 &middot; 4 submissions</p>
+                            </div>
+                            <button style="background: none; border: none; color: var(--matrix-yellow); cursor: pointer;"><svg width="20" height="20"><use href="#icon-arrow-right"></use></svg></button>
                         </div>
                     </div>
                 </div>
 
-                <div class="chart-legend">
-                    <div class="legend-item">
-                        <div class="legend-label"><div class="legend-dot l-dot-green"></div> Hierarchical Individual</div>
-                        <span class="legend-val val-green" id="legend-val-green">0</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-label"><div class="legend-dot l-dot-blue"></div> Distributed Individual</div>
-                        <span class="legend-val val-blue" id="legend-val-blue">0</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-label"><div class="legend-dot l-dot-orange"></div> Hierarchical Collective</div>
-                        <span class="legend-val val-orange" id="legend-val-orange">0</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-label"><div class="legend-dot l-dot-purple"></div> Distributed Collective</div>
-                        <span class="legend-val val-purple" id="legend-val-purple">0</span>
+                <!-- Upcoming Deadlines -->
+                <div class="glass-card" style="padding: 24px; border-top: 4px solid var(--matrix-purple);">
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 20px; color: var(--text-main);">Upcoming Deadlines</h3>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div style="width: 4px; height: 32px; background: var(--matrix-purple); border-radius: 4px;"></div>
+                            <div>
+                                <h4 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 2px;">Project Proposal</h4>
+                                <p style="font-size: 12px; color: var(--matrix-purple);">Tomorrow, 11:59 PM</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div style="width: 4px; height: 32px; background: var(--border-light); border-radius: 4px;"></div>
+                            <div>
+                                <h4 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 2px;">Q1 Assessment Closes</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">Friday, 5:00 PM</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
             </div>
-
         </div>
+
+
+
+
     </div>
 
     <script>
@@ -437,17 +455,8 @@
                 const res = await fetch('/api/classes/teacher/' + user.id);
                 classes = await res.json();
 
-                if (classes.length > 0) {
-                    // Try to restore previous selection
-                    const storedId = localStorage.getItem('currentTeacherClassId');
-                    if (storedId) {
-                        const idx = classes.findIndex(c => c.id == storedId);
-                        if (idx !== -1) currentClassIndex = idx;
-                    }
-                    
-                    loadClassData(classes[currentClassIndex]);
-                } else {
-                    document.getElementById('stat-total-students-sub').textContent = 'No classes assigned';
+                if (classes.length === 0) {
+                    console.log('No classes assigned');
                 }
             } catch (err) {
                 console.error('Failed to fetch classes', err);
@@ -462,25 +471,14 @@
             if (window.parent && window.parent.document) {
                 const headerStatus = window.parent.document.getElementById('header-status-text');
                 if (headerStatus) {
-                    // We will update student count after fetching students
                     headerStatus.dataset.className = cls.course_subj_name + " " + cls.section;
                 }
             }
-
-            document.getElementById('stat-total-students-sub').textContent = cls.course_subj_name + " " + (cls.section || '');
             
             try {
-                // Fetch Students and Sessions simultaneously
-                const [studentsRes, sessionsRes] = await Promise.all([
-                    fetch('/api/classes/' + cls.id + '/students'),
-                    fetch('/api/classes/' + cls.id + '/sessions')
-                ]);
-                
+                // Fetch Students to update parent header count
+                const studentsRes = await fetch('/api/classes/' + cls.id + '/students');
                 const students = await studentsRes.json();
-                const sessions = await sessionsRes.json();
-
-                // Total Students
-                document.getElementById('stat-total-students-val').textContent = students.length;
 
                 // Update Parent Header with student count
                 if (window.parent && window.parent.document) {
@@ -489,115 +487,6 @@
                         headerStatus.textContent = headerStatus.dataset.className + " · " + students.length + " Students";
                     }
                 }
-
-                // Sessions (Assessments)
-                if (sessions.length > 0) {
-                    const latest = sessions[0];
-                    document.getElementById('stat-assessments-val').textContent = latest.quarter_name + (latest.is_active ? ' Active' : ' Done');
-                    document.getElementById('stat-assessments-sub').textContent = latest.deadline ? 'Deadline: ' + new Date(latest.deadline).toLocaleDateString() : 'No deadline';
-                } else {
-                    document.getElementById('stat-assessments-val').textContent = "None";
-                    document.getElementById('stat-assessments-sub').textContent = "No assessments yet";
-                }
-
-                // Modes calculation
-                let hiCount = 0, diCount = 0, hcCount = 0, dcCount = 0;
-                let totalPct = 0;
-                let pctCount = 0;
-
-                const graphContainer = document.getElementById('quadrant-graph-container');
-                // Remove old dots
-                graphContainer.querySelectorAll('.scatter-dot').forEach(e => e.remove());
-
-                students.forEach(s => {
-                    // Calculate Average Score (Percentage equivalent)
-                    const x = s.x_coord || 0;
-                    const y = s.y_coord || 0;
-                    if (x !== 0 || y !== 0) {
-                        const pct = Math.round((Math.max(Math.abs(x), Math.abs(y)) / 5) * 100);
-                        totalPct += pct;
-                        pctCount++;
-                    }
-
-                    // Tally modes
-                    let modeClass = '';
-                    let dotColor = '';
-                    if (s.learning_mode === 'Hierarchical Individual') { hiCount++; dotColor = 'dot-green'; }
-                    else if (s.learning_mode === 'Distributed Individual') { diCount++; dotColor = 'dot-blue'; }
-                    else if (s.learning_mode === 'Hierarchical Collective') { hcCount++; dotColor = 'dot-orange'; }
-                    else if (s.learning_mode === 'Distributed Collective') { dcCount++; dotColor = 'dot-purple'; }
-
-                    // Add scatter dot
-                    if (s.learning_mode && s.learning_mode !== 'Unknown') {
-                        const dot = document.createElement('div');
-                        dot.className = `scatter-dot ${dotColor}`;
-                        
-                        // Map coordinates (-5 to 5) to percentages (0% to 100%)
-                        // Top-Left is H.I. (x: -5 to 0, y: 0 to 5)
-                        // Wait, mathematically: X axis: -5 is left, +5 is right.  -->  Left: 0%, Right: 100%
-                        // Y axis: +5 is top, -5 is bottom. --> Top: 0%, Bottom: 100%
-                        
-                        // Add some slight random jitter to prevent perfect overlap
-                        const jitterX = (Math.random() - 0.5) * 5;
-                        const jitterY = (Math.random() - 0.5) * 5;
-
-                        const leftPct = ((x + 5) / 10) * 100 + jitterX;
-                        const topPct = ((5 - y) / 10) * 100 + jitterY;
-                        
-                        dot.style.left = Math.min(Math.max(leftPct, 5), 95) + '%';
-                        dot.style.top = Math.min(Math.max(topPct, 5), 95) + '%';
-                        dot.title = s.first_name + ' ' + s.last_name + ' (' + s.learning_mode + ')';
-                        dot.onclick = () => window.location.href = 'class-details.html?id=' + cls.id;
-                        graphContainer.appendChild(dot);
-                    }
-                });
-
-                // Avg Score Stat
-                if (pctCount > 0) {
-                    const avg = Math.round(totalPct / pctCount);
-                    document.getElementById('stat-avg-score-val').textContent = avg + "%";
-                } else {
-                    document.getElementById('stat-avg-score-val').textContent = "--";
-                }
-
-                // Largest Mode Stat
-                const modes = [
-                    { name: 'HI', count: hiCount },
-                    { name: 'DI', count: diCount },
-                    { name: 'HC', count: hcCount },
-                    { name: 'DC', count: dcCount }
-                ];
-                modes.sort((a, b) => b.count - a.count);
-                
-                if (students.length > 0 && modes[0].count > 0) {
-                    document.getElementById('stat-largest-mode-val').textContent = modes[0].name;
-                    document.getElementById('stat-largest-mode-sub').textContent = modes[0].count + (modes[0].count === 1 ? ' student' : ' students');
-                } else {
-                    document.getElementById('stat-largest-mode-val').textContent = "--";
-                    document.getElementById('stat-largest-mode-sub').textContent = "No data yet";
-                }
-
-                // Update Bar Chart
-                const maxCount = Math.max(hiCount, diCount, hcCount, dcCount, 1); // Avoid division by 0
-                
-                // Update Y-axis labels
-                const yLabels = document.getElementById('y-axis-labels').querySelectorAll('span');
-                yLabels[0].textContent = maxCount;
-                yLabels[1].textContent = Math.round((maxCount * 0.75) * 10) / 10;
-                yLabels[2].textContent = Math.round((maxCount * 0.5) * 10) / 10;
-                yLabels[3].textContent = Math.round((maxCount * 0.25) * 10) / 10;
-                // yLabels[4] is 0
-
-                document.getElementById('bar-green').style.height = (hiCount / maxCount * 100) + '%';
-                document.getElementById('bar-blue').style.height = (diCount / maxCount * 100) + '%';
-                document.getElementById('bar-orange').style.height = (hcCount / maxCount * 100) + '%';
-                document.getElementById('bar-purple').style.height = (dcCount / maxCount * 100) + '%';
-
-                document.getElementById('legend-val-green').textContent = hiCount;
-                document.getElementById('legend-val-blue').textContent = diCount;
-                document.getElementById('legend-val-orange').textContent = hcCount;
-                document.getElementById('legend-val-purple').textContent = dcCount;
-
             } catch(e) {
                 console.error(e);
             }

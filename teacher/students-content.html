@@ -311,10 +311,10 @@
                     const sec = c.section || '';
                     const sy = c.school_year || '';
                     
-                    // class-title: "Prog_name"
-                    let titleStr = program;
-                    // class-desc: "learning_mode-section school_year"
-                    let descStr = `${lm}-${sec} ${sy}`;
+                    // class-title: "Prog_name LM-Section"
+                    let titleStr = `${program} ${lm}-${sec}`;
+                    // class-desc: "School Year SY"
+                    let descStr = `School Year ${sy}`;
 
                     card.innerHTML = `
                         <div class="card-actions">

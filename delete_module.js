@@ -1,0 +1,7 @@
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./database.sqlite');
+db.run("DELETE FROM modules WHERE id = 1", (err) => {
+    if (err) console.error(err);
+    else console.log("Deleted module 1.");
+    db.close();
+});

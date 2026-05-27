@@ -2,6 +2,18 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+
+// Configure multer for PDF uploads
+const moduleStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, 'public', 'uploads', 'modules'));
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+const uploadModule = multer({ storage: moduleStorage });
 
 
 const app = express();
@@ -46,6 +58,7 @@ db.serialize(() => {
         db.run(`ALTER TABLE students ADD COLUMN x_coord REAL DEFAULT 0`, (err) => {});
         db.run(`ALTER TABLE students ADD COLUMN y_coord REAL DEFAULT 0`, (err) => {});
         db.run(`ALTER TABLE students ADD COLUMN learning_mode TEXT`, (err) => {});
+        db.run(`ALTER TABLE students ADD COLUMN weakest_learning_mode TEXT`, (err) => {});
     });
 
     // 2. Teachers Table
@@ -150,6 +163,61 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         ${aiCols}
         target_quadrant TEXT
+    )`);
+
+    // 12. Modules (Learning content)
+    db.run(`CREATE TABLE IF NOT EXISTS modules (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        teacher_id INTEGER,
+        title TEXT NOT NULL,
+        description TEXT,
+        target_year_level TEXT,
+        stream_type TEXT,
+        passing_score INTEGER DEFAULT 0,
+        lesson_content TEXT,
+        media_file_url TEXT,
+        quadrant_category TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE SET NULL
+    )`);
+
+    // 13. Submissions (Gradebook)
+    db.run(`CREATE TABLE IF NOT EXISTS submissions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id INTEGER,
+        module_id INTEGER,
+        student_answer_payload TEXT,
+        score INTEGER DEFAULT 0,
+        teacher_feedback TEXT,
+        grading_status TEXT DEFAULT 'Needs Grading',
+        submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE,
+        FOREIGN KEY(module_id) REFERENCES modules(id) ON DELETE CASCADE
+    )`);
+
+    // 14. Announcements
+    db.run(`CREATE TABLE IF NOT EXISTS announcements (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        teacher_id INTEGER,
+        title TEXT NOT NULL,
+        message_body TEXT,
+        target_audience TEXT,
+        view_count INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
+    )`);
+
+    // 15. Student Module Progress
+    db.run(`CREATE TABLE IF NOT EXISTS student_module_progress (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id INTEGER,
+        module_id INTEGER,
+        tasks_completed INTEGER DEFAULT 0,
+        total_tasks INTEGER DEFAULT 1,
+        status TEXT DEFAULT 'In Progress',
+        last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE,
+        FOREIGN KEY(module_id) REFERENCES modules(id) ON DELETE CASCADE
     )`);
 });
 
@@ -675,6 +743,14 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
                 if (dominantMode.includes('Individual')) finalY = 3; else finalY = -3;
             }
 
+            const oppositeModes = {
+                'Hierarchical Individual': 'Distributed Collective',
+                'Distributed Collective': 'Hierarchical Individual',
+                'Hierarchical Collective': 'Distributed Individual',
+                'Distributed Individual': 'Hierarchical Collective'
+            };
+            const weakestMode = oppositeModes[dominantMode] || 'Unknown';
+
             const finishSubmission = (finalSessionId) => {
                 db.serialize(() => {
                     if (finalSessionId) {
@@ -682,8 +758,8 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
                             [student_id, finalSessionId, finalX, finalY, dominantMode]);
                     }
 
-                    db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ? WHERE id = ?`, 
-                        [finalX, finalY, dominantMode, student_id], 
+                    db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ?, weakest_learning_mode = ? WHERE id = ?`, 
+                        [finalX, finalY, dominantMode, weakestMode, student_id], 
                         function(updateErr) {
                             if (updateErr) console.error("Error updating student coords", updateErr);
                             res.json({
@@ -1028,6 +1104,172 @@ app.get('/api/ai/download', (req, res) => {
         res.header('Content-Type', 'text/csv');
         res.attachment('current_model_dataset.csv');
         return res.send(csv);
+    });
+});
+
+// ==========================================
+// LMS FEATURES API ENDPOINTS
+// ==========================================
+
+// --- MODULES ---
+// GET /api/modules
+app.get('/api/modules', (req, res) => {
+    const { target_year_level, quadrant_category } = req.query;
+    let sql = `SELECT * FROM modules WHERE 1=1`;
+    let params = [];
+    
+    if (target_year_level) {
+        sql += ` AND target_year_level = ?`;
+        params.push(target_year_level);
+    }
+    if (quadrant_category) {
+        sql += ` AND quadrant_category = ?`;
+        params.push(quadrant_category);
+    }
+    
+    sql += ` ORDER BY created_at DESC`;
+    
+    db.all(sql, params, (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// POST /api/modules
+app.post('/api/modules', uploadModule.single('pdf_file'), (req, res) => {
+    const body = req.body || {};
+    const { teacher_id, title, description, target_year_level, stream_type, passing_score, lesson_content, quadrant_category } = body;
+    
+    // Determine the media_file_url (either from the uploaded file, or fallback to the provided URL field if we kept it)
+    let media_file_url = body.media_file_url || '';
+    if (req.file) {
+        media_file_url = '/public/uploads/modules/' + req.file.filename;
+    }
+
+    const sql = `INSERT INTO modules (teacher_id, title, description, target_year_level, stream_type, passing_score, lesson_content, media_file_url, quadrant_category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.run(sql, [teacher_id, title, description, target_year_level, stream_type, passing_score, lesson_content, media_file_url, quadrant_category], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, module_id: this.lastID, file_url: media_file_url });
+    });
+});
+
+// --- SUBMISSIONS ---
+// GET /api/submissions
+app.get('/api/submissions', (req, res) => {
+    const { module_id, student_id } = req.query;
+    let sql = `SELECT s.*, st.first_name, st.last_name FROM submissions s JOIN students st ON s.student_id = st.id WHERE 1=1`;
+    let params = [];
+    
+    if (module_id) {
+        sql += ` AND s.module_id = ?`;
+        params.push(module_id);
+    }
+    if (student_id) {
+        sql += ` AND s.student_id = ?`;
+        params.push(student_id);
+    }
+    
+    sql += ` ORDER BY s.submitted_at DESC`;
+    
+    db.all(sql, params, (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// POST /api/submissions
+app.post('/api/submissions', (req, res) => {
+    const { student_id, module_id, student_answer_payload } = req.body;
+    const sql = `INSERT INTO submissions (student_id, module_id, student_answer_payload) VALUES (?, ?, ?)`;
+    db.run(sql, [student_id, module_id, student_answer_payload], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, submission_id: this.lastID });
+    });
+});
+
+// PUT /api/submissions/:id/grade
+app.put('/api/submissions/:id/grade', (req, res) => {
+    const { score, teacher_feedback, grading_status } = req.body;
+    const sql = `UPDATE submissions SET score = ?, teacher_feedback = ?, grading_status = ? WHERE id = ?`;
+    db.run(sql, [score, teacher_feedback, grading_status, req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
+// --- ANNOUNCEMENTS ---
+// GET /api/announcements
+app.get('/api/announcements', (req, res) => {
+    const { target_audience } = req.query;
+    let sql = `SELECT a.*, t.first_name as teacher_first, t.last_name as teacher_last FROM announcements a JOIN teachers t ON a.teacher_id = t.id WHERE 1=1`;
+    let params = [];
+    
+    if (target_audience) {
+        sql += ` AND (a.target_audience = ? OR a.target_audience = 'All')`;
+        params.push(target_audience);
+    }
+    
+    sql += ` ORDER BY a.created_at DESC`;
+    
+    db.all(sql, params, (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// POST /api/announcements
+app.post('/api/announcements', (req, res) => {
+    const { teacher_id, title, message_body, target_audience } = req.body;
+    const sql = `INSERT INTO announcements (teacher_id, title, message_body, target_audience) VALUES (?, ?, ?, ?)`;
+    db.run(sql, [teacher_id, title, message_body, target_audience], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, announcement_id: this.lastID });
+    });
+});
+
+// PUT /api/announcements/:id/view
+app.put('/api/announcements/:id/view', (req, res) => {
+    db.run(`UPDATE announcements SET view_count = view_count + 1 WHERE id = ?`, [req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
+// --- PROGRESS ---
+// GET /api/progress/:student_id
+app.get('/api/progress/:student_id', (req, res) => {
+    const sql = `
+        SELECT p.*, m.title as module_title 
+        FROM student_module_progress p 
+        JOIN modules m ON p.module_id = m.id 
+        WHERE p.student_id = ?
+    `;
+    db.all(sql, [req.params.student_id], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// PUT /api/progress/:student_id/:module_id
+app.put('/api/progress/:student_id/:module_id', (req, res) => {
+    const { tasks_completed, total_tasks, status } = req.body;
+    
+    db.get(`SELECT id FROM student_module_progress WHERE student_id = ? AND module_id = ?`, [req.params.student_id, req.params.module_id], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        if (row) {
+            db.run(`UPDATE student_module_progress SET tasks_completed = ?, total_tasks = ?, status = ?, last_updated = CURRENT_TIMESTAMP WHERE id = ?`,
+                [tasks_completed, total_tasks, status, row.id], function(err) {
+                    if (err) return res.status(500).json({ error: err.message });
+                    res.json({ success: true });
+                });
+        } else {
+            db.run(`INSERT INTO student_module_progress (student_id, module_id, tasks_completed, total_tasks, status) VALUES (?, ?, ?, ?, ?)`,
+                [req.params.student_id, req.params.module_id, tasks_completed, total_tasks, status], function(err) {
+                    if (err) return res.status(500).json({ error: err.message });
+                    res.json({ success: true, progress_id: this.lastID });
+                });
+        }
     });
 });
 

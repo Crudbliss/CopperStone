@@ -462,8 +462,7 @@
             const primaryGap = modesData[primaryGapName];
             
             const remainingNames = Object.keys(modesData).filter(m => m !== domModeName && m !== primaryGapName);
-            const secondaryGap = modesData[remainingNames[0]];
-            const tertiaryGap = modesData[remainingNames[1]];
+
 
             // Generate HTML
             let html = `
@@ -538,8 +537,6 @@
             `;
 
             html += buildGap("PRIMARY", primaryGap);
-            html += buildGap("SECONDARY", secondaryGap);
-            html += buildGap("TERTIARY", tertiaryGap);
 
             root.innerHTML = html;
         });

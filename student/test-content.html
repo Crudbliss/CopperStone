@@ -1046,7 +1046,8 @@
                         document.getElementById('final-mode').textContent = data.result.mode;
                         renderFuzzyGraph(data.result.mode, data.result.fuzzy, data.result.x, data.result.y);
                     } else {
-                        alert('Error submitting assessment');
+                        alert('Error submitting assessment: ' + (data.error || 'Unknown error'));
+                        console.error("Backend returned:", data);
                         document.getElementById('test-container').style.display = 'flex';
                     }
                 }, 1500);
