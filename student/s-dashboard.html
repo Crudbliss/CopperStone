@@ -460,6 +460,12 @@
                         .then(data => {
                             // Cache the real profile for child iframes
                             localStorage.setItem('studentProfile', JSON.stringify(data));
+                            
+                            // Keep the currentUser cache in sync for child iframes
+                            const cu = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                            cu.program = data.program;
+                            cu.section = data.section;
+                            localStorage.setItem('currentUser', JSON.stringify(cu));
 
                             // Enforce Mandatory Initial Assessment
                             if (!data.learning_mode) {
@@ -520,14 +526,8 @@
         // Listen for the mandatory initial assessment completion from the iframe
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'assessmentComplete') {
-                const nav = document.querySelector('.sidebar-nav');
-                if (nav) {
-                    nav.style.pointerEvents = '';
-                    nav.style.opacity = '';
-                }
-                const sidebarLinks = document.querySelectorAll('.sidebar-link');
-                sidebarLinks.forEach(l => l.classList.remove('active'));
-                if (sidebarLinks[0]) sidebarLinks[0].classList.add('active');
+                // Redirect explicitly to clear the iframe's navigation history
+                window.location.href = window.location.pathname;
             }
         });
     </script>

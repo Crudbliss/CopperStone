@@ -642,7 +642,7 @@
 
 
 
-        <button class="btn-submit" onclick="returnFromTest()">Return to Dashboard</button>
+        <button id="return-btn" class="btn-submit" onclick="returnFromTest()">Return to Dashboard</button>
     </div>
 
     <script>
@@ -872,13 +872,18 @@
                 // Render fuzzy graph with equal weights since we don't have the raw fuzzy data
                 const fakeFuzzy = { 'Hierarchical Individual': 0, 'Hierarchical Collective': 0, 'Distributed Individual': 0, 'Distributed Collective': 0 };
                 if (mode && fakeFuzzy.hasOwnProperty(mode)) fakeFuzzy[mode] = 1;
-                renderFuzzyGraph(mode, fakeFuzzy);
-                // Add a "Back to Assessment" button on the result screen
-                const backBtn = document.createElement('button');
-                backBtn.textContent = '← Back to Assessment';
-                backBtn.style.cssText = 'margin-top: 16px; background: none; border: 1px solid var(--border-lighter); color: var(--text-muted); padding: 8px 20px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 13px;';
-                backBtn.onclick = () => window.history.back();
-                resultScreen.appendChild(backBtn);
+                
+                const xStr = urlParams.get('x');
+                const yStr = urlParams.get('y');
+                const finalX = xStr !== null ? parseFloat(xStr) : undefined;
+                const finalY = yStr !== null ? parseFloat(yStr) : undefined;
+                
+                renderFuzzyGraph(mode, fakeFuzzy, finalX, finalY);
+
+                // Modify the existing return button to act as a back button
+                const returnBtn = document.getElementById('return-btn');
+                returnBtn.textContent = '← Back to Assessment';
+                returnBtn.onclick = () => window.history.back();
                 return;
             }
 
@@ -927,7 +932,7 @@
                     return;
                 }
 
-                activeSession = sessions.find(s => !history.some(h => h.session_id === s.session_id));
+                activeSession = sessions.find(s => !history.some(h => h.quarter_name === s.quarter_name));
 
                 if (!activeSession) {
                     document.getElementById('test-container').innerHTML = `
@@ -1022,15 +1027,12 @@
                             localStorage.setItem('studentProfile', JSON.stringify(profile));
                         }
 
-                        // Notify parent s-dashboard to unlock sidebar navigation
-                        if (window.parent && window.parent !== window) {
-                            window.parent.postMessage({ type: 'assessmentComplete', mode: data.result.mode }, '*');
-                        }
+                        // Post message removed, handled by returnFromTest instead
 
                         const resultScreen = document.getElementById('result-screen');
                         resultScreen.style.display = 'flex';
                         document.getElementById('final-mode').textContent = data.result.mode;
-                        renderFuzzyGraph(data.result.mode, data.result.fuzzy);
+                        renderFuzzyGraph(data.result.mode, data.result.fuzzy, data.result.x, data.result.y);
                     } else {
                         alert('Error submitting assessment');
                         document.getElementById('test-container').style.display = 'flex';
@@ -1045,7 +1047,7 @@
         }
 
         // Function to render the 4-quadrant graph and description
-        function renderFuzzyGraph(mode, fuzzyDict) {
+        function renderFuzzyGraph(mode, fuzzyDict, finalX, finalY) {
             // Set Description
             const descEl = document.getElementById('mode-description');
             if (mode === 'Hierarchical Individual') {
@@ -1060,24 +1062,29 @@
                 descEl.textContent = "Based on Elmore's framework, this is your optimal learning environment.";
             }
 
-            // If fuzzyDict is missing (e.g. standard submission fallback), we can't plot accurately
-            if (!fuzzyDict) {
-                document.getElementById('quadrant-card-container').style.display = 'none';
-                return;
-            }
-
             document.getElementById('quadrant-card-container').style.display = 'block';
 
-            // Calculate Total Weight for normalization
-            let totalWeight = 0;
-            for (let key in fuzzyDict) { totalWeight += fuzzyDict[key]; }
-            if (totalWeight === 0) totalWeight = 1;
+            // Calculate exact percentages from coords using Cartesian model
+            let px = parseFloat(finalX || 0);
+            let py = parseFloat(finalY || 0);
+            let normX = (px + 5) / 10;
+            let normY = (py + 5) / 10;
+            
+            normX = Math.max(0, Math.min(1, normX));
+            normY = Math.max(0, Math.min(1, normY));
 
-            // Normalize weights to percentages (0.0 to 1.0)
-            const pHI = Math.round(((fuzzyDict['Hierarchical Individual'] || 0) / totalWeight) * 100);
-            const pDI = Math.round(((fuzzyDict['Distributed Individual'] || 0) / totalWeight) * 100);
-            const pHC = Math.round(((fuzzyDict['Hierarchical Collective'] || 0) / totalWeight) * 100);
-            const pDC = Math.round(((fuzzyDict['Distributed Collective'] || 0) / totalWeight) * 100);
+            let HI = (1 - normX) * normY;
+            let DI = normX * normY;
+            let HC = (1 - normX) * (1 - normY);
+            let DC = normX * (1 - normY);
+            
+            let total = HI + DI + HC + DC;
+            if (total === 0) total = 1;
+
+            const pHI = Math.round((HI / total) * 100);
+            const pDI = Math.round((DI / total) * 100);
+            const pHC = Math.round((HC / total) * 100);
+            const pDC = Math.round((DC / total) * 100);
 
             // Construct array for sorting
             const breakdown = [
@@ -1117,9 +1124,14 @@
         function returnFromTest() {
             if (window.location.search.includes('preview=true')) {
                 window.location.href = '../admin/questionnaires-content.html';
+            } else if (window.location.search.includes('view_results=true')) {
+                window.history.back();
             } else {
-                updateParentSidebar(0);
-                window.location.href = 'dashboard-content.html';
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({ type: 'assessmentComplete' }, '*');
+                } else {
+                    window.location.href = 'dashboard-content.html';
+                }
             }
         }
 

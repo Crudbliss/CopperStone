@@ -425,6 +425,29 @@
             return '--';
         }
 
+        function getPercentages(x_coord, y_coord) {
+            let normX = (x_coord + 5) / 10;
+            let normY = (y_coord + 5) / 10;
+            
+            normX = Math.max(0, Math.min(1, normX));
+            normY = Math.max(0, Math.min(1, normY));
+
+            let HI = (1 - normX) * normY;
+            let DI = normX * normY;
+            let HC = (1 - normX) * (1 - normY);
+            let DC = normX * (1 - normY);
+            
+            let total = HI + DI + HC + DC;
+            if (total === 0) total = 1;
+
+            return {
+                HI: Math.round((HI / total) * 100),
+                DI: Math.round((DI / total) * 100),
+                HC: Math.round((HC / total) * 100),
+                DC: Math.round((DC / total) * 100)
+            };
+        }
+
         function renderAssessmentPage(activeSessions, history) {
             let html = '';
 
@@ -500,7 +523,7 @@
             html += `</div></div>`;
 
             // 2. Render Upcoming or Active Card
-            const active = activeSessions.find(s => !history.some(h => h.session_id === s.session_id));
+            const active = activeSessions.find(s => !history.some(h => h.quarter_name === s.quarter_name));
 
             if (active) {
                 // Active and ready to take
@@ -564,14 +587,17 @@
                 `;
                 history.forEach(h => {
                     const dateStr = new Date(h.taken_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                    const pct = Math.round((Math.max(Math.abs(h.x_coord || 0), Math.abs(h.y_coord || 0)) / 5) * 100);
-                    const modeParam = encodeURIComponent(h.learning_mode || '');
+                    const pcts = getPercentages(h.x_coord || 0, h.y_coord || 0);
                     
                     let shortName = h.learning_mode;
-                    if (h.learning_mode === 'Hierarchical Individual') shortName = 'H. Individual';
-                    if (h.learning_mode === 'Distributed Individual') shortName = 'D. Individual';
-                    if (h.learning_mode === 'Hierarchical Collective') shortName = 'H. Collective';
-                    if (h.learning_mode === 'Distributed Collective') shortName = 'D. Collective';
+                    let modeKey = 'HI';
+                    if (h.learning_mode === 'Hierarchical Individual') { shortName = 'H. Individual'; modeKey = 'HI'; }
+                    if (h.learning_mode === 'Distributed Individual') { shortName = 'D. Individual'; modeKey = 'DI'; }
+                    if (h.learning_mode === 'Hierarchical Collective') { shortName = 'H. Collective'; modeKey = 'HC'; }
+                    if (h.learning_mode === 'Distributed Collective') { shortName = 'D. Collective'; modeKey = 'DC'; }
+                    
+                    const pct = pcts[modeKey] || 0;
+                    const modeParam = encodeURIComponent(h.learning_mode || '');
                     
                     html += `
                         <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; display: flex; align-items: center; justify-content: space-between;">
@@ -587,7 +613,7 @@
                             <div style="display: flex; align-items: center; gap: 16px;">
                                 <span style="background: rgba(74, 222, 128, 0.1); color: var(--matrix-green); font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px;">${shortName}</span>
                                 <span style="font-size: 16px; font-weight: 700; color: var(--matrix-green); min-width: 40px; text-align: right;">${pct}%</span>
-                                <a href="test-content.html?view_results=true&mode=${modeParam}" style="text-decoration: none; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-left: 12px; border-left: 1px solid var(--border-light); cursor: pointer;">View</a>
+                                <a href="test-content.html?view_results=true&mode=${modeParam}&x=${h.x_coord || 0}&y=${h.y_coord || 0}" style="text-decoration: none; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-left: 12px; border-left: 1px solid var(--border-light); cursor: pointer;">View</a>
                             </div>
                         </div>
                     `;

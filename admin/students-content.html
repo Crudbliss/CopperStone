@@ -49,7 +49,10 @@
     <div class="card">
         <div class="header-row">
             <h2>Current Students</h2>
-            <button onclick="openModal()">+ Add Student</button>
+            <div style="display: flex; gap: 12px;">
+                <button onclick="factoryResetStudents()" style="background: transparent; color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);">⚠️ Factory Reset All Data</button>
+                <button onclick="openModal()">+ Add Student</button>
+            </div>
         </div>
         
         <table>
@@ -156,6 +159,35 @@
         }
         
         loadStudents();
+
+        async function factoryResetStudents() {
+            if (!confirm("⚠️ WARNING: This will permanently delete ALL student assessment histories and test responses across the entire system. Students will have their coordinates wiped. Are you absolutely sure you want to do this?")) {
+                return;
+            }
+            
+            try {
+                const btn = document.querySelector('button[onclick="factoryResetStudents()"]');
+                const origText = btn.textContent;
+                btn.textContent = 'Wiping Data...';
+                btn.disabled = true;
+                
+                const res = await fetch('/api/admin/reset-students', { method: 'POST' });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    alert("✅ Factory Reset Complete. All students have been wiped clean.");
+                    loadStudents(); // Refresh the table UI
+                } else {
+                    alert("Error: " + data.error);
+                }
+                
+                btn.textContent = origText;
+                btn.disabled = false;
+            } catch (err) {
+                alert("Failed to reach server.");
+                console.error(err);
+            }
+        }
 
         document.getElementById('addStudentForm').addEventListener('submit', async (e) => {
             e.preventDefault();

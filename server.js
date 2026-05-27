@@ -91,34 +91,6 @@ db.serialize(() => {
         FOREIGN KEY(class_id) REFERENCES classes(id) ON DELETE CASCADE
     )`);
 
-    // 5. Questions Table (Already exists)
-    db.run(`CREATE TABLE IF NOT EXISTS questions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL
-    )`);
-
-    // 6. Answers Table (Already exists - holds text and x,y coordinates)
-    db.run(`CREATE TABLE IF NOT EXISTS answers (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        question_id INTEGER,
-        text TEXT NOT NULL,
-        x_value REAL,
-        y_value REAL,
-        FOREIGN KEY(question_id) REFERENCES questions(id) ON DELETE CASCADE
-    )`);
-
-    // 7. Student Responses Table (Links a student to the answer they picked)
-    db.run(`CREATE TABLE IF NOT EXISTS student_responses (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        student_id INTEGER,
-        question_id INTEGER,
-        answer_id INTEGER,
-        answered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE,
-        FOREIGN KEY(question_id) REFERENCES questions(id) ON DELETE CASCADE,
-        FOREIGN KEY(answer_id) REFERENCES answers(id) ON DELETE CASCADE
-    )`);
-
     // 8. Assessment Sessions (Teacher controlled windows)
     db.run(`CREATE TABLE IF NOT EXISTS assessment_sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -444,6 +416,22 @@ app.post('/api/enroll', (req, res) => {
     });
 });
 
+// POST /api/admin/reset-students - Wipe all assessment data and enrollments for students
+app.post('/api/admin/reset-students', (req, res) => {
+    db.serialize(() => {
+        db.run('BEGIN TRANSACTION');
+        db.run('DELETE FROM assessment_history');
+        db.run('UPDATE students SET x_coord = NULL, y_coord = NULL, learning_mode = NULL', (err) => {
+            if (err) {
+                db.run('ROLLBACK');
+                return res.status(500).json({ error: 'Failed to reset students' });
+            }
+            db.run('COMMIT');
+            res.json({ success: true, message: 'All student assessment data has been completely wiped.' });
+        });
+    });
+});
+
 // GET /api/students/:id/classes - Get all classes a student is enrolled in
 app.get('/api/students/:id/classes', (req, res) => {
     const sql = `
@@ -470,67 +458,6 @@ app.get('/api/classes/:id/students', (req, res) => {
     db.all(sql, [req.params.id], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(rows);
-    });
-});
-
-// GET /api/questions - Fetch all questions and their answers
-app.get('/api/questions', (req, res) => {
-    db.all(`SELECT * FROM questions`, [], (err, questions) => {
-        if (err) return res.status(500).json({ error: err.message });
-        
-        db.all(`SELECT * FROM answers`, [], (err, answers) => {
-            if (err) return res.status(500).json({ error: err.message });
-            
-            // Map answers to their respective questions
-            const questionsWithAnswers = questions.map(q => {
-                return {
-                    id: q.id,
-                    title: q.title,
-                    answers: answers.filter(a => a.question_id === q.id).map(a => ({
-                        id: a.id,
-                        text: a.text,
-                        x: a.x_value,
-                        y: a.y_value
-                    }))
-                };
-            });
-            res.json(questionsWithAnswers);
-        });
-    });
-});
-
-// POST /api/questions - Add a new question
-app.post('/api/questions', (req, res) => {
-    const { title, answers } = req.body;
-    if (!title || !answers || !Array.isArray(answers)) {
-        return res.status(400).json({ error: 'Invalid data format' });
-    }
-
-    db.run(`INSERT INTO questions (title) VALUES (?)`, [title], function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        const questionId = this.lastID;
-
-        const stmt = db.prepare(`INSERT INTO answers (question_id, text, x_value, y_value) VALUES (?, ?, ?, ?)`);
-        answers.forEach(a => {
-            stmt.run([questionId, a.text, a.x, a.y]);
-        });
-        stmt.finalize();
-
-        res.json({ success: true, id: questionId });
-    });
-});
-
-// DELETE /api/questions/:id - Delete a question
-app.delete('/api/questions/:id', (req, res) => {
-    const id = req.params.id;
-    // Delete answers first (SQLite foreign keys ON DELETE CASCADE might need pragma to be enabled, so we explicitly delete here to be safe)
-    db.run(`DELETE FROM answers WHERE question_id = ?`, id, (err) => {
-        if (err) return res.status(500).json({ error: err.message });
-        
-        db.run(`DELETE FROM questions WHERE id = ?`, id, function(err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ success: true, deleted: this.changes });
-        });
     });
 });
 
@@ -706,59 +633,58 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
                 });
             };
 
-            if (session_id) {
-                // Standard submission from existing session
-                finishSubmission(session_id);
-            } else {
-                // Mandatory Initial Assessment -> Auto-assign to a class matching their mode
-                // Classes store shortcodes: HI, HC, DI, DC
-                const modeToShortcode = {
-                    'Hierarchical Individual': 'HI',
-                    'Hierarchical Collective': 'HC',
-                    'Distributed Individual': 'DI',
-                    'Distributed Collective': 'DC'
-                };
-                const modeShortcode = modeToShortcode[dominantMode] || dominantMode;
-                console.log(`Auto-assigning student ${student_id} | Mode: ${dominantMode} | Shortcode: ${modeShortcode}`);
+            // ALWAYS attempt to auto-assign the student to the class matching their new mode
+            const modeToShortcode = {
+                'Hierarchical Individual': 'HI',
+                'Hierarchical Collective': 'HC',
+                'Distributed Individual': 'DI',
+                'Distributed Collective': 'DC'
+            };
+            const modeShortcode = modeToShortcode[dominantMode] || dominantMode;
+            console.log(`Auto-assigning student ${student_id} | Mode: ${dominantMode} | Shortcode: ${modeShortcode}`);
 
-                db.get(`SELECT * FROM classes WHERE learning_mode = ? AND is_archived = 0 LIMIT 1`, [modeShortcode], (err, classRow) => {
-                    if (err || !classRow) {
-                        console.log("No active matching class found for shortcode:", modeShortcode);
-                        return finishSubmission(null);
-                    }
-                    
-                    const classId = classRow.id;
-                    const classSection = classRow.section;
-                    console.log(`Found class id: ${classId}, section: ${classSection}. Enrolling student...`);
-                    // Enroll the student (ignore duplicate error if already enrolled)
-                    db.run(`INSERT OR IGNORE INTO enrollments (student_id, class_id) VALUES (?, ?)`, [student_id, classId], (enrollErr) => {
+            db.get(`SELECT * FROM classes WHERE learning_mode = ? AND is_archived = 0 LIMIT 1`, [modeShortcode], (err, classRow) => {
+                if (err || !classRow) {
+                    console.log("No active matching class found for shortcode:", modeShortcode);
+                    return finishSubmission(session_id || null);
+                }
+                
+                const classId = classRow.id;
+                const classSection = classRow.section;
+                console.log(`Found class id: ${classId}, section: ${classSection}. Updating enrollment...`);
+                
+                // Remove old enrollments
+                db.run(`DELETE FROM enrollments WHERE student_id = ?`, [student_id], () => {
+                    // Enroll in new class
+                    db.run(`INSERT INTO enrollments (student_id, class_id) VALUES (?, ?)`, [student_id, classId], (enrollErr) => {
                         if (enrollErr) console.error("Error auto-enrolling student:", enrollErr);
                         else console.log(`Student ${student_id} enrolled in class ${classId}`);
                         
-                        // Fill in program (shortcode) and section from the assigned class
+                        // Update program and section
                         db.run(`UPDATE students SET program = ?, section = ? WHERE id = ?`, [modeShortcode, classSection, student_id], (updateErr) => {
                             if (updateErr) console.error("Error updating student program/section:", updateErr);
-                            else console.log(`Student ${student_id} program set to ${modeShortcode}, section ${classSection}`);
-                        });
-
-                        // Ensure a 'Prelim' session exists for this class
-                        db.get(`SELECT id FROM assessment_sessions WHERE class_id = ? AND quarter_name = 'Prelim'`, [classId], (err, sessionRow) => {
-                            if (sessionRow) {
-                                console.log(`Found existing Prelim session: ${sessionRow.id}`);
-                                finishSubmission(sessionRow.id);
+                            
+                            if (session_id) {
+                                // If they took an existing session (e.g. Midterm/Final), just finish
+                                finishSubmission(session_id);
                             } else {
-                                // Create Prelim session automatically
-                                const deadline = new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0];
-                                db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, deadline) VALUES (?, 'Prelim', ?)`, [classId, deadline], function(err) {
-                                    if (err) console.error("Error auto-creating Prelim session:", err);
-                                    else console.log(`Created Prelim session: ${this.lastID}`);
-                                    finishSubmission(this.lastID);
+                                // Initial Assessment -> Ensure a 'Prelim' session exists for this class
+                                db.get(`SELECT id FROM assessment_sessions WHERE class_id = ? AND quarter_name = 'Prelim'`, [classId], (err, sessionRow) => {
+                                    if (sessionRow) {
+                                        finishSubmission(sessionRow.id);
+                                    } else {
+                                        // Create Prelim session automatically
+                                        const deadline = new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0];
+                                        db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, deadline) VALUES (?, 'Prelim', ?)`, [classId, deadline], function(err) {
+                                            finishSubmission(this.lastID);
+                                        });
+                                    }
                                 });
                             }
                         });
                     });
                 });
-            }
+            });
         });
     });
 });

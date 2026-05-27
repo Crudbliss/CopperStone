@@ -433,39 +433,56 @@
         }
 
         function getPercentages(x_coord, y_coord) {
-            let xPct = ((x_coord + 5) / 10) * 100;
-            let yPct = ((5 - y_coord) / 10) * 100;
+            let normX = (x_coord + 5) / 10;
+            let normY = (y_coord + 5) / 10;
+            
+            normX = Math.max(0, Math.min(1, normX));
+            normY = Math.max(0, Math.min(1, normY));
 
-            xPct = Math.max(0, Math.min(100, xPct));
-            yPct = Math.max(0, Math.min(100, yPct));
+            let HI = (1 - normX) * normY;
+            let DI = normX * normY;
+            let HC = (1 - normX) * (1 - normY);
+            let DC = normX * (1 - normY);
+            
+            let total = HI + DI + HC + DC;
+            if (total === 0) total = 1;
 
             return {
-                HI: Math.round(((100 - xPct) * yPct) / 100),
-                HC: Math.round((xPct * yPct) / 100),
-                DI: Math.round(((100 - xPct) * (100 - yPct)) / 100),
-                DC: Math.round((xPct * (100 - yPct)) / 100)
+                HI: Math.round((HI / total) * 100),
+                DI: Math.round((DI / total) * 100),
+                HC: Math.round((HC / total) * 100),
+                DC: Math.round((DC / total) * 100)
             };
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const studentId = localStorage.getItem('currentStudentId') || 10;
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) return;
+            const user = JSON.parse(userStr);
+            const studentId = user.id;
             
             try {
                 const res = await fetch(`/api/students/${studentId}/active-sessions`);
                 const activeSessions = await res.json();
+                const uRes = await fetch(`/api/students/${studentId}`);
+                const uData = await uRes.json();
+                const actualMode = uData.learning_mode || 'Hierarchical Individual';
 
-                if (!activeSessions || activeSessions.length === 0) {
-                    document.getElementById('loading-state').style.display = 'none';
-                    document.getElementById('error-state').style.display = 'block';
-                    return;
-                }
-
-                const session = activeSessions[0];
-                const p = getPercentages(session.x_coord || 0, session.y_coord || 0);
-
-                let domQuad = Object.keys(p).reduce((a, b) => p[a] > p[b] ? a : b);
-                let weakQuad = Object.keys(p).reduce((a, b) => p[a] < p[b] ? a : b);
-                let weakScore = p[weakQuad];
+                const modesMap = {
+                    'Hierarchical Individual': 'HI',
+                    'Distributed Individual': 'DI',
+                    'Hierarchical Collective': 'HC',
+                    'Distributed Collective': 'DC'
+                };
+                
+                const domQuad = modesMap[actualMode] || 'HI';
+                
+                // HI <-> DC, DI <-> HC
+                let weakQuad = 'DC';
+                if (domQuad === 'HI') weakQuad = 'DC';
+                else if (domQuad === 'DC') weakQuad = 'HI';
+                else if (domQuad === 'DI') weakQuad = 'HC';
+                else if (domQuad === 'HC') weakQuad = 'DI';
 
                 const domData = roadmapData[domQuad];
                 const weakData = roadmapData[weakQuad];
@@ -516,7 +533,7 @@
                             <div style="display: flex; align-items: center; gap: 12px;">${weakData.title}</div>
                             <div class="badge">Weakest Quadrant</div>
                         </div>
-                        <div class="header-desc">Your score: <strong style="color: #fff;">${weakScore}%</strong> &middot; Strategies below are designed to develop your weakest learning dimension.</div>
+                        <div class="header-desc">Strategies below are designed to develop your weakest learning dimension.</div>
                     </div>
                     
                     <div class="section-label">SURVIVAL STRATEGIES — CLASSES THAT DON'T MATCH YOUR NATURAL STYLE</div>
