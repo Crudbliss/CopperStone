@@ -666,10 +666,25 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
 
             const { dominantMode, memberships } = calculateFKNN(answersArray, trainingData, settings);
 
-            // Generate coordinates so the rest of the dashboard (scatter plots, etc) doesn't break
+            let totalWeight = 0;
+            for (let m in memberships) { totalWeight += memberships[m]; }
+            
             let finalX = 0; let finalY = 0;
-            if (dominantMode.includes('Hierarchical')) finalX = -3; else finalX = 3;
-            if (dominantMode.includes('Individual')) finalY = 3; else finalY = -3;
+            if (totalWeight > 0) {
+                const hWeight = (memberships['Hierarchical Individual'] || 0) + (memberships['Hierarchical Collective'] || 0);
+                const dWeight = (memberships['Distributed Individual'] || 0) + (memberships['Distributed Collective'] || 0);
+                finalX = ((dWeight - hWeight) / totalWeight) * 5;
+
+                const cWeight = (memberships['Hierarchical Collective'] || 0) + (memberships['Distributed Collective'] || 0);
+                const iWeight = (memberships['Hierarchical Individual'] || 0) + (memberships['Distributed Individual'] || 0);
+                finalY = ((iWeight - cWeight) / totalWeight) * 5;
+                
+                finalX = Math.round(finalX * 100) / 100;
+                finalY = Math.round(finalY * 100) / 100;
+            } else {
+                if (dominantMode.includes('Hierarchical')) finalX = -3; else finalX = 3;
+                if (dominantMode.includes('Individual')) finalY = 3; else finalY = -3;
+            }
 
             const finishSubmission = (finalSessionId) => {
                 db.serialize(() => {

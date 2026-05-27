@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MATRIX | Student Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         /* --- CSS VARIABLES (Theme Colors) --- */
         :root {
@@ -14,7 +16,7 @@
             --bg-yellow: #1a1c16;
             --bg-green: #0e1b1d;
             --hd-color: #0a1e2c;
-            
+
             --matrix-yellow: #d8a61a;
             --matrix-yellow-hover: #eab308;
             --matrix-dg: #4a8f4b;
@@ -22,7 +24,7 @@
             --matrix-blue: #38bdf8;
             --matrix-orange: #fb923c;
             --matrix-purple: #c084fc;
-            
+
             --text-main: #ffffff;
             --text-muted: #8b9eb0;
             --border-light: rgba(255, 255, 255, 0.05);
@@ -45,8 +47,10 @@
             overflow: hidden;
         }
 
-        .svg-defs { display: none; }
-        
+        .svg-defs {
+            display: none;
+        }
+
         svg {
             display: inline-block;
             vertical-align: middle;
@@ -73,20 +77,20 @@
             padding: 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
-        
+
         .logo-container {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
+
         .logo-icon {
             width: 32px;
             height: 32px;
             border-radius: 4px;
             object-fit: contain;
         }
-        
+
         .logo-text {
             font-size: 17px;
             font-weight: 800;
@@ -153,7 +157,7 @@
             font-weight: 700;
             line-height: 1.2;
         }
-        
+
         .user-details p {
             font-size: 11px;
             color: var(--text-muted);
@@ -212,7 +216,9 @@
             display: flex;
         }
 
-        .btn-icon:hover { color: var(--text-main); }
+        .btn-icon:hover {
+            color: var(--text-main);
+        }
 
         .status-pill {
             display: flex;
@@ -245,13 +251,13 @@
 
         /* --- MAIN CONTENT CONTAINER --- */
         .content-container {
-            padding: 40px;
+            padding: 15px;
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 18px;
         }
 
         /* --- GLASS CARD BASE --- */
@@ -338,11 +344,23 @@
             font-weight: 700;
             line-height: 1.2;
         }
-        
-        .stat-title.lg { font-size: 26px; font-weight: 800; }
-        
-        .stat-label { font-size: 12px; font-weight: 600; color: var(--text-main); }
-        .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+        .stat-title.lg {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .stat-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
 
         /* --- BOTTOM GRID --- */
         .bottom-grid {
@@ -351,7 +369,7 @@
             gap: 24px;
         }
 
-/* --- QUADRANT MAP --- */
+        /* --- QUADRANT MAP --- */
         .quadrant-card {
             padding: 32px;
             display: flex;
@@ -376,12 +394,14 @@
         .quadrant-graph {
             position: relative;
             width: 100%;
-            max-width: 340px; /* Shrunk from 400px to make the graph smaller */
+            max-width: 340px;
+            /* Shrunk from 400px to make the graph smaller */
             aspect-ratio: 1 / 1;
             display: flex;
             flex-direction: column;
             border-radius: 16px;
-            overflow: hidden; /* Keeps the background colors inside the rounded corners */
+            overflow: hidden;
+            /* Keeps the background colors inside the rounded corners */
             border: 1px solid var(--border-lighter);
         }
 
@@ -394,28 +414,35 @@
         }
 
         /* Added specific low-opacity background colors to each cell */
-        .q-cell { 
-            position: relative; 
+        .q-cell {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
-        .q-cell.top-left { 
-            border-right: 1px solid var(--border-lighter); 
-            border-bottom: 1px solid var(--border-lighter); 
-            background-color: rgba(74, 222, 128, 0.04); /* Faint Green */
+
+        .q-cell.top-left {
+            border-right: 1px solid var(--border-lighter);
+            border-bottom: 1px solid var(--border-lighter);
+            background-color: rgba(74, 222, 128, 0.04);
+            /* Faint Green */
         }
-        .q-cell.top-right { 
-            border-bottom: 1px solid var(--border-lighter); 
-            background-color: rgba(56, 189, 248, 0.04); /* Faint Blue */
+
+        .q-cell.top-right {
+            border-bottom: 1px solid var(--border-lighter);
+            background-color: rgba(56, 189, 248, 0.04);
+            /* Faint Blue */
         }
-        .q-cell.bottom-left { 
-            border-right: 1px solid var(--border-lighter); 
-            background-color: rgba(251, 146, 60, 0.04); /* Faint Orange */
+
+        .q-cell.bottom-left {
+            border-right: 1px solid var(--border-lighter);
+            background-color: rgba(251, 146, 60, 0.04);
+            /* Faint Orange */
         }
+
         .q-cell.bottom-right {
-            background-color: rgba(192, 132, 252, 0.04); /* Faint Purple */
+            background-color: rgba(192, 132, 252, 0.04);
+            /* Faint Purple */
         }
 
         .q-label {
@@ -433,9 +460,18 @@
         }
 
         /* Adjusted axis label positions for the smaller graph */
-        .axis-y-top { left: -36px; top: 25%; transform: translateY(-50%) rotate(-90deg); }
-        .axis-y-bot { left: -36px; top: 75%; transform: translateY(-50%) rotate(-90deg); }
-        
+        .axis-y-top {
+            left: -36px;
+            top: 25%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
+        .axis-y-bot {
+            left: -36px;
+            top: 75%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
         .axis-x-container {
             position: absolute;
             bottom: -32px;
@@ -447,13 +483,17 @@
 
         .data-point {
             position: absolute;
-            top: 30%; /* Adjusted to match your image */
-            left: 45%; /* Adjusted to match your image */
+            top: 30%;
+            /* Adjusted to match your image */
+            left: 45%;
+            /* Adjusted to match your image */
             width: 16px;
             height: 16px;
-            background-color: var(--bg-card); /* Inner circle is dark */
+            background-color: var(--bg-card);
+            /* Inner circle is dark */
             border-radius: 50%;
-            border: 4px solid var(--matrix-green); /* Outer ring is green */
+            border: 4px solid var(--matrix-green);
+            /* Outer ring is green */
             transform: translate(-50%, -50%);
             z-index: 10;
             box-shadow: 0 0 20px 5px rgba(74, 222, 128, 0.3);
@@ -591,29 +631,67 @@
             transition: color 0.2s ease;
         }
 
-        .action-item:hover span, 
+        .action-item:hover span,
         .action-item:hover svg {
             color: var(--matrix-yellow);
         }
 
         /* Utilities */
-        .text-matrix-green { color: var(--matrix-green); }
-        .text-matrix-blue { color: var(--matrix-blue); }
-        .text-matrix-orange { color: var(--matrix-orange); }
+        .text-matrix-green {
+            color: var(--matrix-green);
+        }
 
+        .text-matrix-blue {
+            color: var(--matrix-blue);
+        }
+
+        .text-matrix-orange {
+            color: var(--matrix-orange);
+        }
     </style>
 </head>
+
 <body>
 
     <svg class="svg-defs">
-        <symbol id="icon-speedometer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M13 7h-2v5.41l3.3 3.3 1.41-1.41L13 11.59z"/></symbol>
-        <symbol id="icon-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></symbol>
-        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></symbol>
-        <symbol id="icon-linechart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></symbol>
-        <symbol id="icon-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
-        <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></symbol>
-        <symbol id="icon-books-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v4H4zM4 14h16v4H4z"/></symbol>
-        <symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></symbol>
+        <symbol id="icon-speedometer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+            <path d="M13 7h-2v5.41l3.3 3.3 1.41-1.41L13 11.59z" />
+        </symbol>
+        <symbol id="icon-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </symbol>
+        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </symbol>
+        <symbol id="icon-linechart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </symbol>
+        <symbol id="icon-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </symbol>
+        <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </symbol>
+        <symbol id="icon-books-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h16v4H4zM4 14h16v4H4z" />
+        </symbol>
+        <symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5l7 7-7 7" />
+        </symbol>
     </svg>
 
     <aside class="sidebar">
@@ -626,23 +704,33 @@
 
         <nav class="sidebar-nav">
             <a href="#" class="sidebar-link active">
-                <svg width="20" height="20"><use href="#icon-speedometer"></use></svg>
+                <svg width="20" height="20">
+                    <use href="#icon-speedometer"></use>
+                </svg>
                 <span>Dashboard</span>
             </a>
             <a href="#" class="sidebar-link">
-                <svg width="20" height="20"><use href="#icon-checklist"></use></svg>
+                <svg width="20" height="20">
+                    <use href="#icon-checklist"></use>
+                </svg>
                 <span>Assessment</span>
             </a>
             <a href="#" class="sidebar-link">
-                <svg width="20" height="20"><use href="#icon-book"></use></svg>
+                <svg width="20" height="20">
+                    <use href="#icon-book"></use>
+                </svg>
                 <span>My Modules</span>
             </a>
             <a href="#" class="sidebar-link">
-                <svg width="20" height="20"><use href="#icon-linechart"></use></svg>
+                <svg width="20" height="20">
+                    <use href="#icon-linechart"></use>
+                </svg>
                 <span>Progress</span>
             </a>
             <a href="#" class="sidebar-link">
-                <svg width="20" height="20"><use href="#icon-person"></use></svg>
+                <svg width="20" height="20">
+                    <use href="#icon-person"></use>
+                </svg>
                 <span>Profile</span>
             </a>
         </nav>
@@ -657,20 +745,24 @@
     </aside>
 
     <div class="main-wrapper">
-        
+
         <header class="top-header">
             <div class="header-title-box">
                 <span class="header-subtitle">Student Portal</span>
                 <span class="header-title">Dashboard</span>
             </div>
-            
+
             <div class="header-actions">
                 <button class="btn-icon">
-                    <svg width="20" height="20"><use href="#icon-bell"></use></svg>
+                    <svg width="20" height="20">
+                        <use href="#icon-bell"></use>
+                    </svg>
                 </button>
                 <div class="status-pill">
                     <div class="status-dot-icon">
-                        <svg width="10" height="10"><use href="#icon-books-stack"></use></svg>
+                        <svg width="10" height="10">
+                            <use href="#icon-books-stack"></use>
+                        </svg>
                     </div>
                     <span class="status-text">Hierarchical Individual</span>
                 </div>
@@ -678,7 +770,7 @@
         </header>
 
         <main class="content-container">
-            
+
             <div class="glass-card welcome-banner">
                 <div class="welcome-text-box">
                     <p class="welcome-eyebrow">Welcome Back</p>
@@ -686,9 +778,11 @@
                     <p class="welcome-sub">2022-10345 · BSIT 3-1 · 3rd Year</p>
                 </div>
                 <button class="btn-primary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: scale(0.85);">
-                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                    </svg>                    Q3 Assessment
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="transform: scale(0.85);">
+                        <path
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg> Q3 Assessment
                 </button>
             </div>
 
@@ -716,14 +810,14 @@
             </div>
 
             <div class="bottom-grid">
-                
+
                 <div class="glass-card quadrant-card">
                     <h3 class="section-title">Your Quadrant Position</h3>
-                    
+
                     <div class="quadrant-map-container">
-                        
+
                         <div class="quadrant-graph">
-                            
+
                             <div class="quadrant-grid-lines">
                                 <div class="q-cell top-left">
                                     <span class="q-label text-matrix-green">H. Individual</span>
@@ -738,10 +832,10 @@
                                     <span class="q-label text-matrix-purple">D. Collective</span>
                                 </div>
                             </div>
-                            
+
                             <div class="axis-label axis-y-top">INDIVIDUAL</div>
                             <div class="axis-label axis-y-bot">COLLECTIVE</div>
-                            
+
                             <div class="axis-x-container">
                                 <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
                                 <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
@@ -755,22 +849,25 @@
                 </div>
 
                 <div class="right-stack">
-                    
-                    <div class="glass-card dominant-mode-card"  style="background-color: var(--bg-green);">
+
+                    <div class="glass-card dominant-mode-card" style="background-color: var(--bg-green);">
                         <div class="dm-header">
                             <div class="dm-icon-wrapper">
-                                <svg width="28" height="28"><use href="#icon-books-stack"></use></svg>
+                                <svg width="28" height="28">
+                                    <use href="#icon-books-stack"></use>
+                                </svg>
                             </div>
                             <div class="dm-title-box">
                                 <p>Your Dominant Mode</p>
                                 <h4>Hierarchical Individual</h4>
                             </div>
                         </div>
-                        
+
                         <p class="dm-description">
-                            You learn best through structured, teacher-directed instruction in a solo setting. Clear guidelines and direct authority from an instructor help you thrive.
+                            You learn best through structured, teacher-directed instruction in a solo setting. Clear
+                            guidelines and direct authority from an instructor help you thrive.
                         </p>
-                        
+
                         <div class="dm-tags">
                             <span class="tag">Structured lessons</span>
                             <span class="tag">Direct instruction</span>
@@ -784,15 +881,21 @@
                         <div class="action-links">
                             <a href="#" class="action-item">
                                 <span>View your personalized modules</span>
-                                <svg><use href="#icon-arrow-right"></use></svg>
+                                <svg>
+                                    <use href="#icon-arrow-right"></use>
+                                </svg>
                             </a>
                             <a href="#" class="action-item">
                                 <span>See your Q3 assessment details</span>
-                                <svg><use href="#icon-arrow-right"></use></svg>
+                                <svg>
+                                    <use href="#icon-arrow-right"></use>
+                                </svg>
                             </a>
                             <a href="#" class="action-item">
                                 <span>Check your quarterly progress</span>
-                                <svg><use href="#icon-arrow-right"></use></svg>
+                                <svg>
+                                    <use href="#icon-arrow-right"></use>
+                                </svg>
                             </a>
                         </div>
                     </div>
@@ -803,4 +906,5 @@
     </div>
 
 </body>
+
 </html>
