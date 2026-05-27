@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Take Assessment</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg-base: #060f17;
             --bg-card: #12181f;
             --bg-hover: #1a222a;
-            
+
             --matrix-yellow: #d8a61a;
             --matrix-green: #4ade80;
             --matrix-blue: #38bdf8;
-            
+
             --text-main: #ffffff;
             --text-muted: #8b9eb0;
             --border-light: rgba(255, 255, 255, 0.08);
             --border-active: rgba(74, 222, 128, 0.5);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Poppins', sans-serif;
@@ -40,9 +46,19 @@
             gap: 24px;
         }
 
-        .header { margin-bottom: 12px; }
-        .header h1 { font-size: 24px; font-weight: 700; }
-        .header p { font-size: 14px; color: var(--text-muted); }
+        .header {
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
 
         /* --- PROGRESS BAR --- */
         .progress-wrapper {
@@ -58,12 +74,14 @@
             color: var(--text-muted);
         }
 
-        .progress-info .current { color: var(--matrix-green); }
+        .progress-info .current {
+            color: var(--matrix-green);
+        }
 
         .progress-track {
             width: 100%;
             height: 6px;
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
             border-radius: 3px;
             overflow: hidden;
         }
@@ -89,8 +107,15 @@
         }
 
         @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .question-title {
@@ -129,7 +154,8 @@
         }
 
         .radio-circle {
-            width: 20px; height: 20px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             border: 2px solid var(--text-muted);
             flex-shrink: 0;
@@ -143,14 +169,20 @@
 
         .answer-option.selected .radio-circle::after {
             content: '';
-            position: absolute; top: 50%; left: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 10px; height: 10px;
+            width: 10px;
+            height: 10px;
             background-color: var(--matrix-green);
             border-radius: 50%;
         }
 
-        .answer-text { font-size: 14px; font-weight: 500; }
+        .answer-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
 
         .btn-submit {
             background-color: var(--matrix-green);
@@ -166,8 +198,14 @@
             margin-top: 16px;
         }
 
-        .btn-submit:hover { opacity: 0.9; }
-        .btn-submit:disabled { background-color: var(--text-muted); cursor: not-allowed; }
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        .btn-submit:disabled {
+            background-color: var(--text-muted);
+            cursor: not-allowed;
+        }
 
         /* --- QUADRANT MAP --- */
         .quadrant-card {
@@ -177,9 +215,9 @@
             width: 100%;
             max-width: 450px;
             margin: 0 auto 32px;
-            background: rgba(255,255,255,0.02); 
-            border-radius: 12px; 
-            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .quadrant-map-container {
@@ -289,16 +327,30 @@
         }
 
         /* Utilities */
-        .text-matrix-green { color: var(--matrix-green); }
-        .text-matrix-blue { color: var(--matrix-blue); }
-        .text-matrix-orange { color: #fb923c; }
-        .text-matrix-purple { color: #c084fc; }
+        .text-matrix-green {
+            color: var(--matrix-green);
+        }
+
+        .text-matrix-blue {
+            color: var(--matrix-blue);
+        }
+
+        .text-matrix-orange {
+            color: #fb923c;
+        }
+
+        .text-matrix-purple {
+            color: #c084fc;
+        }
 
         /* Result Screen overlay */
         #result-screen {
             display: none;
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: var(--bg-base);
             z-index: 100;
             flex-direction: column;
@@ -308,15 +360,33 @@
             padding: 20px;
         }
 
-        .result-icon { font-size: 64px; margin-bottom: 24px; }
-        .result-mode { font-size: 32px; font-weight: 800; color: var(--matrix-green); margin-bottom: 12px; }
-        .result-sub { font-size: 16px; color: var(--text-muted); margin-bottom: 32px; max-width: 400px; }
+        .result-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+        }
+
+        .result-mode {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--matrix-green);
+            margin-bottom: 12px;
+        }
+
+        .result-sub {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            max-width: 400px;
+        }
 
         /* Loading Screen overlay */
         #loading-screen {
             display: none;
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: var(--bg-base);
             z-index: 100;
             flex-direction: column;
@@ -327,7 +397,8 @@
         }
 
         .spinner {
-            width: 50px; height: 50px;
+            width: 50px;
+            height: 50px;
             border: 4px solid rgba(74, 222, 128, 0.2);
             border-bottom-color: var(--matrix-green);
             border-radius: 50%;
@@ -338,12 +409,18 @@
         }
 
         @keyframes rotation {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
+
 <body>
 
     <div class="container" id="test-container">
@@ -354,7 +431,8 @@
 
         <div class="progress-wrapper">
             <div class="progress-info">
-                <span>Question <span class="current" id="progress-current">1</span> of <span id="progress-total">28</span></span>
+                <span>Question <span class="current" id="progress-current">1</span> of <span
+                        id="progress-total">28</span></span>
                 <span id="progress-pct">0%</span>
             </div>
             <div class="progress-track">
@@ -380,9 +458,11 @@
         <h3>Assessment Complete!</h3>
         <p style="color: var(--text-muted); margin-top: 8px;">Your Learning Mode is:</p>
         <div class="result-mode" id="final-mode">Loading...</div>
-        
-        <p id="mode-description" style="max-width: 600px; font-size: 14px; margin: 0 auto 24px; color: var(--text-main); background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);"></p>
-        
+
+        <p id="mode-description"
+            style="max-width: 600px; font-size: 14px; margin: 0 auto 24px; color: var(--text-main); background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+        </p>
+
         <div class="quadrant-card" id="quadrant-card-container" style="display: none;">
             <div class="quadrant-map-container">
                 <div style="position: relative; width: 100%; max-width: 340px;">
@@ -423,49 +503,49 @@
         const submitBtn = document.getElementById('btn-submit');
         let activeSession = null;
 
-        // 20 Questions from the PDF
+        // 28 Questions grouped and ordered
         const surveyQuestions = [
-            // 1. What is the purpose of learning?
-            { q: "HI", text: "The purpose of learning is to gain access to knowledge that is valued in society." },
-            { q: "DC", text: "The purpose of learning is to know how to participate in a community with others of diverse, competing, and broadly distributed viewpoints." },
-            { q: "DI", text: "The purpose of learning is to live up to one's unique individual potential." },
-            { q: "HC", text: "The purpose of learning is to socialize citizens for participation in democracy." },
-            
-            // 2. What is worth learning?
-            { q: "DC", text: "What is worth learning is determined by communities that are formed around mutual interest." },
-            { q: "DI", text: "What is worth learning can only be determined by the individual for her/himself." },
-            { q: "HC", text: "What is worth learning are the knowledge and skills necessary to be an effective participant in a democratic society." },
-            { q: "HI", text: "What is worth learning is measured by clear standards and assessments." },
-            
-            // 3. How do people learn best?
-            { q: "DC", text: "People learn best when motivated by pursuing shared interests, values, and preferences with others." },
-            { q: "DI", text: "People learn best when they make individual choices about what they learn." },
-            { q: "HI", text: "People learn best in educational institutions that provide them with competent teachers." },
-            { q: "HC", text: "People learn best when they participate in a strong community with shared values about what to learn and how to learn." },
-            
-            // 4. What are individuals responsible for in learning?
-            { q: "HI", text: "Individuals are responsible for acquiring the knowledge and skills that teachers and schools teach them." },
-            { q: "DI", text: "Individuals are responsible for initiating and choosing what and how they learn." },
-            { q: "DC", text: "Individuals are responsible for joining networks or communities in order to learn what they want." },
-            { q: "HC", text: "Individuals are responsible for playing an active role in supporting the learning and participation of others in their community." },
-            
-            // 5. How does learning occur?
-            { q: "DC", text: "Learning occurs when individuals engage in activities that have meaning to them and contribute to their own as well as a communal knowledge base." },
-            { q: "HI", text: "Learning occurs when experts provide scaffolding and sequencing to build knowledge and skill." },
-            { q: "DI", text: "Learning occurs when individuals have to make sense of competing and diverse sources of knowledge, skill and expertise." },
-            { q: "HC", text: "Learning occurs through socialization by participating in a community with strong, clear values and norms." },
-            
-            // 6. What is the definition of learning?
-            { q: "DC", text: "Learning is a collective activity requiring cooperation among people with diverse knowledge and skills." },
-            { q: "DI", text: "Learning is an innate biological imperative that is driven by individual interests." },
-            { q: "HC", text: "Learning is a social activity guided by experts who create learning opportunities." },
-            { q: "HI", text: "Learning is the transfer of knowledge and skill from an expert to a novice." },
-            
-            // 7. What constitutes successful learning?
-            { q: "DI", text: "Successful learning can only be defined by the individual learner." },
-            { q: "DC", text: "Successful learning means an exchange of ideas among learners in a community." },
-            { q: "HI", text: "Successful learning is expressed via certification or recognition from an institution or expert." },
-            { q: "HC", text: "Successful learning is expressed via recognition by and positive participation in a community." }
+            // 1. How does learning occur? (Old 5)
+            { title: "How does learning occur?", q: "DC", text: "Learning occurs when individuals engage in activities that have meaning to them and contribute to their own as well as a communal knowledge base." },
+            { title: "How does learning occur?", q: "HI", text: "Learning occurs when experts provide scaffolding and sequencing to build knowledge and skill." },
+            { title: "How does learning occur?", q: "DI", text: "Learning occurs when individuals have to make sense of competing and diverse sources of knowledge, skill and expertise." },
+            { title: "How does learning occur?", q: "HC", text: "Learning occurs through socialization by participating in a community with strong, clear values and norms." },
+
+            // 2. What is the definition of learning? (Old 6)
+            { title: "What is the definition of learning?", q: "DC", text: "Learning is a collective activity requiring cooperation among people with diverse knowledge and skills." },
+            { title: "What is the definition of learning?", q: "DI", text: "Learning is an innate biological imperative that is driven by individual interests." },
+            { title: "What is the definition of learning?", q: "HC", text: "Learning is a social activity guided by experts who create learning opportunities." },
+            { title: "What is the definition of learning?", q: "HI", text: "Learning is the transfer of knowledge and skill from an expert to a novice." },
+
+            // 3. What constitutes successful learning? (Old 7)
+            { title: "What constitutes successful learning?", q: "DI", text: "Successful learning can only be defined by the individual learner." },
+            { title: "What constitutes successful learning?", q: "DC", text: "Successful learning means an exchange of ideas among learners in a community." },
+            { title: "What constitutes successful learning?", q: "HI", text: "Successful learning is expressed via certification or recognition from an institution or expert." },
+            { title: "What constitutes successful learning?", q: "HC", text: "Successful learning is expressed via recognition by and positive participation in a community." },
+
+            // 4. What is the purpose of learning? (Old 1)
+            { title: "What is the purpose of learning?", q: "HI", text: "The purpose of learning is to gain access to knowledge that is valued in society." },
+            { title: "What is the purpose of learning?", q: "DC", text: "The purpose of learning is to know how to participate in a community with others of diverse, competing, and broadly distributed viewpoints." },
+            { title: "What is the purpose of learning?", q: "DI", text: "The purpose of learning is to live up to one's unique individual potential." },
+            { title: "What is the purpose of learning?", q: "HC", text: "The purpose of learning is to socialize citizens for participation in democracy." },
+
+            // 5. What is worth learning? (Old 2)
+            { title: "What is worth learning?", q: "DC", text: "What is worth learning is determined by communities that are formed around mutual interest." },
+            { title: "What is worth learning?", q: "DI", text: "What is worth learning can only be determined by the individual for her/himself." },
+            { title: "What is worth learning?", q: "HC", text: "What is worth learning are the knowledge and skills necessary to be an effective participant in a democratic society." },
+            { title: "What is worth learning?", q: "HI", text: "What is worth learning is measured by clear standards and assessments." },
+
+            // 6. How do people learn best? (Old 3)
+            { title: "How do people learn best?", q: "DC", text: "People learn best when motivated by pursuing shared interests, values, and preferences with others." },
+            { title: "How do people learn best?", q: "DI", text: "People learn best when they make individual choices about what they learn." },
+            { title: "How do people learn best?", q: "HI", text: "People learn best in educational institutions that provide them with competent teachers." },
+            { title: "How do people learn best?", q: "HC", text: "People learn best when they participate in a strong community with shared values about what to learn and how to learn." },
+
+            // 7. What are individuals responsible for in learning? (Old 4)
+            { title: "What are individuals responsible for in learning?", q: "HI", text: "Individuals are responsible for acquiring the knowledge and skills that teachers and schools teach them." },
+            { title: "What are individuals responsible for in learning?", q: "DI", text: "Individuals are responsible for initiating and choosing what and how they learn." },
+            { title: "What are individuals responsible for in learning?", q: "DC", text: "Individuals are responsible for joining networks or communities in order to learn what they want." },
+            { title: "What are individuals responsible for in learning?", q: "HC", text: "Individuals are responsible for playing an active role in supporting the learning and participation of others in their community." }
         ];
 
         let answers = {};
@@ -489,8 +569,11 @@
             const qNum = index + 1;
 
             container.innerHTML = `
+                <div style="margin-bottom: 24px;">
+                    <h2 style="font-size: 18px; color: var(--matrix-blue); margin-bottom: 8px;">${item.val.title}</h2>
+                </div>
                 <div class="question-card">
-                    <div class="question-title">${qNum}. ${item.val.text}</div>
+                    <div class="question-title">${item.val.text}</div>
                     <div class="answers-grid">
                         <label class="answer-option" data-value="4">
                             <div class="radio-circle"></div>
@@ -545,7 +628,8 @@
         }
 
         function renderQuestions() {
-            shuffledQuestions = surveyQuestions.map((val, i) => ({val, i})).sort(() => Math.random() - 0.5);
+            // Keep the exact order defined above
+            shuffledQuestions = surveyQuestions.map((val, i) => ({val, i}));
             currentQuestionIndex = 0;
             answers = {};
             submitBtn.disabled = true;
@@ -561,7 +645,7 @@
 
             if (isPreview) {
                 const header = document.querySelector('.header h1');
-                if(header) {
+                if (header) {
                     header.innerHTML = `Behavioral Learning Mode Assessment <span style="font-size: 14px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 4px 10px; border-radius: 20px; vertical-align: middle; margin-left: 10px;">Admin Preview Mode</span>`;
                 }
                 renderQuestions();
@@ -605,7 +689,7 @@
                     const freshProfile = await fetch('/api/students/' + user.id).then(r => r.json());
                     isMandatoryInitialTest = !freshProfile.learning_mode;
                 }
-            } catch(e) {
+            } catch (e) {
                 console.warn('Could not determine mandatory test status', e);
             }
 
@@ -616,7 +700,7 @@
                 ]);
                 const sessions = await sessionRes.json();
                 const history = await historyRes.json();
-                
+
                 if (isMandatoryInitialTest) {
                     // New student with no quadrant — skip session check, go straight to questions
                     renderQuestions();
@@ -692,7 +776,7 @@
                             document.getElementById('test-container').style.display = 'flex';
                         }
                     }, 1500);
-                } catch(e) {
+                } catch (e) {
                     alert("Network error.");
                 }
                 return;
@@ -755,13 +839,13 @@
         function renderFuzzyGraph(mode, fuzzyDict) {
             // Set Description
             const descEl = document.getElementById('mode-description');
-            if(mode === 'Hierarchical Individual') {
+            if (mode === 'Hierarchical Individual') {
                 descEl.textContent = "You thrive in structured environments where knowledge is transferred from an expert. You prefer clear goals, certification, and independent mastery of standard curriculum.";
-            } else if(mode === 'Distributed Individual') {
+            } else if (mode === 'Distributed Individual') {
                 descEl.textContent = "You learn best by pursuing your own unique interests. You are self-directed, preferring informal environments where you control what and how you learn to achieve personal growth.";
-            } else if(mode === 'Hierarchical Collective') {
+            } else if (mode === 'Hierarchical Collective') {
                 descEl.textContent = "You prefer learning in structured group settings. You value shared civic responsibility, group cohesion, and learning the traditions of a community under expert guidance.";
-            } else if(mode === 'Distributed Collective') {
+            } else if (mode === 'Distributed Collective') {
                 descEl.textContent = "You excel in collaborative, network-driven environments. You learn by co-creating knowledge with diverse peers to solve shared problems, rather than relying on a single authority.";
             } else {
                 descEl.textContent = "Based on Elmore's framework, this is your optimal learning environment.";
@@ -777,7 +861,7 @@
 
             // Calculate Total Weight for normalization
             let totalWeight = 0;
-            for(let key in fuzzyDict) { totalWeight += fuzzyDict[key]; }
+            for (let key in fuzzyDict) { totalWeight += fuzzyDict[key]; }
             if (totalWeight === 0) totalWeight = 1;
 
             // Normalize weights to percentages (0.0 to 1.0)
@@ -791,7 +875,7 @@
             // We can derive from percentages directly:
             // Left (HI, HC) vs Right (DI, DC)
             let xPct = (pDI + pDC) * 100; // 0% if fully hierarchical, 100% if fully distributed
-            
+
             // Top (HI, DI) vs Bottom (HC, DC)
             let yPct = (pHC + pDC) * 100; // 0% if fully individual, 100% if fully collective
 
@@ -816,7 +900,7 @@
             if (window.location.search.includes('preview=true')) {
                 window.location.href = '../admin/questionnaires-content.html';
             } else {
-                updateParentSidebar(0); 
+                updateParentSidebar(0);
                 window.location.href = 'dashboard-content.html';
             }
         }
@@ -835,4 +919,5 @@
         }
     </script>
 </body>
+
 </html>

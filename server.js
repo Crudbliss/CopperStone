@@ -182,14 +182,25 @@ db.serialize(() => {
 
 // POST /api/students/register - Register a new student
 app.post('/api/students/register', async (req, res) => {
-    const { student_no, first_name, last_name, mi, program, year_level, section, email, password } = req.body;
+    let { student_no, first_name, last_name, mi, program, year_level, section, email, password } = req.body;
     
     // Basic validation
-    if (!student_no || !first_name || !last_name || !email || !password) {
+    if (!first_name || !last_name || !email || !password) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
     try {
+        if (!student_no || student_no.trim() === '') {
+            const row = await new Promise((resolve, reject) => {
+                db.get("SELECT MAX(id) as maxId FROM students", (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                });
+            });
+            const nextId = (row.maxId || 0) + 1;
+            student_no = `STU-${nextId.toString().padStart(4, '0')}`;
+        }
+
         // Hash the password securely
         const saltRounds = 10;
         const password_hash = await bcrypt.hash(password, saltRounds);
