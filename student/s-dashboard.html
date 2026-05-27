@@ -8,6 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
+    <script>
+        if (!localStorage.getItem('currentUser')) {
+            window.location.href = '../index.html';
+        }
+    </script>
     <style>
         /* --- CSS VARIABLES (Theme Colors) --- */
         :root {
@@ -454,7 +459,7 @@
                 </div>
             </div>
 
-            <a href="../index.html" class="sign-out-link">
+            <a href="#" class="sign-out-link" onclick="logoutUser(event)">
                 <svg width="18" height="18">
                     <use href="#icon-logout"></use>
                 </svg>
@@ -609,6 +614,13 @@
                 window.location.href = window.location.pathname;
             }
         });
+        
+        window.logoutUser = function(e) {
+            e.preventDefault();
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('studentProfile');
+            window.location.href = '../index.html';
+        };
     </script>
 </body>
 

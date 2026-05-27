@@ -96,11 +96,14 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         class_id INTEGER,
         quarter_name TEXT NOT NULL,
+        start_date DATETIME,
         deadline DATETIME,
         is_active INTEGER DEFAULT 1,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(class_id) REFERENCES classes(id) ON DELETE CASCADE
-    )`);
+    )`, (err) => {
+        db.run(`ALTER TABLE assessment_sessions ADD COLUMN start_date DATETIME`, (err) => {});
+    });
 
     // 9. Assessment History (Tracks student changes over time)
     db.run(`CREATE TABLE IF NOT EXISTS assessment_history (
@@ -465,12 +468,47 @@ app.get('/api/classes/:id/students', (req, res) => {
 
 // POST /api/classes/:id/sessions - Create an assessment session
 app.post('/api/classes/:id/sessions', (req, res) => {
-    const { quarter_name, deadline } = req.body;
-    db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, deadline) VALUES (?, ?, ?)`,
-        [req.params.id, quarter_name, deadline], function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ success: true, session_id: this.lastID });
-    });
+    const { quarter_name, start_date, deadline } = req.body;
+    
+    // Helper to format Date to YYYY-MM-DD
+    const formatDate = (date) => date.toISOString().split('T')[0];
+    
+    if (quarter_name === 'Prelim' && start_date) {
+        const prelimStart = new Date(start_date);
+        
+        const midtermStart = new Date(prelimStart);
+        midtermStart.setDate(midtermStart.getDate() + 42); // +6 weeks
+        
+        const finalStart = new Date(prelimStart);
+        finalStart.setDate(finalStart.getDate() + 84); // +12 weeks
+        
+        const prelimDeadline = new Date(midtermStart);
+        prelimDeadline.setDate(prelimDeadline.getDate() + 1); // Midterm + 1 day
+        
+        const midtermDeadline = new Date(finalStart);
+        midtermDeadline.setDate(midtermDeadline.getDate() + 1); // Final + 1 day
+        
+        const finalDeadline = new Date(finalStart);
+        finalDeadline.setDate(finalDeadline.getDate() + 42); // Final + 6 weeks
+        
+        db.serialize(() => {
+            db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, start_date, deadline) VALUES (?, ?, ?, ?)`,
+                [req.params.id, 'Prelim', start_date, formatDate(prelimDeadline)]);
+            db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, start_date, deadline) VALUES (?, ?, ?, ?)`,
+                [req.params.id, 'Midterm', formatDate(midtermStart), formatDate(midtermDeadline)]);
+            db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, start_date, deadline) VALUES (?, ?, ?, ?)`,
+                [req.params.id, 'Final', formatDate(finalStart), formatDate(finalDeadline)], function(err) {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json({ success: true, message: 'Cascading sessions created' });
+            });
+        });
+    } else {
+        db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, start_date, deadline) VALUES (?, ?, ?, ?)`,
+            [req.params.id, quarter_name, start_date, deadline], function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ success: true, session_id: this.lastID });
+        });
+    }
 });
 
 // GET /api/classes/:id/sessions - Get sessions for a class
@@ -489,18 +527,42 @@ app.put('/api/sessions/:id/close', (req, res) => {
     });
 });
 
+// PUT /api/sessions/:id/dates - Update a session's dates
+app.put('/api/sessions/:id/dates', (req, res) => {
+    const { start_date, deadline } = req.body;
+    db.run(`UPDATE assessment_sessions SET start_date = ?, deadline = ? WHERE id = ?`, [start_date, deadline, req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
 // GET /api/students/:id/active-sessions - Get active sessions for a student
 app.get('/api/students/:id/active-sessions', (req, res) => {
-    const sql = `
-        SELECT s.id as session_id, s.quarter_name, s.deadline, c.prog_name as course_subj_name, c.id as class_id
-        FROM assessment_sessions s
-        JOIN enrollments e ON s.class_id = e.class_id
-        JOIN classes c ON s.class_id = c.id
-        WHERE e.student_id = ? AND s.is_active = 1 AND c.is_archived = 0
-    `;
-    db.all(sql, [req.params.id], (err, rows) => {
+    db.get(`SELECT learning_mode FROM students WHERE id = ?`, [req.params.id], (err, student) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
+        
+        if (student && (!student.learning_mode || student.learning_mode === 'null' || student.learning_mode === '')) {
+            // Global Intake Assessment override
+            return res.json([{
+                session_id: 0, // Fake ID for Intake
+                quarter_name: 'Prelim', // Act as Prelim for timeline UI
+                deadline: new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0],
+                course_subj_name: 'Global Intake',
+                class_id: 0
+            }]);
+        }
+
+        const sql = `
+            SELECT s.id as session_id, s.quarter_name, s.deadline, c.prog_name as course_subj_name, c.id as class_id
+            FROM assessment_sessions s
+            JOIN enrollments e ON s.class_id = e.class_id
+            JOIN classes c ON s.class_id = c.id
+            WHERE e.student_id = ? AND s.is_active = 1 AND c.is_archived = 0
+        `;
+        db.all(sql, [req.params.id], (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json(rows);
+        });
     });
 });
 
@@ -643,46 +705,88 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
             const modeShortcode = modeToShortcode[dominantMode] || dominantMode;
             console.log(`Auto-assigning student ${student_id} | Mode: ${dominantMode} | Shortcode: ${modeShortcode}`);
 
-            db.get(`SELECT * FROM classes WHERE learning_mode = ? AND is_archived = 0 LIMIT 1`, [modeShortcode], (err, classRow) => {
-                if (err || !classRow) {
-                    console.log("No active matching class found for shortcode:", modeShortcode);
+            // Get the student's year_level and program first
+            db.get(`SELECT program, year_level FROM students WHERE id = ?`, [student_id], (err, studentRow) => {
+                if (err || !studentRow) {
+                    console.error("Could not fetch student details for auto-assignment");
                     return finishSubmission(session_id || null);
                 }
+
+                const sProgram = studentRow.program || 'Program';
+                const sYear = studentRow.year_level || '1';
                 
-                const classId = classRow.id;
-                const classSection = classRow.section;
-                console.log(`Found class id: ${classId}, section: ${classSection}. Updating enrollment...`);
-                
-                // Remove old enrollments
-                db.run(`DELETE FROM enrollments WHERE student_id = ?`, [student_id], () => {
-                    // Enroll in new class
-                    db.run(`INSERT INTO enrollments (student_id, class_id) VALUES (?, ?)`, [student_id, classId], (enrollErr) => {
-                        if (enrollErr) console.error("Error auto-enrolling student:", enrollErr);
-                        else console.log(`Student ${student_id} enrolled in class ${classId}`);
-                        
-                        // Update program and section
-                        db.run(`UPDATE students SET program = ?, section = ? WHERE id = ?`, [modeShortcode, classSection, student_id], (updateErr) => {
-                            if (updateErr) console.error("Error updating student program/section:", updateErr);
-                            
-                            if (session_id) {
-                                // If they took an existing session (e.g. Midterm/Final), just finish
-                                finishSubmission(session_id);
-                            } else {
-                                // Initial Assessment -> Ensure a 'Prelim' session exists for this class
-                                db.get(`SELECT id FROM assessment_sessions WHERE class_id = ? AND quarter_name = 'Prelim'`, [classId], (err, sessionRow) => {
-                                    if (sessionRow) {
-                                        finishSubmission(sessionRow.id);
+                db.get(`SELECT * FROM classes WHERE learning_mode = ? AND year_level = ? AND is_archived = 0 LIMIT 1`, [modeShortcode, sYear], (err, classRow) => {
+                    
+                    const enrollAndFinish = (classId, classSection) => {
+                        // Remove old enrollments
+                        db.run(`DELETE FROM enrollments WHERE student_id = ?`, [student_id], () => {
+                            // Enroll in new class
+                            db.run(`INSERT INTO enrollments (student_id, class_id) VALUES (?, ?)`, [student_id, classId], (enrollErr) => {
+                                if (enrollErr) console.error("Error auto-enrolling student:", enrollErr);
+                                else console.log(`Student ${student_id} enrolled in class ${classId}`);
+                                
+                                // Update program and section
+                                db.run(`UPDATE students SET program = ?, section = ? WHERE id = ?`, [modeShortcode, classSection, student_id], (updateErr) => {
+                                    if (updateErr) console.error("Error updating student program/section:", updateErr);
+                                    
+                                    if (session_id) {
+                                        // If they took an existing session (e.g. Midterm/Final), just finish
+                                        finishSubmission(session_id);
                                     } else {
-                                        // Create Prelim session automatically
-                                        const deadline = new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0];
-                                        db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, deadline) VALUES (?, 'Prelim', ?)`, [classId, deadline], function(err) {
-                                            finishSubmission(this.lastID);
+                                        // Initial Assessment -> Ensure cascading sessions exist for this class
+                                        db.get(`SELECT id FROM assessment_sessions WHERE class_id = ? AND quarter_name = 'Prelim'`, [classId], (err, sessionRow) => {
+                                            if (sessionRow) {
+                                                finishSubmission(sessionRow.id);
+                                            } else {
+                                                // Create cascading sessions automatically
+                                                const formatDate = (date) => date.toISOString().split('T')[0];
+                                                const now = new Date();
+                                                const prelimStart = new Date(now);
+                                                const midtermStart = new Date(now); midtermStart.setDate(midtermStart.getDate() + 42);
+                                                const finalStart = new Date(now); finalStart.setDate(finalStart.getDate() + 84);
+                                                
+                                                const prelimDeadline = new Date(midtermStart); prelimDeadline.setDate(prelimDeadline.getDate() + 1);
+                                                const midtermDeadline = new Date(finalStart); midtermDeadline.setDate(midtermDeadline.getDate() + 1);
+                                                const finalDeadline = new Date(finalStart); finalDeadline.setDate(finalDeadline.getDate() + 42);
+
+                                                db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, start_date, deadline) VALUES (?, 'Prelim', ?, ?)`, [classId, formatDate(prelimStart), formatDate(prelimDeadline)], function(err) {
+                                                    if (err) return finishSubmission(null);
+                                                    const prelimId = this.lastID;
+                                                    db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, start_date, deadline) VALUES (?, 'Midterm', ?, ?)`, [classId, formatDate(midtermStart), formatDate(midtermDeadline)]);
+                                                    db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, start_date, deadline) VALUES (?, 'Final', ?, ?)`, [classId, formatDate(finalStart), formatDate(finalDeadline)], function(err) {
+                                                        finishSubmission(prelimId);
+                                                    });
+                                                });
+                                            }
                                         });
                                     }
                                 });
-                            }
+                            });
                         });
-                    });
+                    };
+
+                    if (err || !classRow) {
+                        console.log("No active matching class found for shortcode:", modeShortcode, "Creating a new class.");
+                        const newSection = '1';
+                        
+                        // Find a teacher with matching learning mode
+                        db.get(`SELECT id FROM teachers WHERE learning_mode = ? OR learning_mode = ? LIMIT 1`, [dominantMode, modeShortcode], (err, teacherRow) => {
+                            const teacherId = teacherRow ? teacherRow.id : null;
+                            
+                            // Create the class!
+                            db.run(`INSERT INTO classes (prog_name, year_level, section, school_year, learning_mode, teacher_id) VALUES (?, ?, ?, ?, ?, ?)`, 
+                                [sProgram, sYear, newSection, '2025-2026', modeShortcode, teacherId], function(insertErr) {
+                                    if (insertErr) {
+                                        console.error("Error creating class:", insertErr);
+                                        return finishSubmission(session_id || null);
+                                    }
+                                    enrollAndFinish(this.lastID, newSection);
+                                });
+                        });
+                    } else {
+                        console.log(`Found class id: ${classRow.id}, section: ${classRow.section}. Updating enrollment...`);
+                        enrollAndFinish(classRow.id, classRow.section);
+                    }
                 });
             });
         });

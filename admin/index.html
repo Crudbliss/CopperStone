@@ -202,6 +202,14 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('currentUser');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                if (user.role === 'admin') window.location.href = 'a-dashboard.html';
+            }
+        });
+
         document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             

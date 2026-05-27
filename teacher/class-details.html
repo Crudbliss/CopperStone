@@ -415,7 +415,7 @@
             
             <div style="margin-bottom: 24px;">
                 <h4 style="color: var(--matrix-blue); margin-bottom: 12px; font-size: 14px;">Open New Session</h4>
-                <form id="assessmentForm" style="display: flex; gap: 12px; align-items: flex-end;">
+                <form id="assessmentForm" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
                     <div class="form-group" style="flex: 1; margin-bottom: 0;">
                         <label>Quarter / Title</label>
                         <select id="quarter_name" required style="background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; width: 100%;">
@@ -426,10 +426,14 @@
                         </select>
                     </div>
                     <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                        <label>Deadline (Optional)</label>
+                        <label>Start Date</label>
+                        <input type="date" id="start_date" required style="background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; width: 100%;">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                        <label>Deadline</label>
                         <input type="date" id="deadline" style="background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; width: 100%;">
                     </div>
-                    <button type="submit" style="background: var(--matrix-blue); color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">Open</button>
+                    <button type="submit" style="background: var(--matrix-blue); color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; height: 42px;">Open</button>
                 </form>
             </div>
 
@@ -492,6 +496,7 @@
         });
 
         async function loadSessions() {
+            if(!classId) return;
             try {
                 const res = await fetch(`/api/classes/${classId}/sessions`);
                 const sessions = await res.json();
@@ -516,19 +521,44 @@
                 
                 sessions.forEach(s => {
                     const status = s.is_active ? '<span style="color: #4ade80;">Active</span>' : '<span style="color: var(--text-muted);">Closed</span>';
-                    const deadline = s.deadline ? new Date(s.deadline).toLocaleDateString() : 'No deadline';
-                    const actionBtn = s.is_active ? `<button onclick="closeSession(${s.id})" style="background: rgba(248, 113, 113, 0.1); color: #f87171; border: 1px solid #f87171; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">Close Session</button>` : '';
+                    const start_date_val = s.start_date ? s.start_date.split('T')[0] : '';
+                    const deadline_val = s.deadline ? s.deadline.split('T')[0] : '';
+                    const actionBtn = s.is_active ? `<button onclick="closeSession(${s.id})" style="background: rgba(248, 113, 113, 0.1); color: #f87171; border: 1px solid #f87171; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-left: 8px;">Close Session</button>` : '';
                     
                     list.innerHTML += `
-                        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <div style="font-weight: 600;">${s.quarter_name}</div>
-                                <div style="font-size: 12px; color: var(--text-muted);">Deadline: ${deadline} • ${status}</div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-weight: 600; color: var(--matrix-yellow);">${s.quarter_name} <span style="font-size: 12px; font-weight: 400; color: #fff;">(${status})</span></div>
+                                <div>${actionBtn}</div>
                             </div>
-                            <div>${actionBtn}</div>
+                            <div style="display: flex; gap: 12px; align-items: flex-end;">
+                                <div style="flex: 1;">
+                                    <label style="font-size: 11px; color: var(--text-muted);">Start Date</label>
+                                    <input type="date" id="sd_${s.id}" value="${start_date_val}" style="background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 6px; border-radius: 4px; color: #fff; width: 100%; font-size: 12px;">
+                                </div>
+                                <div style="flex: 1;">
+                                    <label style="font-size: 11px; color: var(--text-muted);">Deadline</label>
+                                    <input type="date" id="dl_${s.id}" value="${deadline_val}" style="background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 6px; border-radius: 4px; color: #fff; width: 100%; font-size: 12px;">
+                                </div>
+                                <button onclick="updateDates(${s.id})" style="background: var(--matrix-green); color: #000; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; height: 29px;">Save</button>
+                            </div>
                         </div>
                     `;
                 });
+            } catch(e) { console.error(e); }
+        }
+
+        async function updateDates(sessionId) {
+            const start_date = document.getElementById('sd_' + sessionId).value;
+            const deadline = document.getElementById('dl_' + sessionId).value;
+            try {
+                await fetch(`/api/sessions/${sessionId}/dates`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ start_date, deadline })
+                });
+                alert("Dates updated successfully!");
+                loadSessions();
             } catch(e) { console.error(e); }
         }
 
@@ -543,13 +573,14 @@
         document.getElementById('assessmentForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const quarter_name = document.getElementById('quarter_name').value;
+            const start_date = document.getElementById('start_date').value;
             const deadline = document.getElementById('deadline').value;
             
             try {
                 await fetch(`/api/classes/${classId}/sessions`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ quarter_name, deadline })
+                    body: JSON.stringify({ quarter_name, start_date, deadline })
                 });
                 document.getElementById('assessmentForm').reset();
                 loadSessions();
