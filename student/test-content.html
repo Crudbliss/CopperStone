@@ -35,7 +35,7 @@
             color: var(--text-main);
             display: flex;
             justify-content: center;
-            padding: 40px 20px;
+            padding: 22px 20px;
         }
 
         .container {
@@ -43,7 +43,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 2px;
         }
 
         .header {
@@ -249,6 +249,133 @@
             grid-template-rows: 1fr 1fr;
         }
 
+        /* --- NEW LAYOUT STYLES --- */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .logo-container img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .pre-assessment-pill {
+            background: rgba(216, 166, 26, 0.1);
+            color: var(--matrix-yellow);
+            border: 1px solid rgba(216, 166, 26, 0.3);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .greeting-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .greeting-box strong {
+            color: var(--matrix-yellow);
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .dimension-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .answers-grid.stacked {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .pagination-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.2s;
+        }
+
+        .dot.answered {
+            background: var(--matrix-green);
+        }
+
+        .dot.active {
+            background: var(--matrix-yellow);
+            box-shadow: 0 0 0 3px rgba(216, 166, 26, 0.3);
+        }
+
+        .dot.answered.active {
+            background: var(--matrix-green);
+            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.3);
+        }
+
         .q-cell {
             position: relative;
             display: flex;
@@ -417,6 +544,35 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Fuzzy Bars */
+        .fuzzy-bar-row {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .fuzzy-bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .fuzzy-bar-track {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .fuzzy-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
@@ -424,19 +580,26 @@
 <body>
 
     <div class="container" id="test-container">
-        <div class="header">
-            <h1>Learning Mode Assessment</h1>
-            <p>Answer each question to determine your position on the quadrant.</p>
+
+        <div class="top-navbar">
+            <div class="logo-container">
+                <img src="../images/matrix_logo.png" alt="Matrix Logo">
+                MATRIX
+            </div>
+            <div class="pre-assessment-pill" id="session-pill">
+                <span>🧠</span> PRE-ASSESSMENT
+            </div>
         </div>
 
         <div class="progress-wrapper">
             <div class="progress-info">
-                <span>Question <span class="current" id="progress-current">1</span> of <span
+                <span>Question <span class="current" id="progress-current"
+                        style="color:var(--text-main); font-weight:700;">1</span> of <span
                         id="progress-total">28</span></span>
-                <span id="progress-pct">0%</span>
+                <span id="progress-pct">0% complete</span>
             </div>
             <div class="progress-track">
-                <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-fill" id="progress-fill" style="background-color: var(--matrix-blue);"></div>
             </div>
         </div>
 
@@ -444,7 +607,10 @@
             <!-- Single question injected here -->
         </div>
 
-        <button class="btn-submit" id="btn-submit" disabled>Submit Assessment</button>
+        <div class="pagination-dots" id="dots-container">
+            <!-- Dots injected here -->
+        </div>
+
     </div>
 
     <div id="loading-screen">
@@ -457,44 +623,24 @@
         <div class="result-icon">🎯</div>
         <h3>Assessment Complete!</h3>
         <p style="color: var(--text-muted); margin-top: 8px;">Your Learning Mode is:</p>
-        <div class="result-mode" id="final-mode">Loading...</div>
+        <div class="result-mode" id="final-mode" style="margin-bottom: 24px;">Loading...</div>
 
-        <p id="mode-description"
-            style="max-width: 600px; font-size: 14px; margin: 0 auto 24px; color: var(--text-main); background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-        </p>
-
-        <div class="quadrant-card" id="quadrant-card-container" style="display: none;">
-            <div class="quadrant-map-container">
-                <div style="position: relative; width: 100%; max-width: 340px;">
-                    <div class="axis-label axis-y-top">INDIVIDUAL</div>
-                    <div class="axis-label axis-y-bot">COLLECTIVE</div>
-
-                    <div class="quadrant-graph">
-                        <div class="quadrant-grid-lines">
-                            <div class="q-cell top-left">
-                                <span class="q-label text-matrix-green">H. Individual</span>
-                            </div>
-                            <div class="q-cell top-right">
-                                <span class="q-label text-matrix-blue">D. Individual</span>
-                            </div>
-                            <div class="q-cell bottom-left">
-                                <span class="q-label text-matrix-orange">H. Collective</span>
-                            </div>
-                            <div class="q-cell bottom-right">
-                                <span class="q-label text-matrix-purple">D. Collective</span>
-                            </div>
-                        </div>
-
-                        <div class="data-point" id="quadrant-dot"></div>
-                    </div>
-
-                    <div class="axis-x-container">
-                        <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
-                        <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
-                    </div>
-                </div>
+        <div class="quadrant-card" id="quadrant-card-container"
+            style="display: none; width: 100%; max-width: 480px; margin-bottom: 24px; padding: 24px;">
+            <div
+                style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 24px; text-align: left; text-transform: uppercase;">
+                FUZZY K-NN PROFILE BREAKDOWN
+            </div>
+            <div id="fuzzy-bars-container">
+                <!-- Bars injected here -->
             </div>
         </div>
+
+        <p id="mode-description"
+            style="max-width: 480px; font-size: 14px; margin: 0 auto 24px; color: var(--text-gray); line-height: 1.6;">
+        </p>
+
+
 
         <button class="btn-submit" onclick="returnFromTest()">Return to Dashboard</button>
     </div>
@@ -557,10 +703,36 @@
             const total = surveyQuestions.length;
             const pct = Math.round((answered / total) * 100);
 
-            document.getElementById('progress-current').textContent = Math.min(answered + 1, total);
+            document.getElementById('progress-current').textContent = currentQuestionIndex + 1;
             document.getElementById('progress-total').textContent = total;
-            document.getElementById('progress-pct').textContent = pct + '%';
-            document.getElementById('progress-fill').style.width = pct + '%';
+            document.getElementById('progress-pct').textContent = pct + '% complete';
+            document.getElementById('progress-fill').style.width = ((currentQuestionIndex + 1) / total * 100) + '%';
+
+            // Update dots
+            const dotsContainer = document.getElementById('dots-container');
+            if (dotsContainer.children.length === 0) {
+                // Initialize dots
+                for (let i = 0; i < total; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    dotsContainer.appendChild(dot);
+                }
+            }
+            // highlight current dot and answered status
+            Array.from(dotsContainer.children).forEach((dot, idx) => {
+                let classes = ['dot'];
+                
+                // Check if answered using the original item index
+                if (shuffledQuestions[idx] && answers[shuffledQuestions[idx].i] !== undefined) {
+                    classes.push('answered');
+                }
+                
+                if (idx === currentQuestionIndex) {
+                    classes.push('active');
+                }
+                
+                dot.className = classes.join(' ');
+            });
         }
 
         function showQuestion(index) {
@@ -568,16 +740,28 @@
             const item = shuffledQuestions[index];
             const qNum = index + 1;
 
+            const userStr = localStorage.getItem('currentUser');
+            let firstName = "Student";
+            if (userStr) {
+                const userObj = JSON.parse(userStr);
+                firstName = userObj.first_name || userObj.username || "Student";
+            }
+
             container.innerHTML = `
-                <div style="margin-bottom: 24px;">
-                    <h2 style="font-size: 18px; color: var(--matrix-blue); margin-bottom: 8px;">${item.val.title}</h2>
-                </div>
                 <div class="question-card">
-                    <div class="question-title">${item.val.text}</div>
-                    <div class="answers-grid">
+                    <div class="greeting-box">
+                        <strong>Hello, ${firstName}!</strong>
+                        Answer honestly — there are no right or wrong answers. Your responses will map your exact position on the MATRIX learning quadrant.
+                    </div>
+                    
+                    <div class="dimension-label">${item.val.title}</div>
+                    
+                    <div class="question-title" style="font-size: 18px; margin-bottom: 24px;">${item.val.text}</div>
+                    
+                    <div class="answers-grid stacked">
                         <label class="answer-option" data-value="4">
                             <div class="radio-circle"></div>
-                            <div class="answer-text">Strongly Agree</div>
+                            <div class="answer-text">Strongly agree</div>
                         </label>
                         <label class="answer-option" data-value="3">
                             <div class="radio-circle"></div>
@@ -585,55 +769,83 @@
                         </label>
                         <label class="answer-option" data-value="2">
                             <div class="radio-circle"></div>
-                            <div class="answer-text">Somewhat Agree</div>
+                            <div class="answer-text">Somewhat agree</div>
                         </label>
                         <label class="answer-option" data-value="1">
                             <div class="radio-circle"></div>
                             <div class="answer-text">Disagree</div>
                         </label>
                     </div>
+                    
+                    <div class="card-footer">
+                        <button class="nav-btn prev-btn" ${index === 0 ? 'disabled' : ''}>&lt; Previous</button>
+                        <button class="nav-btn next-btn" id="next-btn-action">Next &gt;</button>
+                    </div>
                 </div>
             `;
 
-            // Re-select if user navigated back (not applicable here, but safe)
             if (answers[item.i] !== undefined) {
                 const prev = container.querySelector(`.answer-option[data-value="${answers[item.i]}"]`);
                 if (prev) prev.classList.add('selected');
             }
 
-            // Attach click listeners
+            // Check if on last question and all answered
+            const nextBtn = container.querySelector('#next-btn-action');
+            if (index === shuffledQuestions.length - 1) {
+                nextBtn.textContent = 'Submit';
+                nextBtn.style.backgroundColor = 'var(--matrix-green)';
+                nextBtn.style.color = '#000';
+                if (Object.keys(answers).length !== surveyQuestions.length) {
+                    nextBtn.disabled = true;
+                }
+            }
+
+            // Answer clicks
             container.querySelectorAll('.answer-option').forEach(opt => {
                 opt.addEventListener('click', () => {
                     container.querySelectorAll('.answer-option').forEach(o => o.classList.remove('selected'));
                     opt.classList.add('selected');
-
                     const val = parseInt(opt.dataset.value);
                     answers[item.i] = val;
-
                     updateProgress();
 
-                    // Auto-advance after a short delay
-                    setTimeout(() => {
-                        if (currentQuestionIndex < shuffledQuestions.length - 1) {
-                            currentQuestionIndex++;
-                            showQuestion(currentQuestionIndex);
-                        } else {
-                            // Last question answered — show submit
-                            submitBtn.disabled = false;
-                            submitBtn.style.display = 'block';
-                        }
-                    }, 350);
+                    if (index === shuffledQuestions.length - 1 && Object.keys(answers).length === surveyQuestions.length) {
+                        nextBtn.disabled = false;
+                    }
                 });
+            });
+
+            // Prev Button
+            const prevBtn = container.querySelector('.prev-btn');
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentQuestionIndex > 0) {
+                        currentQuestionIndex--;
+                        showQuestion(currentQuestionIndex);
+                        updateProgress();
+                    }
+                });
+            }
+
+            // Next / Submit Button
+            nextBtn.addEventListener('click', () => {
+                if (index === shuffledQuestions.length - 1) {
+                    // Trigger submit logic
+                    submitAssessment();
+                } else {
+                    currentQuestionIndex++;
+                    showQuestion(currentQuestionIndex);
+                    updateProgress();
+                }
             });
         }
 
         function renderQuestions() {
             // Keep the exact order defined above
-            shuffledQuestions = surveyQuestions.map((val, i) => ({val, i}));
+            shuffledQuestions = surveyQuestions.map((val, i) => ({ val, i }));
             currentQuestionIndex = 0;
             answers = {};
-            submitBtn.disabled = true;
-            submitBtn.style.display = 'none';
+            document.getElementById('dots-container').innerHTML = ''; // reset dots
             updateProgress();
             showQuestion(0);
         }
@@ -644,10 +856,8 @@
             const isViewResults = urlParams.get('view_results') === 'true';
 
             if (isPreview) {
-                const header = document.querySelector('.header h1');
-                if (header) {
-                    header.innerHTML = `Behavioral Learning Mode Assessment <span style="font-size: 14px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 4px 10px; border-radius: 20px; vertical-align: middle; margin-left: 10px;">Admin Preview Mode</span>`;
-                }
+                const sessionPill = document.getElementById('session-pill');
+                if (sessionPill) sessionPill.innerHTML = `<span>⚙️</span> ADMIN PREVIEW`;
                 renderQuestions();
                 return;
             }
@@ -730,9 +940,9 @@
                     return;
                 }
 
-                const header = document.querySelector('.header h1');
-                if (header) {
-                    header.innerHTML = `Behavioral Learning Mode Assessment <span style="font-size: 14px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 4px 10px; border-radius: 20px; vertical-align: middle; margin-left: 10px;">${activeSession.course_subj_name} - ${activeSession.quarter_name}</span>`;
+                const sessionPill = document.getElementById('session-pill');
+                if (sessionPill) {
+                    sessionPill.innerHTML = `<span>🎯</span> ${activeSession.course_subj_name} - ${activeSession.quarter_name}`;
                 }
 
                 renderQuestions();
@@ -742,7 +952,7 @@
             }
         });
 
-        document.getElementById('btn-submit').addEventListener('click', async () => {
+        async function submitAssessment() {
             const urlParams = new URLSearchParams(window.location.search);
             const isPreview = urlParams.get('preview') === 'true';
 
@@ -833,7 +1043,7 @@
                 document.getElementById('loading-screen').style.display = 'none';
                 document.getElementById('test-container').style.display = 'flex';
             }
-        });
+        }
 
         // Function to render the 4-quadrant graph and description
         function renderFuzzyGraph(mode, fuzzyDict) {
@@ -846,7 +1056,7 @@
             } else if (mode === 'Hierarchical Collective') {
                 descEl.textContent = "You prefer learning in structured group settings. You value shared civic responsibility, group cohesion, and learning the traditions of a community under expert guidance.";
             } else if (mode === 'Distributed Collective') {
-                descEl.textContent = "You excel in collaborative, network-driven environments. You learn by co-creating knowledge with diverse peers to solve shared problems, rather than relying on a single authority.";
+                descEl.textContent = "You excel in peer-driven, inquiry-based group settings. Shared leadership, open-ended discussions, and co-creation of knowledge define your ideal learning environment.";
             } else {
                 descEl.textContent = "Based on Elmore's framework, this is your optimal learning environment.";
             }
@@ -857,7 +1067,7 @@
                 return;
             }
 
-            document.getElementById('quadrant-card-container').style.display = 'flex';
+            document.getElementById('quadrant-card-container').style.display = 'block';
 
             // Calculate Total Weight for normalization
             let totalWeight = 0;
@@ -865,35 +1075,44 @@
             if (totalWeight === 0) totalWeight = 1;
 
             // Normalize weights to percentages (0.0 to 1.0)
-            const pHI = (fuzzyDict['Hierarchical Individual'] || 0) / totalWeight;
-            const pDI = (fuzzyDict['Distributed Individual'] || 0) / totalWeight;
-            const pHC = (fuzzyDict['Hierarchical Collective'] || 0) / totalWeight;
-            const pDC = (fuzzyDict['Distributed Collective'] || 0) / totalWeight;
+            const pHI = Math.round(((fuzzyDict['Hierarchical Individual'] || 0) / totalWeight) * 100);
+            const pDI = Math.round(((fuzzyDict['Distributed Individual'] || 0) / totalWeight) * 100);
+            const pHC = Math.round(((fuzzyDict['Hierarchical Collective'] || 0) / totalWeight) * 100);
+            const pDC = Math.round(((fuzzyDict['Distributed Collective'] || 0) / totalWeight) * 100);
 
-            // X: Hierarchical (0) vs Distributed (100) -> -1 to 1 becomes 0 to 100%
-            // Y: Individual (0) vs Collective (100) -> Individual is top (0%), Collective is bottom (100%)
-            // We can derive from percentages directly:
-            // Left (HI, HC) vs Right (DI, DC)
-            let xPct = (pDI + pDC) * 100; // 0% if fully hierarchical, 100% if fully distributed
+            // Construct array for sorting
+            const breakdown = [
+                { name: 'Distributed Collective', pct: pDC, icon: '🧠', color: '#c084fc' }, // purple
+                { name: 'Distributed Individual', pct: pDI, icon: '💻', color: '#38bdf8' }, // blue/teal
+                { name: 'Hierarchical Collective', pct: pHC, icon: '🤝', color: '#fb923c' }, // orange
+                { name: 'Hierarchical Individual', pct: pHI, icon: '📚', color: '#4ade80' }  // green
+            ];
 
-            // Top (HI, DI) vs Bottom (HC, DC)
-            let yPct = (pHC + pDC) * 100; // 0% if fully individual, 100% if fully collective
+            // Sort by percentage descending
+            breakdown.sort((a, b) => b.pct - a.pct);
 
-            // Clamp to stay within bounds
-            xPct = Math.max(5, Math.min(95, xPct));
-            yPct = Math.max(5, Math.min(95, yPct));
+            const container = document.getElementById('fuzzy-bars-container');
+            container.innerHTML = '';
 
-            let color = 'var(--matrix-green)';
-            if (mode === 'Distributed Individual') color = 'var(--matrix-blue)';
-            if (mode === 'Hierarchical Collective') color = '#fb923c';
-            if (mode === 'Distributed Collective') color = '#c084fc';
+            breakdown.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'fuzzy-bar-row';
+                row.innerHTML = `
+                    <div class="fuzzy-bar-header" style="color: ${item.color};">
+                        <span>${item.icon} ${item.name}</span>
+                        <span style="color: white;">${item.pct}%</span>
+                    </div>
+                    <div class="fuzzy-bar-track">
+                        <div class="fuzzy-bar-fill" style="width: 0%; background-color: ${item.color};"></div>
+                    </div>
+                `;
+                container.appendChild(row);
 
-            const dot = document.getElementById('quadrant-dot');
-            dot.style.display = 'block';
-            dot.style.left = xPct + '%';
-            dot.style.top = yPct + '%';
-            dot.style.borderColor = color;
-            dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${color} 60%, transparent)`;
+                // Animate
+                setTimeout(() => {
+                    row.querySelector('.fuzzy-bar-fill').style.width = item.pct + '%';
+                }, 100);
+            });
         }
 
         function returnFromTest() {

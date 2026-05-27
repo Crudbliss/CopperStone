@@ -612,13 +612,6 @@ function calculateFKNN(answersArray, trainingData, settings) {
             for(let i=1; i<=28; i++) {
                 dist += Math.abs((answersArray[i-1] || 0) - data[`q${i}`]);
             }
-        } else if (metric === 'chebyshev') {
-            let maxD = 0;
-            for(let i=1; i<=28; i++) {
-                let d = Math.abs((answersArray[i-1] || 0) - data[`q${i}`]);
-                if (d > maxD) maxD = d;
-            }
-            dist = maxD;
         }
 
         return { mode: data.target_quadrant, distance: dist };
