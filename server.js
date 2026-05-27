@@ -245,7 +245,7 @@ app.post('/api/teachers/register', async (req, res) => {
 
 // GET /api/students - Fetch all students
 app.get('/api/students', (req, res) => {
-    db.all(`SELECT id, student_no, first_name, last_name, mi, program, year_level, section, email, is_current, created_at FROM students`, [], (err, rows) => {
+    db.all(`SELECT id, student_no, first_name, last_name, mi, program, year_level, section, email, is_current, x_coord, y_coord, learning_mode, created_at FROM students`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(rows);
     });
