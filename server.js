@@ -241,7 +241,7 @@ app.post('/api/students/register', async (req, res) => {
                 });
             });
             const nextId = (row.maxId || 0) + 1;
-            student_no = `STU-${nextId.toString().padStart(4, '0')}`;
+            student_no = `0226${nextId.toString().padStart(4, '0')}`;
         }
 
         // Hash the password securely
