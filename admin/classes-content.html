@@ -53,6 +53,20 @@
         input:focus, select:focus { outline: none; border-color: #c084fc; }
         
         option { background: #0a1e2d; color: #fff; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .card { padding: 16px; }
+            .header-row { flex-direction: column; align-items: stretch; gap: 16px; }
+            .header-row button { width: 100%; }
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
@@ -64,22 +78,24 @@
             <button onclick="openModal()">+ Add Class</button>
         </div>
         
-        <table>
-            <thead>
-                <tr>
-                    <th>Program</th>
-                    <th>Learning Mode</th>
-                    <th>Year & Section</th>
-                    <th>School Year</th>
-                    <th>Assigned Teacher</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="classTableBody">
-                <!-- Data will load here -->
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Program</th>
+                        <th>Learning Mode</th>
+                        <th>Year & Section</th>
+                        <th>School Year</th>
+                        <th>Assigned Teacher</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="classTableBody">
+                    <!-- Data will load here -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- The Modal -->

@@ -136,6 +136,20 @@
         .toggle-option.active {
             background: rgba(56, 189, 248, 0.1); border-color: var(--matrix-blue); color: var(--matrix-blue);
         }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body { padding: 20px; }
+            .header-section { flex-direction: column; align-items: stretch !important; gap: 16px; }
+            .header-section > div:last-child { flex-direction: column; width: 100%; }
+            .header-section .btn { width: 100%; }
+            body > div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+            .card > div[style*="display:flex; justify-content:space-between"] { flex-direction: column; gap: 16px; align-items: flex-start !important; }
+            .card > div[style*="display:flex; justify-content:space-between"] .btn { width: 100%; }
+            #diagnostics-results > div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+            .card > div > div.form-group { grid-column: span 2; }
+            .card > div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>

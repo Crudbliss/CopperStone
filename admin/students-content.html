@@ -41,6 +41,21 @@
         input, select { background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; font-family: 'Poppins', sans-serif;}
         input:focus, select:focus { outline: none; border-color: #4ade80; }
         option { background: #0a1e2d; color: #fff; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .card { padding: 16px; }
+            .header-row { flex-direction: column; align-items: stretch; gap: 16px; }
+            .header-row div { flex-direction: column; display: flex; width: 100%; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
@@ -55,19 +70,21 @@
             </div>
         </div>
         
-        <table>
-            <thead>
-                <tr>
-                    <th>Student No.</th>
-                    <th>Name</th>
-                    <th>Program & Sec</th>
-                    <th>Email</th>
-                </tr>
-            </thead>
-            <tbody id="studentTableBody">
-                <!-- Data will load here -->
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student No.</th>
+                        <th>Name</th>
+                        <th>Program & Sec</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                    <!-- Data will load here -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- The Modal -->

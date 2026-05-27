@@ -438,6 +438,18 @@
         .legend-val.val-purple {
             color: var(--matrix-purple);
         }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body { padding: 20px; }
+            .dashboard-header h1 { font-size: 22px; }
+            .bottom-grid { grid-template-columns: 1fr; }
+            .chart-legend { grid-template-columns: 1fr; }
+            .metrics-grid { gap: 16px; margin-bottom: 24px; }
+            .metric-card { padding: 16px; }
+            .glass-card { padding: 20px; }
+            .quadrant-graph { max-width: 100%; }
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>

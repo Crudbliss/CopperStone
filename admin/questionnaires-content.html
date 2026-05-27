@@ -130,6 +130,15 @@
             margin-right: 12px;
         }
 
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body { padding: 20px; }
+            .header-actions { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .header-actions div[style*="display: flex"] { width: 100%; }
+            .btn { width: 100%; justify-content: center; }
+            #questionsList { grid-template-columns: 1fr; }
+        }
+
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
