@@ -57,13 +57,13 @@
 
         /* --- MAIN CONTENT CONTAINER --- */
         .content-container {
-            padding: 40px;
+            padding: 15px;
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 18px;
         }
 
         /* --- GLASS CARD BASE --- */
@@ -81,6 +81,7 @@
             justify-content: space-between;
             align-items: center;
             border-color: rgba(216, 166, 26, 0.3);
+            margin: 10px;
         }
 
         .welcome-text-box {
@@ -297,7 +298,7 @@
             font-size: 11px;
             font-weight: 500;
             color: var(--text-muted);
-            margin-top: 24px;
+            margin-top: 40px;
         }
 
         /* --- RIGHT INFO STACK --- */
@@ -489,123 +490,123 @@
 
     <main class="content-container">
 
-        <div class="glass-card welcome-banner"
-            style="display: flex; flex-direction: row; align-items: stretch; padding: 0; overflow: hidden; border-color: rgba(212, 160, 23, 0.2);">
-            <!-- Left side: Welcome & Class Info -->
-            <div
-                style="flex: 1; padding: 24px 32px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 32px;">
+        <div class="container">
 
-                <!-- Welcome -->
-                <div class="welcome-text-box" style="flex: 1;">
-                    <p class="welcome-eyebrow">Welcome Back</p>
-                    <h2 class="welcome-title" id="welcome-student-name">Loading... <span>👋</span></h2>
-                    <p class="welcome-sub" id="welcome-student-details">Loading...</p>
+            <div class="glass-card welcome-banner" id="welcome-banner"
+                style="display: flex; flex-direction: row; align-items: stretch; padding: 0; overflow: hidden; border-color: rgba(212, 160, 23, 0.2);">
+                <!-- Left side: Welcome & Class Info -->
+                <div
+                    style="flex: 1; padding: 24px 32px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 32px;">
+
+                    <!-- Welcome -->
+                    <div class="welcome-text-box" style="flex: 1;">
+                        <p class="welcome-eyebrow">Welcome Back</p>
+                        <h2 class="welcome-title" id="welcome-student-name">Loading...</h2>
+                        <p class="welcome-sub" id="welcome-student-details">Loading...</p>
+                    </div>
+
+                    <!-- Divider -->
+                    <div style="width: 1px; height: 70px; background-color: var(--border-light);"></div>
+
+                    <!-- Active Class -->
+                    <div id="active-class-card" style="flex: 1; display: flex; align-items: center; gap: 16px;">
+                        <div style="flex: 1;">
+                            <h3
+                                style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
+                                My Active Class</h3>
+                            <h2 id="active-class-title"
+                                style="font-size: 18px; font-weight: 700; color: var(--matrix-green); margin-bottom: 2px;">
+                                Loading class details...</h2>
+                            <p id="active-class-teacher" style="font-size: 13px; color: var(--text-muted);">Please
+                                wait...</p>
+                        </div>
+                        <div id="active-class-sy-container">
+                            <span id="active-class-sy"
+                                style="font-size: 11px; font-weight: 700; color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(216, 166, 26, 0.3);">...</span>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Divider -->
-                <div style="width: 1px; height: 70px; background-color: var(--border-light);"></div>
-
-                <!-- Active Class -->
-                <div id="active-class-card" style="flex: 1; display: flex; align-items: center; gap: 16px;">
-                    <div style="flex: 1;">
-                        <h3
-                            style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
-                            My Active Class</h3>
-                        <h2 id="active-class-title"
-                            style="font-size: 18px; font-weight: 700; color: var(--matrix-green); margin-bottom: 2px;">
-                            Loading class details...</h2>
-                        <p id="active-class-teacher" style="font-size: 13px; color: var(--text-muted);">Please wait...
-                        </p>
-                    </div>
-                    <div id="active-class-sy-container">
-                        <span id="active-class-sy"
-                            style="font-size: 11px; font-weight: 700; color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(216, 166, 26, 0.3);">...</span>
-                    </div>
+                <!-- Right side: Assessment Button -->
+                <div
+                    style="padding: 32px; background: var(--bg-yellow); display: flex; align-items: center; justify-content: center; min-width: 250px;">
+                    <a href="qa-content.html" class="btn-primary" onclick="updateParentSidebar(1)"
+                        style="text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 32px; width: 100%; text-align: center;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0;">
+                            <path
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <span style="font-size: 14px; font-weight: 600;">Check Assessment</span>
+                    </a>
                 </div>
-
             </div>
 
-            <!-- Right side: Assessment Button -->
-            <div
-                style="padding: 32px; background: var(--bg-yellow); display: flex; align-items: center; justify-content: center; min-width: 250px;">
-                <a href="qa-content.html" class="btn-primary" onclick="updateParentSidebar(1)"
-                    style="text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 32px; width: 100%; text-align: center;">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" style="margin: 0;">
-                        <path
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    <span style="font-size: 14px; font-weight: 600;">Check Assessment</span>
-                </a>
-            </div>
-        </div>
+            <div class="bottom-grid">
 
-        <div class="stats-grid">
-            <div class="glass-card stat-card" id="mode-stat-card">
-                <p class="stat-title" id="stat-mode-text" style="color: var(--matrix-green);">Not Assessed</p>
-                <p class="stat-label">Dominant Mode</p>
-                <p class="stat-sub">Current quadrant</p>
-            </div>
-            <div class="glass-card stat-card">
-                <p class="stat-title lg" id="stat-assessments-done" style="color: var(--matrix-green);">0/3</p>
-                <p class="stat-label">Assessments Done</p>
-                <p class="stat-sub">This school year</p>
-            </div>
-            <div class="glass-card stat-card">
-                <p class="stat-title lg text-matrix-blue" id="stat-last-assessment" style="font-size: 20px;">--</p>
-                <p class="stat-label" id="stat-last-label">Last Result</p>
-                <p class="stat-sub">Most recent assessment</p>
-            </div>
-            <div class="glass-card stat-card">
-                <p class="stat-title text-matrix-orange" id="stat-next-status">Locked</p>
-                <p class="stat-label" id="stat-next-label">Next Assessment</p>
-                <p class="stat-sub">Upcoming status</p>
-            </div>
-        </div>
+                <div class="glass-card quadrant-card">
+                    <h3 class="section-title">Your Quadrant Position</h3>
 
-        <div class="bottom-grid">
+                    <div class="quadrant-map-container">
 
-            <div class="glass-card quadrant-card">
-                <h3 class="section-title">Your Quadrant Position</h3>
+                        <div style="position: relative; width: 100%; max-width: 340px;">
 
-                <div class="quadrant-map-container">
+                            <div class="axis-label axis-y-top">INDIVIDUAL</div>
+                            <div class="axis-label axis-y-bot">COLLECTIVE</div>
 
-                    <div style="position: relative; width: 100%; max-width: 340px;">
-
-                        <div class="axis-label axis-y-top">INDIVIDUAL</div>
-                        <div class="axis-label axis-y-bot">COLLECTIVE</div>
-
-                        <div class="quadrant-graph">
-                            <div class="quadrant-grid-lines">
-                                <div class="q-cell top-left">
-                                    <span class="q-label text-matrix-green">H. Individual</span>
+                            <div class="quadrant-graph">
+                                <div class="quadrant-grid-lines">
+                                    <div class="q-cell top-left">
+                                        <span class="q-label text-matrix-green">H. Individual</span>
+                                    </div>
+                                    <div class="q-cell top-right">
+                                        <span class="q-label text-matrix-blue">D. Individual</span>
+                                    </div>
+                                    <div class="q-cell bottom-left">
+                                        <span class="q-label text-matrix-orange">H. Collective</span>
+                                    </div>
+                                    <div class="q-cell bottom-right">
+                                        <span class="q-label text-matrix-purple">D. Collective</span>
+                                    </div>
                                 </div>
-                                <div class="q-cell top-right">
-                                    <span class="q-label text-matrix-blue">D. Individual</span>
-                                </div>
-                                <div class="q-cell bottom-left">
-                                    <span class="q-label text-matrix-orange">H. Collective</span>
-                                </div>
-                                <div class="q-cell bottom-right">
-                                    <span class="q-label text-matrix-purple">D. Collective</span>
-                                </div>
+
+                                <div class="data-point" id="quadrant-dot"></div>
                             </div>
 
-                            <div class="data-point" id="quadrant-dot"></div>
-                        </div>
+                            <div class="axis-x-container">
+                                <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
+                                <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
+                            </div>
 
-                        <div class="axis-x-container">
-                            <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
-                            <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
                         </div>
+                    </div>
 
+                    <div class="quadrant-footer-text" id="quadrant-footer">Loading data...</div>
+                </div>
+
+                <div class="glass-card quadrant-card" style="padding: 32px;">
+                    <div
+                        style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase;">
+                        FUZZY K-NN BREAKDOWN
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 24px; color: var(--text-main);">Profile
+                        Distribution</h3>
+
+                    <div id="fuzzy-bars-container"
+                        style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; flex: 1;">
+                        <!-- JS injects fuzzy bars here -->
+                    </div>
+
+                    <div id="fuzzy-summary-box"
+                        style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 16px 20px; border-radius: 12px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                        <!-- JS injects summary here -->
                     </div>
                 </div>
 
-                <p class="quadrant-footer-text" id="quadrant-footer-text">Complete an assessment to view data</p>
             </div>
 
-            <div class="right-stack">
+            <div class="bottom-grid" style="margin-top: 18px;">
 
                 <div class="glass-card dominant-mode-card" id="dm-card" style="background-color: var(--bg-green);">
                     <div class="dm-header">
@@ -633,8 +634,11 @@
                     </div>
                 </div>
 
-                <div class="glass-card quick-actions-card">
-                    <h3>Quick Actions</h3>
+                <div class="glass-card quick-actions-card"
+                    style="padding: 32px; display: flex; flex-direction: column;">
+                    <h3
+                        style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 24px; text-transform: uppercase;">
+                        Quick Navigation</h3>
                     <div class="action-links">
                         <a href="modules-content.html" class="action-item" onclick="updateParentSidebar(2)">
                             <span>View your personalized modules</span>
@@ -644,7 +648,7 @@
                         </a>
 
                         <a href="qa-content.html" class="action-item" onclick="updateParentSidebar(1)">
-                            <span>See your Q3 assessment details</span>
+                            <span>See your assessment details</span>
                             <svg>
                                 <use href="#icon-arrow-right"></use>
                             </svg>
@@ -672,7 +676,7 @@
 
                     // 1. Populate Welcome Banner
                     const fullName = `${user.name} ${user.last_name || ''}`.trim();
-                    document.getElementById('welcome-student-name').innerHTML = `${fullName} <span>👋</span>`;
+                    document.getElementById('welcome-student-name').innerHTML = `${fullName}`;
 
                     const pYr = user.year_level ? `${user.year_level} Year` : '';
                     const progSec = (user.program || '') + (user.section ? `-${user.section}` : '');
@@ -718,7 +722,6 @@
                         const profile = JSON.parse(profileStr);
                         const mode = profile.learning_mode;
 
-                        const statText = document.getElementById('stat-mode-text');
                         const dmTitle = document.getElementById('dm-title');
                         const dmDesc = document.getElementById('dm-desc');
                         const dmTags = document.getElementById('dm-tags');
@@ -726,51 +729,51 @@
                         const dot = document.getElementById('quadrant-dot');
 
                         if (mode) {
-                            let shortMode = 'Unknown';
                             let color = 'var(--matrix-green)';
                             let bg = 'var(--bg-green)';
                             let desc = '';
                             let tags = '';
 
                             if (mode === 'Hierarchical Individual') {
-                                shortMode = 'H. Individual'; color = 'var(--matrix-green)'; bg = 'rgba(74, 222, 128, 0.05)';
+                                color = 'var(--matrix-green)'; bg = 'rgba(74, 222, 128, 0.05)';
                                 desc = 'You learn best through structured, teacher-directed instruction in a solo setting. Clear guidelines and direct authority from an instructor help you thrive.';
                                 tags = '<span class="tag">Structured lessons</span><span class="tag">Direct instruction</span><span class="tag">Solo study</span><span class="tag">Teacher-led</span>';
                             } else if (mode === 'Distributed Individual') {
-                                shortMode = 'D. Individual'; color = 'var(--matrix-blue)'; bg = 'rgba(56, 189, 248, 0.05)';
+                                color = 'var(--matrix-blue)'; bg = 'rgba(56, 189, 248, 0.05)';
                                 desc = 'You prefer working independently but thrive when given the freedom to explore topics your own way. You rely on self-direction and personal curiosity.';
                                 tags = '<span class="tag">Self-directed</span><span class="tag">Exploratory</span><span class="tag">Solo study</span><span class="tag">Flexible</span>';
                             } else if (mode === 'Hierarchical Collective') {
-                                shortMode = 'H. Collective'; color = 'var(--matrix-orange)'; bg = 'rgba(251, 146, 60, 0.05)';
+                                color = 'var(--matrix-orange)'; bg = 'rgba(251, 146, 60, 0.05)';
                                 desc = 'You learn best in a group setting that is guided by a teacher or clear structure. Assigned roles and clear rubrics in team projects help you succeed.';
                                 tags = '<span class="tag">Group work</span><span class="tag">Structured teams</span><span class="tag">Clear roles</span><span class="tag">Teacher-guided</span>';
                             } else if (mode === 'Distributed Collective') {
-                                shortMode = 'D. Collective'; color = 'var(--matrix-purple)'; bg = 'rgba(192, 132, 252, 0.05)';
+                                color = 'var(--matrix-purple)'; bg = 'rgba(192, 132, 252, 0.05)';
                                 desc = 'You thrive in open, collaborative environments where peers share ideas freely. Brainstorming, peer-reviews, and decentralized teamwork are your strengths.';
                                 tags = '<span class="tag">Collaborative</span><span class="tag">Peer-led</span><span class="tag">Open discussion</span><span class="tag">Flexible groups</span>';
                             }
 
-                            statText.textContent = shortMode;
-                            statText.style.color = color;
-
-                            dmTitle.textContent = mode;
-                            dmTitle.style.color = color;
-                            dmCard.style.backgroundColor = bg;
-                            dmCard.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
-                            dmDesc.textContent = desc;
-                            dmTags.innerHTML = tags;
+                            if (dmTitle) dmTitle.textContent = mode;
+                            if (dmTitle) dmTitle.style.color = color;
+                            if (dmCard) dmCard.style.backgroundColor = bg;
+                            if (dmCard) dmCard.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
+                            if (dmDesc) dmDesc.textContent = desc;
+                            if (dmTags) dmTags.innerHTML = tags;
 
                             // Style inner elements
-                            const iconWrap = dmCard.querySelector('.dm-icon-wrapper');
-                            if (iconWrap) {
-                                iconWrap.style.backgroundColor = `color-mix(in srgb, ${color} 15%, transparent)`;
-                                iconWrap.style.color = color;
+                            if (dmCard) {
+                                const iconWrap = dmCard.querySelector('.dm-icon-wrapper');
+                                if (iconWrap) {
+                                    iconWrap.style.backgroundColor = `color-mix(in srgb, ${color} 15%, transparent)`;
+                                    iconWrap.style.color = color;
+                                }
                             }
-                            dmTags.querySelectorAll('.tag').forEach(t => {
-                                t.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
-                                t.style.color = color;
-                                t.style.borderColor = `color-mix(in srgb, ${color} 20%, transparent)`;
-                            });
+                            if (dmTags) {
+                                dmTags.querySelectorAll('.tag').forEach(t => {
+                                    t.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
+                                    t.style.color = color;
+                                    t.style.borderColor = `color-mix(in srgb, ${color} 20%, transparent)`;
+                                });
+                            }
 
                             // Calculate Plot
                             let xPct = ((profile.x_coord + 5) / 10) * 100;
@@ -778,97 +781,105 @@
                             xPct = Math.max(5, Math.min(95, xPct));
                             yPct = Math.max(5, Math.min(95, yPct));
 
-                            dot.style.display = 'block';
-                            dot.style.left = xPct + '%';
-                            dot.style.top = yPct + '%';
-                            dot.style.borderColor = color;
-                            dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${color} 60%, transparent)`;
+                            if (dot) {
+                                dot.style.display = 'block';
+                                dot.style.left = xPct + '%';
+                                dot.style.top = yPct + '%';
+                                dot.style.borderColor = color;
+                                dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${color} 60%, transparent)`;
+                            }
+
+                            // Render Fuzzy Graph
+                            renderFuzzyGraph(profile.x_coord || 0, profile.y_coord || 0, mode);
 
                         } else {
-                            statText.textContent = 'Not Assessed';
-                            statText.style.color = 'var(--text-muted)';
-                            dmTitle.textContent = 'Not Assessed';
-                            dmDesc.textContent = 'You have not completed the Learning Mode Assessment yet. Please complete the assessment to unlock your personalized learning profile.';
-                            dmTags.innerHTML = '';
-                            dot.style.display = 'none';
-                            dmCard.style.backgroundColor = 'transparent';
+                            if (dmTitle) dmTitle.textContent = 'Not Assessed';
+                            if (dmDesc) dmDesc.textContent = 'You have not completed the Learning Mode Assessment yet. Please complete the assessment to unlock your personalized learning profile.';
+                            if (dmTags) dmTags.innerHTML = '';
+                            if (dot) dot.style.display = 'none';
+                            if (dmCard) dmCard.style.backgroundColor = 'transparent';
                         }
                     }
 
-                    // 4. Populate Dynamic Stats (Assessments Done, Last Result, Next Assessment)
+                    // 4. Populate Dynamic Stats (Footer)
                     try {
-                        const [activeRes, historyRes] = await Promise.all([
-                            fetch('/api/students/' + user.id + '/active-sessions'),
-                            fetch('/api/students/' + user.id + '/history')
-                        ]);
-
-                        const activeSessions = await activeRes.json();
+                        const historyRes = await fetch('/api/students/' + user.id + '/history');
                         const history = await historyRes.json();
+                        const footerEl = document.getElementById('quadrant-footer');
 
-                        // Assessments Done
-                        const doneCount = history.length;
-                        document.getElementById('stat-assessments-done').textContent = `${doneCount}/3`;
-
-                        // Last Assessment
-                        const lastResultEl = document.getElementById('stat-last-assessment');
-                        const lastLabelEl = document.getElementById('stat-last-label');
-                        if (history.length > 0) {
-                            const last = history[history.length - 1]; // sorted ascending
-                            const pct = Math.round((Math.max(Math.abs(last.x_coord || 0), Math.abs(last.y_coord || 0)) / 5) * 100);
-                            lastResultEl.textContent = pct + '%';
-                            lastLabelEl.textContent = last.quarter_name;
-                        } else {
-                            lastResultEl.textContent = '--';
-                            lastLabelEl.textContent = 'No History';
-                        }
-
-                        // Next Assessment & Graph Footer
-                        const nextStatusEl = document.getElementById('stat-next-status');
-                        const nextLabelEl = document.getElementById('stat-next-label');
-                        const footerEl = document.getElementById('quadrant-footer-text');
-
-                        let nextAssessmentText = '';
-
-                        if (activeSessions.length > 0) {
-                            const active = activeSessions[0];
-                            nextStatusEl.textContent = 'Open Now';
-                            nextStatusEl.style.color = 'var(--matrix-green)';
-                            nextLabelEl.textContent = active.quarter_name;
-
-                            const d = new Date(active.deadline || Date.now());
-                            nextAssessmentText = `${active.quarter_name} closes ${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-                        } else {
-                            // Guess next based on history
-                            const quarters = ['Q1 Assessment', 'Q2 Assessment', 'Q3 Assessment', 'Q4 Assessment'];
-                            let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q.substring(0, 2))));
-
-                            if (nextQ) {
-                                nextStatusEl.textContent = 'Locked';
-                                nextStatusEl.style.color = 'var(--text-dark-muted)';
-                                nextLabelEl.textContent = nextQ;
-                                nextAssessmentText = `${nextQ} is currently locked`;
-                            } else {
-                                nextStatusEl.textContent = 'Complete';
-                                nextStatusEl.style.color = 'var(--matrix-blue)';
-                                nextLabelEl.textContent = 'All Done';
-                                nextAssessmentText = 'All assessments completed';
-                            }
-                        }
-
-                        // Update footer
                         if (history.length > 0) {
                             const last = history[history.length - 1];
-                            footerEl.innerHTML = `Based on ${last.quarter_name} results &middot; ${nextAssessmentText}`;
+                            const cx = (last.x_coord || 0).toFixed(2);
+                            const cy = (last.y_coord || 0).toFixed(2);
+                            if (footerEl) footerEl.innerHTML = `Coordinate: (${cx}, ${cy}) &middot; Based on ${last.quarter_name} results`;
                         } else {
-                            footerEl.innerHTML = `${nextAssessmentText}`;
+                            if (footerEl) footerEl.innerHTML = `Complete an assessment to view data`;
                         }
-
                     } catch (statErr) {
                         console.error('Failed to load stats', statErr);
                     }
 
                 } catch (e) { console.error(e); }
             });
+
+            function renderFuzzyGraph(x_coord, y_coord, dominant) {
+                // Inverse calculation: from X/Y (-5 to 5) to percentages
+                // Map to 0-1
+                let normX = (x_coord + 5) / 10;
+                let normY = (y_coord + 5) / 10;
+
+                let HI = (1 - normX) * normY;
+                let DI = normX * normY;
+                let HC = (1 - normX) * (1 - normY);
+                let DC = normX * (1 - normY);
+
+                const total = HI + DI + HC + DC;
+
+                const pHI = Math.round((HI / total) * 100);
+                const pDI = Math.round((DI / total) * 100);
+                const pHC = Math.round((HC / total) * 100);
+                const pDC = Math.round((DC / total) * 100);
+
+                const sorted = [
+                    { mode: 'Hierarchical Individual', short: 'H. Individual', pct: pHI, color: 'var(--matrix-green)', icon: '📚' },
+                    { mode: 'Distributed Individual', short: 'D. Individual', pct: pDI, color: 'var(--matrix-blue)', icon: '💻' },
+                    { mode: 'Hierarchical Collective', short: 'H. Collective', pct: pHC, color: 'var(--matrix-orange)', icon: '🤝' },
+                    { mode: 'Distributed Collective', short: 'D. Collective', pct: pDC, color: 'var(--matrix-purple)', icon: '🧠' }
+                ].sort((a, b) => {
+                    if (a.mode === dominant) return -1;
+                    if (b.mode === dominant) return 1;
+                    return b.pct - a.pct;
+                });
+
+                const container = document.getElementById('fuzzy-bars-container');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                sorted.forEach((item, index) => {
+                    const row = document.createElement('div');
+                    row.style.display = 'flex';
+                    row.style.flexDirection = 'column';
+
+                    const isDominant = index === 0;
+
+                    row.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: ${isDominant ? item.color : 'var(--text-main)'}; font-weight: ${isDominant ? '700' : '500'};">
+                            <span>${item.icon} &nbsp; ${item.short} ${isDominant ? '<span style="font-size: 9px; padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-left: 8px;">DOMINANT</span>' : ''}</span>
+                            <span>${item.pct}%</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.05); height: 6px; border-radius: 3px; overflow: hidden;">
+                            <div style="width: ${item.pct}%; background-color: ${item.color}; height: 100%; border-radius: 3px;"></div>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+
+                const summaryBox = document.getElementById('fuzzy-summary-box');
+                if (summaryBox) {
+                    summaryBox.innerHTML = `You are <strong style="color: ${sorted[0].color};">${sorted[0].pct}% ${sorted[0].mode}</strong> — your primary learning mode this quarter.`;
+                }
+            }
 
             function updateParentSidebar(activeIndex) {
                 if (window.parent && window.parent.document) {
