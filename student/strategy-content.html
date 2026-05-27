@@ -269,6 +269,18 @@
             margin-top: 60px;
             font-size: 16px;
         }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .list-item { flex-direction: column; align-items: flex-start; }
+            .header-content { flex-direction: column; align-items: flex-start; text-align: left; }
+            .mode-icon { margin: 0 auto 16px auto; align-self: center; }
+            .mode-title { text-align: center; width: 100%; }
+            .mode-desc { text-align: center; margin-bottom: 24px; }
+            .warning-card { flex-direction: column; text-align: center; align-items: center; }
+        }
     </style>
 </head>
 

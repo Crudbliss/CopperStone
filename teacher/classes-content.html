@@ -142,6 +142,13 @@
         select option { background: #0a1e2d; color: #fff; }
         .btn-submit { background: var(--matrix-yellow); color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Poppins', sans-serif;}
         .btn-submit:hover { background: #e0a31c; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .classes-grid { grid-template-columns: 1fr; }
+            .modal { padding: 16px; }
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>

@@ -1057,6 +1057,22 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 25px var(--theme-bg);
         }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            nav { padding: 0 16px; height: 60px; }
+            .nav-actions { display: none; } /* Hide auth buttons, move them to menu or just show hamburger */
+            .btn-menu { display: grid; }
+            .hero-title { font-size: 48px; }
+            .hero { padding: 120px 16px 60px; }
+            .role-buttons { flex-direction: column; width: 100%; max-width: 300px; }
+            .process-grid, .framework-wrapper, .roles-grid, .features-grid { grid-template-columns: 1fr; gap: 24px; }
+            .framework-cards { grid-template-columns: 1fr; }
+            footer { flex-direction: column; gap: 16px; text-align: center; }
+            .modal-content { padding: 24px; margin: 16px; max-width: calc(100% - 32px); max-height: calc(100vh - 32px); overflow-y: auto; }
+            .role-select-header h2 { font-size: 24px; }
+            .modal-header { flex-direction: column; text-align: center; gap: 12px; margin-bottom: 24px; }
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="./images/matrix_logo.ico">
 </head>

@@ -260,6 +260,19 @@
         select { background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; color: #fff; font-family: 'Poppins', sans-serif;}
         select:focus { outline: none; border-color: var(--matrix-yellow); }
         option { background: #0a1e2d; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .content-container { grid-template-columns: 1fr; display: flex; flex-direction: column; }
+            .right-col { position: static; order: -1; margin-bottom: 24px; }
+            .search-filter-bar { flex-direction: column; align-items: stretch; }
+            .search-filter-bar > div { flex-direction: column; width: 100%; }
+            .btn-add-student { width: 100%; text-align: center; }
+            .filter-group { flex-wrap: wrap; border-radius: 8px; }
+            .filter-btn { flex: 1 1 auto; text-align: center; border-bottom: 1px solid var(--border-light); }
+            .modal { padding: 16px; }
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>

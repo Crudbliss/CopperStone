@@ -360,6 +360,37 @@
             color: var(--text-muted);
         }
 
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .timeline-container { display: flex; flex-direction: column; gap: 24px; padding-left: 16px; border-left: 2px solid var(--border-lighter); position: relative; margin-top: 24px; }
+            .timeline-container::before { display: none; }
+            .timeline-item { width: 100%; margin-left: 0; position: relative; }
+            .timeline-item::after {
+                content: '';
+                position: absolute;
+                left: -25px;
+                top: 20px;
+                width: 16px;
+                height: 16px;
+                background-color: var(--bg-card);
+                border: 2px solid var(--border-light);
+                border-radius: 50%;
+                z-index: 2;
+            }
+            .timeline-item.active::after {
+                border-color: var(--matrix-green);
+                background-color: var(--matrix-green);
+                box-shadow: 0 0 12px var(--matrix-green);
+            }
+            .timeline-item.active .history-card { border-color: var(--matrix-green); }
+            
+            .history-card-inner { flex-direction: column; gap: 24px; }
+            .history-data { grid-template-columns: 1fr; border-right: none; border-bottom: 1px solid var(--border-light); padding-right: 0; padding-bottom: 24px; }
+            .quadrant-graph { max-width: 100%; aspect-ratio: auto; min-height: 250px; }
+            .data-grid { grid-template-columns: 1fr; }
+        }
+
         /* SVG definitions logic - including them for standalone use */
     </style>
 </head>

@@ -280,6 +280,19 @@
         .legend-val.val-orange { color: var(--matrix-orange); }
         .legend-val.val-purple { color: var(--matrix-purple); }
 
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .bottom-grid { grid-template-columns: 1fr; }
+            .quadrant-graph { max-width: 100%; aspect-ratio: auto; min-height: 250px; }
+            .chart-legend { grid-template-columns: 1fr; }
+            .bar-chart-wrapper { height: 200px; padding-left: 20px; }
+            .x-label { font-size: 8px; transform: rotate(-45deg); bottom: -30px; left: 0; }
+            .bars-container { padding-bottom: 36px; }
+            .y-axis { padding-bottom: 36px; }
+        }
+
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>

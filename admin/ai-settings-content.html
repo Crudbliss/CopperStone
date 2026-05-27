@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Settings - CopperStone Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg-base: #060f17;
@@ -16,10 +18,14 @@
             --matrix-red: #f87171;
             --text-main: #e2e8f0;
             --text-muted: #8b9eb0;
-            --border-light: rgba(255,255,255,0.05);
+            --border-light: rgba(255, 255, 255, 0.05);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Poppins', sans-serif;
@@ -28,9 +34,26 @@
             padding: 40px;
         }
 
-        h2 { font-weight: 700; font-size: 28px; margin-bottom: 8px; }
-        h3 { font-weight: 600; font-size: 18px; margin-bottom: 16px; color: white; border-bottom: 1px solid var(--border-light); padding-bottom: 12px; }
-        p { color: var(--text-muted); font-size: 14px; margin-bottom: 32px; }
+        h2 {
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        h3 {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: white;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 12px;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
 
         .card {
             background-color: var(--bg-panel);
@@ -52,14 +75,36 @@
             font-family: 'Poppins', sans-serif;
             display: inline-block;
         }
-        .btn:hover { filter: brightness(1.2); }
-        .btn:disabled { background-color: var(--text-muted); cursor: not-allowed; }
-        
-        .btn-danger { background-color: rgba(248, 113, 113, 0.1); color: var(--matrix-red); border: 1px solid rgba(248, 113, 113, 0.3); }
-        .btn-danger:hover { background-color: rgba(248, 113, 113, 0.2); }
-        
-        .btn-outline { background-color: transparent; border: 1px solid var(--border-light); color: var(--text-main); }
-        .btn-outline:hover { border-color: var(--matrix-blue); color: var(--matrix-blue); }
+
+        .btn:hover {
+            filter: brightness(1.2);
+        }
+
+        .btn:disabled {
+            background-color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .btn-danger {
+            background-color: rgba(248, 113, 113, 0.1);
+            color: var(--matrix-red);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+
+        .btn-danger:hover {
+            background-color: rgba(248, 113, 113, 0.2);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--matrix-blue);
+            color: var(--matrix-blue);
+        }
 
         .upload-area {
             border: 2px dashed rgba(56, 189, 248, 0.3);
@@ -71,15 +116,31 @@
             background: rgba(56, 189, 248, 0.02);
             margin-bottom: 16px;
         }
+
         .upload-area:hover {
             border-color: var(--matrix-blue);
             background: rgba(56, 189, 248, 0.05);
         }
 
-        .upload-icon { color: var(--matrix-blue); margin-bottom: 16px; }
-        .upload-text { font-weight: 600; color: white; margin-bottom: 8px; }
-        .upload-sub { font-size: 12px; color: var(--text-muted); }
-        #file-input { display: none; }
+        .upload-icon {
+            color: var(--matrix-blue);
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .upload-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        #file-input {
+            display: none;
+        }
 
         .status-box {
             padding: 16px;
@@ -89,76 +150,229 @@
             font-weight: 600;
             display: none;
         }
-        .status-box.success { background-color: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.3); color: var(--matrix-green); }
-        .status-box.error { background-color: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.3); color: var(--matrix-red); }
 
-        .loading-container { margin-top: 24px; display: none; }
-        .stats-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
-        .stats-value { color: var(--matrix-blue); }
-        .progress-bar-container { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; overflow: hidden; margin-bottom: 16px; }
-        .progress-fill { height: 100%; background: var(--matrix-blue); width: 0%; transition: width 0.2s ease; }
-
-        .terminal-log {
-            background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
-            padding: 16px; height: 150px; overflow-y: auto; font-family: monospace; font-size: 12px;
-            color: #4ade80; display: flex; flex-direction: column; gap: 4px;
+        .status-box.success {
+            background-color: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: var(--matrix-green);
         }
 
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+        .status-box.error {
+            background-color: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            color: var(--matrix-red);
+        }
+
+        .loading-container {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .stats-value {
+            color: var(--matrix-blue);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--matrix-blue);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+
+        .terminal-log {
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            color: #4ade80;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
         .form-control {
-            width: 100%; background: var(--bg-base); border: 1px solid var(--border-light);
-            color: white; padding: 12px; border-radius: 8px; font-family: 'Poppins', sans-serif;
+            width: 100%;
+            background: var(--bg-base);
+            border: 1px solid var(--border-light);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
         }
 
         .data-table-wrapper {
-            width: 100%; overflow-x: auto; border: 1px solid var(--border-light); border-radius: 8px;
-            background: var(--bg-base); margin-top: 16px;
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            background: var(--bg-base);
+            margin-top: 16px;
         }
-        .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        .data-table th, .data-table td { padding: 8px 12px; border-bottom: 1px solid var(--border-light); text-align: left; white-space: nowrap; }
-        .data-table th { background: rgba(255,255,255,0.02); color: var(--text-muted); font-weight: 500; }
-        
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-light);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .data-table th {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
         .metric-card {
-            background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 8px; padding: 16px; text-align: center;
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
         }
-        .metric-value { font-size: 32px; font-weight: 700; color: var(--matrix-blue); }
-        .metric-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-        .chart-img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border-light); margin-top: 16px; }
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--matrix-blue);
+        }
 
-        .toggle-container { display: flex; gap: 16px; margin-bottom: 16px; }
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chart-img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            margin-top: 16px;
+        }
+
+        .toggle-container {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
         .toggle-option {
-            flex: 1; padding: 12px; text-align: center; border: 1px solid var(--border-light);
-            border-radius: 8px; cursor: pointer; color: var(--text-muted); font-size: 13px; font-weight: 500;
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
         }
+
         .toggle-option.active {
-            background: rgba(56, 189, 248, 0.1); border-color: var(--matrix-blue); color: var(--matrix-blue);
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--matrix-blue);
+            color: var(--matrix-blue);
         }
 
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            body { padding: 20px; }
-            .header-section { flex-direction: column; align-items: stretch !important; gap: 16px; }
-            .header-section > div:last-child { flex-direction: column; width: 100%; }
-            .header-section .btn { width: 100%; }
-            body > div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
-            .card > div[style*="display:flex; justify-content:space-between"] { flex-direction: column; gap: 16px; align-items: flex-start !important; }
-            .card > div[style*="display:flex; justify-content:space-between"] .btn { width: 100%; }
-            #diagnostics-results > div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
-            .card > div > div.form-group { grid-column: span 2; }
-            .card > div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+            body {
+                padding: 20px;
+            }
+
+            .header-section {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 16px;
+            }
+
+            .header-section>div:last-child {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .header-section .btn {
+                width: 100%;
+            }
+
+            body>div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            .card>div[style*="display:flex; justify-content:space-between"] {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start !important;
+            }
+
+            .card>div[style*="display:flex; justify-content:space-between"] .btn {
+                width: 100%;
+            }
+
+            #diagnostics-results>div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            .card>div>div.form-group {
+                grid-column: span 2;
+            }
+
+            .card>div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
         }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
+
 <body>
 
-    <div class="header-section" style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 32px;">
+    <div class="header-section"
+        style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 32px;">
         <div>
             <h2>AI Command Center</h2>
-            <p style="margin-bottom: 0;">Manage the 28-dimension FKNN dataset, tweak algorithm rules, and run live diagnostics.</p>
+            <p style="margin-bottom: 0;">Manage the 28-dimension FKNN dataset, tweak algorithm rules, and run live
+                diagnostics.</p>
         </div>
         <div style="display:flex; gap: 12px;">
             <button class="btn btn-outline" onclick="window.location.href='/api/ai/download'">Export Dataset</button>
@@ -167,22 +381,26 @@
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
-        
+
         <!-- Left Column: Upload -->
         <div class="card" style="margin-bottom: 0;">
             <h3>Dataset Ingestion</h3>
             <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
-                Upload a CSV with exactly 29 columns: <code style="color:var(--matrix-blue);">q1, q2... q28, target_quadrant</code>
+                Upload a CSV with exactly 29 columns: <code
+                    style="color:var(--matrix-blue);">q1, q2... q28, target_quadrant</code>
             </p>
 
             <div class="toggle-container">
-                <div class="toggle-option active" id="toggle-append" onclick="setUploadMode('append')">Append to Existing Data</div>
-                <div class="toggle-option" id="toggle-overwrite" onclick="setUploadMode('overwrite')">Overwrite Database</div>
+                <div class="toggle-option active" id="toggle-append" onclick="setUploadMode('append')">Append to
+                    Existing Data</div>
+                <div class="toggle-option" id="toggle-overwrite" onclick="setUploadMode('overwrite')">Overwrite Database
+                </div>
             </div>
 
             <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
-                <svg class="upload-icon" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                <svg class="upload-icon" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
                 </svg>
                 <div class="upload-text" id="file-name-display">Click to browse or drag and drop</div>
                 <div class="upload-sub">Supports .csv datasets</div>
@@ -206,7 +424,7 @@
 
         <!-- Right Column: Settings & Live Stats -->
         <div style="display: flex; flex-direction: column; gap: 24px;">
-            
+
             <!-- Algorithm Settings -->
             <div class="card" style="margin-bottom: 0;">
                 <h3>Algorithm Configuration</h3>
@@ -241,14 +459,16 @@
 
     <!-- Live Diagnostics Panel -->
     <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-light); padding-bottom:12px; margin-bottom: 24px;">
+        <div
+            style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-light); padding-bottom:12px; margin-bottom: 24px;">
             <h3 style="border:none; margin:0; padding:0;">AI Engine Diagnostics</h3>
             <button class="btn" id="btn-run-diagnostics">Spawn Python Engine & Run Diagnostics</button>
         </div>
 
         <div id="diagnostics-loader" style="display:none; text-align:center; padding: 40px;">
             <p style="color: var(--matrix-blue); font-weight:600;">Python Engine is running...</p>
-            <p style="font-size:12px; color:var(--text-muted);">Training Random Forest and FKNN. Generating visual reports.</p>
+            <p style="font-size:12px; color:var(--text-muted);">Training Random Forest and FKNN. Generating visual
+                reports.</p>
         </div>
 
         <div id="diagnostics-results" style="display:none;">
@@ -266,24 +486,33 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                 <div>
                     <h4 style="color: white; font-size: 14px; margin-bottom: 8px;">Feature Importance (Top 28)</h4>
-                    <p style="font-size: 12px; color: var(--text-muted);">Generated live by Scikit-Learn Random Forest.</p>
-                    <img id="img-feature" src="" class="chart-img" alt="Feature Importance Chart" onerror="this.style.display='none'">
+                    <p style="font-size: 12px; color: var(--text-muted);">Generated live by Scikit-Learn Random Forest.
+                    </p>
+                    <img id="img-feature" src="" class="chart-img" alt="Feature Importance Chart"
+                        onerror="this.style.display='none'">
                 </div>
                 <div>
                     <h4 style="color: white; font-size: 14px; margin-bottom: 8px;">Convergence (Confusion Matrix)</h4>
-                    <p style="font-size: 12px; color: var(--text-muted);">Verifies the algorithms accurately separate the Elmore quadrants.</p>
-                    <img id="img-confusion" src="" class="chart-img" alt="Confusion Matrix Chart" onerror="this.style.display='none'">
+                    <p style="font-size: 12px; color: var(--text-muted);">Verifies the algorithms accurately separate
+                        the Elmore quadrants.</p>
+                    <img id="img-confusion" src="" class="chart-img" alt="Confusion Matrix Chart"
+                        onerror="this.style.display='none'">
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Data Preview Table -->
-    <div class="card">
-        <h3>Dataset Preview (Top 100 Rows)</h3>
-        <p style="font-size: 13px; color: var(--text-muted);">Raw memory vectors the AI uses for distance calculations.</p>
-        
-        <div class="data-table-wrapper">
+    <div class="card" id="preview-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h3 style="border:none; margin:0; padding:0;">Dataset Preview (Top 100 Rows)</h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 0; margin-top: 4px;">Raw memory vectors the AI uses for distance calculations.</p>
+            </div>
+            <button class="btn btn-outline" id="btn-toggle-preview">Minimize</button>
+        </div>
+
+        <div class="data-table-wrapper" id="preview-table-wrapper" style="margin-top: 24px;">
             <table class="data-table" id="data-preview-table">
                 <thead>
                     <tr>
@@ -292,7 +521,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td colspan="30" style="text-align:center;">Loading...</td></tr>
+                    <tr>
+                        <td colspan="30" style="text-align:center;">Loading...</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -315,8 +546,8 @@
                 // Settings
                 const resSet = await fetch('/api/ai/settings');
                 const settings = await resSet.json();
-                if(settings.k_value) document.getElementById('setting-k').value = settings.k_value;
-                if(settings.distance_metric) document.getElementById('setting-metric').value = settings.distance_metric;
+                if (settings.k_value) document.getElementById('setting-k').value = settings.k_value;
+                if (settings.distance_metric) document.getElementById('setting-metric').value = settings.distance_metric;
 
                 // Stats
                 const resStat = await fetch('/api/ai/stats');
@@ -337,7 +568,7 @@
         function renderDistribution(stats) {
             const barsContainer = document.getElementById('distribution-bars');
             barsContainer.innerHTML = '';
-            
+
             if (stats.total === 0) {
                 barsContainer.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">Database is empty.</p>';
             } else {
@@ -347,7 +578,7 @@
                     'Hierarchical Collective': 'var(--matrix-orange)',
                     'Distributed Collective': 'var(--matrix-purple)'
                 };
-                
+
                 stats.distribution.forEach(d => {
                     const pct = Math.round((d.count / stats.total) * 100);
                     const c = colors[d.mode] || '#ffffff';
@@ -369,10 +600,10 @@
         function renderDataTable(data) {
             const thead = document.querySelector('#data-preview-table thead tr');
             const tbody = document.querySelector('#data-preview-table tbody');
-            
+
             // Build Headers
             let headHTML = '<th>ID</th>';
-            for(let i=1; i<=28; i++) headHTML += `<th>q${i}</th>`;
+            for (let i = 1; i <= 28; i++) headHTML += `<th>q${i}</th>`;
             headHTML += '<th>Target Mode</th>';
             thead.innerHTML = headHTML;
 
@@ -385,7 +616,7 @@
             let bodyHTML = '';
             data.forEach(row => {
                 let tr = `<tr><td>${row.id}</td>`;
-                for(let i=1; i<=28; i++) tr += `<td>${row['q'+i]}</td>`;
+                for (let i = 1; i <= 28; i++) tr += `<td>${row['q' + i]}</td>`;
                 tr += `<td style="color:var(--matrix-blue); font-weight:600;">${row.target_quadrant}</td></tr>`;
                 bodyHTML += tr;
             });
@@ -405,17 +636,17 @@
             try {
                 await fetch('/api/ai/settings', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 btn.textContent = 'Saved!';
                 setTimeout(() => btn.textContent = 'Apply Mathematical Rules', 2000);
-            } catch(e) { alert("Failed to save settings"); }
+            } catch (e) { alert("Failed to save settings"); }
         });
 
         // --- Clear Dataset ---
         document.getElementById('btn-clear-dataset').addEventListener('click', async () => {
-            if(confirm("Are you sure you want to completely wipe the AI's training dataset? It will not be able to diagnose students until you upload a new one.")) {
+            if (confirm("Are you sure you want to completely wipe the AI's training dataset? It will not be able to diagnose students until you upload a new one.")) {
                 await fetch('/api/ai/training-data', { method: 'DELETE' });
                 alert("Dataset cleared.");
                 loadDashboard();
@@ -433,29 +664,29 @@
             const file = e.target.files[0];
             if (file) {
                 fileNameDisplay.textContent = "Selected: " + file.name;
-                
+
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = function (event) {
                     const csv = event.target.result;
                     const lines = csv.trim().split('\n');
-                    
-                    if(lines.length < 2) {
+
+                    if (lines.length < 2) {
                         showStatus('error', 'CSV is empty.'); return;
                     }
-                    
+
                     const rows = [];
                     // Parse 29 columns
-                    for(let i = 1; i < lines.length; i++) {
+                    for (let i = 1; i < lines.length; i++) {
                         const cols = lines[i].split(',');
-                        if(cols.length === 29) {
+                        if (cols.length === 29) {
                             let obj = {};
-                            for(let j=1; j<=28; j++) obj[`q${j}`] = parseFloat(cols[j-1]);
+                            for (let j = 1; j <= 28; j++) obj[`q${j}`] = parseFloat(cols[j - 1]);
                             obj.target_quadrant = cols[28].trim();
                             rows.push(obj);
                         }
                     }
-                    
-                    if(rows.length === 0) {
+
+                    if (rows.length === 0) {
                         showStatus('error', 'Could not parse 29 columns. Make sure you have q1-q28 and target_quadrant.');
                         uploadBtn.disabled = true;
                     } else {
@@ -469,24 +700,24 @@
         });
 
         uploadBtn.addEventListener('click', async () => {
-            if(!parsedData) return;
+            if (!parsedData) return;
             uploadBtn.disabled = true;
             statusBox.style.display = 'none';
             loadingContainer.style.display = 'block';
-            
+
             const totalRows = parsedData.length;
             document.getElementById('progress-fill').style.width = '0%';
 
             try {
                 // 1. Start Upload (handles Append vs Overwrite)
-                const startRes = await fetch('/api/ai/upload-start', { 
+                const startRes = await fetch('/api/ai/upload-start', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ overwrite: uploadMode === 'overwrite' })
                 });
                 const startData = await startRes.json();
-                if(!startData.success) throw new Error("Failed to initialize database");
-                
+                if (!startData.success) throw new Error("Failed to initialize database");
+
                 // 2. Upload in chunks
                 const chunkSize = 500;
                 let processed = 0;
@@ -498,11 +729,11 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ data: chunk })
                     });
-                    
+
                     const chunkData = await res.json();
-                    if(!chunkData.success) throw new Error("Chunk failed to upload");
+                    if (!chunkData.success) throw new Error("Chunk failed to upload");
                     processed += chunk.length;
-                    
+
                     // UI
                     const pct = Math.round((processed / totalRows) * 100);
                     document.getElementById('progress-fill').style.width = pct + '%';
@@ -525,12 +756,28 @@
             statusBox.textContent = message;
         }
 
+        // --- Toggle Preview ---
+        let previewMinimized = false;
+        document.getElementById('btn-toggle-preview').addEventListener('click', () => {
+            const wrapper = document.getElementById('preview-table-wrapper');
+            const btn = document.getElementById('btn-toggle-preview');
+            previewMinimized = !previewMinimized;
+            
+            if(previewMinimized) {
+                wrapper.style.display = 'none';
+                btn.textContent = 'Expand';
+            } else {
+                wrapper.style.display = 'block';
+                btn.textContent = 'Minimize';
+            }
+        });
+
         // --- Run Diagnostics ---
         document.getElementById('btn-run-diagnostics').addEventListener('click', async () => {
             const loader = document.getElementById('diagnostics-loader');
             const results = document.getElementById('diagnostics-results');
             const btn = document.getElementById('btn-run-diagnostics');
-            
+
             btn.disabled = true;
             results.style.display = 'none';
             loader.style.display = 'block';
@@ -539,23 +786,23 @@
                 const res = await fetch('/api/ai/train-metrics', { method: 'POST' });
                 const data = await res.json();
 
-                if(!data.success) {
+                if (!data.success) {
                     alert("Diagnostics Failed: " + data.error);
                 } else {
                     document.getElementById('diag-rf-acc').textContent = data.metrics.rf_accuracy.toFixed(1) + '%';
                     document.getElementById('diag-fknn-acc').textContent = data.metrics.fknn_accuracy.toFixed(1) + '%';
-                    
+
                     // Cache bust the images to force reload
                     const ts = new Date().getTime();
                     document.getElementById('img-feature').src = `/admin/images/feature_importance.png?t=${ts}`;
                     document.getElementById('img-confusion').src = `/admin/images/confusion_matrix.png?t=${ts}`;
-                    
+
                     document.getElementById('img-feature').style.display = 'block';
                     document.getElementById('img-confusion').style.display = 'block';
-                    
+
                     results.style.display = 'block';
                 }
-            } catch(e) {
+            } catch (e) {
                 alert("Network error running Python engine.");
             }
 
@@ -564,4 +811,5 @@
         });
     </script>
 </body>
+
 </html>

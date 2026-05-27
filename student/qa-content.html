@@ -345,6 +345,18 @@
             font-weight: 700;
             color: var(--matrix-green);
         }
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .grid-container { grid-template-columns: 1fr; gap: 24px; }
+            .path-node { padding-left: 24px; }
+            .node-icon { width: 14px; height: 14px; left: -7px; }
+            .upcoming-icon-bg { display: none; } /* Hide decorative icon on mobile to save space */
+            .upcoming-status-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .result-item { flex-direction: column; text-align: center; gap: 12px; }
+            .result-icon { margin-right: 0; }
+            .result-stats { flex-direction: column; align-items: center; justify-content: center; width: 100%; gap: 8px; margin-top: 8px; }
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
