@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Roadmap</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* CSS Variables */
+        :root {
+            --bg-base: #060f17;
+            --bg-panel: #0a1e2d;
+            --bg-card: #12181f;
+            --matrix-green: #4ade80;
+            --matrix-blue: #38bdf8;
+            --matrix-orange: #fb923c;
+            --matrix-purple: #c084fc;
+            --matrix-yellow: #d8a61a;
+            --text-main: #ffffff;
+            --text-muted: #8b9eb0;
+            --border-light: rgba(255, 255, 255, 0.05);
+            --border-lighter: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: transparent;
+            color: var(--text-main);
+        }
+
+        /* Container */
+        .content-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 12px;
+        }
+
+        /* Headers */
+        .page-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-bottom: 32px;
+        }
+
+        /* Tab Container */
+        .tab-container {
+            display: flex;
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 32px;
+            width: 100%;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active-green {
+            background-color: rgba(74, 222, 128, 0.05);
+            color: var(--matrix-green);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+        }
+
+        .tab-btn.active-purple {
+            background-color: rgba(192, 132, 252, 0.05);
+            color: var(--matrix-purple);
+            border: 1px solid rgba(192, 132, 252, 0.2);
+        }
+
+        .tab-btn.active-blue {
+            background-color: rgba(56, 189, 248, 0.05);
+            color: var(--matrix-blue);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .tab-btn.active-orange {
+            background-color: rgba(251, 146, 60, 0.05);
+            color: var(--matrix-orange);
+            border: 1px solid rgba(251, 146, 60, 0.2);
+        }
+
+        /* Cards */
+        .content-section {
+            display: none;
+            width: 100%;
+        }
+
+        .content-section.active {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .glass-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .header-card.green {
+            border-color: rgba(74, 222, 128, 0.2);
+            background: rgba(74, 222, 128, 0.02);
+        }
+        .header-card.purple {
+            border-color: rgba(192, 132, 252, 0.2);
+            background: rgba(192, 132, 252, 0.02);
+        }
+        .header-card.blue {
+            border-color: rgba(56, 189, 248, 0.2);
+            background: rgba(56, 189, 248, 0.02);
+        }
+        .header-card.orange {
+            border-color: rgba(251, 146, 60, 0.2);
+            background: rgba(251, 146, 60, 0.02);
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .header-title.green { color: var(--matrix-green); }
+        .header-title.purple { color: var(--matrix-purple); }
+        .header-title.blue { color: var(--matrix-blue); }
+        .header-title.orange { color: var(--matrix-orange); }
+
+        .header-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .list-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .item-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .item-number.green { background: rgba(74, 222, 128, 0.1); color: var(--matrix-green); }
+        .item-number.purple { background: rgba(192, 132, 252, 0.1); color: var(--matrix-purple); }
+        .item-number.blue { background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); }
+        .item-number.orange { background: rgba(251, 146, 60, 0.1); color: var(--matrix-orange); }
+
+        .item-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        .bullet-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+        }
+
+        .bullet-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+
+        .bullet-dot.green { background: var(--matrix-green); }
+        .bullet-dot.purple { background: var(--matrix-purple); }
+        .bullet-dot.blue { background: var(--matrix-blue); }
+        .bullet-dot.orange { background: var(--matrix-orange); }
+
+        .warning-card {
+            border: 1px solid rgba(216, 166, 26, 0.2);
+            background: rgba(216, 166, 26, 0.05);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+
+        .warning-icon {
+            color: var(--matrix-yellow);
+            flex-shrink: 0;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 24px 0 8px 0;
+        }
+
+        .badge {
+            background: rgba(216, 166, 26, 0.1);
+            color: var(--matrix-yellow);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+        
+        #dynamic-container {
+            display: none;
+        }
+        
+        .loading-text {
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 60px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content-container">
+        
+        <div id="loading-state" class="loading-text">Loading your Strategy Roadmap...</div>
+        <div id="error-state" class="loading-text" style="color: #f87171; display:none;">Please complete the Learning Mode Assessment to unlock your Strategy Roadmap.</div>
+
+        <div id="dynamic-container">
+            <h1 class="page-title">Strategy Roadmap</h1>
+            <p class="page-subtitle">Rule-based recommendations engineered for your <strong id="subtitle-mode" style="color: var(--matrix-green);">Hierarchical Individual</strong> profile.</p>
+
+            <!-- Tabs -->
+            <div class="tab-container">
+                <button class="tab-btn active-green" id="tab-strengths" onclick="switchTab('strengths')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    Maximize Strengths
+                </button>
+                <button class="tab-btn" id="tab-growth" onclick="switchTab('growth')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <circle cx="12" cy="12" r="6"></circle>
+                        <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                    Targeted Growth
+                </button>
+            </div>
+
+            <!-- Maximize Strengths Content -->
+            <div class="content-section active" id="content-strengths">
+                <!-- Dynamically populated via JS -->
+            </div>
+
+            <!-- Targeted Growth Content -->
+            <div class="content-section" id="content-growth">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const roadmapData = {
+            HI: {
+                title: "📚 Hierarchical Individual",
+                color: "var(--matrix-green)",
+                colorClass: "green",
+                fullName: "Hierarchical Individual",
+                strengths: [
+                    "Use the Cornell Note-Taking System during every lecture to build organized, reviewable notes you can study solo.",
+                    "Create a personal study schedule aligned to your professor's syllabus — follow it strictly without deviation.",
+                    "After each lecture, spend 20 minutes rewriting and summarizing the lesson in your own words before opening any other material.",
+                    "Use spaced repetition (e.g., flashcards reviewed daily) to consolidate structured content delivered by your instructor."
+                ],
+                survival: [
+                    "When given massive solo reading assignments, break them into tiny milestones and discuss them with a peer afterward.",
+                    "If a professor lectures strictly from a syllabus with no interaction, invent your own questions and 'quiz' yourself silently during the lecture.",
+                    "Form a study group to synthesize structured material; let the group dynamic keep you engaged with rigid content.",
+                    "If a class requires solo memorization, use interactive or gamified flashcards rather than static textbooks."
+                ],
+                exercises: [
+                    "Practice sitting through a fully lecture-based class session with focused, solo note-taking — no peer discussion until after.",
+                    "Follow a strictly structured textbook chapter from start to finish alone, without seeking peer input mid-way.",
+                    "Draft a rigid study schedule for the week and stick to it perfectly, tracking when you feel the urge to deviate.",
+                    "Take a single complex topic and write a one-page, highly structured summary defining all its hierarchical parts."
+                ]
+            },
+            DI: {
+                title: "💡 Distributed Individual",
+                color: "var(--matrix-blue)",
+                colorClass: "blue",
+                fullName: "Distributed Individual",
+                strengths: [
+                    "Leverage multiple, varied sources (videos, podcasts, articles) for a single topic instead of relying solely on the primary textbook.",
+                    "Create mind maps to connect disparate concepts rather than using linear, traditional outlines.",
+                    "Study in short, intense bursts across different environments (library, cafe, home) to keep your brain stimulated.",
+                    "When given an open-ended project, explore unconventional angles and synthesize ideas across different disciplines."
+                ],
+                survival: [
+                    "When given an open-ended assignment, immediately impose your own strict rubric and timeline to avoid feeling lost.",
+                    "If a professor jumps between topics randomly, stick to the core syllabus and map their tangents back to the main structure.",
+                    "Limit your research sources to the primary textbook and two academic journals to prevent overwhelming yourself with options.",
+                    "When a project has no clear guidelines, ask the instructor for a specific grading rubric or example of a past successful project."
+                ],
+                exercises: [
+                    "Pick a random topic outside your syllabus and research it using only exploratory tools like Wikipedia and YouTube recommendations.",
+                    "Try studying a new concept without looking at the syllabus or textbook structure first; piece it together from raw data.",
+                    "Participate in a completely unstructured brainstorming session and force yourself to generate at least 5 wild ideas.",
+                    "Take a highly structured process and redesign it to be as flexible and non-linear as possible."
+                ]
+            },
+            HC: {
+                title: "⚙️ Hierarchical Collective",
+                color: "var(--matrix-orange)",
+                colorClass: "orange",
+                fullName: "Hierarchical Collective",
+                strengths: [
+                    "Form structured study groups with assigned roles (e.g., facilitator, timekeeper, devil's advocate) for maximum efficiency.",
+                    "Organize group study sessions around a clear agenda and specific objectives, ensuring the group stays on track.",
+                    "Use collective tools like shared Google Docs with strict formatting rules to collaboratively build study guides.",
+                    "When leading a group project, clearly define the hierarchy, delegate tasks based on strengths, and set strict deadlines."
+                ],
+                survival: [
+                    "If placed in a highly structured group, volunteer for a supportive role rather than fighting for leadership or disrupting the order.",
+                    "When a group project feels too rigid, politely suggest a 'creative brainstorming phase' before finalizing the strict execution plan.",
+                    "If peer feedback is highly formalized, treat it as a technical exercise rather than a personal critique of your unstructured ideas.",
+                    "In teacher-led group activities, focus on following the specific instructions to the letter before adding your own creative spin."
+                ],
+                exercises: [
+                    "Lead a study group session using a strict 45-minute agenda with zero off-topic conversation allowed.",
+                    "Participate in a group project where you strictly follow the leader's instructions without offering unstructured approaches.",
+                    "Create a detailed, multi-step project plan for a group assignment and hold your peers accountable to the deadlines.",
+                    "Practice giving formal, structured feedback to a peer using a provided grading rubric."
+                ]
+            },
+            DC: {
+                title: "🧠 Distributed Collective",
+                color: "var(--matrix-purple)",
+                colorClass: "purple",
+                fullName: "Distributed Collective",
+                strengths: [
+                    "Organize open-ended, free-flowing study sessions where peers can bounce ideas off each other without strict agendas.",
+                    "Use collaborative whiteboards to map out complex group projects in a non-linear, highly visual way.",
+                    "Engage heavily in peer-to-peer discussion forums, debating edge cases and exploring theoretical concepts together.",
+                    "When tackling a complex problem, crowdsource solutions from multiple diverse groups rather than relying on a single authoritative source."
+                ],
+                survival: [
+                    "In group activities, volunteer to take the 'note keeper' or 'reporter' role — it lets you contribute individually within a collective setting.",
+                    "When group work feels chaotic, propose a structured agenda at the start of the session to create the order you need.",
+                    "If peer discussion is required, prepare a personal summary first — this gives you a stable reference point during open conversations.",
+                    "Treat collaborative assignments as individual deliverables broken into parts: own your section completely before merging with the group."
+                ],
+                exercises: [
+                    "Participate in an unstructured group brainstorming session without taking notes or trying to organize the ideas.",
+                    "Join a study group that has no agenda and practice learning through open-ended conversation and debate.",
+                    "When working on a group project, allow a peer to take the project in a completely different direction than you planned.",
+                    "Engage in a peer-review session where you only provide qualitative, conversational feedback rather than using a strict rubric."
+                ]
+            }
+        };
+
+        let currentDomClass = 'green';
+        let currentWeakClass = 'purple';
+
+        function switchTab(tabId) {
+            document.getElementById('tab-strengths').className = 'tab-btn';
+            document.getElementById('tab-growth').className = 'tab-btn';
+            document.getElementById('content-strengths').classList.remove('active');
+            document.getElementById('content-growth').classList.remove('active');
+
+            if (tabId === 'strengths') {
+                document.getElementById('tab-strengths').classList.add(`active-${currentDomClass}`);
+                document.getElementById('content-strengths').classList.add('active');
+            } else if (tabId === 'growth') {
+                document.getElementById('tab-growth').classList.add(`active-${currentWeakClass}`);
+                document.getElementById('content-growth').classList.add('active');
+            }
+        }
+
+        function getPercentages(x_coord, y_coord) {
+            let xPct = ((x_coord + 5) / 10) * 100;
+            let yPct = ((5 - y_coord) / 10) * 100;
+
+            xPct = Math.max(0, Math.min(100, xPct));
+            yPct = Math.max(0, Math.min(100, yPct));
+
+            return {
+                HI: Math.round(((100 - xPct) * yPct) / 100),
+                HC: Math.round((xPct * yPct) / 100),
+                DI: Math.round(((100 - xPct) * (100 - yPct)) / 100),
+                DC: Math.round((xPct * (100 - yPct)) / 100)
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const studentId = localStorage.getItem('currentStudentId') || 10;
+            
+            try {
+                const res = await fetch(`/api/students/${studentId}/active-sessions`);
+                const activeSessions = await res.json();
+
+                if (!activeSessions || activeSessions.length === 0) {
+                    document.getElementById('loading-state').style.display = 'none';
+                    document.getElementById('error-state').style.display = 'block';
+                    return;
+                }
+
+                const session = activeSessions[0];
+                const p = getPercentages(session.x_coord || 0, session.y_coord || 0);
+
+                let domQuad = Object.keys(p).reduce((a, b) => p[a] > p[b] ? a : b);
+                let weakQuad = Object.keys(p).reduce((a, b) => p[a] < p[b] ? a : b);
+                let weakScore = p[weakQuad];
+
+                const domData = roadmapData[domQuad];
+                const weakData = roadmapData[weakQuad];
+
+                currentDomClass = domData.colorClass;
+                currentWeakClass = weakData.colorClass;
+
+                // Update subtitle
+                const subtitleMode = document.getElementById('subtitle-mode');
+                subtitleMode.textContent = domData.fullName;
+                subtitleMode.style.color = domData.color;
+
+                // Build Strengths HTML
+                let strengthsHtml = `
+                    <div class="glass-card header-card ${domData.colorClass}">
+                        <div class="header-title ${domData.colorClass}">
+                            ${domData.title}
+                        </div>
+                        <div class="header-desc">Study habits engineered to leverage your natural learning strengths.</div>
+                    </div>
+                `;
+
+                domData.strengths.forEach((item, index) => {
+                    strengthsHtml += `
+                        <div class="list-item">
+                            <div class="item-number ${domData.colorClass}">0${index + 1}</div>
+                            <div class="item-text">${item}</div>
+                        </div>
+                    `;
+                });
+
+                strengthsHtml += `
+                    <div class="warning-card">
+                        <svg class="warning-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <div>These strategies are calibrated to your <strong style="color: var(--matrix-yellow);">${domData.fullName}</strong> profile. Consistent application over the quarter will reinforce your dominant mode and improve academic efficiency.</div>
+                    </div>
+                `;
+
+                document.getElementById('content-strengths').innerHTML = strengthsHtml;
+
+                // Build Growth HTML
+                let growthHtml = `
+                    <div class="glass-card header-card ${weakData.colorClass}">
+                        <div class="header-title ${weakData.colorClass}" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <div style="display: flex; align-items: center; gap: 12px;">${weakData.title}</div>
+                            <div class="badge">Weakest Quadrant</div>
+                        </div>
+                        <div class="header-desc">Your score: <strong style="color: #fff;">${weakScore}%</strong> &middot; Strategies below are designed to develop your weakest learning dimension.</div>
+                    </div>
+                    
+                    <div class="section-label">SURVIVAL STRATEGIES — CLASSES THAT DON'T MATCH YOUR NATURAL STYLE</div>
+                `;
+
+                weakData.survival.forEach((item, index) => {
+                    growthHtml += `
+                        <div class="list-item">
+                            <div class="item-number ${weakData.colorClass}">0${index + 1}</div>
+                            <div class="item-text">${item}</div>
+                        </div>
+                    `;
+                });
+
+                growthHtml += `<div class="section-label">STRENGTHENING EXERCISES — BUILD ${weakData.fullName.toUpperCase()} CAPACITY</div>`;
+
+                weakData.exercises.forEach(item => {
+                    growthHtml += `
+                        <div class="bullet-list-item">
+                            <div class="bullet-dot ${weakData.colorClass}"></div>
+                            <div class="item-text">${item}</div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('content-growth').innerHTML = growthHtml;
+
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('dynamic-container').style.display = 'block';
+
+                switchTab('strengths'); // Initialize tabs with right colors
+            } catch (err) {
+                console.error("Failed to fetch sessions", err);
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('error-state').style.display = 'block';
+                document.getElementById('error-state').textContent = 'Error loading your data.';
+            }
+        });
+    </script>
+</body>
+
+</html>

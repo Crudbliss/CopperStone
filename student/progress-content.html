@@ -248,10 +248,43 @@
         }
 
         .q3-title {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--text-main);
         }
+
+        /* --- Graph Tooltips --- */
+        .graph-hitbox {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            transform: translateX(-50%);
+            z-index: 10;
+            cursor: pointer;
+        }
+        .graph-tooltip {
+            position: absolute;
+            background: #12181f;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 20;
+            pointer-events: none;
+            width: 150px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            font-size: 13px;
+            line-height: 1.8;
+            margin-top: -100px;
+        }
+        .graph-hitbox:hover + .graph-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
 
         .q3-subtitle {
             font-size: 12px;
@@ -516,9 +549,9 @@
                     ptsDC.push(`${x},${yDC}`);
 
                     let qTitle = h.quarter_name;
-                    if (qTitle.toLowerCase().includes('prelim')) qTitle = 'Q1';
-                    else if (qTitle.toLowerCase().includes('midterm')) qTitle = 'Q2';
-                    else if (qTitle.toLowerCase().includes('final')) qTitle = 'Q3';
+                    if (qTitle.toLowerCase().includes('prelim')) qTitle = 'Prelim';
+                    else if (qTitle.toLowerCase().includes('midterm')) qTitle = 'Midterm';
+                    else if (qTitle.toLowerCase().includes('final')) qTitle = 'Final';
                     else qTitle = 'Q4';
 
                     labelsX += `<text x="${x}" y="${H - 2}" fill="var(--text-main)" font-size="12" text-anchor="middle" font-weight="600">${qTitle}</text>`;
@@ -529,7 +562,7 @@
                         <h4 style="font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">LEARNING TIMELINE — QUADRANT DISTRIBUTION (%)</h4>
                         <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 32px;">Mode Migration Graph</h3>
                         
-                        <div style="width: 100%; height: ${H}px; position: relative; margin-bottom: 32px;">
+                        <div style="width: 100%; aspect-ratio: ${W} / ${H}; position: relative; margin-bottom: 32px;">
                             <svg width="100%" height="100%" viewBox="0 0 ${W} ${H}" style="overflow: visible;">
                                 <!-- Grid Lines -->
                                 <line x1="30" y1="${padY}" x2="${W}" y2="${padY}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
@@ -547,6 +580,17 @@
                                 
                                 <!-- X Labels -->
                                 ${labelsX}
+                                
+                                <!-- Area Fill Gradient -->
+                                <defs>
+                                    <linearGradient id="hiGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="var(--matrix-green)" stop-opacity="0.2" />
+                                        <stop offset="100%" stop-color="var(--matrix-green)" stop-opacity="0" />
+                                    </linearGradient>
+                                </defs>
+                                
+                                <!-- Area Fills -->
+                                ${history.length > 0 ? `<polygon points="${ptsHI.join(' ')} ${ptsHI[ptsHI.length-1].split(',')[0]},${H - padY} ${ptsHI[0].split(',')[0]},${H - padY}" fill="url(#hiGrad)"></polygon>` : ''}
                                 
                                 <!-- Lines -->
                                 <polyline points="${ptsHI.join(' ')}" fill="none" stroke="var(--matrix-green)" stroke-width="2.5"></polyline>
@@ -570,6 +614,32 @@
                                     `;
                 }).join('')}
                             </svg>
+                            <!-- Hitboxes and Tooltips -->
+                            ${history.map((h, i) => {
+                    let p = getPercentages(h.x_coord || 0, h.y_coord || 0);
+                    let x = history.length === 1 ? W / 2 : padX + (i / (history.length - 1)) * drawW;
+                    let leftPct = (x / W) * 100;
+                    
+                    let qTitle = h.quarter_name;
+                    if (qTitle.toLowerCase().includes('prelim')) qTitle = 'Prelim';
+                    else if (qTitle.toLowerCase().includes('midterm')) qTitle = 'Midterm';
+                    else if (qTitle.toLowerCase().includes('final')) qTitle = 'Final';
+                    else qTitle = 'Q4';
+                    
+                    // Position tooltip either left or right to avoid clipping
+                    let tipSide = leftPct > 50 ? `right: calc(100% - ${leftPct}% + 15px);` : `left: calc(${leftPct}% + 15px);`;
+                    
+                    return `
+                        <div class="graph-hitbox" style="left: ${leftPct}%;"></div>
+                        <div class="graph-tooltip" style="${tipSide} top: ${(H / 2)}px;">
+                            <div style="font-weight: 700; color: #fff; margin-bottom: 8px;">${qTitle}</div>
+                            <div style="color: var(--matrix-green);">H. Individual : ${p.HI}</div>
+                            <div style="color: var(--matrix-blue);">D. Individual : ${p.DI}</div>
+                            <div style="color: var(--matrix-orange);">H. Collective : ${p.HC}</div>
+                            <div style="color: var(--matrix-purple);">D. Collective : ${p.DC}</div>
+                        </div>
+                    `;
+                }).join('')}
                         </div>
                         
                         <!-- Legend -->
@@ -609,9 +679,9 @@
                     if (shortName === 'D. Collective') { pillColor = 'var(--matrix-purple)'; pillBg = 'rgba(192, 132, 252, 0.1)'; }
 
                     let qTitle = h.quarter_name;
-                    if (qTitle.toLowerCase().includes('prelim')) qTitle = 'Q1';
-                    else if (qTitle.toLowerCase().includes('midterm')) qTitle = 'Q2';
-                    else if (qTitle.toLowerCase().includes('final')) qTitle = 'Q3';
+                    if (qTitle.toLowerCase().includes('prelim')) qTitle = 'Prelim';
+                    else if (qTitle.toLowerCase().includes('midterm')) qTitle = 'Midterm';
+                    else if (qTitle.toLowerCase().includes('final')) qTitle = 'Final';
                     else qTitle = 'Q4';
 
                     html += `
