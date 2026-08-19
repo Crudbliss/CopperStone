@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Modules Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #060f17;
+            --bg-panel: #0a1e2d;
+            --bg-card: #12181f;
+            --bg-card-hover: #18222c;
+            --matrix-yellow: #d8a61a;
+            --matrix-yellow-hover: #eab308;
+            --matrix-green: #4ade80;
+            --matrix-blue: #38bdf8;
+            --matrix-orange: #fb923c;
+            --matrix-purple: #c084fc;
+            --text-main: #ffffff;
+            --text-muted: #8b9eb0;
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(216, 166, 26, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: transparent;
+            color: var(--text-main);
+            padding: 24px 32px;
+        }
+
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Top Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--matrix-yellow);
+            color: #060f17;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--matrix-yellow-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border-light);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Stats Strip */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .stat-val {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        /* Quadrant Filter Pills */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .filter-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-pill:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: var(--text-main);
+        }
+
+        .filter-pill.active {
+            background: rgba(216, 166, 26, 0.15);
+            border-color: var(--matrix-yellow);
+            color: var(--matrix-yellow);
+        }
+
+        .filter-pill.active-hi {
+            background: rgba(74, 222, 128, 0.15);
+            border-color: var(--matrix-green);
+            color: var(--matrix-green);
+        }
+
+        .filter-pill.active-di {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: var(--matrix-blue);
+            color: var(--matrix-blue);
+        }
+
+        .filter-pill.active-hc {
+            background: rgba(251, 146, 60, 0.15);
+            border-color: var(--matrix-orange);
+            color: var(--matrix-orange);
+        }
+
+        .filter-pill.active-dc {
+            background: rgba(192, 132, 252, 0.15);
+            border-color: var(--matrix-purple);
+            color: var(--matrix-purple);
+        }
+
+        .count-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        /* Modules Grid */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.18);
+            background: var(--bg-card-hover);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .badge-quadrant {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-hi { background: rgba(74, 222, 128, 0.1); color: var(--matrix-green); border: 1px solid rgba(74, 222, 128, 0.2); }
+        .badge-di { background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); border: 1px solid rgba(56, 189, 248, 0.2); }
+        .badge-hc { background: rgba(251, 146, 60, 0.1); color: var(--matrix-orange); border: 1px solid rgba(251, 146, 60, 0.2); }
+        .badge-dc { background: rgba(192, 132, 252, 0.1); color: var(--matrix-purple); border: 1px solid rgba(192, 132, 252, 0.2); }
+        .badge-all { background: rgba(216, 166, 26, 0.1); color: var(--matrix-yellow); border: 1px solid rgba(216, 166, 26, 0.2); }
+
+        .meta-tags {
+            display: flex;
+            gap: 6px;
+        }
+
+        .meta-tag {
+            font-size: 10px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        .module-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .module-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .chapter-count {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Modal Base */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .modal-content.large-modal {
+            max-width: 1050px;
+            height: 88vh;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .close-modal-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-modal-btn:hover {
+            color: #fff;
+        }
+
+        /* Nav Tabs in Customizer Modal */
+        .customizer-nav {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+
+        .customizer-tab-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .customizer-tab-btn.active {
+            background: rgba(216, 166, 26, 0.15);
+            border-color: var(--matrix-yellow);
+            color: var(--matrix-yellow);
+        }
+
+        /* Form Controls */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            border-color: var(--matrix-yellow);
+        }
+
+        .form-select option {
+            color: #000000;
+            background-color: #ffffff;
+            font-weight: 500;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Customizer Workspace (Two Columns) */
+        .customizer-workspace {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            flex: 1;
+            overflow: hidden;
+            min-height: 480px;
+        }
+
+        .customizer-sidebar {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+        }
+
+        .customizer-list-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: var(--text-main);
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .customizer-list-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .customizer-list-item.active {
+            background: rgba(216, 166, 26, 0.15);
+            border-color: var(--matrix-yellow);
+            color: var(--matrix-yellow);
+        }
+
+        .customizer-editor-pane {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+        }
+
+        .video-responsive {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+
+        .video-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .pdf-preview-frame {
+            width: 100%;
+            height: 260px;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            background: #1e293b;
+        }
+
+        /* Dynamic Options / Matching Rows */
+        .dynamic-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .dynamic-row input[type="text"] {
+            flex: 1;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--bg-card);
+            border-radius: 14px;
+            border: 1px solid var(--border-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        
+        <!-- Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">
+                    <span>📚</span> Learning Modules & Activities
+                </h1>
+                <p class="page-subtitle">Design self-paced learning tracks, interactive chapters (video/PDF), and custom quizzes (True/False, Multiple Choice, Matching).</p>
+            </div>
+            <button class="btn-primary" onclick="openCreateModuleModal()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Create New Module
+            </button>
+        </div>
+
+        <!-- Metrics Strip -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-label">Total Modules</span>
+                <span class="stat-val" id="metric-total-modules">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Total Chapters</span>
+                <span class="stat-val" id="metric-total-chapters">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Total Quiz Questions</span>
+                <span class="stat-val" style="color: var(--matrix-yellow);" id="metric-total-questions">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Quadrant Tracks</span>
+                <span class="stat-val" style="color: var(--matrix-green);" id="metric-quadrant-tracks">4 / 4</span>
+            </div>
+        </div>
+
+        <!-- Quadrant Filters -->
+        <div class="filter-bar">
+            <button class="filter-pill active" onclick="setFilter('All', this)">
+                <span>All Modules</span>
+                <span class="count-badge" id="pill-count-all">0</span>
+            </button>
+            <button class="filter-pill" onclick="setFilter('Hierarchical Individual', this)">
+                <span style="color: var(--matrix-green);">📚 Hierarchical Individual</span>
+                <span class="count-badge" id="pill-count-hi">0</span>
+            </button>
+            <button class="filter-pill" onclick="setFilter('Distributed Individual', this)">
+                <span style="color: var(--matrix-blue);">💡 Distributed Individual</span>
+                <span class="count-badge" id="pill-count-di">0</span>
+            </button>
+            <button class="filter-pill" onclick="setFilter('Hierarchical Collective', this)">
+                <span style="color: var(--matrix-orange);">⚙️ Hierarchical Collective</span>
+                <span class="count-badge" id="pill-count-hc">0</span>
+            </button>
+            <button class="filter-pill" onclick="setFilter('Distributed Collective', this)">
+                <span style="color: var(--matrix-purple);">🧠 Distributed Collective</span>
+                <span class="count-badge" id="pill-count-dc">0</span>
+            </button>
+        </div>
+
+        <!-- Modules Grid -->
+        <div id="modules-list" class="modules-grid">
+            <div class="empty-state">Loading modules...</div>
+        </div>
+
+    </div>
+
+    <!-- 1. CREATE / EDIT MODULE MODAL -->
+    <div id="module-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-module-title-heading">Create New Learning Module</h3>
+                <button class="close-modal-btn" onclick="closeModuleModal()">&times;</button>
+            </div>
+            <form id="module-form" onsubmit="handleSaveModule(event)">
+                <input type="hidden" id="edit-module-id" value="">
+                
+                <div class="form-group">
+                    <label class="form-label">Module Title</label>
+                    <input type="text" id="module-title" class="form-input" placeholder="e.g. Master Cornell Note-Taking" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description / Summary</label>
+                    <textarea id="module-desc" class="form-textarea" placeholder="Provide an overview of what the learner will discover in this module..." rows="3"></textarea>
+                </div>
+
+                <div class="grid-2-col">
+                    <div class="form-group">
+                        <label class="form-label">Target Quadrant</label>
+                        <select id="module-quadrant" class="form-select">
+                            <option value="Hierarchical Individual">📚 Hierarchical Individual</option>
+                            <option value="Distributed Individual">💡 Distributed Individual</option>
+                            <option value="Hierarchical Collective">⚙️ Hierarchical Collective</option>
+                            <option value="Distributed Collective">🧠 Distributed Collective</option>
+                            <option value="All">🌟 Universal / All Quadrants</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Difficulty Level</label>
+                        <select id="module-difficulty" class="form-select">
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2-col">
+                    <div class="form-group">
+                        <label class="form-label">Topic Tag</label>
+                        <input type="text" id="module-topic" class="form-input" placeholder="e.g. Note-Taking, Socratic Method, Mind Mapping">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Estimated Time</label>
+                        <input type="text" id="module-time" class="form-input" placeholder="e.g. 45 min">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px;">
+                    <button type="button" class="btn-secondary" onclick="closeModuleModal()">Cancel</button>
+                    <button type="submit" class="btn-primary" id="btn-save-module-submit">Save Module</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. MODULE CUSTOMIZER MODAL (CHAPTERS + QUIZ BUILDER) -->
+    <div id="customizer-modal" class="modal-overlay">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <div>
+                    <span id="customizer-module-badge" class="badge-quadrant badge-hi">HI</span>
+                    <h3 class="modal-title" style="margin-top: 4px;" id="customizer-module-title">Customize Module Content</h3>
+                </div>
+                <button class="close-modal-btn" onclick="closeCustomizerModal()">&times;</button>
+            </div>
+
+            <!-- Customizer Tab Switcher -->
+            <div class="customizer-nav">
+                <button class="customizer-tab-btn active" id="tab-btn-chapters" onclick="switchCustomizerTab('chapters')">
+                    <span>📖 Chapters (Text, PDF, Video)</span>
+                </button>
+                <button class="customizer-tab-btn" id="tab-btn-quiz" onclick="switchCustomizerTab('quiz')">
+                    <span>🎯 Quiz & Activities (T/F, Multiple Choice, Matching)</span>
+                </button>
+            </div>
+
+            <!-- SECTION A: CHAPTERS BUILDER -->
+            <div id="pane-chapters" class="customizer-workspace">
+                <!-- Sidebar: Chapters List -->
+                <div class="customizer-sidebar">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Chapters</span>
+                        <button class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="initNewChapterForm()">+ Add</button>
+                    </div>
+                    <div id="chapters-list-sidebar" style="display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Chapters populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Main Area: Chapter Editor Form & Preview -->
+                <div class="customizer-editor-pane">
+                    <form id="chapter-form" onsubmit="handleSaveChapter(event)">
+                        <input type="hidden" id="edit-chapter-id" value="">
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4 id="chapter-editor-heading" style="font-size: 15px; font-weight: 700;">Add / Edit Chapter</h4>
+                            <button type="button" id="btn-delete-chapter" class="btn-danger" style="display: none;" onclick="handleDeleteCurrentChapter()">Delete Chapter</button>
+                        </div>
+
+                        <div class="grid-2-col">
+                            <div class="form-group">
+                                <label class="form-label">Chapter Title</label>
+                                <input type="text" id="chapter-title" class="form-input" placeholder="e.g. Chapter 1: Foundations" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Sequence Order</label>
+                                <input type="number" id="chapter-order" class="form-input" value="1" min="1" required>
+                            </div>
+                        </div>
+
+                        <!-- 1. Text Content -->
+                        <div class="form-group">
+                            <label class="form-label">Lecture Notes & Core Text</label>
+                            <textarea id="chapter-text" class="form-textarea" rows="4" placeholder="Write comprehensive study notes and explanations..."></textarea>
+                        </div>
+
+                        <!-- 2. YouTube Video Embed -->
+                        <div class="form-group">
+                            <label class="form-label">YouTube Video Embed (Optional)</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="chapter-youtube" class="form-input" style="flex: 1;" placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..." oninput="updateYoutubePreview()">
+                                <button type="button" class="btn-secondary" onclick="updateYoutubePreview()">Preview</button>
+                            </div>
+                            <div id="youtube-preview-container" style="display: none; margin-top: 8px;">
+                                <div class="video-responsive">
+                                    <iframe id="youtube-iframe-preview" src="" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. PDF Document Attachment -->
+                        <div class="form-group">
+                            <label class="form-label">PDF Reference Material (Optional)</label>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <input type="text" id="chapter-pdf" class="form-input" style="flex: 1;" placeholder="/public/uploads/modules/... or https://..." oninput="updatePdfPreview()">
+                                <label class="btn-secondary" style="cursor: pointer; margin: 0;">
+                                    Upload PDF
+                                    <input type="file" id="chapter-pdf-file" accept="application/pdf" style="display: none;" onchange="handlePdfFileUpload(event)">
+                                </label>
+                            </div>
+                            <div id="pdf-preview-container" style="display: none; margin-top: 8px;">
+                                <iframe id="pdf-iframe-preview" class="pdf-preview-frame" src=""></iframe>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+                            <button type="submit" class="btn-primary" id="btn-save-chapter">Save Chapter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SECTION B: QUIZ & ACTIVITIES BUILDER -->
+            <div id="pane-quiz" class="customizer-workspace" style="display: none;">
+                <!-- Sidebar: Questions List -->
+                <div class="customizer-sidebar">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Quiz Questions</span>
+                        <button class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="initNewQuestionForm()">+ Add</button>
+                    </div>
+                    <div id="questions-list-sidebar" style="display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Questions populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Main Area: Question Editor Form -->
+                <div class="customizer-editor-pane">
+                    <form id="question-form" onsubmit="handleSaveQuestion(event)">
+                        <input type="hidden" id="edit-question-id" value="">
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4 id="question-editor-heading" style="font-size: 15px; font-weight: 700;">Add / Edit Quiz Question</h4>
+                            <button type="button" id="btn-delete-question" class="btn-danger" style="display: none;" onclick="handleDeleteCurrentQuestion()">Delete Question</button>
+                        </div>
+
+                        <div class="grid-2-col">
+                            <div class="form-group">
+                                <label class="form-label">Question Type</label>
+                                <select id="question-type-select" class="form-select" onchange="renderQuestionTypeFields()">
+                                    <option value="true_false">🔘 True or False</option>
+                                    <option value="multiple_choice">📋 Multiple Choice</option>
+                                    <option value="matching">🔗 Match the Answer / Pairs</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Sequence Order</label>
+                                <input type="number" id="question-order" class="form-input" value="1" min="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Question Prompt / Title</label>
+                            <input type="text" id="question-text" class="form-input" placeholder="e.g. Which column in Cornell notes contains summary keywords?" required>
+                        </div>
+
+                        <!-- Dynamic Type Sub-forms -->
+                        <div id="question-type-fields-container">
+                            <!-- Populated via JS based on type -->
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Explanation / Feedback (Shown after student answers)</label>
+                            <textarea id="question-explanation" class="form-textarea" rows="2" placeholder="e.g. The left Cue column is dedicated to keywords and study questions."></textarea>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+                            <button type="submit" class="btn-primary" id="btn-save-question">Save Question</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let allModules = [];
+        let currentFilter = 'All';
+        let activeModule = null;
+        let activeChapter = null;
+        let activeQuestion = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadModules();
+        });
+
+        async function loadModules() {
+            try {
+                const res = await fetch('/api/modules');
+                allModules = await res.json();
+                renderMetrics();
+                renderModulesGrid();
+            } catch (err) {
+                console.error("Error loading modules:", err);
+                document.getElementById('modules-list').innerHTML = '<div class="empty-state" style="color: #ef4444;">Failed to load modules from server.</div>';
+            }
+        }
+
+        function renderMetrics() {
+            const totalModules = allModules.length;
+            let totalChapters = 0;
+            let hiCount = 0, diCount = 0, hcCount = 0, dcCount = 0;
+
+            allModules.forEach(m => {
+                totalChapters += (m.chapter_count || 0);
+                const q = m.quadrant_category || '';
+                if (q === 'Hierarchical Individual') hiCount++;
+                if (q === 'Distributed Individual') diCount++;
+                if (q === 'Hierarchical Collective') hcCount++;
+                if (q === 'Distributed Collective') dcCount++;
+            });
+
+            document.getElementById('metric-total-modules').textContent = totalModules;
+            document.getElementById('metric-total-chapters').textContent = totalChapters;
+            document.getElementById('metric-total-questions').textContent = (totalChapters * 2); // Dynamic estimation or query
+
+            document.getElementById('pill-count-all').textContent = totalModules;
+            document.getElementById('pill-count-hi').textContent = hiCount;
+            document.getElementById('pill-count-di').textContent = diCount;
+            document.getElementById('pill-count-hc').textContent = hcCount;
+            document.getElementById('pill-count-dc').textContent = dcCount;
+        }
+
+        function setFilter(quadrant, btn) {
+            currentFilter = quadrant;
+            document.querySelectorAll('.filter-pill').forEach(p => p.className = 'filter-pill');
+            
+            if (quadrant === 'All') btn.classList.add('active');
+            else if (quadrant === 'Hierarchical Individual') btn.classList.add('active-hi');
+            else if (quadrant === 'Distributed Individual') btn.classList.add('active-di');
+            else if (quadrant === 'Hierarchical Collective') btn.classList.add('active-hc');
+            else if (quadrant === 'Distributed Collective') btn.classList.add('active-dc');
+
+            renderModulesGrid();
+        }
+
+        function getQuadrantBadge(quadrant) {
+            if (quadrant === 'Hierarchical Individual') return '<span class="badge-quadrant badge-hi">📚 Hierarchical Individual</span>';
+            if (quadrant === 'Distributed Individual') return '<span class="badge-quadrant badge-di">💡 Distributed Individual</span>';
+            if (quadrant === 'Hierarchical Collective') return '<span class="badge-quadrant badge-hc">⚙️ Hierarchical Collective</span>';
+            if (quadrant === 'Distributed Collective') return '<span class="badge-quadrant badge-dc">🧠 Distributed Collective</span>';
+            return '<span class="badge-quadrant badge-all">🌟 Universal Module</span>';
+        }
+
+        function renderModulesGrid() {
+            const container = document.getElementById('modules-list');
+            const filtered = currentFilter === 'All' ? allModules : allModules.filter(m => m.quadrant_category === currentFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div style="font-size: 36px; margin-bottom: 12px;">📂</div>
+                        <h3 style="font-size: 16px; margin-bottom: 6px;">No modules found</h3>
+                        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">Create your first module for this quadrant to get started.</p>
+                        <button class="btn-primary" onclick="openCreateModuleModal()">+ Create Module</button>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(m => {
+                const badge = getQuadrantBadge(m.quadrant_category);
+                const chapterCount = m.chapter_count || 0;
+                return `
+                    <div class="module-card">
+                        <div>
+                            <div class="card-top">
+                                ${badge}
+                                <div class="meta-tags">
+                                    <span class="meta-tag">${m.difficulty || 'Beginner'}</span>
+                                    <span class="meta-tag">${m.topic || 'General'}</span>
+                                </div>
+                            </div>
+                            <h3 class="module-title">${escapeHtml(m.title)}</h3>
+                            <p class="module-desc">${escapeHtml(m.description || 'No description provided.')}</p>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <div class="chapter-count">
+                                <span>📖 ${chapterCount} ${chapterCount === 1 ? 'Chapter' : 'Chapters'}</span>
+                                <span>&middot;</span>
+                                <span>⏱️ ${m.estimated_time || '30 min'}</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="openModuleCustomizer(${m.id})">
+                                    Customize Content
+                                </button>
+                                <button class="btn-secondary" style="padding: 6px 10px;" onclick="openEditModuleModal(${m.id})" title="Edit Module Info">✏️</button>
+                                <button class="btn-danger" style="padding: 6px 10px;" onclick="handleDeleteModule(${m.id})" title="Delete Module">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /* --- MODULE CRUD --- */
+        function openCreateModuleModal() {
+            document.getElementById('edit-module-id').value = '';
+            document.getElementById('modal-module-title-heading').textContent = 'Create New Learning Module';
+            document.getElementById('module-title').value = '';
+            document.getElementById('module-desc').value = '';
+            document.getElementById('module-quadrant').value = currentFilter !== 'All' ? currentFilter : 'Hierarchical Individual';
+            document.getElementById('module-difficulty').value = 'Beginner';
+            document.getElementById('module-topic').value = '';
+            document.getElementById('module-time').value = '45 min';
+            document.getElementById('module-modal').style.display = 'flex';
+        }
+
+        function openEditModuleModal(id) {
+            const m = allModules.find(item => item.id === id);
+            if (!m) return;
+            document.getElementById('edit-module-id').value = m.id;
+            document.getElementById('modal-module-title-heading').textContent = 'Edit Module Details';
+            document.getElementById('module-title').value = m.title || '';
+            document.getElementById('module-desc').value = m.description || '';
+            document.getElementById('module-quadrant').value = m.quadrant_category || 'All';
+            document.getElementById('module-difficulty').value = m.difficulty || 'Beginner';
+            document.getElementById('module-topic').value = m.topic || '';
+            document.getElementById('module-time').value = m.estimated_time || '30 min';
+            document.getElementById('module-modal').style.display = 'flex';
+        }
+
+        function closeModuleModal() {
+            document.getElementById('module-modal').style.display = 'none';
+        }
+
+        async function handleSaveModule(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-module-id').value;
+            const payload = {
+                title: document.getElementById('module-title').value,
+                description: document.getElementById('module-desc').value,
+                quadrant_category: document.getElementById('module-quadrant').value,
+                difficulty: document.getElementById('module-difficulty').value,
+                topic: document.getElementById('module-topic').value,
+                estimated_time: document.getElementById('module-time').value
+            };
+
+            try {
+                let res;
+                if (editId) {
+                    res = await fetch(`/api/modules/${editId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    res = await fetch('/api/modules', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+
+                if (res.ok) {
+                    closeModuleModal();
+                    await loadModules();
+                } else {
+                    const errData = await res.json();
+                    alert(errData.error || 'Failed to save module');
+                }
+            } catch(err) {
+                console.error("Save module error:", err);
+            }
+        }
+
+        async function handleDeleteModule(id) {
+            if (!confirm("Are you sure you want to delete this module and all its chapters & quiz questions?")) return;
+            try {
+                const res = await fetch(`/api/modules/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    await loadModules();
+                } else {
+                    alert("Failed to delete module");
+                }
+            } catch(err) {
+                console.error("Delete module error:", err);
+            }
+        }
+
+        /* --- MODULE CUSTOMIZER (CHAPTERS & QUIZZES) --- */
+        async function openModuleCustomizer(moduleId) {
+            try {
+                const res = await fetch(`/api/modules/${moduleId}`);
+                if (!res.ok) throw new Error("Failed to fetch module");
+                activeModule = await res.json();
+
+                document.getElementById('customizer-module-title').textContent = activeModule.title;
+                const badgeEl = document.getElementById('customizer-module-badge');
+                badgeEl.outerHTML = getQuadrantBadge(activeModule.quadrant_category);
+
+                switchCustomizerTab('chapters');
+                renderChaptersSidebar();
+                initNewChapterForm();
+
+                document.getElementById('customizer-modal').style.display = 'flex';
+            } catch(err) {
+                console.error("Error opening customizer:", err);
+                alert("Failed to load module content");
+            }
+        }
+
+        function closeCustomizerModal() {
+            document.getElementById('customizer-modal').style.display = 'none';
+            loadModules();
+        }
+
+        function switchCustomizerTab(tab) {
+            document.getElementById('tab-btn-chapters').className = 'customizer-tab-btn' + (tab === 'chapters' ? ' active' : '');
+            document.getElementById('tab-btn-quiz').className = 'customizer-tab-btn' + (tab === 'quiz' ? ' active' : '');
+            
+            document.getElementById('pane-chapters').style.display = tab === 'chapters' ? 'grid' : 'none';
+            document.getElementById('pane-quiz').style.display = tab === 'quiz' ? 'grid' : 'none';
+
+            if (tab === 'quiz') {
+                renderQuestionsSidebar();
+                initNewQuestionForm();
+            }
+        }
+
+        /* --- CHAPTERS MANAGEMENT --- */
+        function renderChaptersSidebar() {
+            const container = document.getElementById('chapters-list-sidebar');
+            const chapters = activeModule.chapters || [];
+
+            if (chapters.length === 0) {
+                container.innerHTML = '<div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 16px;">No chapters yet.<br>Add your first chapter below!</div>';
+                return;
+            }
+
+            container.innerHTML = chapters.map((ch, idx) => {
+                const isActive = activeChapter && activeChapter.id === ch.id;
+                return `
+                    <button class="customizer-list-item ${isActive ? 'active' : ''}" onclick="selectChapter(${ch.id})">
+                        <span>${idx + 1}. ${escapeHtml(ch.title)}</span>
+                        <span style="font-size: 11px; opacity: 0.6;">✏️</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function initNewChapterForm() {
+            activeChapter = null;
+            document.getElementById('edit-chapter-id').value = '';
+            document.getElementById('chapter-editor-heading').textContent = 'Add New Chapter';
+            document.getElementById('chapter-title').value = '';
+            const nextOrder = (activeModule.chapters ? activeModule.chapters.length : 0) + 1;
+            document.getElementById('chapter-order').value = nextOrder;
+            document.getElementById('chapter-text').value = '';
+            document.getElementById('chapter-youtube').value = '';
+            document.getElementById('chapter-pdf').value = '';
+            document.getElementById('btn-delete-chapter').style.display = 'none';
+            document.getElementById('btn-save-chapter').textContent = 'Save New Chapter';
+
+            updateYoutubePreview();
+            updatePdfPreview();
+            renderChaptersSidebar();
+        }
+
+        function selectChapter(chapterId) {
+            const ch = (activeModule.chapters || []).find(c => c.id === chapterId);
+            if (!ch) return;
+            activeChapter = ch;
+
+            document.getElementById('edit-chapter-id').value = ch.id;
+            document.getElementById('chapter-editor-heading').textContent = `Edit: ${ch.title}`;
+            document.getElementById('chapter-title').value = ch.title || '';
+            document.getElementById('chapter-order').value = ch.chapter_order || 1;
+            document.getElementById('chapter-text').value = ch.text_content || '';
+            document.getElementById('chapter-youtube').value = ch.youtube_url || '';
+            document.getElementById('chapter-pdf').value = ch.pdf_url || '';
+            document.getElementById('btn-delete-chapter').style.display = 'inline-block';
+            document.getElementById('btn-save-chapter').textContent = 'Update Chapter';
+
+            updateYoutubePreview();
+            updatePdfPreview();
+            renderChaptersSidebar();
+        }
+
+        function formatYoutubeEmbedUrl(url) {
+            if (!url || url.trim() === '') return '';
+            let videoId = '';
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            if (match && match[1]) {
+                videoId = match[1];
+                return `https://www.youtube.com/embed/${videoId}`;
+            }
+            return url;
+        }
+
+        function updateYoutubePreview() {
+            const rawUrl = document.getElementById('chapter-youtube').value.trim();
+            const previewContainer = document.getElementById('youtube-preview-container');
+            const iframe = document.getElementById('youtube-iframe-preview');
+
+            if (rawUrl) {
+                iframe.src = formatYoutubeEmbedUrl(rawUrl);
+                previewContainer.style.display = 'block';
+            } else {
+                iframe.src = '';
+                previewContainer.style.display = 'none';
+            }
+        }
+
+        function updatePdfPreview() {
+            const pdfUrl = document.getElementById('chapter-pdf').value.trim();
+            const previewContainer = document.getElementById('pdf-preview-container');
+            const iframe = document.getElementById('pdf-iframe-preview');
+
+            if (pdfUrl) {
+                iframe.src = pdfUrl;
+                previewContainer.style.display = 'block';
+            } else {
+                iframe.src = '';
+                previewContainer.style.display = 'none';
+            }
+        }
+
+        async function handlePdfFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('pdf_file', file);
+
+            try {
+                const res = await fetch('/api/upload/pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (res.ok && data.file_url) {
+                    document.getElementById('chapter-pdf').value = data.file_url;
+                    updatePdfPreview();
+                } else {
+                    alert(data.error || 'Failed to upload PDF');
+                }
+            } catch(err) {
+                console.error("PDF upload error:", err);
+            }
+        }
+
+        async function handleSaveChapter(e) {
+            e.preventDefault();
+            if (!activeModule) return;
+
+            const editChapterId = document.getElementById('edit-chapter-id').value;
+            const payload = {
+                title: document.getElementById('chapter-title').value,
+                chapter_order: parseInt(document.getElementById('chapter-order').value) || 1,
+                text_content: document.getElementById('chapter-text').value,
+                youtube_url: document.getElementById('chapter-youtube').value,
+                pdf_url: document.getElementById('chapter-pdf').value
+            };
+
+            try {
+                let res;
+                if (editChapterId) {
+                    res = await fetch(`/api/chapters/${editChapterId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    res = await fetch(`/api/modules/${activeModule.id}/chapters`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+
+                if (res.ok) {
+                    const modRes = await fetch(`/api/modules/${activeModule.id}`);
+                    activeModule = await modRes.json();
+                    renderChaptersSidebar();
+                    initNewChapterForm();
+                } else {
+                    const errData = await res.json();
+                    alert(errData.error || 'Failed to save chapter');
+                }
+            } catch(err) {
+                console.error("Save chapter error:", err);
+            }
+        }
+
+        async function handleDeleteCurrentChapter() {
+            if (!activeChapter) return;
+            if (!confirm(`Delete chapter "${activeChapter.title}"?`)) return;
+
+            try {
+                const res = await fetch(`/api/chapters/${activeChapter.id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    const modRes = await fetch(`/api/modules/${activeModule.id}`);
+                    activeModule = await modRes.json();
+                    renderChaptersSidebar();
+                    initNewChapterForm();
+                } else {
+                    alert("Failed to delete chapter");
+                }
+            } catch(err) {
+                console.error("Delete chapter error:", err);
+            }
+        }
+
+        /* --- QUIZ & QUESTIONS MANAGEMENT --- */
+        function renderQuestionsSidebar() {
+            const container = document.getElementById('questions-list-sidebar');
+            const questions = activeModule.questions || [];
+
+            if (questions.length === 0) {
+                container.innerHTML = '<div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 16px;">No questions added yet.<br>Create your first quiz question!</div>';
+                return;
+            }
+
+            container.innerHTML = questions.map((q, idx) => {
+                const isActive = activeQuestion && activeQuestion.id === q.id;
+                let typeIcon = '🔘';
+                if (q.question_type === 'multiple_choice') typeIcon = '📋';
+                if (q.question_type === 'matching') typeIcon = '🔗';
+
+                return `
+                    <button class="customizer-list-item ${isActive ? 'active' : ''}" onclick="selectQuestion(${q.id})">
+                        <span>${idx + 1}. ${typeIcon} ${escapeHtml(q.question_text)}</span>
+                        <span style="font-size: 11px; opacity: 0.6;">✏️</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function initNewQuestionForm() {
+            activeQuestion = null;
+            document.getElementById('edit-question-id').value = '';
+            document.getElementById('question-editor-heading').textContent = 'Add New Quiz Question';
+            document.getElementById('question-type-select').value = 'true_false';
+            const nextOrder = (activeModule.questions ? activeModule.questions.length : 0) + 1;
+            document.getElementById('question-order').value = nextOrder;
+            document.getElementById('question-text').value = '';
+            document.getElementById('question-explanation').value = '';
+            document.getElementById('btn-delete-question').style.display = 'none';
+            document.getElementById('btn-save-question').textContent = 'Save New Question';
+
+            renderQuestionTypeFields();
+            renderQuestionsSidebar();
+        }
+
+        function selectQuestion(questionId) {
+            const q = (activeModule.questions || []).find(item => item.id === questionId);
+            if (!q) return;
+            activeQuestion = q;
+
+            document.getElementById('edit-question-id').value = q.id;
+            document.getElementById('question-editor-heading').textContent = `Edit Question #${q.question_order || 1}`;
+            document.getElementById('question-type-select').value = q.question_type || 'true_false';
+            document.getElementById('question-order').value = q.question_order || 1;
+            document.getElementById('question-text').value = q.question_text || '';
+            document.getElementById('question-explanation').value = q.explanation || '';
+            document.getElementById('btn-delete-question').style.display = 'inline-block';
+            document.getElementById('btn-save-question').textContent = 'Update Question';
+
+            renderQuestionTypeFields(q);
+            renderQuestionsSidebar();
+        }
+
+        function renderQuestionTypeFields(existingData = null) {
+            const type = document.getElementById('question-type-select').value;
+            const container = document.getElementById('question-type-fields-container');
+
+            if (type === 'true_false') {
+                const val = existingData ? String(existingData.correct_answer).toLowerCase() : 'true';
+                container.innerHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Correct Answer</label>
+                        <div style="display: flex; gap: 20px; align-items: center; padding: 6px 0;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--matrix-green); font-weight: 700; font-size: 13px;">
+                                <input type="radio" name="tf_answer" value="True" ${val === 'true' ? 'checked' : ''}> True
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #ef4444; font-weight: 700; font-size: 13px;">
+                                <input type="radio" name="tf_answer" value="False" ${val === 'false' ? 'checked' : ''}> False
+                            </label>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'multiple_choice') {
+                const options = (existingData && existingData.options && existingData.options.length > 0) 
+                    ? existingData.options 
+                    : ['Option A', 'Option B', 'Option C', 'Option D'];
+                const correct = existingData ? existingData.correct_answer : options[0];
+
+                let optionsHtml = `
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <label class="form-label">Multiple Choice Options (Select radio for correct answer)</label>
+                            <button type="button" class="btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="addMcOptionRow()">+ Add Choice</button>
+                        </div>
+                        <div id="mc-options-list">
+                `;
+
+                options.forEach((opt, idx) => {
+                    const isChecked = opt === correct || idx === 0;
+                    optionsHtml += `
+                        <div class="dynamic-row mc-row">
+                            <input type="radio" name="mc_correct" value="${idx}" ${isChecked ? 'checked' : ''} title="Mark as correct answer">
+                            <input type="text" class="form-input mc-opt-input" value="${escapeHtml(opt)}" placeholder="Option text..." required>
+                            <button type="button" class="btn-danger" style="padding: 6px 10px;" onclick="this.parentElement.remove()">✕</button>
+                        </div>
+                    `;
+                });
+
+                optionsHtml += `</div></div>`;
+                container.innerHTML = optionsHtml;
+
+            } else if (type === 'matching') {
+                let pairs = (existingData && existingData.options && existingData.options.length > 0)
+                    ? existingData.options
+                    : [
+                        { left: 'Hierarchical Individual', right: 'Solo, linear and structured' },
+                        { left: 'Distributed Collective', right: 'Peer-to-peer and decentralized' }
+                    ];
+
+                let pairsHtml = `
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <label class="form-label">Matching Pairs (Left Item $\\leftrightarrow$ Right Match)</label>
+                            <button type="button" class="btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="addMatchingPairRow()">+ Add Pair</button>
+                        </div>
+                        <div id="matching-pairs-list">
+                `;
+
+                pairs.forEach(pair => {
+                    pairsHtml += `
+                        <div class="dynamic-row matching-row">
+                            <input type="text" class="form-input match-left" value="${escapeHtml(pair.left || '')}" placeholder="Left Term / Concept..." required>
+                            <span style="color: var(--matrix-yellow); font-weight: 800;">↔</span>
+                            <input type="text" class="form-input match-right" value="${escapeHtml(pair.right || '')}" placeholder="Right Match / Definition..." required>
+                            <button type="button" class="btn-danger" style="padding: 6px 10px;" onclick="this.parentElement.remove()">✕</button>
+                        </div>
+                    `;
+                });
+
+                pairsHtml += `</div></div>`;
+                container.innerHTML = pairsHtml;
+            }
+        }
+
+        function addMcOptionRow() {
+            const list = document.getElementById('mc-options-list');
+            const rowCount = list.children.length;
+            const div = document.createElement('div');
+            div.className = 'dynamic-row mc-row';
+            div.innerHTML = `
+                <input type="radio" name="mc_correct" value="${rowCount}">
+                <input type="text" class="form-input mc-opt-input" value="" placeholder="Option ${String.fromCharCode(65 + rowCount)}..." required>
+                <button type="button" class="btn-danger" style="padding: 6px 10px;" onclick="this.parentElement.remove()">✕</button>
+            `;
+            list.appendChild(div);
+        }
+
+        function addMatchingPairRow() {
+            const list = document.getElementById('matching-pairs-list');
+            const div = document.createElement('div');
+            div.className = 'dynamic-row matching-row';
+            div.innerHTML = `
+                <input type="text" class="form-input match-left" value="" placeholder="Left Term..." required>
+                <span style="color: var(--matrix-yellow); font-weight: 800;">↔</span>
+                <input type="text" class="form-input match-right" value="" placeholder="Right Match..." required>
+                <button type="button" class="btn-danger" style="padding: 6px 10px;" onclick="this.parentElement.remove()">✕</button>
+            `;
+            list.appendChild(div);
+        }
+
+        async function handleSaveQuestion(e) {
+            e.preventDefault();
+            if (!activeModule) return;
+
+            const editQuestionId = document.getElementById('edit-question-id').value;
+            const qType = document.getElementById('question-type-select').value;
+            const qText = document.getElementById('question-text').value;
+            const qOrder = parseInt(document.getElementById('question-order').value) || 1;
+            const qExpl = document.getElementById('question-explanation').value;
+
+            let options = [];
+            let correctAnswer = '';
+
+            if (qType === 'true_false') {
+                const selectedRadio = document.querySelector('input[name="tf_answer"]:checked');
+                correctAnswer = selectedRadio ? selectedRadio.value : 'True';
+                options = ['True', 'False'];
+            } else if (qType === 'multiple_choice') {
+                const rows = document.querySelectorAll('.mc-row');
+                const optInputs = document.querySelectorAll('.mc-opt-input');
+                optInputs.forEach(input => {
+                    if (input.value.trim()) options.push(input.value.trim());
+                });
+
+                const checkedRadio = document.querySelector('input[name="mc_correct"]:checked');
+                const checkedIndex = checkedRadio ? parseInt(checkedRadio.value) : 0;
+                correctAnswer = options[checkedIndex] || options[0] || '';
+            } else if (qType === 'matching') {
+                const rows = document.querySelectorAll('.matching-row');
+                let matchMap = {};
+                rows.forEach(r => {
+                    const left = r.querySelector('.match-left').value.trim();
+                    const right = r.querySelector('.match-right').value.trim();
+                    if (left && right) {
+                        options.push({ left: left, right: right });
+                        matchMap[left] = right;
+                    }
+                });
+                correctAnswer = matchMap;
+            }
+
+            const payload = {
+                question_type: qType,
+                question_text: qText,
+                question_order: qOrder,
+                options: options,
+                correct_answer: correctAnswer,
+                explanation: qExpl
+            };
+
+            try {
+                let res;
+                if (editQuestionId) {
+                    res = await fetch(`/api/questions/${editQuestionId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    res = await fetch(`/api/modules/${activeModule.id}/questions`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+
+                if (res.ok) {
+                    const modRes = await fetch(`/api/modules/${activeModule.id}`);
+                    activeModule = await modRes.json();
+                    renderQuestionsSidebar();
+                    initNewQuestionForm();
+                } else {
+                    const errData = await res.json();
+                    alert(errData.error || 'Failed to save question');
+                }
+            } catch(err) {
+                console.error("Save question error:", err);
+            }
+        }
+
+        async function handleDeleteCurrentQuestion() {
+            if (!activeQuestion) return;
+            if (!confirm(`Delete this question?`)) return;
+
+            try {
+                const res = await fetch(`/api/questions/${activeQuestion.id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    const modRes = await fetch(`/api/modules/${activeModule.id}`);
+                    activeModule = await modRes.json();
+                    renderQuestionsSidebar();
+                    initNewQuestionForm();
+                } else {
+                    alert("Failed to delete question");
+                }
+            } catch(err) {
+                console.error("Delete question error:", err);
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+    </script>
+</body>
+</html>

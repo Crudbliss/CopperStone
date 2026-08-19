@@ -1,16 +1,24 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const fs = require('fs');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
+
+// Ensure upload directory exists
+const uploadDir = path.join(__dirname, 'public', 'uploads', 'modules');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // Configure multer for PDF uploads
 const moduleStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, 'public', 'uploads', 'modules'));
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
+        const safeName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
+        cb(null, Date.now() + '-' + safeName);
     }
 });
 const uploadModule = multer({ storage: moduleStorage });
@@ -110,17 +118,47 @@ db.serialize(() => {
     // 12. Modules (Learning content)
     db.run(`CREATE TABLE IF NOT EXISTS modules (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        teacher_id INTEGER,
         title TEXT NOT NULL,
         description TEXT,
-        target_year_level TEXT,
-        stream_type TEXT,
-        passing_score INTEGER DEFAULT 0,
-        lesson_content TEXT,
-        media_file_url TEXT,
-        quadrant_category TEXT,
+        quadrant_category TEXT DEFAULT 'All',
+        difficulty TEXT DEFAULT 'Beginner',
+        topic TEXT DEFAULT 'General',
+        estimated_time TEXT DEFAULT '30 min',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+        db.run(`ALTER TABLE modules ADD COLUMN quadrant_category TEXT DEFAULT 'All'`, (err) => {});
+        db.run(`ALTER TABLE modules ADD COLUMN difficulty TEXT DEFAULT 'Beginner'`, (err) => {});
+        db.run(`ALTER TABLE modules ADD COLUMN topic TEXT DEFAULT 'General'`, (err) => {});
+        db.run(`ALTER TABLE modules ADD COLUMN estimated_time TEXT DEFAULT '30 min'`, (err) => {});
+    });
+
+    // 12b. Module Chapters (Chapters inside a module)
+    db.run(`CREATE TABLE IF NOT EXISTS module_chapters (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        module_id INTEGER NOT NULL,
+        chapter_order INTEGER DEFAULT 1,
+        title TEXT NOT NULL,
+        text_content TEXT,
+        pdf_url TEXT,
+        youtube_url TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE SET NULL
+        FOREIGN KEY(module_id) REFERENCES modules(id) ON DELETE CASCADE
+    )`);
+
+    // 12c. Module Questions (Quiz & Activities: True/False, Multiple Choice, Matching)
+    db.run(`CREATE TABLE IF NOT EXISTS module_questions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        module_id INTEGER NOT NULL,
+        chapter_id INTEGER,
+        question_type TEXT NOT NULL,
+        question_order INTEGER DEFAULT 1,
+        question_text TEXT NOT NULL,
+        options_json TEXT,
+        correct_answer_json TEXT,
+        explanation TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(module_id) REFERENCES modules(id) ON DELETE CASCADE,
+        FOREIGN KEY(chapter_id) REFERENCES module_chapters(id) ON DELETE CASCADE
     )`);
 
     // 13. Submissions (Gradebook)
@@ -979,22 +1017,23 @@ app.get('/api/ai/download', (req, res) => {
 // ==========================================
 
 // --- MODULES ---
-// GET /api/modules
+// GET /api/modules - Fetch all modules with chapter counts
 app.get('/api/modules', (req, res) => {
-    const { target_year_level, quadrant_category } = req.query;
-    let sql = `SELECT * FROM modules WHERE 1=1`;
+    const { quadrant_category } = req.query;
+    let sql = `
+        SELECT m.*, 
+            (SELECT COUNT(*) FROM module_chapters mc WHERE mc.module_id = m.id) AS chapter_count
+        FROM modules m
+        WHERE 1=1
+    `;
     let params = [];
     
-    if (target_year_level) {
-        sql += ` AND target_year_level = ?`;
-        params.push(target_year_level);
-    }
-    if (quadrant_category) {
-        sql += ` AND quadrant_category = ?`;
+    if (quadrant_category && quadrant_category !== 'All') {
+        sql += ` AND (m.quadrant_category = ? OR m.quadrant_category = 'All')`;
         params.push(quadrant_category);
     }
     
-    sql += ` ORDER BY created_at DESC`;
+    sql += ` ORDER BY m.created_at DESC`;
     
     db.all(sql, params, (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -1002,22 +1041,303 @@ app.get('/api/modules', (req, res) => {
     });
 });
 
-// POST /api/modules
-app.post('/api/modules', uploadModule.single('pdf_file'), (req, res) => {
-    const body = req.body || {};
-    const { teacher_id, title, description, target_year_level, stream_type, passing_score, lesson_content, quadrant_category } = body;
+// GET /api/modules/:id - Fetch single module with all chapters and quiz questions
+app.get('/api/modules/:id', (req, res) => {
+    const moduleId = req.params.id;
+    db.get(`SELECT * FROM modules WHERE id = ?`, [moduleId], (err, moduleRow) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!moduleRow) return res.status(404).json({ error: 'Module not found' });
+
+        db.all(`SELECT * FROM module_chapters WHERE module_id = ? ORDER BY chapter_order ASC, id ASC`, [moduleId], (err2, chapterRows) => {
+            if (err2) return res.status(500).json({ error: err2.message });
+            moduleRow.chapters = chapterRows || [];
+            
+            db.all(`SELECT * FROM module_questions WHERE module_id = ? ORDER BY question_order ASC, id ASC`, [moduleId], (err3, questionRows) => {
+                if (err3) return res.status(500).json({ error: err3.message });
+                moduleRow.questions = (questionRows || []).map(q => {
+                    try { q.options = JSON.parse(q.options_json || '[]'); } catch(e) { q.options = []; }
+                    try { q.correct_answer = JSON.parse(q.correct_answer_json || 'null'); } catch(e) { q.correct_answer = q.correct_answer_json; }
+                    return q;
+                });
+                res.json(moduleRow);
+            });
+        });
+    });
+});
+
+// POST /api/modules - Create a new module
+app.post('/api/modules', (req, res) => {
+    const { title, description, quadrant_category, difficulty, topic, estimated_time } = req.body || {};
     
-    // Determine the media_file_url (either from the uploaded file, or fallback to the provided URL field if we kept it)
-    let media_file_url = body.media_file_url || '';
-    if (req.file) {
-        media_file_url = '/public/uploads/modules/' + req.file.filename;
+    if (!title || title.trim() === '') {
+        return res.status(400).json({ error: 'Module title is required' });
     }
 
-    const sql = `INSERT INTO modules (teacher_id, title, description, target_year_level, stream_type, passing_score, lesson_content, media_file_url, quadrant_category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    db.run(sql, [teacher_id, title, description, target_year_level, stream_type, passing_score, lesson_content, media_file_url, quadrant_category], function(err) {
+    const sql = `INSERT INTO modules (title, description, quadrant_category, difficulty, topic, estimated_time) VALUES (?, ?, ?, ?, ?, ?)`;
+    db.run(sql, [
+        title.trim(), 
+        description || '', 
+        quadrant_category || 'All', 
+        difficulty || 'Beginner', 
+        topic || 'General', 
+        estimated_time || '30 min'
+    ], function(err) {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ success: true, module_id: this.lastID, file_url: media_file_url });
+        res.status(201).json({ success: true, module_id: this.lastID, message: 'Module created successfully' });
     });
+});
+
+// PUT /api/modules/:id - Update an existing module
+app.put('/api/modules/:id', (req, res) => {
+    const moduleId = req.params.id;
+    const { title, description, quadrant_category, difficulty, topic, estimated_time } = req.body || {};
+
+    if (!title || title.trim() === '') {
+        return res.status(400).json({ error: 'Module title is required' });
+    }
+
+    const sql = `UPDATE modules SET title = ?, description = ?, quadrant_category = ?, difficulty = ?, topic = ?, estimated_time = ? WHERE id = ?`;
+    db.run(sql, [
+        title.trim(), 
+        description || '', 
+        quadrant_category || 'All', 
+        difficulty || 'Beginner', 
+        topic || 'General', 
+        estimated_time || '30 min',
+        moduleId
+    ], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Module updated successfully' });
+    });
+});
+
+// DELETE /api/modules/:id - Delete a module and all its chapters & questions
+app.delete('/api/modules/:id', (req, res) => {
+    const moduleId = req.params.id;
+    db.serialize(() => {
+        db.run(`DELETE FROM module_chapters WHERE module_id = ?`, [moduleId]);
+        db.run(`DELETE FROM module_questions WHERE module_id = ?`, [moduleId]);
+        db.run(`DELETE FROM submissions WHERE module_id = ?`, [moduleId]);
+        db.run(`DELETE FROM student_module_progress WHERE module_id = ?`, [moduleId]);
+        db.run(`DELETE FROM modules WHERE id = ?`, [moduleId], function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ success: true, message: 'Module deleted successfully' });
+        });
+    });
+});
+
+// --- CHAPTERS ---
+// POST /api/modules/:id/chapters - Add a chapter to a module
+app.post('/api/modules/:id/chapters', (req, res) => {
+    const moduleId = req.params.id;
+    const { title, chapter_order, text_content, pdf_url, youtube_url } = req.body || {};
+
+    if (!title || title.trim() === '') {
+        return res.status(400).json({ error: 'Chapter title is required' });
+    }
+
+    const sql = `INSERT INTO module_chapters (module_id, chapter_order, title, text_content, pdf_url, youtube_url) VALUES (?, ?, ?, ?, ?, ?)`;
+    db.run(sql, [
+        moduleId, 
+        parseInt(chapter_order) || 1, 
+        title.trim(), 
+        text_content || '', 
+        pdf_url || '', 
+        youtube_url || ''
+    ], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(201).json({ success: true, chapter_id: this.lastID, message: 'Chapter added successfully' });
+    });
+});
+
+// PUT /api/chapters/:id - Edit a chapter
+app.put('/api/chapters/:id', (req, res) => {
+    const chapterId = req.params.id;
+    const { title, chapter_order, text_content, pdf_url, youtube_url } = req.body || {};
+
+    if (!title || title.trim() === '') {
+        return res.status(400).json({ error: 'Chapter title is required' });
+    }
+
+    const sql = `UPDATE module_chapters SET title = ?, chapter_order = ?, text_content = ?, pdf_url = ?, youtube_url = ? WHERE id = ?`;
+    db.run(sql, [
+        title.trim(), 
+        parseInt(chapter_order) || 1, 
+        text_content || '', 
+        pdf_url || '', 
+        youtube_url || '',
+        chapterId
+    ], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Chapter updated successfully' });
+    });
+});
+
+// DELETE /api/chapters/:id - Delete a chapter
+app.delete('/api/chapters/:id', (req, res) => {
+    const chapterId = req.params.id;
+    db.run(`DELETE FROM module_chapters WHERE id = ?`, [chapterId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Chapter deleted successfully' });
+    });
+});
+
+// --- QUIZ & QUESTIONS ---
+// GET /api/modules/:id/questions - Fetch quiz questions for a module
+app.get('/api/modules/:id/questions', (req, res) => {
+    const moduleId = req.params.id;
+    db.all(`SELECT * FROM module_questions WHERE module_id = ? ORDER BY question_order ASC, id ASC`, [moduleId], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        const formatted = (rows || []).map(q => {
+            try { q.options = JSON.parse(q.options_json || '[]'); } catch(e) { q.options = []; }
+            try { q.correct_answer = JSON.parse(q.correct_answer_json || 'null'); } catch(e) { q.correct_answer = q.correct_answer_json; }
+            return q;
+        });
+        res.json(formatted);
+    });
+});
+
+// POST /api/modules/:id/questions - Add a question (True/False, Multiple Choice, Matching)
+app.post('/api/modules/:id/questions', (req, res) => {
+    const moduleId = req.params.id;
+    const { chapter_id, question_type, question_order, question_text, options, correct_answer, explanation } = req.body || {};
+
+    if (!question_text || question_text.trim() === '') {
+        return res.status(400).json({ error: 'Question text is required' });
+    }
+
+    const optionsJson = typeof options === 'object' ? JSON.stringify(options) : (options || '[]');
+    const answerJson = typeof correct_answer === 'object' ? JSON.stringify(correct_answer) : JSON.stringify(correct_answer || '');
+
+    const sql = `INSERT INTO module_questions (module_id, chapter_id, question_type, question_order, question_text, options_json, correct_answer_json, explanation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.run(sql, [
+        moduleId, 
+        chapter_id || null, 
+        question_type || 'multiple_choice', 
+        parseInt(question_order) || 1, 
+        question_text.trim(), 
+        optionsJson, 
+        answerJson, 
+        explanation || ''
+    ], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(201).json({ success: true, question_id: this.lastID, message: 'Question created successfully' });
+    });
+});
+
+// PUT /api/questions/:id - Update a question
+app.put('/api/questions/:id', (req, res) => {
+    const questionId = req.params.id;
+    const { chapter_id, question_type, question_order, question_text, options, correct_answer, explanation } = req.body || {};
+
+    if (!question_text || question_text.trim() === '') {
+        return res.status(400).json({ error: 'Question text is required' });
+    }
+
+    const optionsJson = typeof options === 'object' ? JSON.stringify(options) : (options || '[]');
+    const answerJson = typeof correct_answer === 'object' ? JSON.stringify(correct_answer) : JSON.stringify(correct_answer || '');
+
+    const sql = `UPDATE module_questions SET chapter_id = ?, question_type = ?, question_order = ?, question_text = ?, options_json = ?, correct_answer_json = ?, explanation = ? WHERE id = ?`;
+    db.run(sql, [
+        chapter_id || null, 
+        question_type || 'multiple_choice', 
+        parseInt(question_order) || 1, 
+        question_text.trim(), 
+        optionsJson, 
+        answerJson, 
+        explanation || '',
+        questionId
+    ], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Question updated successfully' });
+    });
+});
+
+// DELETE /api/questions/:id - Delete a question
+app.delete('/api/questions/:id', (req, res) => {
+    const questionId = req.params.id;
+    db.run(`DELETE FROM module_questions WHERE id = ?`, [questionId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Question deleted successfully' });
+    });
+});
+
+// POST /api/modules/:id/submit-quiz - Grade student quiz submission
+app.post('/api/modules/:id/submit-quiz', (req, res) => {
+    const moduleId = req.params.id;
+    const { student_id, answers } = req.body || {}; // answers is an object: { [questionId]: studentAnswer }
+
+    db.all(`SELECT * FROM module_questions WHERE module_id = ? ORDER BY question_order ASC, id ASC`, [moduleId], (err, questions) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!questions || questions.length === 0) {
+            return res.json({ success: true, score: 0, total: 0, percentage: 100, results: [] });
+        }
+
+        let correctCount = 0;
+        const results = questions.map(q => {
+            let correctVal;
+            try { correctVal = JSON.parse(q.correct_answer_json); } catch(e) { correctVal = q.correct_answer_json; }
+            
+            const studentVal = answers ? answers[q.id] : undefined;
+            let isCorrect = false;
+
+            if (q.question_type === 'true_false') {
+                isCorrect = String(studentVal).toLowerCase() === String(correctVal).toLowerCase();
+            } else if (q.question_type === 'multiple_choice') {
+                isCorrect = String(studentVal).trim() === String(correctVal).trim();
+            } else if (q.question_type === 'matching') {
+                // Matching pairs check: correctVal is an object { "term": "match", ... }
+                if (typeof studentVal === 'object' && typeof correctVal === 'object' && studentVal && correctVal) {
+                    const keys = Object.keys(correctVal);
+                    const allMatch = keys.length > 0 && keys.every(k => studentVal[k] === correctVal[k]);
+                    isCorrect = allMatch;
+                }
+            }
+
+            if (isCorrect) correctCount++;
+
+            return {
+                question_id: q.id,
+                question_text: q.question_text,
+                question_type: q.question_type,
+                is_correct: isCorrect,
+                correct_answer: correctVal,
+                student_answer: studentVal,
+                explanation: q.explanation || ''
+            };
+        });
+
+        const total = questions.length;
+        const percentage = Math.round((correctCount / total) * 100);
+
+        // Record student progress if student_id is provided
+        if (student_id) {
+            db.run(`INSERT INTO student_module_progress (student_id, module_id, tasks_completed, total_tasks, status) VALUES (?, ?, ?, ?, ?)`,
+                [student_id, moduleId, correctCount, total, percentage >= 70 ? 'Completed' : 'Review Needed'],
+                (progErr) => {
+                    if (progErr) console.error("Error logging module progress:", progErr);
+                }
+            );
+        }
+
+        res.json({
+            success: true,
+            score: correctCount,
+            total: total,
+            percentage: percentage,
+            passed: percentage >= 70,
+            results: results
+        });
+    });
+});
+
+// POST /api/upload/pdf - Upload PDF file for a module or chapter
+app.post('/api/upload/pdf', uploadModule.single('pdf_file'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No PDF file uploaded' });
+    }
+    const fileUrl = '/public/uploads/modules/' + req.file.filename;
+    res.json({ success: true, file_url: fileUrl, original_name: req.file.originalname });
 });
 
 // --- SUBMISSIONS ---

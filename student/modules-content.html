@@ -10,8 +10,10 @@
         :root {
             --bg-base: #060f17;
             --bg-card: #12181f;
+            --bg-card-hover: #18222c;
             
             --matrix-yellow: #d8a61a;
+            --matrix-yellow-hover: #eab308;
             --matrix-green: #4ade80;
             --matrix-blue: #38bdf8;
             --matrix-orange: #fb923c;
@@ -66,7 +68,7 @@
 
         /* --- MAIN CONTAINER --- */
         .modules-container {
-            max-width: 900px;
+            max-width: 960px;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -100,40 +102,37 @@
             color: var(--text-muted);
             font-weight: 400;
         }
-        
-        .highlight-green {
-            color: var(--matrix-green);
-            font-weight: 700;
-        }
 
         /* --- MODULE GRID & CARDS --- */
         .module-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 20px;
         }
 
         .module-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-light);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 24px;
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
             cursor: pointer;
         }
 
         .module-card:hover {
             transform: translateY(-2px);
-            border-color: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.18);
+            background-color: var(--bg-card-hover);
         }
 
         .card-top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .module-icon {
@@ -152,76 +151,78 @@
             border-radius: 6px;
         }
 
-        /* Tag Variations */
         .tag-beginner { background-color: rgba(74, 222, 128, 0.1); color: var(--tag-beginner); }
         .tag-intermediate { background-color: rgba(216, 166, 26, 0.1); color: var(--tag-intermediate); }
         .tag-advanced { background-color: rgba(251, 146, 60, 0.1); color: var(--tag-advanced); }
-        
         .tag-topic { background-color: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--border-light); }
 
         .module-title {
             font-size: 16px;
             font-weight: 700;
             margin-bottom: 8px;
-            line-height: 1.3;
+            line-height: 1.4;
         }
 
         .module-desc {
             font-size: 13px;
             color: var(--text-muted);
             line-height: 1.5;
-            margin-bottom: 24px;
-            flex: 1;
+            margin-bottom: 20px;
         }
 
         .card-bottom {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 6px;
             font-size: 12px;
             color: var(--text-muted);
-            font-weight: 500;
+            font-weight: 600;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-light);
         }
-        
-        .card-bottom svg { width: 14px; height: 14px; }
 
+        .card-bottom svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 4px;
+            vertical-align: text-bottom;
+        }
 
-        /* --- DIVIDER --- */
+        /* --- SECTION DIVIDERS --- */
         .section-divider {
             display: flex;
             align-items: center;
-            text-align: center;
-            margin: 20px 0;
-            color: var(--text-muted);
+            margin-top: 20px;
+            margin-bottom: 8px;
         }
-        .section-divider::before, .section-divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid var(--border-light);
-        }
+        
         .section-divider span {
-            padding: 0 20px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
+            color: var(--text-muted);
             letter-spacing: 1.5px;
             text-transform: uppercase;
         }
 
         .section-desc {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-muted);
-            margin-top: -16px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
-
 
         /* --- GAP SECTIONS --- */
         .gap-section {
+            border-radius: 14px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: 20px;
         }
+
+        .gap-purple { background-color: var(--bg-purple-faint); border: 1px solid var(--border-purple-faint); }
+        .gap-blue { background-color: var(--bg-blue-faint); border: 1px solid var(--border-blue-faint); }
+        .gap-orange { background-color: var(--bg-orange-faint); border: 1px solid var(--border-orange-faint); }
+        .gap-green { background-color: var(--bg-green-faint); border: 1px solid var(--border-green-faint); }
 
         .gap-header {
             display: flex;
@@ -230,201 +231,423 @@
         }
 
         .gap-pill {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 800;
-            padding: 4px 10px;
+            padding: 4px 8px;
             border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            letter-spacing: 0.5px;
         }
 
         .gap-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        
-        .gap-title span { font-size: 18px; } /* For the emoji */
 
-        /* Gap Box Styling */
-        .gap-info-box {
-            padding: 24px;
+        /* --- MODAL CHAPTER & QUIZ READER --- */
+        .reader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .reader-modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 1050px;
+            height: 88vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .reader-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .reader-body {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .reader-sidebar {
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid var(--border-light);
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .reader-nav-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: var(--text-main);
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reader-nav-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .reader-nav-item.active {
+            background: rgba(216, 166, 26, 0.15);
+            border-color: var(--matrix-yellow);
+            color: var(--matrix-yellow);
+        }
+
+        .reader-content {
+            padding: 24px 32px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .reader-notes {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #d1d5db;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 20px;
+            white-space: pre-wrap;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .pdf-viewer-frame {
+            width: 100%;
+            height: 420px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            background: #1e293b;
+        }
+
+        /* --- QUIZ PLAYER STYLES --- */
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .quiz-question-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-light);
             border-radius: 12px;
-            border: 1px solid;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 16px;
+            transition: all 0.2s ease;
         }
 
-        .gap-description {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #d1d5db; /* Slightly lighter than muted */
+        .quiz-question-card.correct-card {
+            border-color: var(--matrix-green);
+            background: rgba(74, 222, 128, 0.05);
         }
 
-        .tips-header {
-            font-size: 13px;
-            font-weight: 600;
+        .quiz-question-card.incorrect-card {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .quiz-q-header {
             display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-
-        .tips-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .tips-list li {
-            font-size: 13px;
-            color: var(--text-muted);
-            display: flex;
+            justify-content: space-between;
             align-items: flex-start;
             gap: 10px;
         }
 
-        /* Specific Gap Colors */
-        
-        /* Purple (Primary) */
-        .gap-purple .gap-pill { background-color: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); } /* Primary pill is yellow in image */
-        .gap-purple .gap-title { color: var(--matrix-purple); }
-        .gap-purple .gap-info-box { background-color: var(--bg-purple-faint); border-color: var(--border-purple-faint); }
-        .gap-purple .tips-header { color: var(--matrix-purple); }
-        .gap-purple .tips-list li::before { content: '→'; color: var(--matrix-purple); }
+        .quiz-q-title {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
 
-        /* Cyan/Blue (Secondary) */
-        .gap-blue .gap-pill { background-color: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); }
-        .gap-blue .gap-title { color: var(--matrix-blue); }
-        .gap-blue .gap-info-box { background-color: var(--bg-blue-faint); border-color: var(--border-blue-faint); }
-        .gap-blue .tips-header { color: var(--matrix-blue); }
-        .gap-blue .tips-list li::before { content: '→'; color: var(--matrix-blue); }
+        .quiz-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+        }
 
-        /* Orange (Tertiary) */
-        .gap-orange .gap-pill { background-color: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); }
-        .gap-orange .gap-title { color: var(--matrix-orange); }
-        .gap-orange .gap-info-box { background-color: var(--bg-orange-faint); border-color: var(--border-orange-faint); }
-        .gap-orange .tips-header { color: var(--matrix-orange); }
-        .gap-orange .tips-list li::before { content: '→'; color: var(--matrix-orange); }
+        /* True/False Buttons */
+        .tf-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
 
-        /* Green (Quaternary) */
-        .gap-green .gap-pill { background-color: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); }
-        .gap-green .gap-title { color: var(--matrix-green); }
-        .gap-green .gap-info-box { background-color: var(--bg-green-faint); border-color: var(--border-green-faint); }
-        .gap-green .tips-header { color: var(--matrix-green); }
-        .gap-green .tips-list li::before { content: '→'; color: var(--matrix-green); }
+        .tf-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 14px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
 
-        /* For the specific gap tag colors */
-        .tag-purple-outline { border: 1px solid rgba(192, 132, 252, 0.3); color: #c084fc; background: none;}
-        .tag-blue-outline { border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; background: none;}
-        .tag-orange-outline { border: 1px solid rgba(251, 146, 60, 0.3); color: #fb923c; background: none;}
-        .tag-green-outline { border: 1px solid rgba(74, 222, 128, 0.3); color: #4ade80; background: none;}
+        .tf-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
 
-        /* --- MOBILE RESPONSIVENESS --- */
-        @media (max-width: 768px) {
-            body { padding: 16px; }
-            .module-grid { grid-template-columns: 1fr; }
-            .header-title-row { flex-direction: column; text-align: center; gap: 8px; }
-            .header-title-row span { font-size: 32px; }
-            .page-title { font-size: 24px; text-align: center; }
-            .page-subtitle { text-align: center; }
-            .gap-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+        .tf-btn.selected {
+            background: rgba(216, 166, 26, 0.2);
+            border-color: var(--matrix-yellow);
+            color: var(--matrix-yellow);
+        }
+
+        /* Multiple Choice Options */
+        .mc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mc-option-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .mc-option-btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .mc-option-btn.selected {
+            background: rgba(216, 166, 26, 0.15);
+            border-color: var(--matrix-yellow);
+            color: var(--matrix-yellow);
+            font-weight: 700;
+        }
+
+        .mc-letter {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Matching Grid */
+        .match-pair-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .match-term-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .match-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .match-select option {
+            color: #000000;
+            background-color: #ffffff;
+            font-weight: 500;
+        }
+
+        .match-select:focus {
+            border-color: var(--matrix-yellow);
+        }
+
+        /* Feedback Explanation Box */
+        .explanation-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #d1d5db;
+        }
+
+        /* Reader Footer */
+        .reader-footer {
+            padding: 14px 24px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .btn-reader {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            border: 1px solid var(--border-light);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-reader:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-reader-primary {
+            background: var(--matrix-yellow);
+            color: #060f17;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-reader-primary:hover {
+            background: var(--matrix-yellow-hover);
         }
     </style>
-    <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
 <body>
 
     <svg class="svg-defs">
-        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></symbol>
+        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </symbol>
+        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+        </symbol>
     </svg>
 
     <div class="modules-container" id="modules-root">
-        <div style="text-align: center; color: var(--text-muted); padding: 40px;">
-            <p>Loading personalized modules...</p>
+        <div style="text-align: center; color: var(--text-muted); padding: 40px;">Loading modules...</div>
+    </div>
+
+    <!-- Interactive Chapter & Quiz Reader Modal -->
+    <div id="reader-modal" class="reader-overlay">
+        <div class="reader-modal">
+            <div class="reader-header">
+                <div>
+                    <span id="reader-quadrant-badge" style="font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 4px; display: inline-block;">HI</span>
+                    <h3 id="reader-module-title" style="font-size: 16px; font-weight: 700;">Module Title</h3>
+                </div>
+                <button onclick="closeReaderModal()" style="background: transparent; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+
+            <div class="reader-body">
+                <div class="reader-sidebar" id="reader-chapters-list">
+                    <!-- Chapters and Quiz link populated via JS -->
+                </div>
+
+                <div class="reader-content" id="reader-main-content">
+                    <div id="reader-loading" style="text-align: center; color: var(--text-muted); padding: 40px;">Select a chapter or quiz to begin...</div>
+                </div>
+            </div>
+
+            <div class="reader-footer">
+                <button class="btn-reader" id="btn-prev-chapter" onclick="navStep(-1)">← Previous</button>
+                <div id="reader-chapter-progress" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Chapter 1 of 3</div>
+                <button class="btn-reader-primary" id="btn-next-chapter" onclick="navStep(1)">Next →</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const modesData = {
-            "Hierarchical Individual": {
-                id: "hi",
-                colorName: "green",
-                icon: "📚",
-                title: "Hierarchical Individual",
-                desc: "techniques that align with how you naturally learn best through structured, teacher-directed instruction.",
-                gapDesc: "You learn best through structured, teacher-directed instruction in a solo setting. Clear guidelines and direct authority from an instructor help you thrive.",
-                tips: [
-                    "Practice sitting through a fully lecture-based class session with focused note-taking",
-                    "Follow a strictly structured textbook chapter from start to finish, solo",
-                    "Submit individual work to a teacher and request direct, authoritative feedback",
-                    "Create a strict daily study schedule and adhere to it"
-                ],
-                modules: [
-                    { icon: "✏️", tagClass: "tag-beginner", tagText: "Beginner", topic: "Note-Taking", title: "Cornell Note-Taking System", desc: "Master the Cornell method to organize lectures and textbook content into powerful study notes.", time: "45 min" },
-                    { icon: "🎬", tagClass: "tag-beginner", tagText: "Beginner", topic: "Comprehension", title: "Active Lecture Comprehension", desc: "Techniques for absorbing and retaining information from teacher-led lessons and recorded lectures.", time: "30 min" },
-                    { icon: "📖", tagClass: "tag-intermediate", tagText: "Intermediate", topic: "Retention", title: "Structured Self-Review Methods", desc: "Spaced repetition and sequential review strategies to reinforce material learned from direct instruction.", time: "20 min" },
-                    { icon: "🔧", tagClass: "tag-intermediate", tagText: "Intermediate", topic: "Problem-Solving", title: "Step-by-Step Problem Frameworks", desc: "Systematic approaches to breaking down complex IT problems using structured logical flow.", time: "60 min" }
-                ]
-            },
-            "Distributed Individual": {
-                id: "di",
-                colorName: "blue",
-                icon: "💻",
-                title: "Distributed Individual",
-                desc: "techniques that align with your preference for autonomous, self-directed exploration.",
-                gapDesc: "You are an autonomous, self-directed learner who thrives when given freedom to explore. You excel through technology-enabled discovery at your own pace.",
-                tips: [
-                    "Dedicate one study session per week to completely solo, unguided review",
-                    "Practice making independent academic decisions without seeking teacher approval first",
-                    "Start a personal IT project with no assigned rules or rubrics",
-                    "Try self-paced online courses and pace yourself without external deadlines"
-                ],
-                modules: [
-                    { icon: "✏️", tagClass: "tag-beginner", tagText: "Beginner", topic: "Planning", title: "Building Your Learning Roadmap", desc: "Create a self-directed study plan using curated online courses, documentation, and open resources.", time: "40 min" },
-                    { icon: "🔧", tagClass: "tag-advanced", tagText: "Advanced", topic: "Project-Based", title: "Portfolio Project Development", desc: "Channel your independent learning into a personal IT project that demonstrates your growing skills.", time: "90 min" }
-                ]
-            },
-            "Hierarchical Collective": {
-                id: "hc",
-                colorName: "orange",
-                icon: "🤝",
-                title: "Hierarchical Collective",
-                desc: "techniques that align with your preference for structured, teacher-guided team environments.",
-                gapDesc: "You flourish in teacher-guided group environments. Structured collaborative activities, clear roles, and instructor oversight bring out your best performance.",
-                tips: [
-                    "Attend structured group study sessions at least once a week",
-                    "Volunteer to take a specific, clearly defined role in your next group project",
-                    "Ask a teacher or mentor to set a guided learning path for your study group",
-                    "Practice evaluating peer work using a strict teacher-provided rubric"
-                ],
-                modules: [
-                    { icon: "✏️", tagClass: "tag-beginner", tagText: "Beginner", topic: "Collaboration", title: "Structured Group Study Design", desc: "Organize effective study groups with clearly defined roles, agendas, and teacher-set objectives.", time: "50 min" },
-                    { icon: "🎬", tagClass: "tag-intermediate", tagText: "Intermediate", topic: "Discussion", title: "Socratic Dialogue Techniques", desc: "Participate meaningfully in instructor-led class discussions using structured questioning frameworks.", time: "35 min" }
-                ]
-            },
-            "Distributed Collective": {
-                id: "dc",
-                colorName: "purple",
-                icon: "🧠",
-                title: "Distributed Collective",
-                desc: "techniques that align with your preference for open, peer-driven, collaborative environments.",
-                gapDesc: "You excel in peer-driven, inquiry-based group settings. Shared leadership, open-ended discussions, and co-creation of knowledge define your ideal learning environment.",
-                tips: [
-                    "Join an open brainstorming session or hackathon without predefined roles",
-                    "Engage in peer-review circles where feedback flows freely among students",
-                    "Co-lead a flexible group project where the team decides the direction",
-                    "Participate in debate clubs or open academic forums"
-                ],
-                modules: [
-                    { icon: "✏️", tagClass: "tag-intermediate", tagText: "Intermediate", topic: "Teaching", title: "Peer Teaching Circles", desc: "Lead and participate in sessions where each member teaches a topic to the group, deepening mutual understanding.", time: "60 min" },
-                    { icon: "🔧", tagClass: "tag-advanced", tagText: "Advanced", topic: "Project-Based", title: "Open Inquiry IT Projects", desc: "Collaborate on group projects where the problem, solution, and process are defined collectively by the team.", time: "120 min" }
-                ]
-            }
+        const quadrantConfig = {
+            "Hierarchical Individual": { id: "hi", icon: "📚", colorName: "green", title: "Hierarchical Individual" },
+            "Distributed Individual": { id: "di", icon: "💡", colorName: "blue", title: "Distributed Individual" },
+            "Hierarchical Collective": { id: "hc", icon: "⚙️", colorName: "orange", title: "Hierarchical Collective" },
+            "Distributed Collective": { id: "dc", icon: "🧠", colorName: "purple", title: "Distributed Collective" }
         };
 
         const modeOpposites = {
@@ -434,112 +657,485 @@
             "Hierarchical Collective": "Distributed Individual"
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
+        let currentActiveModule = null;
+        let currentStepType = 'chapter'; // 'chapter' or 'quiz'
+        let currentChapterIndex = 0;
+        let studentQuizAnswers = {};
+        let quizGradedResults = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStudentModules();
+        });
+
+        async function loadStudentModules() {
             const root = document.getElementById('modules-root');
             const profileStr = localStorage.getItem('studentProfile');
             
-            if (!profileStr) {
-                root.innerHTML = `
-                    <div style="text-align: center; color: var(--matrix-orange); padding: 40px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-light);">
-                        <h3 style="margin-bottom: 10px;">Not Assessed</h3>
-                        <p style="color: var(--text-muted);">Please complete the Learning Mode Assessment to unlock your personalized modules.</p>
-                    </div>`;
-                return;
+            let domModeName = "Hierarchical Individual";
+            if (profileStr) {
+                try {
+                    const profile = JSON.parse(profileStr);
+                    if (profile.learning_mode && profile.learning_mode !== 'Unknown') {
+                        domModeName = profile.learning_mode;
+                    }
+                } catch(e) {}
             }
 
-            const profile = JSON.parse(profileStr);
-            const domModeName = profile.learning_mode || "Hierarchical Individual";
-            
-            if (!modesData[domModeName]) {
-                root.innerHTML = '<p>Unknown learning mode.</p>';
-                return;
-            }
+            try {
+                const res = await fetch('/api/modules');
+                const modules = await res.json();
 
-            const domMode = modesData[domModeName];
-            
-            // Determine Gaps
-            const primaryGapName = modeOpposites[domModeName];
-            const primaryGap = modesData[primaryGapName];
-            
-            const remainingNames = Object.keys(modesData).filter(m => m !== domModeName && m !== primaryGapName);
+                const domConfig = quadrantConfig[domModeName] || quadrantConfig["Hierarchical Individual"];
+                const primaryGapName = modeOpposites[domModeName];
+                const primaryGapConfig = quadrantConfig[primaryGapName];
 
+                // Filter modules
+                const dominantModules = modules.filter(m => m.quadrant_category === domModeName);
+                const gapModules = modules.filter(m => m.quadrant_category === primaryGapName);
+                const otherModules = modules.filter(m => m.quadrant_category !== domModeName && m.quadrant_category !== primaryGapName);
 
-            // Generate HTML
-            let html = `
-                <div class="page-header">
-                    <div class="header-title-row">
-                        <span>${domMode.icon}</span>
-                        <h1 class="page-title">Your Dominant Mode Modules</h1>
+                let html = `
+                    <div class="page-header">
+                        <div class="header-title-row">
+                            <span>${domConfig.icon}</span>
+                            <h1 class="page-title">Your Dominant Mode Modules</h1>
+                        </div>
+                        <p class="page-subtitle">Curated for your <span style="color: var(--matrix-${domConfig.colorName}); font-weight: 700;">${domConfig.title}</span> profile — explore self-paced chapters with interactive video lectures, PDF resources, and quizzes.</p>
                     </div>
-                    <p class="page-subtitle">Personalized for your <span style="color: var(--matrix-${domMode.colorName}); font-weight: 700;">${domMode.title}</span> learning style — ${domMode.desc}</p>
-                </div>
+                `;
 
-                <div class="module-grid">
-                    ${domMode.modules.map(m => `
-                        <div class="module-card">
-                            <div class="card-top">
-                                <span class="module-icon">${m.icon}</span>
-                                <div class="tags-row">
-                                    <span class="tag ${m.tagClass}">${m.tagText}</span>
-                                    <span class="tag tag-topic">${m.topic}</span>
-                                </div>
+                if (dominantModules.length > 0) {
+                    html += `
+                        <div class="module-grid">
+                            ${dominantModules.map(m => renderModuleCard(m, domConfig.icon)).join('')}
+                        </div>
+                    `;
+                } else {
+                    html += `<div style="padding: 24px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; color: var(--text-muted); font-size: 13px;">No dominant track modules available yet.</div>`;
+                }
+
+                // Primary Gap Section
+                if (gapModules.length > 0 && primaryGapConfig) {
+                    html += `
+                        <div class="section-divider">
+                            <span>TARGETED GROWTH — PRIMARY GAP</span>
+                        </div>
+                        <p class="section-desc">These modules focus on your weakest dimension (${primaryGapConfig.title}) to build cognitive flexibility.</p>
+                        
+                        <div class="gap-section gap-${primaryGapConfig.colorName}">
+                            <div class="gap-header">
+                                <span class="gap-pill">PRIMARY GAP</span>
+                                <h3 class="gap-title"><span>${primaryGapConfig.icon}</span> ${primaryGapConfig.title} Track</h3>
                             </div>
-                            <h3 class="module-title">${m.title}</h3>
-                            <p class="module-desc">${m.desc}</p>
-                            <div class="card-bottom">
-                                <svg><use href="#icon-clock"></use></svg> ${m.time}
+                            <div class="module-grid">
+                                ${gapModules.map(m => renderModuleCard(m, primaryGapConfig.icon)).join('')}
                             </div>
                         </div>
-                    `).join('')}
-                </div>
+                    `;
+                }
 
-                <div class="section-divider">
-                    <span>STRENGTHEN YOUR OTHER MODES</span>
-                </div>
-                <p class="section-desc">These modules target your weaker quadrants. Strengthening them builds cognitive adaptability and makes you a more versatile learner.</p>
-            `;
+                // Other Tracks
+                if (otherModules.length > 0) {
+                    html += `
+                        <div class="section-divider">
+                            <span>EXPLORE OTHER LEARNING TRACKS</span>
+                        </div>
+                        <div class="module-grid">
+                            ${otherModules.map(m => {
+                                const cfg = quadrantConfig[m.quadrant_category] || { icon: '🌟' };
+                                return renderModuleCard(m, cfg.icon);
+                            }).join('')}
+                        </div>
+                    `;
+                }
 
-            // Gap Sections Builder
-            const buildGap = (gapLevel, gapData) => `
-                <div class="gap-section gap-${gapData.colorName}">
-                    <div class="gap-header">
-                        <span class="gap-pill">${gapLevel} GAP</span>
-                        <h3 class="gap-title"><span>${gapData.icon}</span> ${gapData.title}</h3>
+                root.innerHTML = html;
+
+            } catch (err) {
+                console.error("Failed to load modules:", err);
+                root.innerHTML = '<div style="color: #ef4444; text-align: center; padding: 40px;">Error loading modules. Please try again later.</div>';
+            }
+        }
+
+        function renderModuleCard(m, defaultIcon) {
+            const diffClass = m.difficulty === 'Advanced' ? 'tag-advanced' : (m.difficulty === 'Intermediate' ? 'tag-intermediate' : 'tag-beginner');
+            const chapterCount = m.chapter_count || 0;
+            return `
+                <div class="module-card" onclick="openStudentReader(${m.id})">
+                    <div>
+                        <div class="card-top">
+                            <span class="module-icon">${defaultIcon}</span>
+                            <div class="tags-row">
+                                <span class="tag ${diffClass}">${m.difficulty || 'Beginner'}</span>
+                                <span class="tag tag-topic">${escapeHtml(m.topic || 'General')}</span>
+                            </div>
+                        </div>
+                        <h3 class="module-title">${escapeHtml(m.title)}</h3>
+                        <p class="module-desc">${escapeHtml(m.description || 'Explore the interactive chapters and quiz inside this self-paced module.')}</p>
                     </div>
-                    
-                    <div class="gap-info-box">
-                        <p class="gap-description">${gapData.gapDesc}</p>
+                    <div class="card-bottom">
+                        <div><svg><use href="#icon-book"></use></svg> ${chapterCount} ${chapterCount === 1 ? 'Chapter' : 'Chapters'}</div>
+                        <div><svg><use href="#icon-clock"></use></svg> ${m.estimated_time || '30 min'}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* --- INTERACTIVE CHAPTER & QUIZ READER --- */
+        async function openStudentReader(moduleId) {
+            try {
+                const res = await fetch(`/api/modules/${moduleId}`);
+                if (!res.ok) throw new Error("Failed to load module");
+                currentActiveModule = await res.json();
+
+                document.getElementById('reader-module-title').textContent = currentActiveModule.title;
+                document.getElementById('reader-quadrant-badge').textContent = currentActiveModule.quadrant_category || 'Universal';
+                
+                currentStepType = 'chapter';
+                currentChapterIndex = 0;
+                studentQuizAnswers = {};
+                quizGradedResults = null;
+
+                renderReaderSidebar();
+                renderCurrentContent();
+
+                document.getElementById('reader-modal').style.display = 'flex';
+            } catch(err) {
+                console.error("Error opening reader:", err);
+                alert("Failed to load module content.");
+            }
+        }
+
+        function closeReaderModal() {
+            document.getElementById('reader-modal').style.display = 'none';
+        }
+
+        function renderReaderSidebar() {
+            const container = document.getElementById('reader-chapters-list');
+            const chapters = currentActiveModule.chapters || [];
+            const questions = currentActiveModule.questions || [];
+
+            let html = '';
+            chapters.forEach((ch, idx) => {
+                const isActive = currentStepType === 'chapter' && idx === currentChapterIndex;
+                html += `
+                    <button class="reader-nav-item ${isActive ? 'active' : ''}" onclick="selectChapter(${idx})">
+                        <span>📖 ${idx + 1}. ${escapeHtml(ch.title)}</span>
+                    </button>
+                `;
+            });
+
+            if (questions.length > 0) {
+                const isQuizActive = currentStepType === 'quiz';
+                html += `
+                    <button class="reader-nav-item ${isQuizActive ? 'active' : ''}" style="margin-top: 8px; border-color: rgba(216, 166, 26, 0.4);" onclick="selectQuiz()">
+                        <span>🎯 Knowledge Check (${questions.length} Qs)</span>
+                    </button>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function selectChapter(index) {
+            currentStepType = 'chapter';
+            currentChapterIndex = index;
+            renderReaderSidebar();
+            renderCurrentContent();
+        }
+
+        function selectQuiz() {
+            currentStepType = 'quiz';
+            renderReaderSidebar();
+            renderCurrentContent();
+        }
+
+        function navStep(direction) {
+            const chapters = currentActiveModule.chapters || [];
+            const questions = currentActiveModule.questions || [];
+
+            if (currentStepType === 'chapter') {
+                const nextIndex = currentChapterIndex + direction;
+                if (nextIndex >= 0 && nextIndex < chapters.length) {
+                    selectChapter(nextIndex);
+                } else if (nextIndex >= chapters.length && questions.length > 0) {
+                    selectQuiz();
+                }
+            } else if (currentStepType === 'quiz') {
+                if (direction === -1 && chapters.length > 0) {
+                    selectChapter(chapters.length - 1);
+                }
+            }
+        }
+
+        function formatYoutubeEmbedUrl(url) {
+            if (!url || url.trim() === '') return '';
+            let videoId = '';
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            if (match && match[1]) {
+                videoId = match[1];
+                return `https://www.youtube.com/embed/${videoId}`;
+            }
+            return url;
+        }
+
+        function renderCurrentContent() {
+            const chapters = currentActiveModule.chapters || [];
+            const questions = currentActiveModule.questions || [];
+            const container = document.getElementById('reader-main-content');
+            const progressText = document.getElementById('reader-chapter-progress');
+            const btnPrev = document.getElementById('btn-prev-chapter');
+            const btnNext = document.getElementById('btn-next-chapter');
+
+            if (currentStepType === 'chapter') {
+                if (chapters.length === 0) {
+                    if (questions.length > 0) {
+                        selectQuiz();
+                        return;
+                    }
+                    container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">No content in this module yet.</div>';
+                    return;
+                }
+
+                const ch = chapters[currentChapterIndex];
+                progressText.textContent = `Chapter ${currentChapterIndex + 1} of ${chapters.length}`;
+                btnPrev.disabled = currentChapterIndex === 0;
+                btnNext.textContent = (currentChapterIndex === chapters.length - 1 && questions.length > 0) ? 'Go to Quiz 🎯' : 'Next Chapter →';
+
+                let chapterHtml = `
+                    <div>
+                        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">${escapeHtml(ch.title)}</h2>
+                        <p style="font-size: 12px; color: var(--text-muted);">Chapter ${currentChapterIndex + 1} &middot; Self-Paced Track</p>
+                    </div>
+                `;
+
+                // 1. YouTube Video Embed (if present)
+                if (ch.youtube_url && ch.youtube_url.trim()) {
+                    const embedUrl = formatYoutubeEmbedUrl(ch.youtube_url);
+                    chapterHtml += `
                         <div>
-                            <h4 class="tips-header">💡 Strengthening Tips:</h4>
-                            <ul class="tips-list">
-                                ${gapData.tips.map(t => `<li>${t}</li>`).join('')}
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="module-grid">
-                        ${gapData.modules.map(m => `
-                            <div class="module-card">
-                                <div class="card-top">
-                                    <span class="module-icon">${m.icon}</span>
-                                    <div class="tags-row">
-                                        <span class="tag ${m.tagClass}">${m.tagText}</span>
-                                        <span class="tag tag-${gapData.colorName}-outline">${m.topic}</span>
-                                    </div>
-                                </div>
-                                <h3 class="module-title">${m.title}</h3>
-                                <p class="module-desc">${m.desc}</p>
-                                <div class="card-bottom"><svg><use href="#icon-clock"></use></svg> ${m.time}</div>
+                            <h4 style="font-size: 12px; font-weight: 700; color: var(--matrix-yellow); text-transform: uppercase; margin-bottom: 8px;">🎥 Video Lecture</h4>
+                            <div class="video-container">
+                                <iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                             </div>
-                        `).join('')}
-                    </div>
+                        </div>
+                    `;
+                }
+
+                // 2. Text / Notes Content
+                if (ch.text_content && ch.text_content.trim()) {
+                    chapterHtml += `
+                        <div>
+                            <h4 style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">📝 Notes & Core Principles</h4>
+                            <div class="reader-notes">${escapeHtml(ch.text_content)}</div>
+                        </div>
+                    `;
+                }
+
+                // 3. Viewable PDF Document (if present)
+                if (ch.pdf_url && ch.pdf_url.trim()) {
+                    chapterHtml += `
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <h4 style="font-size: 12px; font-weight: 700; color: var(--matrix-blue); text-transform: uppercase;">📄 PDF Study Material</h4>
+                                <a href="${ch.pdf_url}" target="_blank" style="color: var(--matrix-blue); font-size: 12px; font-weight: 600; text-decoration: none;">Open in New Tab ↗</a>
+                            </div>
+                            <iframe class="pdf-viewer-frame" src="${ch.pdf_url}"></iframe>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = chapterHtml;
+
+            } else if (currentStepType === 'quiz') {
+                progressText.textContent = `Knowledge Check (${questions.length} Questions)`;
+                btnPrev.disabled = chapters.length === 0;
+                btnNext.textContent = 'Completed ✓';
+                btnNext.disabled = true;
+
+                renderQuizPlayer(container, questions);
+            }
+        }
+
+        /* --- QUIZ PLAYER RENDERING & GRADING --- */
+        function renderQuizPlayer(container, questions) {
+            let html = `
+                <div>
+                    <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">🎯 Knowledge Check & Quiz</h2>
+                    <p style="font-size: 13px; color: var(--text-muted);">Answer the following questions to test your comprehension and earn module mastery.</p>
                 </div>
             `;
 
-            html += buildGap("PRIMARY", primaryGap);
+            if (quizGradedResults) {
+                const passed = quizGradedResults.passed;
+                html += `
+                    <div style="background: ${passed ? 'rgba(74, 222, 128, 0.15)' : 'rgba(239, 68, 68, 0.15)'}; border: 1px solid ${passed ? 'var(--matrix-green)' : '#ef4444'}; border-radius: 12px; padding: 20px; text-align: center;">
+                        <h3 style="font-size: 18px; font-weight: 800; color: ${passed ? 'var(--matrix-green)' : '#ef4444'}; margin-bottom: 4px;">
+                            ${passed ? '🎉 Excellent! Quiz Passed!' : '📖 Review Needed'}
+                        </h3>
+                        <p style="font-size: 13px; color: #fff;">You scored <strong>${quizGradedResults.score} / ${quizGradedResults.total}</strong> (${quizGradedResults.percentage}%)</p>
+                        <button class="btn-reader" style="margin-top: 12px;" onclick="retakeQuiz()">Retake Quiz 🔄</button>
+                    </div>
+                `;
+            }
 
-            root.innerHTML = html;
-        });
+            html += `<div class="quiz-container">`;
+
+            questions.forEach((q, idx) => {
+                const qResult = quizGradedResults ? quizGradedResults.results.find(r => r.question_id === q.id) : null;
+                let cardClass = 'quiz-question-card';
+                if (qResult) {
+                    cardClass += qResult.is_correct ? ' correct-card' : ' incorrect-card';
+                }
+
+                let typeLabel = 'Multiple Choice';
+                if (q.question_type === 'true_false') typeLabel = 'True or False';
+                if (q.question_type === 'matching') typeLabel = 'Match the Answer';
+
+                html += `
+                    <div class="${cardClass}" id="q-card-${q.id}">
+                        <div class="quiz-q-header">
+                            <div class="quiz-q-title">${idx + 1}. ${escapeHtml(q.question_text)}</div>
+                            <span class="quiz-badge">${typeLabel}</span>
+                        </div>
+                `;
+
+                // 1. True or False
+                if (q.question_type === 'true_false') {
+                    const currentAns = studentQuizAnswers[q.id];
+                    html += `
+                        <div class="tf-grid">
+                            <button type="button" class="tf-btn ${currentAns === 'True' ? 'selected' : ''}" onclick="recordStudentAnswer(${q.id}, 'True')">
+                                ✓ True
+                            </button>
+                            <button type="button" class="tf-btn ${currentAns === 'False' ? 'selected' : ''}" onclick="recordStudentAnswer(${q.id}, 'False')">
+                                ✕ False
+                            </button>
+                        </div>
+                    `;
+                }
+
+                // 2. Multiple Choice
+                else if (q.question_type === 'multiple_choice') {
+                    const options = q.options || [];
+                    const currentAns = studentQuizAnswers[q.id];
+                    html += `<div class="mc-list">`;
+                    options.forEach((opt, oIdx) => {
+                        const letter = String.fromCharCode(65 + oIdx);
+                        const isSelected = currentAns === opt;
+                        html += `
+                            <button type="button" class="mc-option-btn ${isSelected ? 'selected' : ''}" onclick="recordStudentAnswer(${q.id}, '${escapeHtml(opt)}')">
+                                <span class="mc-letter">${letter}</span>
+                                <span>${escapeHtml(opt)}</span>
+                            </button>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                // 3. Matching Pairs
+                else if (q.question_type === 'matching') {
+                    const pairs = q.options || [];
+                    const rightMatches = pairs.map(p => p.right).sort(() => Math.random() - 0.5);
+                    const currentAnsMap = studentQuizAnswers[q.id] || {};
+
+                    html += `<div style="display: flex; flex-direction: column; gap: 8px;">`;
+                    pairs.forEach(p => {
+                        const selectedVal = currentAnsMap[p.left] || '';
+                        html += `
+                            <div class="match-pair-row">
+                                <div class="match-term-box">${escapeHtml(p.left)}</div>
+                                <span style="color: var(--matrix-yellow); font-weight: 800;">➔</span>
+                                <select class="match-select" onchange="recordMatchingAnswer(${q.id}, '${escapeHtml(p.left)}', this.value)">
+                                    <option value="">-- Select Match --</option>
+                                    ${rightMatches.map(rm => `<option value="${escapeHtml(rm)}" ${selectedVal === rm ? 'selected' : ''}>${escapeHtml(rm)}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                // Explanations if graded
+                if (qResult && q.explanation) {
+                    html += `
+                        <div class="explanation-box">
+                            <strong style="color: ${qResult.is_correct ? 'var(--matrix-green)' : '#ef4444'};">
+                                ${qResult.is_correct ? '✓ Correct!' : '✕ Incorrect!'}
+                            </strong> ${escapeHtml(q.explanation)}
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+            });
+
+            if (!quizGradedResults) {
+                html += `
+                    <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                        <button class="btn-reader-primary" style="padding: 12px 28px; font-size: 14px;" onclick="submitQuizAnswers()">
+                            Submit Answer
+                        </button>
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function recordStudentAnswer(questionId, value) {
+            if (quizGradedResults) return; // Locked after grading
+            studentQuizAnswers[questionId] = value;
+            renderCurrentContent();
+        }
+
+        function recordMatchingAnswer(questionId, leftTerm, rightMatch) {
+            if (quizGradedResults) return;
+            if (!studentQuizAnswers[questionId]) studentQuizAnswers[questionId] = {};
+            studentQuizAnswers[questionId][leftTerm] = rightMatch;
+        }
+
+        async function submitQuizAnswers() {
+            const profileStr = localStorage.getItem('studentProfile');
+            let studentId = null;
+            if (profileStr) {
+                try { studentId = JSON.parse(profileStr).id; } catch(e) {}
+            }
+
+            try {
+                const res = await fetch(`/api/modules/${currentActiveModule.id}/submit-quiz`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        student_id: studentId,
+                        answers: studentQuizAnswers
+                    })
+                });
+
+                if (res.ok) {
+                    quizGradedResults = await res.json();
+                    renderCurrentContent();
+                } else {
+                    alert("Failed to submit quiz.");
+                }
+            } catch(err) {
+                console.error("Quiz submission error:", err);
+            }
+        }
+
+        function retakeQuiz() {
+            studentQuizAnswers = {};
+            quizGradedResults = null;
+            renderCurrentContent();
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
     </script>
 </body>
 </html>
