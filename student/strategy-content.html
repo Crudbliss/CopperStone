@@ -469,17 +469,46 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             const userStr = localStorage.getItem('currentUser');
-            if (!userStr) return;
-            const user = JSON.parse(userStr);
-            const studentId = user.id;
+            const profileStr = localStorage.getItem('studentProfile');
             
-            try {
-                const res = await fetch(`/api/students/${studentId}/active-sessions`);
-                const activeSessions = await res.json();
-                const uRes = await fetch(`/api/students/${studentId}`);
-                const uData = await uRes.json();
-                const actualMode = uData.learning_mode || 'Hierarchical Individual';
+            let actualMode = null;
 
+            if (profileStr) {
+                try {
+                    const profile = JSON.parse(profileStr);
+                    actualMode = profile.learning_mode;
+                } catch(e) {}
+            }
+
+            if (!actualMode && userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    actualMode = user.learning_mode;
+                    
+                    if (!actualMode && user.id) {
+                        const uRes = await fetch(`/api/students/${user.id}`);
+                        if (uRes.ok) {
+                            const uData = await uRes.json();
+                            actualMode = uData.learning_mode;
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            if (!actualMode || actualMode === 'Unknown' || actualMode === 'null') {
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('error-state').style.display = 'block';
+                document.getElementById('error-state').innerHTML = `
+                    <div style="background: var(--bg-card); padding: 32px; border-radius: 12px; border: 1px solid var(--border-light); max-width: 500px; margin: 40px auto; text-align: center;">
+                        <div style="font-size: 36px; margin-bottom: 12px;">🗺️</div>
+                        <h3 style="color: var(--text-main); font-size: 18px; margin-bottom: 8px;">Roadmap Locked</h3>
+                        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Complete your Learning Mode Assessment to unlock personalized study habits and cognitive growth exercises.</p>
+                        <a href="qa-content.html" style="display: inline-block; background: var(--matrix-yellow); color: #060f17; font-weight: 700; font-size: 14px; padding: 10px 24px; border-radius: 8px; text-decoration: none;">Take Assessment</a>
+                    </div>`;
+                return;
+            }
+
+            try {
                 const modesMap = {
                     'Hierarchical Individual': 'HI',
                     'Distributed Individual': 'DI',
@@ -578,10 +607,10 @@
 
                 switchTab('strengths'); // Initialize tabs with right colors
             } catch (err) {
-                console.error("Failed to fetch sessions", err);
+                console.error("Failed to render strategy roadmap", err);
                 document.getElementById('loading-state').style.display = 'none';
                 document.getElementById('error-state').style.display = 'block';
-                document.getElementById('error-state').textContent = 'Error loading your data.';
+                document.getElementById('error-state').textContent = 'Error loading your roadmap.';
             }
         });
     </script>

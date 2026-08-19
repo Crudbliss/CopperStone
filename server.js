@@ -637,16 +637,36 @@ app.get('/api/students/:id/active-sessions', (req, res) => {
 // GET /api/students/:id/history - Get assessment history
 app.get('/api/students/:id/history', (req, res) => {
     const sql = `
-        SELECT h.*, s.quarter_name, c.prog_name as course_subj_name 
+        SELECT h.*, COALESCE(s.quarter_name, 'Assessment ' || h.id) as quarter_name, COALESCE(c.prog_name, 'Self-Paced Track') as course_subj_name 
         FROM assessment_history h
-        JOIN assessment_sessions s ON h.session_id = s.id
-        JOIN classes c ON s.class_id = c.id
+        LEFT JOIN assessment_sessions s ON h.session_id = s.id
+        LEFT JOIN classes c ON s.class_id = c.id
         WHERE h.student_id = ?
-        ORDER BY h.taken_at ASC
+        ORDER BY h.taken_at ASC, h.id ASC
     `;
     db.all(sql, [req.params.id], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
+        
+        if (rows && rows.length > 0) {
+            return res.json(rows);
+        }
+        
+        db.get('SELECT id, learning_mode, x_coord, y_coord FROM students WHERE id = ?', [req.params.id], (err2, student) => {
+            if (err2 || !student || !student.learning_mode || student.learning_mode === 'Unknown') {
+                return res.json([]);
+            }
+            res.json([{
+                id: 1,
+                student_id: student.id,
+                session_id: 0,
+                x_coord: student.x_coord || 0,
+                y_coord: student.y_coord || 0,
+                learning_mode: student.learning_mode,
+                quarter_name: 'Baseline',
+                course_subj_name: 'Initial Assessment',
+                taken_at: new Date().toISOString()
+            }]);
+        });
     });
 });
 

@@ -418,6 +418,12 @@
                 </svg>
                 <span>Dashboard</span>
             </a>
+            <a href="modules-content.html" target="content-frame" class="sidebar-link">
+                <svg width="20" height="20">
+                    <use href="#icon-book"></use>
+                </svg>
+                <span>My Modules</span>
+            </a>
             <a href="qa-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20">
                     <use href="#icon-checklist"></use>
@@ -429,12 +435,6 @@
                     <use href="#icon-map"></use>
                 </svg>
                 <span>Strategy Roadmap</span>
-            </a>
-            <a href="modules-content.html" target="content-frame" class="sidebar-link">
-                <svg width="20" height="20">
-                    <use href="#icon-book"></use>
-                </svg>
-                <span>My Modules</span>
             </a>
             <a href="progress-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20">
@@ -584,18 +584,9 @@
                                 document.getElementById('sidebar-student-avatar').textContent = (init1 + init2).toUpperCase() || '--';
                             }
 
-                            // Set program — show "HI-1" format if assigned, otherwise "Student"
-                            const prog = data.program || '';
-                            const sec = data.section || '';
-                            let progStr;
-                            if (prog && sec) {
-                                progStr = `${prog}-${sec}`;
-                            } else if (prog) {
-                                progStr = prog;
-                            } else {
-                                progStr = 'Student';
-                            }
-                            document.getElementById('sidebar-student-program').textContent = progStr;
+                            // Set subtitle — show student number or Learner
+                            const studentSub = data.student_no ? `ID: ${data.student_no}` : 'Learner';
+                            document.getElementById('sidebar-student-program').textContent = studentSub;
 
                             // Set Top Bar color based on mode
                             const modeText = data.learning_mode || 'Not Assessed';

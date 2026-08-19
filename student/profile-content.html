@@ -351,20 +351,11 @@
 
             <div class="profile-info-grid">
                 <div class="info-box">
-                    <span class="info-label">Program</span>
-                    <span class="info-value">BS in Information Technology</span>
-                    <!-- <span class="info-value" id="profile-program">Loading...</span >-->
+                    <span class="info-label">Student ID</span>
+                    <span class="info-value" id="profile-student-no">Loading...</span>
                 </div>
                 <div class="info-box">
-                    <span class="info-label">Year Level</span>
-                    <span class="info-value" id="profile-year">Loading...</span>
-                </div>
-                <div class="info-box">
-                    <span class="info-label">Section</span>
-                    <span class="info-value" id="profile-section">Loading...</span>
-                </div>
-                <div class="info-box">
-                    <span class="info-label">Email</span>
+                    <span class="info-label">Email Address</span>
                     <span class="info-value" id="profile-email">Loading...</span>
                 </div>
             </div>
@@ -416,37 +407,12 @@
                     document.getElementById('profile-avatar').textContent = (fName.charAt(0) + lName.charAt(0)).toUpperCase() || '--';
 
                     // ID
-                    document.getElementById('profile-id').textContent = user.student_no || 'Unknown ID';
+                    const studentId = user.student_no || 'Unknown ID';
+                    document.getElementById('profile-id').textContent = studentId;
+                    document.getElementById('profile-student-no').textContent = studentId;
 
-                    // Format Program
-                    let fullProgram = user.program || '--';
-                    if (fullProgram.toUpperCase() === 'BSIT') fullProgram = 'BS in Information Technology';
-                    if (fullProgram.toUpperCase() === 'BSCS') fullProgram = 'BS in Computer Science';
-
-                    // Format Year Level
-                    let yearFormatted = '--';
-                    if (user.year_level) {
-                        const yr = String(user.year_level);
-                        if (yr === '1') yearFormatted = '1st Year';
-                        else if (yr === '2') yearFormatted = '2nd Year';
-                        else if (yr === '3') yearFormatted = '3rd Year';
-                        else if (yr === '4') yearFormatted = '4th Year';
-                        else yearFormatted = `${yr}th Year`;
-                    }
-
-                    // Format Section
-                    let sectionFormatted = '--';
-                    if (user.program && user.year_level && user.section) {
-                        sectionFormatted = `${user.program.toUpperCase()} ${user.year_level}-${user.section}`;
-                    }
-
-                    // Info Grid
-                    //document.getElementById('profile-program').textContent = fullProgram;
-                    document.getElementById('profile-year').textContent = yearFormatted;
-                    document.getElementById('profile-section').textContent = sectionFormatted;
-
-                    // Generate dummy email from names
-                    let email = `${fName.toLowerCase()}.${lName.toLowerCase()}@student.olfu.edu.ph`.replace(/\s/g, '');
+                    // Email
+                    let email = user.email || `${fName.toLowerCase()}.${lName.toLowerCase()}@student.olfu.edu.ph`.replace(/\s/g, '');
                     if (!fName && !lName) email = 'student@olfu.edu.ph';
                     document.getElementById('profile-email').textContent = email;
 

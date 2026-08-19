@@ -426,19 +426,33 @@
             const user = JSON.parse(userStr);
 
             try {
-                // Fetch active sessions and history
-                const [activeRes, historyRes] = await Promise.all([
-                    fetch('/api/students/' + user.id + '/active-sessions'),
-                    fetch('/api/students/' + user.id + '/history')
-                ]);
-
-                const activeSessions = await activeRes.json();
+                // Fetch student history directly
+                const historyRes = await fetch('/api/students/' + user.id + '/history');
                 const history = await historyRes.json();
 
-                renderProgressPage(activeSessions, history);
+                renderProgressPage(history || []);
 
             } catch (err) {
                 console.error("Failed to load progress data", err);
+                // Check if profile exists locally as fallback
+                const profileStr = localStorage.getItem('studentProfile');
+                if (profileStr) {
+                    try {
+                        const profile = JSON.parse(profileStr);
+                        if (profile.learning_mode && profile.learning_mode !== 'Unknown') {
+                            renderProgressPage([{
+                                id: 1,
+                                student_id: user.id,
+                                x_coord: profile.x_coord || 0,
+                                y_coord: profile.y_coord || 0,
+                                learning_mode: profile.learning_mode,
+                                quarter_name: 'Baseline',
+                                taken_at: new Date().toISOString()
+                            }]);
+                            return;
+                        }
+                    } catch(e) {}
+                }
                 document.getElementById('dynamic-content').innerHTML = '<div style="color: #f87171; text-align: center; padding: 20px;">Failed to load progress data.</div>';
             }
         });
@@ -481,7 +495,6 @@
             `;
         }
 
-
         function getPercentages(x_coord, y_coord) {
             let normX = (x_coord + 5) / 10;
             let normY = (y_coord + 5) / 10;
@@ -498,9 +511,21 @@
             };
         }
 
-        function renderProgressPage(activeSessions, history) {
-
+        function renderProgressPage(history) {
             let html = '';
+
+            if (!history || history.length === 0) {
+                html = `
+                    <div style="background: var(--bg-card); padding: 48px 32px; border-radius: 16px; border: 1px solid var(--border-light); max-width: 540px; margin: 40px auto; text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 16px;">📈</div>
+                        <h3 style="color: var(--text-main); font-size: 20px; font-weight: 700; margin-bottom: 10px;">No Migration Data Yet</h3>
+                        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 24px;">Complete your Learning Mode Assessment to record your baseline quadrant coordinates. As you reassess, your migration path will be plotted here automatically.</p>
+                        <a href="qa-content.html" style="display: inline-block; background: var(--matrix-yellow); color: #060f17; font-weight: 700; font-size: 14px; padding: 12px 28px; border-radius: 8px; text-decoration: none;">Take Assessment</a>
+                    </div>
+                `;
+                document.getElementById('dynamic-content').innerHTML = html;
+                return;
+            }
 
             // 1. Migration Insight
             if (history.length > 0) {

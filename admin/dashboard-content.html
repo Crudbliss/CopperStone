@@ -473,25 +473,23 @@
 
         <div class="metric-card">
             <div class="metric-icon icon-blue">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
             </div>
             <div class="metric-info">
-                <h3>Total Teachers</h3>
-                <div class="value" id="count-teachers">--</div>
+                <h3>Assessed Learners</h3>
+                <div class="value" id="count-assessed">--</div>
             </div>
         </div>
 
         <div class="metric-card">
             <div class="metric-icon icon-yellow">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
             </div>
             <div class="metric-info">
-                <h3>Active Classes</h3>
-                <div class="value" id="count-classes">--</div>
+                <h3>Learning Modules</h3>
+                <div class="value" id="count-modules">--</div>
             </div>
         </div>
-
-
     </div>
 
     <div class="bottom-grid">
@@ -600,12 +598,10 @@
     <script>
         async function loadMetrics() {
             try {
-                // Fetch all data concurrently
-                const [studentsRes, teachersRes, classesRes] = await Promise.all([
+                // Fetch data concurrently
+                const [studentsRes, modulesRes] = await Promise.all([
                     fetch('/api/students'),
-                    fetch('/api/teachers'),
-                    fetch('/api/classes'),
-
+                    fetch('/api/modules')
                 ]);
 
                 if (studentsRes.ok) {
@@ -613,23 +609,25 @@
 
                     document.getElementById('count-students').textContent = students.length;
 
-                    // Compute Modes
+                    // Compute Modes & Assessed Count
                     let hiCount = 0, diCount = 0, hcCount = 0, dcCount = 0;
+                    let assessedCount = 0;
                     const graphContainer = document.getElementById('quadrant-graph-container');
 
                     if (graphContainer) {
                         graphContainer.querySelectorAll('.scatter-dot').forEach(e => e.remove());
 
                         students.forEach(s => {
-                            if (s.learning_mode === 'Hierarchical Individual') { hiCount++; }
-                            else if (s.learning_mode === 'Distributed Individual') { diCount++; }
-                            else if (s.learning_mode === 'Hierarchical Collective') { hcCount++; }
-                            else if (s.learning_mode === 'Distributed Collective') { dcCount++; }
-
-                            const x = s.x_coord || 0;
-                            const y = s.y_coord || 0;
-
                             if (s.learning_mode && s.learning_mode !== 'Unknown') {
+                                assessedCount++;
+                                if (s.learning_mode === 'Hierarchical Individual') { hiCount++; }
+                                else if (s.learning_mode === 'Distributed Individual') { diCount++; }
+                                else if (s.learning_mode === 'Hierarchical Collective') { hcCount++; }
+                                else if (s.learning_mode === 'Distributed Collective') { dcCount++; }
+
+                                const x = s.x_coord || 0;
+                                const y = s.y_coord || 0;
+
                                 let dotColor = '';
                                 if (s.learning_mode === 'Hierarchical Individual') dotColor = 'dot-green';
                                 else if (s.learning_mode === 'Distributed Individual') dotColor = 'dot-blue';
@@ -653,6 +651,8 @@
                             }
                         });
 
+                        document.getElementById('count-assessed').textContent = assessedCount;
+
                         // Bar Chart Update
                         const maxCount = Math.max(hiCount, diCount, hcCount, dcCount, 1);
                         const yLabels = document.getElementById('y-axis-labels').querySelectorAll('span');
@@ -673,22 +673,12 @@
                         document.getElementById('legend-val-orange').textContent = hcCount;
                         document.getElementById('legend-val-purple').textContent = dcCount;
                     }
-
                 }
 
-                if (teachersRes.ok) {
-                    const teachers = await teachersRes.json();
-                    document.getElementById('count-teachers').textContent = teachers.length;
+                if (modulesRes.ok) {
+                    const modules = await modulesRes.json();
+                    document.getElementById('count-modules').textContent = modules.length;
                 }
-
-                if (classesRes.ok) {
-                    const classes = await classesRes.json();
-                    // Count only active (non-archived) classes if applicable
-                    const activeClasses = classes.filter(c => c.is_archived === 0);
-                    document.getElementById('count-classes').textContent = activeClasses.length;
-                }
-
-
             } catch (err) {
                 console.error('Failed to load dashboard metrics:', err);
             }

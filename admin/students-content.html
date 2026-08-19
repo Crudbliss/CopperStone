@@ -76,7 +76,7 @@
                     <tr>
                         <th>Student No.</th>
                         <th>Name</th>
-                        <th>Program & Sec</th>
+                        <th>Learning Mode</th>
                         <th>Email</th>
                     </tr>
                 </thead>
@@ -161,11 +161,22 @@
                 }
 
                 students.forEach(s => {
+                    let modeBadge = '<span style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: rgba(255, 255, 255, 0.05); color: #8b9eb0;">Unassessed</span>';
+                    if (s.learning_mode && s.learning_mode !== 'Unknown') {
+                        let color = '#4ade80';
+                        let bg = 'rgba(74, 222, 128, 0.1)';
+                        if (s.learning_mode === 'Distributed Individual') { color = '#38bdf8'; bg = 'rgba(56, 189, 248, 0.1)'; }
+                        else if (s.learning_mode === 'Hierarchical Collective') { color = '#fb923c'; bg = 'rgba(251, 146, 60, 0.1)'; }
+                        else if (s.learning_mode === 'Distributed Collective') { color = '#c084fc'; bg = 'rgba(192, 132, 252, 0.1)'; }
+                        
+                        modeBadge = `<span style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; background: ${bg}; color: ${color};">${s.learning_mode}</span>`;
+                    }
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>${s.student_no}</td>
+                        <td style="font-weight: 600;">${s.student_no}</td>
                         <td>${s.first_name} ${s.mi || ''} ${s.last_name}</td>
-                        <td>${s.program} - ${s.section}</td>
+                        <td>${modeBadge}</td>
                         <td>${s.email}</td>
                     `;
                     tbody.appendChild(tr);
