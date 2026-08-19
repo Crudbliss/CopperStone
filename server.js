@@ -61,74 +61,16 @@ db.serialize(() => {
         db.run(`ALTER TABLE students ADD COLUMN weakest_learning_mode TEXT`, (err) => {});
     });
 
-    // 2. Teachers Table
-    db.run(`CREATE TABLE IF NOT EXISTS teachers (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        first_name TEXT NOT NULL,
-        last_name TEXT NOT NULL,
-        mi TEXT,
-        email TEXT UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL,
-        learning_mode TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
-
-    // 3. Classes Table
-    db.run(`CREATE TABLE IF NOT EXISTS classes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        prog_name TEXT NOT NULL,
-        year_level TEXT,
-        section TEXT,
-        school_year TEXT,
-        learning_mode TEXT,
-        teacher_id INTEGER,
-        is_archived INTEGER DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE SET NULL
-    )`, (err) => {
-        // Safely attempt to add new columns to an existing table if they don't exist
-        db.run(`ALTER TABLE classes ADD COLUMN year_level TEXT`, (err) => {});
-        db.run(`ALTER TABLE classes ADD COLUMN section TEXT`, (err) => {});
-        db.run(`ALTER TABLE classes ADD COLUMN school_year TEXT`, (err) => {});
-        db.run(`ALTER TABLE classes ADD COLUMN is_archived INTEGER DEFAULT 0`, (err) => {});
-        db.run(`ALTER TABLE classes ADD COLUMN learning_mode TEXT`, (err) => {});
-    });
-
-    // 4. Enrollments Table (Many-to-Many: Students to Classes)
-    db.run(`CREATE TABLE IF NOT EXISTS enrollments (
-        student_id INTEGER,
-        class_id INTEGER,
-        enrolled_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (student_id, class_id),
-        FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE,
-        FOREIGN KEY(class_id) REFERENCES classes(id) ON DELETE CASCADE
-    )`);
-
-    // 8. Assessment Sessions (Teacher controlled windows)
-    db.run(`CREATE TABLE IF NOT EXISTS assessment_sessions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        class_id INTEGER,
-        quarter_name TEXT NOT NULL,
-        start_date DATETIME,
-        deadline DATETIME,
-        is_active INTEGER DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(class_id) REFERENCES classes(id) ON DELETE CASCADE
-    )`, (err) => {
-        db.run(`ALTER TABLE assessment_sessions ADD COLUMN start_date DATETIME`, (err) => {});
-    });
-
-    // 9. Assessment History (Tracks student changes over time)
+    // 2. Assessment History (Tracks student changes over time)
     db.run(`CREATE TABLE IF NOT EXISTS assessment_history (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         student_id INTEGER,
-        session_id INTEGER,
+        session_id INTEGER DEFAULT 0,
         x_coord REAL,
         y_coord REAL,
         learning_mode TEXT,
         taken_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE,
-        FOREIGN KEY(session_id) REFERENCES assessment_sessions(id) ON DELETE CASCADE
+        FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE
     )`);
 
     // 10. AI Settings
@@ -771,119 +713,24 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
             };
             const weakestMode = oppositeModes[dominantMode] || 'Unknown';
 
-            const finishSubmission = (finalSessionId) => {
-                db.serialize(() => {
-                    if (finalSessionId) {
-                        db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode) VALUES (?, ?, ?, ?, ?)`,
-                            [student_id, finalSessionId, finalX, finalY, dominantMode]);
+            db.serialize(() => {
+                db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode) VALUES (?, ?, ?, ?, ?)`,
+                    [student_id, session_id || 0, finalX, finalY, dominantMode],
+                    function(histErr) {
+                        if (histErr) console.error("Error inserting assessment history:", histErr);
                     }
+                );
 
-                    db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ?, weakest_learning_mode = ? WHERE id = ?`, 
-                        [finalX, finalY, dominantMode, weakestMode, student_id], 
-                        function(updateErr) {
-                            if (updateErr) console.error("Error updating student coords", updateErr);
-                            res.json({
-                                success: true,
-                                result: { x: finalX, y: finalY, mode: dominantMode, fuzzy: memberships }
-                            });
-                        }
-                    );
-                });
-            };
-
-            // ALWAYS attempt to auto-assign the student to the class matching their new mode
-            const modeToShortcode = {
-                'Hierarchical Individual': 'HI',
-                'Hierarchical Collective': 'HC',
-                'Distributed Individual': 'DI',
-                'Distributed Collective': 'DC'
-            };
-            const modeShortcode = modeToShortcode[dominantMode] || dominantMode;
-            console.log(`Auto-assigning student ${student_id} | Mode: ${dominantMode} | Shortcode: ${modeShortcode}`);
-
-            // Get the student's year_level and program first
-            db.get(`SELECT program, year_level FROM students WHERE id = ?`, [student_id], (err, studentRow) => {
-                if (err || !studentRow) {
-                    console.error("Could not fetch student details for auto-assignment");
-                    return finishSubmission(session_id || null);
-                }
-
-                const sProgram = studentRow.program || 'Program';
-                const sYear = studentRow.year_level || '1';
-                
-                db.get(`SELECT * FROM classes WHERE learning_mode = ? AND year_level = ? AND is_archived = 0 LIMIT 1`, [modeShortcode, sYear], (err, classRow) => {
-                    
-                    const enrollAndFinish = (classId, classSection) => {
-                        // Remove old enrollments
-                        db.run(`DELETE FROM enrollments WHERE student_id = ?`, [student_id], () => {
-                            // Enroll in new class
-                            db.run(`INSERT INTO enrollments (student_id, class_id) VALUES (?, ?)`, [student_id, classId], (enrollErr) => {
-                                if (enrollErr) console.error("Error auto-enrolling student:", enrollErr);
-                                else console.log(`Student ${student_id} enrolled in class ${classId}`);
-                                
-                                // Update program and section
-                                db.run(`UPDATE students SET program = ?, section = ? WHERE id = ?`, [modeShortcode, classSection, student_id], (updateErr) => {
-                                    if (updateErr) console.error("Error updating student program/section:", updateErr);
-                                    
-                                    if (session_id) {
-                                        // If they took an existing session (e.g. Midterm/Final), just finish
-                                        finishSubmission(session_id);
-                                    } else {
-                                        // Initial Assessment -> Ensure cascading sessions exist for this class
-                                        db.get(`SELECT id FROM assessment_sessions WHERE class_id = ? AND quarter_name = 'Prelim'`, [classId], (err, sessionRow) => {
-                                            if (sessionRow) {
-                                                finishSubmission(sessionRow.id);
-                                            } else {
-                                                // Create cascading sessions automatically
-                                                const formatDate = (date) => date.toISOString().split('T')[0];
-                                                const now = new Date();
-                                                const prelimStart = new Date(now);
-                                                const midtermStart = new Date(now); midtermStart.setDate(midtermStart.getDate() + 42);
-                                                const finalStart = new Date(now); finalStart.setDate(finalStart.getDate() + 84);
-                                                
-                                                const prelimDeadline = new Date(midtermStart); prelimDeadline.setDate(prelimDeadline.getDate() + 1);
-                                                const midtermDeadline = new Date(finalStart); midtermDeadline.setDate(midtermDeadline.getDate() + 1);
-                                                const finalDeadline = new Date(finalStart); finalDeadline.setDate(finalDeadline.getDate() + 42);
-
-                                                db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, start_date, deadline) VALUES (?, 'Prelim', ?, ?)`, [classId, formatDate(prelimStart), formatDate(prelimDeadline)], function(err) {
-                                                    if (err) return finishSubmission(null);
-                                                    const prelimId = this.lastID;
-                                                    db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, start_date, deadline) VALUES (?, 'Midterm', ?, ?)`, [classId, formatDate(midtermStart), formatDate(midtermDeadline)]);
-                                                    db.run(`INSERT INTO assessment_sessions (class_id, quarter_name, start_date, deadline) VALUES (?, 'Final', ?, ?)`, [classId, formatDate(finalStart), formatDate(finalDeadline)], function(err) {
-                                                        finishSubmission(prelimId);
-                                                    });
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            });
+                db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ?, weakest_learning_mode = ? WHERE id = ?`, 
+                    [finalX, finalY, dominantMode, weakestMode, student_id], 
+                    function(updateErr) {
+                        if (updateErr) console.error("Error updating student coords", updateErr);
+                        res.json({
+                            success: true,
+                            result: { x: finalX, y: finalY, mode: dominantMode, fuzzy: memberships }
                         });
-                    };
-
-                    if (err || !classRow) {
-                        console.log("No active matching class found for shortcode:", modeShortcode, "Creating a new class.");
-                        const newSection = '1';
-                        
-                        // Find a teacher with matching learning mode
-                        db.get(`SELECT id FROM teachers WHERE learning_mode = ? OR learning_mode = ? LIMIT 1`, [dominantMode, modeShortcode], (err, teacherRow) => {
-                            const teacherId = teacherRow ? teacherRow.id : null;
-                            
-                            // Create the class!
-                            db.run(`INSERT INTO classes (prog_name, year_level, section, school_year, learning_mode, teacher_id) VALUES (?, ?, ?, ?, ?, ?)`, 
-                                [sProgram, sYear, newSection, '2025-2026', modeShortcode, teacherId], function(insertErr) {
-                                    if (insertErr) {
-                                        console.error("Error creating class:", insertErr);
-                                        return finishSubmission(session_id || null);
-                                    }
-                                    enrollAndFinish(this.lastID, newSection);
-                                });
-                        });
-                    } else {
-                        console.log(`Found class id: ${classRow.id}, section: ${classRow.section}. Updating enrollment...`);
-                        enrollAndFinish(classRow.id, classRow.section);
                     }
-                });
+                );
             });
         });
     });
@@ -1221,7 +1068,7 @@ app.put('/api/submissions/:id/grade', (req, res) => {
 // GET /api/announcements
 app.get('/api/announcements', (req, res) => {
     const { target_audience } = req.query;
-    let sql = `SELECT a.*, t.first_name as teacher_first, t.last_name as teacher_last FROM announcements a JOIN teachers t ON a.teacher_id = t.id WHERE 1=1`;
+    let sql = `SELECT a.*, COALESCE(t.first_name, 'Platform') as teacher_first, COALESCE(t.last_name, 'Admin') as teacher_last FROM announcements a LEFT JOIN teachers t ON a.teacher_id = t.id WHERE 1=1`;
     let params = [];
     
     if (target_audience) {
