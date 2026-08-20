@@ -1664,23 +1664,18 @@
             </div>
 
             <form id="registerForm" class="modal-form" autocomplete="off">
-                <div class="form-group">
-                    <label>Full Name (First, Last, MI)</label>
-                    <input type="text" id="regName" placeholder="e.g. Maria Santos" autocomplete="off" required>
-                </div>
-
-                <div>
-                    <div class="form-group">
-                        <label>Year Level</label>
-                        <select id="regYear"
-                            style="width: 100%; background: var(--bg-base); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 8px; font-family: 'Poppins', sans-serif; cursor: pointer;"
-                            required>
-                            <option value="" disabled selected style="color: var(--text-muted);">Select year</option>
-                            <option value="1" style="color: black;">1st Year</option>
-                            <option value="2" style="color: black;">2nd Year</option>
-                            <option value="3" style="color: black;">3rd Year</option>
-                            <option value="4" style="color: black;">4th Year</option>
-                        </select>
+                <div style="display: grid; grid-template-columns: 1fr 90px 1fr; gap: 10px; margin-bottom: 16px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 13px;">First Name <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="regFirstName" placeholder="e.g. Maria" autocomplete="off" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 13px;">M.I. <span style="color: var(--text-muted); font-size: 11px;">(Opt)</span></label>
+                        <input type="text" id="regMI" placeholder="e.g. M." maxlength="3" autocomplete="off" style="text-transform: uppercase; text-align: center;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 13px;">Last Name <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="regLastName" placeholder="e.g. Santos" autocomplete="off" required>
                     </div>
                 </div>
 
@@ -1918,15 +1913,37 @@
             registerForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
                 const pwd = document.getElementById('regPassword').value;
-                const name = document.getElementById('regName').value.trim();
+                const firstName = document.getElementById('regFirstName').value.trim();
+                const lastName = document.getElementById('regLastName').value.trim();
+                let mi = document.getElementById('regMI').value.trim();
                 const errorMsg = document.getElementById('registerErrorMsg');
 
-                // Full Name validation (First, Last, MI) - requires at least 3 parts
-                const nameParts = name.split(/\s+/);
-                if (nameParts.length < 3) {
-                    errorMsg.textContent = 'Please provide your full name including First, Last, and Middle Initial (e.g., Maria S. Santos).';
+                // Validate First and Last Name
+                if (!firstName || firstName.length < 2) {
+                    errorMsg.textContent = 'Please enter a valid first name.';
                     errorMsg.style.display = 'block';
                     return;
+                }
+                if (!lastName || lastName.length < 2) {
+                    errorMsg.textContent = 'Please enter a valid last name.';
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+
+                // Middle Initial Checker (Optional, must be single letter with optional dot like M. or M)
+                if (mi) {
+                    mi = mi.toUpperCase();
+                    const miRegex = /^[A-Z]\.?$/;
+                    if (!miRegex.test(mi)) {
+                        errorMsg.textContent = "Middle Initial must be a single letter (e.g., 'M.' or 'M').";
+                        errorMsg.style.display = 'block';
+                        return;
+                    }
+                    if (!mi.endsWith('.')) {
+                        mi += '.';
+                    }
+                } else {
+                    mi = '';
                 }
 
                 // Password validation: Capital, lowercase, number, special character
@@ -1941,7 +1958,6 @@
 
                 // Send to backend API
                 const email = document.getElementById('regEmail').value;
-                const year = document.getElementById('regYear').value;
                 const section = "TBD";
                 const btnSubmit = registerForm.querySelector('.btn-submit');
 
@@ -1953,13 +1969,13 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            first_name: nameParts[0],
-                            last_name: nameParts[nameParts.length - 1],
-                            mi: nameParts.slice(1, nameParts.length - 1).join(' '),
+                            first_name: firstName,
+                            last_name: lastName,
+                            mi: mi,
                             email: email,
                             password: pwd,
                             program: 'BSIT', // Default program
-                            year_level: year,
+                            year_level: null,
                             section: section
                         })
                     });
@@ -1974,13 +1990,16 @@
                     }
 
                     if (data.success) {
+                        const fullName = mi ? `${firstName} ${mi} ${lastName}` : `${firstName} ${lastName}`;
                         localStorage.setItem('currentUser', JSON.stringify({
                             id: data.student_id,
-                            name: name,
+                            first_name: firstName,
+                            last_name: lastName,
+                            name: fullName,
+                            student_no: data.student_no,
                             email: email,
                             role: 'student',
-                            section: section,
-                            year_level: year
+                            section: section
                         }));
                         window.location.href = 'student/s-dashboard.html';
                     } else {

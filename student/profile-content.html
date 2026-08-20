@@ -394,55 +394,78 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const userStr = localStorage.getItem('currentUser');
             if (userStr) {
                 try {
-                    const user = JSON.parse(userStr);
+                    let user = JSON.parse(userStr);
+                    let profile = {};
+                    const profileStr = localStorage.getItem('studentProfile');
+                    if (profileStr) {
+                        try { profile = JSON.parse(profileStr); } catch(e){}
+                    }
+
+                    // Fetch latest profile from DB to guarantee student_no and details are accurate
+                    if (user && user.id) {
+                        try {
+                            const studentRes = await fetch('/api/students/' + user.id);
+                            if (studentRes.ok) {
+                                const dbStudent = await studentRes.json();
+                                user = { ...user, ...dbStudent };
+                                profile = { ...profile, ...dbStudent };
+                                localStorage.setItem('currentUser', JSON.stringify(user));
+                                localStorage.setItem('studentProfile', JSON.stringify(profile));
+                            }
+                        } catch (fetchErr) {
+                            console.warn("Could not fetch latest student profile", fetchErr);
+                        }
+                    }
 
                     // Name and Initials
-                    const fName = user.name || '';
-                    const lName = user.last_name || '';
-                    document.getElementById('profile-name').textContent = `${fName} ${lName}`.trim();
-                    document.getElementById('profile-avatar').textContent = (fName.charAt(0) + lName.charAt(0)).toUpperCase() || '--';
+                    const fName = user.first_name || user.name || profile.first_name || '';
+                    const lName = user.last_name || profile.last_name || '';
+                    const fullName = `${fName} ${lName}`.trim();
+                    document.getElementById('profile-name').textContent = fullName || 'Student Account';
+                    document.getElementById('profile-avatar').textContent = (fName.charAt(0) + (lName ? lName.charAt(0) : '')).toUpperCase() || 'ST';
 
-                    // ID
-                    const studentId = user.student_no || 'Unknown ID';
+                    // ID - prioritize student_no from user or profile, fallback to formatted ID based on id
+                    let studentId = user.student_no || profile.student_no;
+                    if (!studentId || studentId === 'Unknown ID') {
+                        const numericId = user.id || profile.id || 1;
+                        studentId = `0226${numericId.toString().padStart(4, '0')}`;
+                    }
                     document.getElementById('profile-id').textContent = studentId;
                     document.getElementById('profile-student-no').textContent = studentId;
 
                     // Email
-                    let email = user.email || `${fName.toLowerCase()}.${lName.toLowerCase()}@student.olfu.edu.ph`.replace(/\s/g, '');
-                    if (!fName && !lName) email = 'student@olfu.edu.ph';
+                    let email = user.email || profile.email || (fName && lName ? `${fName.toLowerCase()}.${lName.toLowerCase()}@student.olfu.edu.ph`.replace(/\s/g, '') : 'student@olfu.edu.ph');
                     document.getElementById('profile-email').textContent = email;
 
                     // Populate Mode from cached profile
-                    const profileStr = localStorage.getItem('studentProfile');
-                    if (profileStr) {
-                        const profile = JSON.parse(profileStr);
-                        const mode = profile.learning_mode;
-                        const modeEl = document.getElementById('profile-mode');
-                        const pillEl = modeEl.parentElement;
+                    const mode = profile.learning_mode || user.learning_mode;
+                    const modeEl = document.getElementById('profile-mode');
+                    const pillEl = modeEl.parentElement;
 
-                        if (mode) {
-                            let color = 'var(--matrix-green)';
-                            if (mode === 'Hierarchical Individual') color = 'var(--matrix-green)';
-                            else if (mode === 'Distributed Individual') color = 'var(--matrix-blue)';
-                            else if (mode === 'Hierarchical Collective') color = 'var(--matrix-orange)';
-                            else if (mode === 'Distributed Collective') color = 'var(--matrix-purple)';
+                    if (mode && mode !== 'Unknown' && mode !== 'null') {
+                        let color = 'var(--matrix-green)';
+                        if (mode === 'Hierarchical Individual') color = 'var(--matrix-green)';
+                        else if (mode === 'Distributed Individual') color = 'var(--matrix-blue)';
+                        else if (mode === 'Hierarchical Collective') color = 'var(--matrix-orange)';
+                        else if (mode === 'Distributed Collective') color = 'var(--matrix-purple)';
 
-                            modeEl.textContent = mode;
-                            modeEl.style.color = color;
-                            pillEl.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
-                            pillEl.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
-                        } else {
-                            modeEl.textContent = 'Not Assessed';
-                            modeEl.style.color = 'var(--text-muted)';
-                        }
+                        modeEl.textContent = mode;
+                        modeEl.style.color = color;
+                        pillEl.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
+                        pillEl.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
+                    } else {
+                        modeEl.textContent = 'Not Assessed';
+                        modeEl.style.color = 'var(--text-muted)';
                     }
 
                     // Fetch history which will also render quadrant profile
-                    fetchHistory(user.id);
+                    if (user && user.id) {
+                        fetchHistory(user.id);
+                    }
 
                 } catch (e) {
                     console.error("Error parsing user data:", e);

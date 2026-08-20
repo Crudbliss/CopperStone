@@ -535,60 +535,33 @@
             html += `</div></div>`;
 
             // 2. Render Upcoming or Active Card
-            const active = activeSessions.find(s => !history.some(h => h.quarter_name === s.quarter_name));
+            const active = (activeSessions && activeSessions.length > 0) ? activeSessions[0] : {
+                quarter_name: 'Periodic',
+                deadline: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0]
+            };
 
-            if (active) {
-                // Active and ready to take
-                const deadlineStr = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'No deadline';
-                
-                html += `
-                    <div class="card" style="border-color: var(--border-yellow); position: relative; overflow: hidden; margin-bottom: 24px;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                            <span style="background-color: rgba(216, 166, 26, 0.1); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(216, 166, 26, 0.2); display: inline-flex; align-items: center; gap: 6px;">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                ACTIVE NOW
-                            </span>
-                            <div style="width: 48px; height: 48px; background: rgba(216, 166, 26, 0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--matrix-yellow);">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                            </div>
+            const deadlineStr = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Open access';
+            
+            html += `
+                <div class="card" style="border-color: var(--border-yellow); position: relative; overflow: hidden; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                        <span style="background-color: rgba(216, 166, 26, 0.1); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(216, 166, 26, 0.2); display: inline-flex; align-items: center; gap: 6px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            ACTIVE NOW
+                        </span>
+                        <div style="width: 48px; height: 48px; background: rgba(216, 166, 26, 0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--matrix-yellow);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                         </div>
-                        <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">${active.quarter_name} Learning Mode Reassessment</h2>
-                        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Due ${deadlineStr} &middot; Estimated 20-30 minutes</p>
-                        
-                        <a href="test-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; background-color: rgba(74, 222, 128, 0.15); color: var(--matrix-green); border: 1px solid var(--matrix-green);">
-                            <svg width="16" height="16" style="color: var(--matrix-green);"><use href="#icon-play"></use></svg>
-                            Take Assessment Now
-                        </a>
                     </div>
-                `;
-            } else {
-                // Find next upcoming locked
-                let nextQ = quarters.find(q => !history.some(h => h.quarter_name.includes(q)));
-                if (nextQ) {
-                    html += `
-                        <div class="card" style="border-color: var(--border-yellow); position: relative; overflow: hidden; margin-bottom: 24px;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                                <span style="background-color: rgba(216, 166, 26, 0.1); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(216, 166, 26, 0.2); display: inline-flex; align-items: center; gap: 6px;">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                    UPCOMING - ${nextQ}
-                                </span>
-                                <div style="width: 48px; height: 48px; background: rgba(216, 166, 26, 0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--matrix-yellow);">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                                </div>
-                            </div>
-                            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">${nextQ} Learning Mode Reassessment</h2>
-                            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Opens later this term &middot; Estimated 20-30 minutes</p>
-                            
-                            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px 20px; display: flex; gap: 12px; align-items: flex-start;">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--matrix-yellow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">
-                                    The assessment is currently <strong style="color: var(--matrix-yellow);">locked</strong> to prevent data skewing. It will automatically unlock on the scheduled date. Answer all questions honestly — accuracy depends on the integrity of your responses.
-                                </p>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
+                    <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">${active.quarter_name} Learning Mode Reassessment</h2>
+                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Self-Paced &middot; Estimated 15-25 minutes</p>
+                    
+                    <a href="test-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; background-color: rgba(74, 222, 128, 0.15); color: var(--matrix-green); border: 1px solid var(--matrix-green);">
+                        <svg width="16" height="16" style="color: var(--matrix-green);"><use href="#icon-play"></use></svg>
+                        Take Assessment Now
+                    </a>
+                </div>
+            `;
 
             // 3. Render Previous Results
             if (history.length > 0) {

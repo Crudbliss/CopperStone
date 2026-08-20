@@ -189,7 +189,7 @@
         loadStudents();
 
         async function factoryResetStudents() {
-            if (!confirm("⚠️ WARNING: This will permanently delete ALL student assessment histories and test responses across the entire system. Students will have their coordinates wiped. Are you absolutely sure you want to do this?")) {
+            if (!confirm("⚠️ WARNING: This will permanently delete ALL student accounts, assessment histories, module progress, and quiz submissions. The database will be completely wiped clean of all student data. Are you sure you want to proceed?")) {
                 return;
             }
             
@@ -203,10 +203,10 @@
                 const data = await res.json();
                 
                 if (res.ok) {
-                    alert("✅ Factory Reset Complete. All students have been wiped clean.");
+                    alert("✅ Factory Reset Complete. All student accounts and data have been completely wiped clean from the database.");
                     loadStudents(); // Refresh the table UI
                 } else {
-                    alert("Error: " + data.error);
+                    alert("Error: " + (data.error || "Failed to reset student data"));
                 }
                 
                 btn.textContent = origText;

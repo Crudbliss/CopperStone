@@ -604,11 +604,10 @@
                     ptsHC.push(`${x},${yHC}`);
                     ptsDC.push(`${x},${yDC}`);
 
-                    let qTitle = h.quarter_name;
+                    let qTitle = h.quarter_name || ('Assessment ' + (i + 1));
                     if (qTitle.toLowerCase().includes('prelim')) qTitle = 'Prelim';
                     else if (qTitle.toLowerCase().includes('midterm')) qTitle = 'Midterm';
                     else if (qTitle.toLowerCase().includes('final')) qTitle = 'Final';
-                    else qTitle = 'Q4';
 
                     labelsX += `<text x="${x}" y="${H - 2}" fill="var(--text-main)" font-size="12" text-anchor="middle" font-weight="600">${qTitle}</text>`;
                 });
@@ -676,11 +675,10 @@
                     let x = history.length === 1 ? W / 2 : padX + (i / (history.length - 1)) * drawW;
                     let leftPct = (x / W) * 100;
                     
-                    let qTitle = h.quarter_name;
+                    let qTitle = h.quarter_name || ('Assessment ' + (i + 1));
                     if (qTitle.toLowerCase().includes('prelim')) qTitle = 'Prelim';
                     else if (qTitle.toLowerCase().includes('midterm')) qTitle = 'Midterm';
                     else if (qTitle.toLowerCase().includes('final')) qTitle = 'Final';
-                    else qTitle = 'Q4';
                     
                     // Position tooltip either left or right to avoid clipping
                     let tipSide = leftPct > 50 ? `right: calc(100% - ${leftPct}% + 15px);` : `left: calc(${leftPct}% + 15px);`;
@@ -734,11 +732,10 @@
                     if (shortName === 'H. Collective') { pillColor = 'var(--matrix-orange)'; pillBg = 'rgba(251, 146, 60, 0.1)'; }
                     if (shortName === 'D. Collective') { pillColor = 'var(--matrix-purple)'; pillBg = 'rgba(192, 132, 252, 0.1)'; }
 
-                    let qTitle = h.quarter_name;
+                    let qTitle = h.quarter_name || ('Assessment ' + (i + 1));
                     if (qTitle.toLowerCase().includes('prelim')) qTitle = 'Prelim';
                     else if (qTitle.toLowerCase().includes('midterm')) qTitle = 'Midterm';
                     else if (qTitle.toLowerCase().includes('final')) qTitle = 'Final';
-                    else qTitle = 'Q4';
 
                     html += `
                         <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px;">

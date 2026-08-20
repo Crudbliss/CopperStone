@@ -934,26 +934,14 @@
                     return;
                 }
 
-                if (!sessions || sessions.length === 0) {
-                    document.getElementById('test-container').innerHTML = `
-                        <div style="text-align: center; padding: 60px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-light);">
-                            <h2 style="color: var(--matrix-blue); margin-bottom: 12px;">No Active Assessments</h2>
-                            <p style="color: var(--text-muted);">Your teachers have not opened any assessment sessions for you at this time.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                activeSession = sessions.find(s => !history.some(h => h.quarter_name === s.quarter_name));
-
-                if (!activeSession) {
-                    document.getElementById('test-container').innerHTML = `
-                        <div style="text-align: center; padding: 60px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-light);">
-                            <h2 style="color: var(--matrix-green); margin-bottom: 12px;">All Assessments Completed</h2>
-                            <p style="color: var(--text-muted);">You have already completed all currently active assessments. Great job!</p>
-                        </div>
-                    `;
-                    return;
+                if (sessions && sessions.length > 0) {
+                    activeSession = sessions[0];
+                } else {
+                    activeSession = {
+                        session_id: 1,
+                        quarter_name: 'Reassessment',
+                        course_subj_name: 'Learning Mode Track'
+                    };
                 }
 
                 const sessionPill = document.getElementById('session-pill');

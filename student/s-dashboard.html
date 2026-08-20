@@ -560,8 +560,11 @@
                             
                             // Keep the currentUser cache in sync for child iframes
                             const cu = JSON.parse(localStorage.getItem('currentUser') || '{}');
-                            cu.program = data.program;
-                            cu.section = data.section;
+                            cu.student_no = data.student_no;
+                            cu.first_name = data.first_name;
+                            cu.last_name = data.last_name;
+                            cu.name = data.first_name;
+                            cu.email = data.email;
                             localStorage.setItem('currentUser', JSON.stringify(cu));
 
                             // Enforce Mandatory Initial Assessment

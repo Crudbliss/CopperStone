@@ -212,6 +212,19 @@ app.post('/api/students/register', async (req, res) => {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Format and validate optional Middle Initial (M.I.)
+    if (mi && mi.trim() !== '') {
+        mi = mi.trim().toUpperCase();
+        if (!/^[A-Z]\.?$/.test(mi)) {
+            return res.status(400).json({ error: "Middle Initial must be a single letter (e.g., 'M.' or 'M')" });
+        }
+        if (!mi.endsWith('.')) {
+            mi += '.';
+        }
+    } else {
+        mi = null;
+    }
+
     try {
         if (!student_no || student_no.trim() === '') {
             const row = await new Promise((resolve, reject) => {
@@ -239,7 +252,7 @@ app.post('/api/students/register', async (req, res) => {
                 }
                 return res.status(500).json({ error: err.message });
             }
-            res.status(201).json({ success: true, message: 'Student registered successfully!', student_id: this.lastID });
+            res.status(201).json({ success: true, message: 'Student registered successfully!', student_id: this.lastID, student_no: student_no });
         });
     } catch (err) {
         res.status(500).json({ error: 'Server error during registration' });
@@ -467,18 +480,19 @@ app.post('/api/enroll', (req, res) => {
     });
 });
 
-// POST /api/admin/reset-students - Wipe all assessment data and enrollments for students
+// POST /api/admin/reset-students - Completely wipe all student accounts and related assessment/module data
 app.post('/api/admin/reset-students', (req, res) => {
     db.serialize(() => {
-        db.run('BEGIN TRANSACTION');
         db.run('DELETE FROM assessment_history');
-        db.run('UPDATE students SET x_coord = NULL, y_coord = NULL, learning_mode = NULL', (err) => {
+        db.run('DELETE FROM submissions');
+        db.run('DELETE FROM student_module_progress');
+        db.run('DELETE FROM students', function(err) {
             if (err) {
-                db.run('ROLLBACK');
-                return res.status(500).json({ error: 'Failed to reset students' });
+                console.error("Failed to delete students:", err);
+                return res.status(500).json({ error: 'Failed to reset student database: ' + err.message });
             }
-            db.run('COMMIT');
-            res.json({ success: true, message: 'All student assessment data has been completely wiped.' });
+            db.run("DELETE FROM sqlite_sequence WHERE name IN ('students', 'assessment_history', 'submissions', 'student_module_progress')", () => {});
+            res.json({ success: true, message: 'All student accounts and associated data have been completely wiped clean.' });
         });
     });
 });
@@ -586,53 +600,47 @@ app.put('/api/sessions/:id/dates', (req, res) => {
 
 // GET /api/students/:id/active-sessions - Get active sessions for a student
 app.get('/api/students/:id/active-sessions', (req, res) => {
-    db.get(`SELECT learning_mode FROM students WHERE id = ?`, [req.params.id], (err, student) => {
+    db.all(`SELECT id, taken_at FROM assessment_history WHERE student_id = ? ORDER BY taken_at ASC`, [req.params.id], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        
-        if (student && (!student.learning_mode || student.learning_mode === 'null' || student.learning_mode === '')) {
-            // Global Intake Assessment override
-            return res.json([{
-                session_id: 0, // Fake ID for Intake
-                quarter_name: 'Prelim', // Act as Prelim for timeline UI
-                deadline: new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0],
-                course_subj_name: 'Global Intake',
-                class_id: 0
-            }]);
-        }
+        const historyCount = (rows ? rows.length : 0);
+        const quarterLabels = ['Prelim', 'Midterm', 'Final', 'Quarter 4', 'Quarter 5'];
+        const nextQuarter = quarterLabels[historyCount] || `Period ${historyCount + 1}`;
 
-        const sql = `
-            SELECT s.id as session_id, s.quarter_name, s.deadline, c.prog_name as course_subj_name, c.id as class_id
-            FROM assessment_sessions s
-            JOIN enrollments e ON s.class_id = e.class_id
-            JOIN classes c ON s.class_id = c.id
-            WHERE e.student_id = ? AND s.is_active = 1 AND c.is_archived = 0
-        `;
-        db.all(sql, [req.params.id], (err, rows) => {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json(rows);
-        });
+        res.json([{
+            session_id: historyCount + 1,
+            quarter_name: nextQuarter,
+            deadline: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+            course_subj_name: 'Self-Paced Track',
+            class_id: 0
+        }]);
     });
 });
 
 // GET /api/students/:id/history - Get assessment history
 app.get('/api/students/:id/history', (req, res) => {
     const sql = `
-        SELECT h.*, COALESCE(s.quarter_name, 'Assessment ' || h.id) as quarter_name, COALESCE(c.prog_name, 'Self-Paced Track') as course_subj_name 
+        SELECT h.id, h.student_id, h.session_id, h.x_coord, h.y_coord, h.learning_mode, h.taken_at
         FROM assessment_history h
-        LEFT JOIN assessment_sessions s ON h.session_id = s.id
-        LEFT JOIN classes c ON s.class_id = c.id
         WHERE h.student_id = ?
         ORDER BY h.taken_at ASC, h.id ASC
     `;
     db.all(sql, [req.params.id], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         
+        const quarterLabels = ['Prelim', 'Midterm', 'Final', 'Quarter 4', 'Quarter 5'];
+
         if (rows && rows.length > 0) {
-            return res.json(rows);
+            const enriched = rows.map((r, idx) => ({
+                ...r,
+                quarter_name: quarterLabels[idx] || `Period ${idx + 1}`,
+                course_subj_name: 'Learning Mode Track'
+            }));
+            return res.json(enriched);
         }
         
+        // Fallback to student baseline if they have taken initial assessment
         db.get('SELECT id, learning_mode, x_coord, y_coord FROM students WHERE id = ?', [req.params.id], (err2, student) => {
-            if (err2 || !student || !student.learning_mode || student.learning_mode === 'Unknown') {
+            if (err2 || !student || !student.learning_mode || student.learning_mode === 'Unknown' || student.learning_mode === 'null' || student.learning_mode === '') {
                 return res.json([]);
             }
             res.json([{
@@ -642,8 +650,8 @@ app.get('/api/students/:id/history', (req, res) => {
                 x_coord: student.x_coord || 0,
                 y_coord: student.y_coord || 0,
                 learning_mode: student.learning_mode,
-                quarter_name: 'Baseline',
-                course_subj_name: 'Initial Assessment',
+                quarter_name: 'Prelim',
+                course_subj_name: 'Learning Mode Track',
                 taken_at: new Date().toISOString()
             }]);
         });
