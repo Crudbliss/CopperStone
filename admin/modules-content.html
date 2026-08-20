@@ -703,7 +703,7 @@
         <div class="modal-content large-modal">
             <div class="modal-header">
                 <div>
-                    <span id="customizer-module-badge" class="badge-quadrant badge-hi">HI</span>
+                    <span id="customizer-module-badge-wrap"><span class="badge-quadrant badge-hi">HI</span></span>
                     <h3 class="modal-title" style="margin-top: 4px;" id="customizer-module-title">Customize Module Content</h3>
                 </div>
                 <button class="close-modal-btn" onclick="closeCustomizerModal()">&times;</button>
@@ -1066,13 +1066,18 @@
         /* --- MODULE CUSTOMIZER (CHAPTERS & QUIZZES) --- */
         async function openModuleCustomizer(moduleId) {
             try {
+                activeChapter = null;
+                activeQuestion = null;
+
                 const res = await fetch(`/api/modules/${moduleId}`);
                 if (!res.ok) throw new Error("Failed to fetch module");
                 activeModule = await res.json();
 
                 document.getElementById('customizer-module-title').textContent = activeModule.title;
-                const badgeEl = document.getElementById('customizer-module-badge');
-                badgeEl.outerHTML = getQuadrantBadge(activeModule.quadrant_category);
+                const badgeWrap = document.getElementById('customizer-module-badge-wrap');
+                if (badgeWrap) {
+                    badgeWrap.innerHTML = getQuadrantBadge(activeModule.quadrant_category);
+                }
 
                 switchCustomizerTab('chapters');
                 renderChaptersSidebar();

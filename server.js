@@ -949,11 +949,12 @@ app.post('/api/ai/train-metrics', (req, res) => {
         });
         fs.writeFileSync('current_dataset.csv', csv);
 
-        // Run Python script
-        exec('python train_model.py', (err, stdout, stderr) => {
+        // Run Python script (use python3 on Linux/Ubuntu, python on Windows)
+        const pyCmd = process.platform === 'win32' ? 'python' : 'python3';
+        exec(`${pyCmd} train_model.py`, (err, stdout, stderr) => {
             if (err) {
                 console.error(err);
-                return res.status(500).json({ error: "Python script failed. Is python installed?", details: stderr });
+                return res.status(500).json({ error: "Python script failed. Is python3 and required packages installed?", details: stderr || err.message });
             }
             try {
                 // Parse stdout for JSON
