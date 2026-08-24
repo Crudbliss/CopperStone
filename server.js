@@ -1042,11 +1042,25 @@ app.get('/api/modules', (req, res) => {
         params.push(quadrant_category);
     }
     
-    sql += ` ORDER BY m.created_at DESC`;
+    sql += ` ORDER BY m.id ASC`;
     
     db.all(sql, params, (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
+        
+        db.all(`SELECT id, module_id, title, chapter_order FROM module_chapters ORDER BY chapter_order ASC, id ASC`, [], (err2, allChapters) => {
+            const chaptersByModule = {};
+            (allChapters || []).forEach(ch => {
+                if (!chaptersByModule[ch.module_id]) chaptersByModule[ch.module_id] = [];
+                chaptersByModule[ch.module_id].push(ch);
+            });
+            
+            const enriched = (rows || []).map(m => ({
+                ...m,
+                chapters: chaptersByModule[m.id] || []
+            }));
+            
+            res.json(enriched);
+        });
     });
 });
 
@@ -1059,15 +1073,24 @@ app.get('/api/modules/:id', (req, res) => {
 
         db.all(`SELECT * FROM module_chapters WHERE module_id = ? ORDER BY chapter_order ASC, id ASC`, [moduleId], (err2, chapterRows) => {
             if (err2) return res.status(500).json({ error: err2.message });
-            moduleRow.chapters = chapterRows || [];
             
             db.all(`SELECT * FROM module_questions WHERE module_id = ? ORDER BY question_order ASC, id ASC`, [moduleId], (err3, questionRows) => {
                 if (err3) return res.status(500).json({ error: err3.message });
-                moduleRow.questions = (questionRows || []).map(q => {
+                const formattedQuestions = (questionRows || []).map(q => {
                     try { q.options = JSON.parse(q.options_json || '[]'); } catch(e) { q.options = []; }
                     try { q.correct_answer = JSON.parse(q.correct_answer_json || 'null'); } catch(e) { q.correct_answer = q.correct_answer_json; }
                     return q;
                 });
+
+                // Attach knowledge check questions directly to their respective chapters
+                moduleRow.chapters = (chapterRows || []).map(ch => {
+                    ch.questions = formattedQuestions.filter(q => q.chapter_id == ch.id);
+                    return ch;
+                });
+
+                moduleRow.questions = formattedQuestions;
+                moduleRow.final_questions = formattedQuestions.filter(q => !q.chapter_id);
+
                 res.json(moduleRow);
             });
         });
@@ -1139,20 +1162,23 @@ app.delete('/api/modules/:id', (req, res) => {
 // POST /api/modules/:id/chapters - Add a chapter to a module
 app.post('/api/modules/:id/chapters', (req, res) => {
     const moduleId = req.params.id;
-    const { title, chapter_order, text_content, pdf_url, youtube_url } = req.body || {};
+    const { title, chapter_order, text_content, pdf_url, youtube_url, learning_objectives, examples, estimated_time } = req.body || {};
 
     if (!title || title.trim() === '') {
         return res.status(400).json({ error: 'Chapter title is required' });
     }
 
-    const sql = `INSERT INTO module_chapters (module_id, chapter_order, title, text_content, pdf_url, youtube_url) VALUES (?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO module_chapters (module_id, chapter_order, title, text_content, pdf_url, youtube_url, learning_objectives, examples, estimated_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     db.run(sql, [
         moduleId, 
         parseInt(chapter_order) || 1, 
         title.trim(), 
         text_content || '', 
         pdf_url || '', 
-        youtube_url || ''
+        youtube_url || '',
+        learning_objectives || '',
+        examples || '',
+        estimated_time || '15 min'
     ], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.status(201).json({ success: true, chapter_id: this.lastID, message: 'Chapter added successfully' });
@@ -1162,19 +1188,22 @@ app.post('/api/modules/:id/chapters', (req, res) => {
 // PUT /api/chapters/:id - Edit a chapter
 app.put('/api/chapters/:id', (req, res) => {
     const chapterId = req.params.id;
-    const { title, chapter_order, text_content, pdf_url, youtube_url } = req.body || {};
+    const { title, chapter_order, text_content, pdf_url, youtube_url, learning_objectives, examples, estimated_time } = req.body || {};
 
     if (!title || title.trim() === '') {
         return res.status(400).json({ error: 'Chapter title is required' });
     }
 
-    const sql = `UPDATE module_chapters SET title = ?, chapter_order = ?, text_content = ?, pdf_url = ?, youtube_url = ? WHERE id = ?`;
+    const sql = `UPDATE module_chapters SET title = ?, chapter_order = ?, text_content = ?, pdf_url = ?, youtube_url = ?, learning_objectives = ?, examples = ?, estimated_time = ? WHERE id = ?`;
     db.run(sql, [
         title.trim(), 
         parseInt(chapter_order) || 1, 
         text_content || '', 
         pdf_url || '', 
         youtube_url || '',
+        learning_objectives || '',
+        examples || '',
+        estimated_time || '15 min',
         chapterId
     ], function(err) {
         if (err) return res.status(500).json({ error: err.message });
@@ -1185,6 +1214,7 @@ app.put('/api/chapters/:id', (req, res) => {
 // DELETE /api/chapters/:id - Delete a chapter
 app.delete('/api/chapters/:id', (req, res) => {
     const chapterId = req.params.id;
+    db.run(`DELETE FROM module_questions WHERE chapter_id = ?`, [chapterId]);
     db.run(`DELETE FROM module_chapters WHERE id = ?`, [chapterId], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true, message: 'Chapter deleted successfully' });
@@ -1195,7 +1225,19 @@ app.delete('/api/chapters/:id', (req, res) => {
 // GET /api/modules/:id/questions - Fetch quiz questions for a module
 app.get('/api/modules/:id/questions', (req, res) => {
     const moduleId = req.params.id;
-    db.all(`SELECT * FROM module_questions WHERE module_id = ? ORDER BY question_order ASC, id ASC`, [moduleId], (err, rows) => {
+    const { chapter_id } = req.query;
+
+    let sql = `SELECT * FROM module_questions WHERE module_id = ?`;
+    let params = [moduleId];
+
+    if (chapter_id) {
+        sql += ` AND chapter_id = ?`;
+        params.push(chapter_id);
+    }
+
+    sql += ` ORDER BY question_order ASC, id ASC`;
+
+    db.all(sql, params, (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         const formatted = (rows || []).map(q => {
             try { q.options = JSON.parse(q.options_json || '[]'); } catch(e) { q.options = []; }
@@ -1221,7 +1263,7 @@ app.post('/api/modules/:id/questions', (req, res) => {
     const sql = `INSERT INTO module_questions (module_id, chapter_id, question_type, question_order, question_text, options_json, correct_answer_json, explanation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     db.run(sql, [
         moduleId, 
-        chapter_id || null, 
+        chapter_id ? parseInt(chapter_id) : null, 
         question_type || 'multiple_choice', 
         parseInt(question_order) || 1, 
         question_text.trim(), 
@@ -1248,7 +1290,7 @@ app.put('/api/questions/:id', (req, res) => {
 
     const sql = `UPDATE module_questions SET chapter_id = ?, question_type = ?, question_order = ?, question_text = ?, options_json = ?, correct_answer_json = ?, explanation = ? WHERE id = ?`;
     db.run(sql, [
-        chapter_id || null, 
+        chapter_id ? parseInt(chapter_id) : null, 
         question_type || 'multiple_choice', 
         parseInt(question_order) || 1, 
         question_text.trim(), 
@@ -1271,15 +1313,27 @@ app.delete('/api/questions/:id', (req, res) => {
     });
 });
 
-// POST /api/modules/:id/submit-quiz - Grade student quiz submission
+// POST /api/modules/:id/submit-quiz - Grade student quiz or knowledge check submission
 app.post('/api/modules/:id/submit-quiz', (req, res) => {
     const moduleId = req.params.id;
-    const { student_id, answers } = req.body || {}; // answers is an object: { [questionId]: studentAnswer }
+    const { student_id, chapter_id, answers } = req.body || {};
 
-    db.all(`SELECT * FROM module_questions WHERE module_id = ? ORDER BY question_order ASC, id ASC`, [moduleId], (err, questions) => {
+    let query = `SELECT * FROM module_questions WHERE module_id = ?`;
+    let params = [moduleId];
+
+    if (chapter_id) {
+        query += ` AND chapter_id = ?`;
+        params.push(chapter_id);
+    }
+
+    query += ` ORDER BY question_order ASC, id ASC`;
+
+    db.all(query, params, (err, questions) => {
         if (err) return res.status(500).json({ error: err.message });
+        
+        // If specific chapter had no questions, check if module has general questions
         if (!questions || questions.length === 0) {
-            return res.json({ success: true, score: 0, total: 0, percentage: 100, results: [] });
+            return res.json({ success: true, score: 0, total: 0, percentage: 100, passed: true, results: [] });
         }
 
         let correctCount = 0;
@@ -1316,13 +1370,12 @@ app.post('/api/modules/:id/submit-quiz', (req, res) => {
             };
         });
 
-        const total = questions.length;
-        const percentage = Math.round((correctCount / total) * 100);
+        const isPerfect = total > 0 && correctCount === total;
 
         // Record student progress if student_id is provided
         if (student_id) {
             db.run(`INSERT INTO student_module_progress (student_id, module_id, tasks_completed, total_tasks, status) VALUES (?, ?, ?, ?, ?)`,
-                [student_id, moduleId, correctCount, total, percentage >= 70 ? 'Completed' : 'Review Needed'],
+                [student_id, moduleId, correctCount, total, isPerfect ? 'Completed' : 'Review Needed'],
                 (progErr) => {
                     if (progErr) console.error("Error logging module progress:", progErr);
                 }
@@ -1334,7 +1387,7 @@ app.post('/api/modules/:id/submit-quiz', (req, res) => {
             score: correctCount,
             total: total,
             percentage: percentage,
-            passed: percentage >= 70,
+            passed: isPerfect, // Must be 100% perfected to pass
             results: results
         });
     });

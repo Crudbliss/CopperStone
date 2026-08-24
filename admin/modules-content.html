@@ -569,13 +569,58 @@
     </style>
 </head>
 <body>
+
+    <svg class="svg-defs" style="display: none;">
+        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </symbol>
+        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+        </symbol>
+        <symbol id="icon-lightbulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18h6"></path>
+            <path d="M10 22h4"></path>
+            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5z"></path>
+        </symbol>
+        <symbol id="icon-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </symbol>
+        <symbol id="icon-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z"/>
+            <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"/>
+        </symbol>
+        <symbol id="icon-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+        </symbol>
+        <symbol id="icon-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="6"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+        </symbol>
+        <symbol id="icon-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </symbol>
+        <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </symbol>
+        <symbol id="icon-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </symbol>
+    </svg>
+
     <div class="content-container">
         
         <!-- Header -->
         <div class="page-header">
             <div>
-                <h1 class="page-title">
-                    <span>📚</span> Learning Modules & Activities
+                <h1 class="page-title" style="display: flex; align-items: center; gap: 10px;">
+                    <svg width="22" height="22" style="color: var(--matrix-yellow);"><use href="#icon-book"></use></svg>
+                    Learning Modules & Activities
                 </h1>
                 <p class="page-subtitle">Design self-paced learning tracks, interactive chapters (video/PDF), and custom quizzes (True/False, Multiple Choice, Matching).</p>
             </div>
@@ -612,19 +657,27 @@
                 <span class="count-badge" id="pill-count-all">0</span>
             </button>
             <button class="filter-pill" onclick="setFilter('Hierarchical Individual', this)">
-                <span style="color: var(--matrix-green);">📚 Hierarchical Individual</span>
+                <span style="color: var(--matrix-green); display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="13" height="13"><use href="#icon-book"></use></svg> Hierarchical Individual
+                </span>
                 <span class="count-badge" id="pill-count-hi">0</span>
             </button>
             <button class="filter-pill" onclick="setFilter('Distributed Individual', this)">
-                <span style="color: var(--matrix-blue);">💡 Distributed Individual</span>
+                <span style="color: var(--matrix-blue); display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="13" height="13"><use href="#icon-lightbulb"></use></svg> Distributed Individual
+                </span>
                 <span class="count-badge" id="pill-count-di">0</span>
             </button>
             <button class="filter-pill" onclick="setFilter('Hierarchical Collective', this)">
-                <span style="color: var(--matrix-orange);">⚙️ Hierarchical Collective</span>
+                <span style="color: var(--matrix-orange); display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="13" height="13"><use href="#icon-gear"></use></svg> Hierarchical Collective
+                </span>
                 <span class="count-badge" id="pill-count-hc">0</span>
             </button>
             <button class="filter-pill" onclick="setFilter('Distributed Collective', this)">
-                <span style="color: var(--matrix-purple);">🧠 Distributed Collective</span>
+                <span style="color: var(--matrix-purple); display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="13" height="13"><use href="#icon-brain"></use></svg> Distributed Collective
+                </span>
                 <span class="count-badge" id="pill-count-dc">0</span>
             </button>
         </div>
@@ -660,11 +713,11 @@
                     <div class="form-group">
                         <label class="form-label">Target Quadrant</label>
                         <select id="module-quadrant" class="form-select">
-                            <option value="Hierarchical Individual">📚 Hierarchical Individual</option>
-                            <option value="Distributed Individual">💡 Distributed Individual</option>
-                            <option value="Hierarchical Collective">⚙️ Hierarchical Collective</option>
-                            <option value="Distributed Collective">🧠 Distributed Collective</option>
-                            <option value="All">🌟 Universal / All Quadrants</option>
+                            <option value="Hierarchical Individual">Hierarchical Individual</option>
+                            <option value="Distributed Individual">Distributed Individual</option>
+                            <option value="Hierarchical Collective">Hierarchical Collective</option>
+                            <option value="Distributed Collective">Distributed Collective</option>
+                            <option value="All">Universal / All Quadrants</option>
                         </select>
                     </div>
 
@@ -712,10 +765,14 @@
             <!-- Customizer Tab Switcher -->
             <div class="customizer-nav">
                 <button class="customizer-tab-btn active" id="tab-btn-chapters" onclick="switchCustomizerTab('chapters')">
-                    <span>📖 Chapters (Text, PDF, Video)</span>
+                    <span style="display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14"><use href="#icon-book"></use></svg> Chapters (Text, PDF, Video)
+                    </span>
                 </button>
                 <button class="customizer-tab-btn" id="tab-btn-quiz" onclick="switchCustomizerTab('quiz')">
-                    <span>🎯 Quiz & Activities (T/F, Multiple Choice, Matching)</span>
+                    <span style="display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14"><use href="#icon-target"></use></svg> Quiz & Activities (T/F, Multiple Choice, Matching)
+                    </span>
                 </button>
             </div>
 
@@ -820,17 +877,25 @@
 
                         <div class="grid-2-col">
                             <div class="form-group">
-                                <label class="form-label">Question Type</label>
-                                <select id="question-type-select" class="form-select" onchange="renderQuestionTypeFields()">
-                                    <option value="true_false">🔘 True or False</option>
-                                    <option value="multiple_choice">📋 Multiple Choice</option>
-                                    <option value="matching">🔗 Match the Answer / Pairs</option>
+                                <label class="form-label">Assign to Section / Knowledge Check</label>
+                                <select id="question-chapter-select" class="form-select">
+                                    <option value="">General / Final Assessment Quiz</option>
+                                    <!-- Chapter options populated via JS -->
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Sequence Order</label>
-                                <input type="number" id="question-order" class="form-input" value="1" min="1" required>
+                                <label class="form-label">Question Type</label>
+                                <select id="question-type-select" class="form-select" onchange="renderQuestionTypeFields()">
+                                    <option value="true_false">True or False</option>
+                                    <option value="multiple_choice">Multiple Choice</option>
+                                    <option value="matching">Match the Answer / Pairs</option>
+                                </select>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Sequence Order</label>
+                            <input type="number" id="question-order" class="form-input" value="1" min="1" required>
                         </div>
 
                         <div class="form-group">
@@ -920,11 +985,11 @@
         }
 
         function getQuadrantBadge(quadrant) {
-            if (quadrant === 'Hierarchical Individual') return '<span class="badge-quadrant badge-hi">📚 Hierarchical Individual</span>';
-            if (quadrant === 'Distributed Individual') return '<span class="badge-quadrant badge-di">💡 Distributed Individual</span>';
-            if (quadrant === 'Hierarchical Collective') return '<span class="badge-quadrant badge-hc">⚙️ Hierarchical Collective</span>';
-            if (quadrant === 'Distributed Collective') return '<span class="badge-quadrant badge-dc">🧠 Distributed Collective</span>';
-            return '<span class="badge-quadrant badge-all">🌟 Universal Module</span>';
+            if (quadrant === 'Hierarchical Individual') return '<span class="badge-quadrant badge-hi"><svg width="12" height="12" style="vertical-align: middle; margin-right: 4px;"><use href="#icon-book"></use></svg>Hierarchical Individual</span>';
+            if (quadrant === 'Distributed Individual') return '<span class="badge-quadrant badge-di"><svg width="12" height="12" style="vertical-align: middle; margin-right: 4px;"><use href="#icon-lightbulb"></use></svg>Distributed Individual</span>';
+            if (quadrant === 'Hierarchical Collective') return '<span class="badge-quadrant badge-hc"><svg width="12" height="12" style="vertical-align: middle; margin-right: 4px;"><use href="#icon-gear"></use></svg>Hierarchical Collective</span>';
+            if (quadrant === 'Distributed Collective') return '<span class="badge-quadrant badge-dc"><svg width="12" height="12" style="vertical-align: middle; margin-right: 4px;"><use href="#icon-brain"></use></svg>Distributed Collective</span>';
+            return '<span class="badge-quadrant badge-all"><svg width="12" height="12" style="vertical-align: middle; margin-right: 4px;"><use href="#icon-sparkles"></use></svg>Universal Module</span>';
         }
 
         function renderModulesGrid() {
@@ -934,7 +999,7 @@
             if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state" style="grid-column: 1 / -1;">
-                        <div style="font-size: 36px; margin-bottom: 12px;">📂</div>
+                        <div style="margin-bottom: 12px; color: var(--text-muted);"><svg width="36" height="36"><use href="#icon-folder"></use></svg></div>
                         <h3 style="font-size: 16px; margin-bottom: 6px;">No modules found</h3>
                         <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">Create your first module for this quadrant to get started.</p>
                         <button class="btn-primary" onclick="openCreateModuleModal()">+ Create Module</button>
@@ -961,16 +1026,20 @@
                         
                         <div class="card-footer">
                             <div class="chapter-count">
-                                <span>📖 ${chapterCount} ${chapterCount === 1 ? 'Chapter' : 'Chapters'}</span>
+                                <span><svg width="13" height="13" style="vertical-align: text-bottom; margin-right: 4px;"><use href="#icon-book"></use></svg>${chapterCount} ${chapterCount === 1 ? 'Chapter' : 'Chapters'}</span>
                                 <span>&middot;</span>
-                                <span>⏱️ ${m.estimated_time || '30 min'}</span>
+                                <span><svg width="13" height="13" style="vertical-align: text-bottom; margin-right: 4px;"><use href="#icon-clock"></use></svg>${m.estimated_time || '30 min'}</span>
                             </div>
                             <div class="card-actions">
                                 <button class="btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="openModuleCustomizer(${m.id})">
                                     Customize Content
                                 </button>
-                                <button class="btn-secondary" style="padding: 6px 10px;" onclick="openEditModuleModal(${m.id})" title="Edit Module Info">✏️</button>
-                                <button class="btn-danger" style="padding: 6px 10px;" onclick="handleDeleteModule(${m.id})" title="Delete Module">🗑️</button>
+                                <button class="btn-secondary" style="padding: 6px 10px;" onclick="openEditModuleModal(${m.id})" title="Edit Module Info">
+                                    <svg width="13" height="13"><use href="#icon-edit"></use></svg>
+                                </button>
+                                <button class="btn-danger" style="padding: 6px 10px;" onclick="handleDeleteModule(${m.id})" title="Delete Module">
+                                    <svg width="13" height="13"><use href="#icon-trash"></use></svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1123,7 +1192,9 @@
                 return `
                     <button class="customizer-list-item ${isActive ? 'active' : ''}" onclick="selectChapter(${ch.id})">
                         <span>${idx + 1}. ${escapeHtml(ch.title)}</span>
-                        <span style="font-size: 11px; opacity: 0.6;">✏️</span>
+                        <span style="opacity: 0.6; display: flex; align-items: center;">
+                            <svg width="12" height="12"><use href="#icon-edit"></use></svg>
+                        </span>
                     </button>
                 `;
             }).join('');
@@ -1304,23 +1375,41 @@
 
             container.innerHTML = questions.map((q, idx) => {
                 const isActive = activeQuestion && activeQuestion.id === q.id;
-                let typeIcon = '🔘';
-                if (q.question_type === 'multiple_choice') typeIcon = '📋';
-                if (q.question_type === 'matching') typeIcon = '🔗';
+                let typeBadge = 'TF';
+                if (q.question_type === 'multiple_choice') typeBadge = 'MC';
+                if (q.question_type === 'matching') typeBadge = 'Match';
 
                 return `
                     <button class="customizer-list-item ${isActive ? 'active' : ''}" onclick="selectQuestion(${q.id})">
-                        <span>${idx + 1}. ${typeIcon} ${escapeHtml(q.question_text)}</span>
-                        <span style="font-size: 11px; opacity: 0.6;">✏️</span>
+                        <span style="display: inline-flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 4px; background: rgba(255,255,255,0.08); color: var(--text-muted);">${typeBadge}</span>
+                            ${idx + 1}. ${escapeHtml(q.question_text)}
+                        </span>
+                        <span style="opacity: 0.6; display: flex; align-items: center;">
+                            <svg width="12" height="12"><use href="#icon-edit"></use></svg>
+                        </span>
                     </button>
                 `;
             }).join('');
         }
 
-        function initNewQuestionForm() {
+        function populateChapterSelectOptions(selectedChapterId = null) {
+            const select = document.getElementById('question-chapter-select');
+            if (!select || !activeModule) return;
+            const chapters = activeModule.chapters || [];
+            let html = '<option value="">General / Final Assessment Quiz</option>';
+            chapters.forEach((ch, idx) => {
+                const isSel = selectedChapterId && selectedChapterId == ch.id;
+                html += `<option value="${ch.id}" ${isSel ? 'selected' : ''}>Chapter ${idx + 1}: ${escapeHtml(ch.title)} (Knowledge Check)</option>`;
+            });
+            select.innerHTML = html;
+        }
+
+        function initNewQuestionForm(preselectedChapterId = null) {
             activeQuestion = null;
             document.getElementById('edit-question-id').value = '';
-            document.getElementById('question-editor-heading').textContent = 'Add New Quiz Question';
+            document.getElementById('question-editor-heading').textContent = 'Add New Quiz / Knowledge Check Question';
+            populateChapterSelectOptions(preselectedChapterId);
             document.getElementById('question-type-select').value = 'true_false';
             const nextOrder = (activeModule.questions ? activeModule.questions.length : 0) + 1;
             document.getElementById('question-order').value = nextOrder;
@@ -1340,6 +1429,7 @@
 
             document.getElementById('edit-question-id').value = q.id;
             document.getElementById('question-editor-heading').textContent = `Edit Question #${q.question_order || 1}`;
+            populateChapterSelectOptions(q.chapter_id);
             document.getElementById('question-type-select').value = q.question_type || 'true_false';
             document.getElementById('question-order').value = q.question_order || 1;
             document.getElementById('question-text').value = q.question_text || '';
@@ -1463,6 +1553,7 @@
             if (!activeModule) return;
 
             const editQuestionId = document.getElementById('edit-question-id').value;
+            const chapterId = document.getElementById('question-chapter-select').value || null;
             const qType = document.getElementById('question-type-select').value;
             const qText = document.getElementById('question-text').value;
             const qOrder = parseInt(document.getElementById('question-order').value) || 1;
@@ -1500,9 +1591,10 @@
             }
 
             const payload = {
+                chapter_id: chapterId,
                 question_type: qType,
-                question_text: qText,
                 question_order: qOrder,
+                question_text: qText,
                 options: options,
                 correct_answer: correctAnswer,
                 explanation: qExpl

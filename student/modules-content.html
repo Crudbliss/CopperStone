@@ -9,8 +9,9 @@
         /* --- CSS VARIABLES (Theme Colors) --- */
         :root {
             --bg-base: #060f17;
-            --bg-card: #12181f;
-            --bg-card-hover: #18222c;
+            --bg-card: #0d1520;
+            --bg-card-hover: #111b27;
+            --bg-pane: #0a111a;
             
             --matrix-yellow: #d8a61a;
             --matrix-yellow-hover: #eab308;
@@ -19,28 +20,12 @@
             --matrix-orange: #fb923c;
             --matrix-purple: #c084fc;
             
-            /* Status / Difficulty Colors */
-            --tag-beginner: #4ade80;
-            --tag-intermediate: #d8a61a;
-            --tag-advanced: #fb923c;
-            
             --text-main: #ffffff;
             --text-muted: #8b9eb0;
+            --text-subtle: #7a8d9e;
             
             --border-light: rgba(255, 255, 255, 0.08);
-            
-            /* Gap Container Backgrounds */
-            --bg-purple-faint: rgba(192, 132, 252, 0.05);
-            --border-purple-faint: rgba(192, 132, 252, 0.2);
-            
-            --bg-blue-faint: rgba(56, 189, 248, 0.05);
-            --border-blue-faint: rgba(56, 189, 248, 0.2);
-            
-            --bg-orange-faint: rgba(251, 146, 60, 0.05);
-            --border-orange-faint: rgba(251, 146, 60, 0.2);
-            
-            --bg-green-faint: rgba(74, 222, 128, 0.05);
-            --border-green-faint: rgba(74, 222, 128, 0.2);
+            --border-focus: rgba(255, 255, 255, 0.16);
         }
 
         /* --- RESET & BASE --- */
@@ -54,47 +39,36 @@
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-base);
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            padding: 40px 20px;
+            min-height: 100vh;
         }
 
         .svg-defs { display: none; }
-        
-        svg {
-            display: inline-block;
-            vertical-align: middle;
-        }
+        svg { display: inline-block; vertical-align: middle; }
 
-        /* --- MAIN CONTAINER --- */
-        .modules-container {
-            max-width: 960px;
+        /* ==========================================================================
+           VIEW 1: MODULES OVERVIEW LIST
+           ========================================================================== */
+        #view-overview {
+            max-width: 980px;
             width: 100%;
+            margin: 0 auto;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 20px;
         }
 
-        /* --- HEADER --- */
         .page-header {
-            margin-bottom: 8px;
-        }
-        
-        .header-title-row {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-        
-        .header-title-row svg {
-            width: 24px;
-            height: 24px;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .page-title {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.3px;
         }
         
         .page-subtitle {
@@ -103,247 +77,572 @@
             font-weight: 400;
         }
 
-        /* --- MODULE GRID & CARDS --- */
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 20px;
+        /* Adaptive Routing Banner */
+        .adaptive-banner {
+            background: rgba(216, 166, 26, 0.05);
+            border: 1px solid rgba(216, 166, 26, 0.25);
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #d8a61a;
+            line-height: 1.4;
+            margin-top: 4px;
         }
 
-        .module-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 14px;
-            padding: 24px;
+        .adaptive-banner svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            stroke: #d8a61a;
+        }
+
+        .adaptive-banner strong {
+            color: #eab308;
+            font-weight: 700;
+        }
+
+        /* Modules Horizontal List */
+        .modules-list {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .module-card-horizontal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
             cursor: pointer;
+            position: relative;
         }
 
-        .module-card:hover {
+        .module-card-horizontal:hover {
             transform: translateY(-2px);
-            border-color: rgba(255,255,255,0.18);
-            background-color: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.18);
+            background: var(--bg-card-hover);
         }
 
-        .card-top {
+        .card-header-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 14px;
-        }
-
-        .module-icon {
-            font-size: 20px;
-        }
-
-        .tags-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        .tag {
-            font-size: 10px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
-
-        .tag-beginner { background-color: rgba(74, 222, 128, 0.1); color: var(--tag-beginner); }
-        .tag-intermediate { background-color: rgba(216, 166, 26, 0.1); color: var(--tag-intermediate); }
-        .tag-advanced { background-color: rgba(251, 146, 60, 0.1); color: var(--tag-advanced); }
-        .tag-topic { background-color: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--border-light); }
-
-        .module-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-
-        .module-desc {
-            font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .card-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 600;
-            padding-top: 14px;
-            border-top: 1px solid var(--border-light);
-        }
-
-        .card-bottom svg {
-            width: 14px;
-            height: 14px;
-            margin-right: 4px;
-            vertical-align: text-bottom;
-        }
-
-        /* --- SECTION DIVIDERS --- */
-        .section-divider {
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-            margin-bottom: 8px;
-        }
-        
-        .section-divider span {
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--text-muted);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        .section-desc {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-        }
-
-        /* --- GAP SECTIONS --- */
-        .gap-section {
-            border-radius: 14px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
             gap: 20px;
         }
 
-        .gap-purple { background-color: var(--bg-purple-faint); border: 1px solid var(--border-purple-faint); }
-        .gap-blue { background-color: var(--bg-blue-faint); border: 1px solid var(--border-blue-faint); }
-        .gap-orange { background-color: var(--bg-orange-faint); border: 1px solid var(--border-orange-faint); }
-        .gap-green { background-color: var(--bg-green-faint); border: 1px solid var(--border-green-faint); }
+        .card-left-group {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            flex: 1;
+        }
 
-        .gap-header {
+        .module-index-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .badge-dc { background: rgba(192, 132, 252, 0.12); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.3); }
+        .badge-di { background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .badge-hc { background: rgba(251, 146, 60, 0.12); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.3); }
+        .badge-hi { background: rgba(74, 222, 128, 0.12); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .module-title-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .module-title-text {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.3;
+        }
+
+        .pill-recommended {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pill-recommended.dc { background: rgba(192, 132, 252, 0.15); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.3); }
+        .pill-recommended.di { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .pill-recommended.hc { background: rgba(251, 146, 60, 0.15); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.3); }
+        .pill-recommended.hi { background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+
+        .module-description-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .module-meta-info {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-subtle);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .module-meta-info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .current-chapter-highlight {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .card-right-group {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-width: 75px;
+        }
+
+        .pct-large {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        .pct-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: lowercase;
+        }
+
+        /* Progress Bar Section */
+        .progress-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-subtle);
+        }
+
+        .progress-track-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+
+        .fill-dc { background: #c084fc; box-shadow: 0 0 10px rgba(192, 132, 252, 0.4); }
+        .fill-di { background: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
+        .fill-hc { background: #fb923c; box-shadow: 0 0 10px rgba(251, 146, 60, 0.4); }
+        .fill-hi { background: #4ade80; box-shadow: 0 0 10px rgba(74, 222, 128, 0.4); }
+
+        /* Card Action Row */
+        .card-action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2px;
+        }
+
+        .step-dots {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .step-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+
+        .step-dot.active-dc { background: #c084fc; box-shadow: 0 0 8px rgba(192, 132, 252, 0.6); }
+        .step-dot.active-di { background: #38bdf8; box-shadow: 0 0 8px rgba(56, 189, 248, 0.6); }
+        .step-dot.active-hc { background: #fb923c; box-shadow: 0 0 8px rgba(251, 146, 60, 0.6); }
+        .step-dot.active-hi { background: #4ade80; box-shadow: 0 0 8px rgba(74, 222, 128, 0.6); }
+
+        .btn-continue {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-continue:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateX(2px);
+        }
+
+        .btn-continue.btn-dc { color: #c084fc; border-color: rgba(192, 132, 252, 0.3); }
+        .btn-continue.btn-di { color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); }
+        .btn-continue.btn-hc { color: #fb923c; border-color: rgba(251, 146, 60, 0.3); }
+        .btn-continue.btn-hi { color: #4ade80; border-color: rgba(74, 222, 128, 0.3); }
+
+        /* Empty State */
+        .empty-state-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 48px 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ==========================================================================
+           VIEW 2: FULL-SCREEN INTERACTIVE MODULE & KNOWLEDGE CHECK READER
+           ========================================================================== */
+        #view-reader {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-base);
+            grid-template-columns: 320px 1fr;
+            overflow: hidden;
+        }
+
+        /* Reader Left Sidebar */
+        .reader-sidebar-pane {
+            background: #091018;
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 24px 20px;
+            gap: 20px;
+        }
+
+        .back-to-modules-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .back-to-modules-btn:hover {
+            color: #ffffff;
+        }
+
+        .sidebar-module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar-module-top {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .gap-pill {
-            font-size: 9px;
+        .sidebar-module-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(192, 132, 252, 0.15);
+            color: var(--matrix-purple);
             font-weight: 800;
-            padding: 4px 8px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            letter-spacing: 0.5px;
-        }
-
-        .gap-title {
-            font-size: 15px;
-            font-weight: 700;
+            font-size: 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        /* --- MODAL CHAPTER & QUIZ READER --- */
-        .reader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            display: none;
             justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
+            flex-shrink: 0;
         }
 
-        .reader-modal {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 16px;
-            width: 100%;
-            max-width: 1050px;
-            height: 88vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        .sidebar-module-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.3;
         }
 
-        .reader-header {
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border-light);
+        .sidebar-progress-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.02);
+            font-size: 11px;
+            color: var(--text-subtle);
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
-        .reader-body {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            flex: 1;
+        .sidebar-track {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
             overflow: hidden;
         }
 
-        .reader-sidebar {
-            background: rgba(0, 0, 0, 0.3);
-            border-right: 1px solid var(--border-light);
-            padding: 16px;
-            overflow-y: auto;
+        .sidebar-fill {
+            height: 100%;
+            background: var(--matrix-purple);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* Stepper Navigation List */
+        .reader-stepper {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            position: relative;
         }
 
-        .reader-nav-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
+        .step-item {
+            position: relative;
             padding: 12px 14px;
-            color: var(--text-main);
-            text-align: left;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            border: 1px solid transparent;
+            user-select: none;
         }
 
-        .reader-nav-item:hover {
-            background: rgba(255, 255, 255, 0.08);
+        .step-item:hover:not(.locked) {
+            background: rgba(255, 255, 255, 0.04);
+            color: #ffffff;
         }
 
-        .reader-nav-item.active {
-            background: rgba(216, 166, 26, 0.15);
-            border-color: var(--matrix-yellow);
-            color: var(--matrix-yellow);
+        .step-item.active {
+            background: rgba(192, 132, 252, 0.12);
+            border-color: rgba(192, 132, 252, 0.35);
+            color: #ffffff;
+            font-weight: 700;
         }
 
-        .reader-content {
-            padding: 24px 32px;
+        .step-item.active .step-dot-indicator {
+            background: var(--matrix-purple);
+            box-shadow: 0 0 8px rgba(192, 132, 252, 0.8);
+        }
+
+        .step-item.locked {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .step-item.completed {
+            color: #cbd5e1;
+        }
+
+        .step-item.sub-item {
+            margin-left: 14px;
+            padding: 10px 14px;
+            font-size: 12px;
+        }
+
+        .step-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .step-dot-indicator {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: transparent;
+            flex-shrink: 0;
+        }
+
+        .step-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .step-status-icon {
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Reader Right Content Pane */
+        .reader-main-pane {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #060e16;
+            position: relative;
+        }
+
+        .reader-scrollable-area {
+            flex: 1;
             overflow-y: auto;
+            padding: 36px 48px 100px 48px;
             display: flex;
             flex-direction: column;
             gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        .reader-notes {
-            font-size: 14px;
-            line-height: 1.7;
-            color: #d1d5db;
-            background: rgba(255, 255, 255, 0.02);
+        /* Top Header Card */
+        .reader-header-card {
+            background: var(--bg-card);
             border: 1px solid var(--border-light);
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .reader-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .reader-quadrant-tag {
+            color: var(--matrix-purple);
+            letter-spacing: 0.5px;
+        }
+
+        .reader-time-tag {
+            color: var(--text-subtle);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .reader-chapter-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        /* Learning Objectives & Examples Cards */
+        .content-block-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .content-block-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .objective-item, .example-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .num-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .article-body-text {
+            font-size: 14.5px;
+            line-height: 1.85;
+            color: #cbd5e1;
             white-space: pre-wrap;
         }
 
@@ -352,7 +651,7 @@
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1px solid var(--border-light);
             background: #000;
         }
@@ -363,144 +662,220 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border: 0;
+            border: none;
         }
 
         .pdf-viewer-frame {
             width: 100%;
-            height: 420px;
-            border: 1px solid var(--border-light);
+            height: 520px;
             border-radius: 10px;
-            background: #1e293b;
-        }
-
-        /* --- QUIZ PLAYER STYLES --- */
-        .quiz-container {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .quiz-question-card {
-            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-light);
-            border-radius: 12px;
-            padding: 20px;
+            background: #111;
+        }
+
+        /* Bottom Sticky Unlock Bar */
+        .bottom-action-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 48px;
+            background: rgba(13, 21, 32, 0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border-light);
             display: flex;
-            flex-direction: column;
-            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .unlock-status-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .unlock-status-text.locked {
+            color: var(--matrix-yellow);
+        }
+
+        .unlock-status-text.unlocked {
+            color: var(--matrix-green);
+        }
+
+        .btn-unlock-kc {
+            background: #10b981;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             transition: all 0.2s ease;
         }
 
-        .quiz-question-card.correct-card {
-            border-color: var(--matrix-green);
-            background: rgba(74, 222, 128, 0.05);
+        .btn-unlock-kc:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-1px);
         }
 
-        .quiz-question-card.incorrect-card {
-            border-color: #ef4444;
-            background: rgba(239, 68, 68, 0.05);
+        .btn-unlock-kc:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            cursor: not-allowed;
         }
 
-        .quiz-q-header {
+        /* ==========================================================================
+           KNOWLEDGE CHECK QUIZ VIEW (Screenshot 2)
+           ========================================================================== */
+        .kc-header-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 20px 24px;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 10px;
+            align-items: center;
+            gap: 16px;
         }
 
-        .quiz-q-title {
-            font-size: 15px;
-            font-weight: 700;
-            line-height: 1.4;
+        .kc-icon-box {
+            font-size: 24px;
+            background: rgba(192, 132, 252, 0.1);
+            padding: 10px;
+            border-radius: 10px;
         }
 
-        .quiz-badge {
-            font-size: 10px;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: rgba(255, 255, 255, 0.08);
+        .kc-title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .kc-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .kc-subtitle {
+            font-size: 12px;
             color: var(--text-muted);
         }
 
-        /* True/False Buttons */
-        .tf-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .tf-btn {
-            background: rgba(255, 255, 255, 0.04);
+        .question-card {
+            background: var(--bg-card);
             border: 1px solid var(--border-light);
-            border-radius: 8px;
-            padding: 14px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-        }
-
-        .tf-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .tf-btn.selected {
-            background: rgba(216, 166, 26, 0.2);
-            border-color: var(--matrix-yellow);
-            color: var(--matrix-yellow);
-        }
-
-        /* Multiple Choice Options */
-        .mc-list {
+            border-radius: 14px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 16px;
         }
 
-        .mc-option-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            padding: 12px 16px;
-            color: #fff;
-            font-size: 13px;
-            font-weight: 500;
+        .question-num-tag {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+        }
+
+        .question-text-title {
+            font-size: 15.5px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-choice-btn {
+            width: 100%;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: #cbd5e1;
+            font-size: 14px;
+            font-family: inherit;
             cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 12px;
-            transition: all 0.2s ease;
-            text-align: left;
+            justify-content: space-between;
+            gap: 14px;
         }
 
-        .mc-option-btn:hover {
-            background: rgba(255, 255, 255, 0.07);
+        .option-choice-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
         }
 
-        .mc-option-btn.selected {
-            background: rgba(216, 166, 26, 0.15);
-            border-color: var(--matrix-yellow);
-            color: var(--matrix-yellow);
-            font-weight: 700;
+        .option-choice-btn.selected {
+            background: rgba(192, 132, 252, 0.12);
+            border-color: var(--matrix-purple);
+            color: #ffffff;
+            font-weight: 600;
         }
 
-        .mc-letter {
-            width: 24px;
-            height: 24px;
+        .option-choice-btn.correct {
+            background: rgba(16, 185, 129, 0.08) !important;
+            border: 1px solid rgba(16, 185, 129, 0.5) !important;
+            color: #ffffff !important;
+        }
+
+        .option-choice-btn.correct .opt-letter-circle {
+            background: rgba(16, 185, 129, 0.2) !important;
+            color: #10b981 !important;
+            border: 1px solid rgba(16, 185, 129, 0.4) !important;
+        }
+
+        .option-choice-btn.wrong {
+            background: rgba(217, 119, 6, 0.08) !important;
+            border: 1px solid rgba(217, 119, 6, 0.5) !important;
+            color: #ffffff !important;
+        }
+
+        .option-choice-btn.wrong .opt-letter-circle {
+            background: rgba(217, 119, 6, 0.2) !important;
+            color: #fb923c !important;
+            border: 1px solid rgba(217, 119, 6, 0.4) !important;
+        }
+
+        .option-choice-btn.dimmed {
+            opacity: 0.5;
+        }
+
+        .opt-letter-circle {
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             flex-shrink: 0;
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .option-choice-btn.selected .opt-letter-circle {
+            background: var(--matrix-purple);
+            color: #060f17;
         }
 
         /* Matching Grid */
@@ -509,14 +884,14 @@
             grid-template-columns: 1fr auto 1fr;
             gap: 12px;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .match-term-box {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-light);
             border-radius: 8px;
-            padding: 10px 14px;
+            padding: 12px 16px;
             font-size: 13px;
             font-weight: 600;
         }
@@ -525,7 +900,7 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-light);
             border-radius: 8px;
-            padding: 10px 12px;
+            padding: 12px 14px;
             color: #fff;
             font-family: inherit;
             font-size: 13px;
@@ -538,67 +913,195 @@
             font-weight: 500;
         }
 
-        .match-select:focus {
-            border-color: var(--matrix-yellow);
-        }
-
-        /* Feedback Explanation Box */
         .explanation-box {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 12px;
-            line-height: 1.5;
-            color: #d1d5db;
-        }
-
-        /* Reader Footer */
-        .reader-footer {
-            padding: 14px 24px;
-            border-top: 1px solid var(--border-light);
+            background: #09121d;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: #cbd5e1;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.02);
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
         }
 
-        .btn-reader {
-            background: rgba(255, 255, 255, 0.06);
-            color: #fff;
-            border: 1px solid var(--border-light);
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-reader:hover {
-            background: rgba(255, 255, 255, 0.12);
-        }
-
-        .btn-reader-primary {
-            background: var(--matrix-yellow);
-            color: #060f17;
+        .btn-submit-kc {
+            background: #10b981;
+            color: #ffffff;
             border: none;
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
+            width: 100%;
         }
 
-        .btn-reader-primary:hover {
-            background: var(--matrix-yellow-hover);
+        .btn-submit-kc:hover {
+            background: #059669;
+        }
+
+        .mastery-banner {
+            background: rgba(217, 119, 6, 0.08);
+            border: 1px solid rgba(217, 119, 6, 0.35);
+            border-radius: 14px;
+            padding: 22px 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .mastery-banner.perfect {
+            background: rgba(74, 222, 128, 0.08);
+            border-color: rgba(74, 222, 128, 0.35);
+        }
+
+        .btn-retake-kc {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            border: none;
+            padding: 12px 26px;
+            border-radius: 9px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-retake-kc:hover {
+            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-continue-next-kc {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            border: none;
+            padding: 12px 26px;
+            border-radius: 9px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-continue-next-kc:hover {
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* ==========================================================================
+           VICTORY CELEBRATION MODAL (Screenshot 3)
+           ========================================================================== */
+        .victory-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(4, 9, 15, 0.82);
+            backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .victory-modal-card {
+            background: #0e1724;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            width: 100%;
+            max-width: 440px;
+            padding: 36px 30px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+            animation: victoryPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes victoryPop {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .victory-icon {
+            font-size: 40px;
+            margin-bottom: 2px;
+        }
+
+        .victory-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        .victory-desc {
+            font-size: 13.5px;
+            color: #cbd5e1;
+            line-height: 1.55;
+        }
+
+        .victory-desc strong {
+            color: #4ade80;
+            font-weight: 700;
+        }
+
+        .btn-victory-continue {
+            width: 100%;
+            background: #2e7d4d;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            border: none;
+            padding: 13px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 6px;
+        }
+
+        .btn-victory-continue:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-victory-stay {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .btn-victory-stay:hover {
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
 
-    <svg class="svg-defs">
+    <svg class="svg-defs" style="display: none;">
         <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
@@ -607,47 +1110,126 @@
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
         </symbol>
+        <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </symbol>
+        <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </symbol>
+        <symbol id="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </symbol>
+        <symbol id="icon-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+        </symbol>
+        <symbol id="icon-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="6"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+        </symbol>
+        <symbol id="icon-award" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="7"></circle>
+            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+        </symbol>
+        <symbol id="icon-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </symbol>
+        <symbol id="icon-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 compat 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </symbol>
+        <symbol id="icon-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z"/>
+            <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"/>
+        </symbol>
     </svg>
 
-    <div class="modules-container" id="modules-root">
+    <!-- VIEW 1: MODULES OVERVIEW LIST -->
+    <div id="view-overview">
         <div style="text-align: center; color: var(--text-muted); padding: 40px;">Loading modules...</div>
     </div>
 
-    <!-- Interactive Chapter & Quiz Reader Modal -->
-    <div id="reader-modal" class="reader-overlay">
-        <div class="reader-modal">
-            <div class="reader-header">
+    <!-- VIEW 2: FULL-SCREEN INTERACTIVE MODULE & KNOWLEDGE CHECK READER -->
+    <div id="view-reader">
+        <!-- Sidebar Navigation (Stepper) -->
+        <div class="reader-sidebar-pane">
+            <button class="back-to-modules-btn" onclick="exitReaderView()">
+                &larr; All Modules
+            </button>
+
+            <div class="sidebar-module-card">
+                <div class="sidebar-module-top">
+                    <div class="sidebar-module-badge" id="sidebar-mod-badge">1</div>
+                    <div class="sidebar-module-title" id="sidebar-mod-title">Collaborative Learning & Peer Engagement</div>
+                </div>
                 <div>
-                    <span id="reader-quadrant-badge" style="font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 4px; display: inline-block;">HI</span>
-                    <h3 id="reader-module-title" style="font-size: 16px; font-weight: 700;">Module Title</h3>
-                </div>
-                <button onclick="closeReaderModal()" style="background: transparent; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer;">&times;</button>
-            </div>
-
-            <div class="reader-body">
-                <div class="reader-sidebar" id="reader-chapters-list">
-                    <!-- Chapters and Quiz link populated via JS -->
-                </div>
-
-                <div class="reader-content" id="reader-main-content">
-                    <div id="reader-loading" style="text-align: center; color: var(--text-muted); padding: 40px;">Select a chapter or quiz to begin...</div>
+                    <div class="sidebar-progress-row">
+                        <span>Progress</span>
+                        <span id="sidebar-mod-pct">0%</span>
+                    </div>
+                    <div class="sidebar-track">
+                        <div class="sidebar-fill" id="sidebar-mod-fill" style="width: 0%;"></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="reader-footer">
-                <button class="btn-reader" id="btn-prev-chapter" onclick="navStep(-1)">← Previous</button>
-                <div id="reader-chapter-progress" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Chapter 1 of 3</div>
-                <button class="btn-reader-primary" id="btn-next-chapter" onclick="navStep(1)">Next →</button>
+            <!-- Connected Stepper -->
+            <div class="reader-stepper" id="reader-stepper-list">
+                <!-- Stepper items populated dynamically -->
             </div>
+        </div>
+
+        <!-- Main Content Pane -->
+        <div class="reader-main-pane">
+            <div class="reader-scrollable-area" id="reader-scroll-container" onscroll="handleChapterScroll()">
+                <div id="reader-content-body">
+                    <!-- Chapter or Knowledge Check content rendered dynamically -->
+                </div>
+            </div>
+
+            <!-- Bottom Unlock / Action Bar for Chapters -->
+            <div class="bottom-action-bar" id="bottom-action-bar" style="display: none;">
+                <div class="unlock-status-text" id="unlock-status-msg">
+                    <span style="display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="13" height="13"><use href="#icon-lock"></use></svg> Scroll through the entire chapter to unlock the Knowledge Check
+                    </span>
+                </div>
+                <button class="btn-unlock-kc" id="btn-open-kc" disabled onclick="handleOpenCurrentKC()">
+                    Open KC &rarr;
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VICTORY CELEBRATION MODAL (Screenshot 3) -->
+    <div class="victory-overlay" id="victory-modal">
+        <div class="victory-modal-card">
+            <div class="victory-icon">
+                <svg width="44" height="44" style="color: #10b981;"><use href="#icon-award"></use></svg>
+            </div>
+            <h3 class="victory-title" id="victory-student-title">Great Job, Maria!</h3>
+            <p class="victory-desc">
+                You've successfully completed <strong id="victory-kc-name">Knowledge Check 1</strong>. The next section is now unlocked!
+            </p>
+            <button class="btn-victory-continue" onclick="handleVictoryContinue()">
+                Continue to Next &rarr;
+            </button>
+            <button class="btn-victory-stay" onclick="closeVictoryModal()">
+                Stay Here
+            </button>
         </div>
     </div>
 
     <script>
         const quadrantConfig = {
-            "Hierarchical Individual": { id: "hi", icon: "📚", colorName: "green", title: "Hierarchical Individual" },
-            "Distributed Individual": { id: "di", icon: "💡", colorName: "blue", title: "Distributed Individual" },
-            "Hierarchical Collective": { id: "hc", icon: "⚙️", colorName: "orange", title: "Hierarchical Collective" },
-            "Distributed Collective": { id: "dc", icon: "🧠", colorName: "purple", title: "Distributed Collective" }
+            "Hierarchical Individual": { id: "hi", short: "HI", colorName: "hi", title: "Hierarchical Individual" },
+            "Distributed Individual": { id: "di", short: "DI", colorName: "di", title: "Distributed Individual" },
+            "Hierarchical Collective": { id: "hc", short: "HC", colorName: "hc", title: "Hierarchical Collective" },
+            "Distributed Collective": { id: "dc", short: "DC", colorName: "dc", title: "Distributed Collective" }
         };
 
         const modeOpposites = {
@@ -658,93 +1240,121 @@
         };
 
         let currentActiveModule = null;
-        let currentStepType = 'chapter'; // 'chapter' or 'quiz'
+        let currentStepId = null; // e.g. "chapter_1" or "kc_1" or "final_assessment"
+        let currentStepType = 'chapter'; // 'chapter' or 'kc'
         let currentChapterIndex = 0;
         let studentQuizAnswers = {};
         let quizGradedResults = null;
+        let currentActiveQuestions = [];
+        let currentStudentId = null;
+        let currentStudentName = "Student";
+        let currentStudentFirstName = "Student";
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadStudentModules();
         });
 
+        /* --- PROGRESS TRACKING ENGINE (PER MODULE) --- */
+        function getStudentProgress(moduleId) {
+            try {
+                const stored = localStorage.getItem(`student_mod_prog_v2_${currentStudentId}_${moduleId}`);
+                if (stored) return JSON.parse(stored);
+            } catch(e) {}
+            return {
+                unlockedChapters: [0], // Chapter 0 unlocked by default
+                unlockedKCs: [],       // KCs unlocked after scrolling through chapter
+                completedKCs: [],      // KCs passed
+                completedChapters: []  // Chapters scrolled/read
+            };
+        }
+
+        function saveStudentProgress(moduleId, progressData) {
+            try {
+                localStorage.setItem(`student_mod_prog_v2_${currentStudentId}_${moduleId}`, JSON.stringify(progressData));
+            } catch(e) {}
+        }
+
+        /* --- LOAD MODULES OVERVIEW --- */
         async function loadStudentModules() {
-            const root = document.getElementById('modules-root');
-            const profileStr = localStorage.getItem('studentProfile');
+            const root = document.getElementById('view-overview');
             
-            let domModeName = "Hierarchical Individual";
-            if (profileStr) {
+            let currentUser = null;
+            try {
+                const userStr = localStorage.getItem('currentUser');
+                if (userStr) currentUser = JSON.parse(userStr);
+            } catch(e) {}
+
+            currentStudentId = currentUser ? currentUser.id : 1;
+            currentStudentName = currentUser ? (currentUser.name || currentUser.first_name || 'Student') : 'Student';
+            currentStudentFirstName = currentUser ? (currentUser.first_name || currentStudentName.split(' ')[0]) : 'Student';
+
+            let studentProfile = null;
+            try {
+                const profileStr = localStorage.getItem('studentProfile');
+                if (profileStr) studentProfile = JSON.parse(profileStr);
+            } catch(e) {}
+
+            if (currentUser && currentUser.id) {
                 try {
-                    const profile = JSON.parse(profileStr);
-                    if (profile.learning_mode && profile.learning_mode !== 'Unknown') {
-                        domModeName = profile.learning_mode;
+                    const sRes = await fetch(`/api/students/${currentUser.id}`);
+                    if (sRes.ok) {
+                        const sData = await sRes.json();
+                        if (sData) {
+                            studentProfile = sData;
+                            if (sData.first_name) currentStudentFirstName = sData.first_name;
+                            localStorage.setItem('studentProfile', JSON.stringify(sData));
+                        }
                     }
                 } catch(e) {}
             }
 
+            let domModeName = (studentProfile && studentProfile.learning_mode && studentProfile.learning_mode !== 'Unknown') 
+                ? studentProfile.learning_mode 
+                : "Hierarchical Individual";
+
+            let weakestModeName = (studentProfile && studentProfile.weakest_learning_mode && studentProfile.weakest_learning_mode !== 'Unknown')
+                ? studentProfile.weakest_learning_mode
+                : modeOpposites[domModeName] || "Distributed Collective";
+
+            const weakestConfig = quadrantConfig[weakestModeName] || quadrantConfig["Distributed Collective"];
+
             try {
                 const res = await fetch('/api/modules');
-                const modules = await res.json();
+                const allModules = await res.json();
 
-                const domConfig = quadrantConfig[domModeName] || quadrantConfig["Hierarchical Individual"];
-                const primaryGapName = modeOpposites[domModeName];
-                const primaryGapConfig = quadrantConfig[primaryGapName];
-
-                // Filter modules
-                const dominantModules = modules.filter(m => m.quadrant_category === domModeName);
-                const gapModules = modules.filter(m => m.quadrant_category === primaryGapName);
-                const otherModules = modules.filter(m => m.quadrant_category !== domModeName && m.quadrant_category !== primaryGapName);
+                // Exclusively show the quadrant modules they are weak at
+                const weakestModules = allModules.filter(m => m.quadrant_category === weakestModeName);
 
                 let html = `
                     <div class="page-header">
-                        <div class="header-title-row">
-                            <span>${domConfig.icon}</span>
-                            <h1 class="page-title">Your Dominant Mode Modules</h1>
+                        <h1 class="page-title">My Modules</h1>
+                        <p class="page-subtitle">Weakness-first routing: your lowest-scoring quadrant module is unlocked and shown first.</p>
+                        
+                        <div class="adaptive-banner">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                            <span>
+                                <strong>Adaptive Routing Active:</strong> Modules targeting your weakest quadrant (${weakestConfig.short}) are automatically prioritized.
+                            </span>
                         </div>
-                        <p class="page-subtitle">Curated for your <span style="color: var(--matrix-${domConfig.colorName}); font-weight: 700;">${domConfig.title}</span> profile — explore self-paced chapters with interactive video lectures, PDF resources, and quizzes.</p>
                     </div>
                 `;
 
-                if (dominantModules.length > 0) {
+                if (weakestModules.length > 0) {
                     html += `
-                        <div class="module-grid">
-                            ${dominantModules.map(m => renderModuleCard(m, domConfig.icon)).join('')}
+                        <div class="modules-list">
+                            ${weakestModules.map((m, idx) => renderHorizontalModuleCard(m, idx, weakestConfig)).join('')}
                         </div>
                     `;
                 } else {
-                    html += `<div style="padding: 24px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; color: var(--text-muted); font-size: 13px;">No dominant track modules available yet.</div>`;
-                }
-
-                // Primary Gap Section
-                if (gapModules.length > 0 && primaryGapConfig) {
                     html += `
-                        <div class="section-divider">
-                            <span>TARGETED GROWTH — PRIMARY GAP</span>
-                        </div>
-                        <p class="section-desc">These modules focus on your weakest dimension (${primaryGapConfig.title}) to build cognitive flexibility.</p>
-                        
-                        <div class="gap-section gap-${primaryGapConfig.colorName}">
-                            <div class="gap-header">
-                                <span class="gap-pill">PRIMARY GAP</span>
-                                <h3 class="gap-title"><span>${primaryGapConfig.icon}</span> ${primaryGapConfig.title} Track</h3>
+                        <div class="empty-state-box">
+                            <div style="color: var(--text-muted); margin-bottom: 4px;">
+                                <svg width="36" height="36"><use href="#icon-book"></use></svg>
                             </div>
-                            <div class="module-grid">
-                                ${gapModules.map(m => renderModuleCard(m, primaryGapConfig.icon)).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
-
-                // Other Tracks
-                if (otherModules.length > 0) {
-                    html += `
-                        <div class="section-divider">
-                            <span>EXPLORE OTHER LEARNING TRACKS</span>
-                        </div>
-                        <div class="module-grid">
-                            ${otherModules.map(m => {
-                                const cfg = quadrantConfig[m.quadrant_category] || { icon: '🌟' };
-                                return renderModuleCard(m, cfg.icon);
-                            }).join('')}
+                            <h3 style="font-size: 18px; font-weight: 700; color: #fff;">No Modules Available Yet for ${weakestConfig.title}</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); max-width: 480px; line-height: 1.5;">Your learning coach has routed your focus to <strong>${weakestConfig.title} (${weakestConfig.short})</strong>. Modules tailored for this dimension will appear here soon.</p>
                         </div>
                     `;
                 }
@@ -752,119 +1362,767 @@
                 root.innerHTML = html;
 
             } catch (err) {
-                console.error("Failed to load modules:", err);
+                console.error("Failed to load student modules:", err);
                 root.innerHTML = '<div style="color: #ef4444; text-align: center; padding: 40px;">Error loading modules. Please try again later.</div>';
             }
         }
 
-        function renderModuleCard(m, defaultIcon) {
-            const diffClass = m.difficulty === 'Advanced' ? 'tag-advanced' : (m.difficulty === 'Intermediate' ? 'tag-intermediate' : 'tag-beginner');
-            const chapterCount = m.chapter_count || 0;
+        function renderHorizontalModuleCard(m, index, config) {
+            const indexStr = (index + 1).toString().padStart(2, '0');
+            const chapters = m.chapters || [];
+            const chapterCount = chapters.length;
+            const progress = getStudentProgress(m.id);
+            
+            // Calculate total steps (chapters + KCs)
+            const totalSteps = chapterCount * 2;
+            const completedSteps = (progress.completedChapters.length) + (progress.completedKCs.length);
+            
+            let pct = 0;
+            if (totalSteps > 0) {
+                pct = Math.min(100, Math.round((completedSteps / totalSteps) * 100));
+            }
+
+            // Current active chapter label
+            let currentChapterTitle = 'Introduction';
+            if (chapters.length > 0) {
+                const nextChapterIdx = Math.min(progress.completedKCs.length, chapters.length - 1);
+                currentChapterTitle = chapters[nextChapterIdx].title;
+            }
+
+            const totalDots = Math.max(chapterCount, 4);
+            let dotsHtml = '';
+            for (let i = 0; i < totalDots; i++) {
+                const isDotActive = i <= progress.completedKCs.length;
+                dotsHtml += `<div class="step-dot ${isDotActive ? 'active-' + config.colorName : ''}"></div>`;
+            }
+
+            const isRecommended = index === 0;
+
             return `
-                <div class="module-card" onclick="openStudentReader(${m.id})">
-                    <div>
-                        <div class="card-top">
-                            <span class="module-icon">${defaultIcon}</span>
-                            <div class="tags-row">
-                                <span class="tag ${diffClass}">${m.difficulty || 'Beginner'}</span>
-                                <span class="tag tag-topic">${escapeHtml(m.topic || 'General')}</span>
+                <div class="module-card-horizontal" onclick="launchModuleReader(${m.id})">
+                    <div class="card-header-row">
+                        <div class="card-left-group">
+                            <div class="module-index-badge badge-${config.colorName}">
+                                ${indexStr}
+                            </div>
+                            <div class="module-info">
+                                <div class="module-title-row">
+                                    <span class="module-title-text">Module ${index + 1}: ${escapeHtml(m.title)}</span>
+                                    ${isRecommended ? `<span class="pill-recommended ${config.colorName}">★ Recommended</span>` : ''}
+                                </div>
+                                <p class="module-description-text">${escapeHtml(m.description || `Develop your ${config.title} skills through peer-driven inquiry, co-creation, and shared leadership activities.`)}</p>
+                                <div class="module-meta-info">
+                                    <span><svg width="13" height="13" style="vertical-align: middle; margin-right: 2px;"><use href="#icon-book"></use></svg> ${chapterCount} chapters</span>
+                                    <span><svg width="13" height="13" style="vertical-align: middle; margin-right: 2px; color: var(--matrix-green);"><use href="#icon-check"></use></svg> ${progress.completedChapters.length} completed</span>
+                                    <span><svg width="13" height="13" style="vertical-align: middle; margin-right: 2px;"><use href="#icon-clock"></use></svg> ${m.estimated_time || '30 min'}</span>
+                                    ${chapterCount > 0 ? `<span><svg width="11" height="11" style="vertical-align: middle; margin-right: 2px; color: #38bdf8;"><use href="#icon-play"></use></svg> Current: <strong class="current-chapter-highlight">${escapeHtml(currentChapterTitle)}</strong></span>` : ''}
+                                </div>
                             </div>
                         </div>
-                        <h3 class="module-title">${escapeHtml(m.title)}</h3>
-                        <p class="module-desc">${escapeHtml(m.description || 'Explore the interactive chapters and quiz inside this self-paced module.')}</p>
+
+                        <div class="card-right-group">
+                            <div class="pct-large">${pct}%</div>
+                            <div class="pct-label">complete</div>
+                        </div>
                     </div>
-                    <div class="card-bottom">
-                        <div><svg><use href="#icon-book"></use></svg> ${chapterCount} ${chapterCount === 1 ? 'Chapter' : 'Chapters'}</div>
-                        <div><svg><use href="#icon-clock"></use></svg> ${m.estimated_time || '30 min'}</div>
+
+                    <div class="progress-section">
+                        <div class="progress-labels">
+                            <span>Progress</span>
+                            <span>${progress.completedChapters.length}/${chapterCount} chapters</span>
+                        </div>
+                        <div class="progress-track-bar">
+                            <div class="progress-fill-bar fill-${config.colorName}" style="width: ${pct}%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="card-action-row">
+                        <div class="step-dots">
+                            ${dotsHtml}
+                        </div>
+                        <button class="btn-continue btn-${config.colorName}" onclick="event.stopPropagation(); launchModuleReader(${m.id});">
+                            Continue &gt;
+                        </button>
                     </div>
                 </div>
             `;
         }
 
-        /* --- INTERACTIVE CHAPTER & QUIZ READER --- */
-        async function openStudentReader(moduleId) {
+        /* ==========================================================================
+           FULL-SCREEN READER CONTROLLER
+           ========================================================================== */
+        async function launchModuleReader(moduleId) {
             try {
                 const res = await fetch(`/api/modules/${moduleId}`);
                 if (!res.ok) throw new Error("Failed to load module");
                 currentActiveModule = await res.json();
 
-                document.getElementById('reader-module-title').textContent = currentActiveModule.title;
-                document.getElementById('reader-quadrant-badge').textContent = currentActiveModule.quadrant_category || 'Universal';
+                // Switch UI views
+                document.getElementById('view-overview').style.display = 'none';
+                document.getElementById('view-reader').style.display = 'grid';
+
+                // Populate Sidebar Header
+                document.getElementById('sidebar-mod-badge').textContent = '1';
+                document.getElementById('sidebar-mod-title').textContent = currentActiveModule.title;
+
+                // Find initial step (first unlocked incomplete chapter)
+                const progress = getStudentProgress(currentActiveModule.id);
+                const chapters = currentActiveModule.chapters || [];
                 
+                let targetChapterIdx = 0;
+                for (let i = 0; i < chapters.length; i++) {
+                    if (!progress.completedKCs.includes(i)) {
+                        targetChapterIdx = i;
+                        break;
+                    }
+                }
+
+                currentChapterIndex = targetChapterIdx;
+                currentStepId = `chapter_${targetChapterIdx}`;
                 currentStepType = 'chapter';
-                currentChapterIndex = 0;
                 studentQuizAnswers = {};
                 quizGradedResults = null;
 
-                renderReaderSidebar();
-                renderCurrentContent();
+                renderReaderStepper();
+                renderCurrentReaderContent();
 
-                document.getElementById('reader-modal').style.display = 'flex';
-            } catch(err) {
-                console.error("Error opening reader:", err);
+            } catch(e) {
+                console.error("Error launching module reader:", e);
                 alert("Failed to load module content.");
             }
         }
 
-        function closeReaderModal() {
-            document.getElementById('reader-modal').style.display = 'none';
+        function exitReaderView() {
+            document.getElementById('view-reader').style.display = 'none';
+            document.getElementById('view-overview').style.display = 'flex';
+            loadStudentModules(); // Refresh cards with updated progress
         }
 
-        function renderReaderSidebar() {
-            const container = document.getElementById('reader-chapters-list');
+        /* --- STEPPER RENDERER --- */
+        function renderReaderStepper() {
+            const container = document.getElementById('reader-stepper-list');
             const chapters = currentActiveModule.chapters || [];
-            const questions = currentActiveModule.questions || [];
+            const finalQuestions = currentActiveModule.final_questions || [];
+            const progress = getStudentProgress(currentActiveModule.id);
+
+            // Compute percentage
+            const totalSteps = (chapters.length * 2) + (finalQuestions.length > 0 ? 1 : 0);
+            const completedSteps = progress.completedChapters.length + progress.completedKCs.length;
+            const pct = totalSteps > 0 ? Math.min(100, Math.round((completedSteps / totalSteps) * 100)) : 0;
+            
+            document.getElementById('sidebar-mod-pct').textContent = `${pct}%`;
+            document.getElementById('sidebar-mod-fill').style.width = `${pct}%`;
 
             let html = '';
+
             chapters.forEach((ch, idx) => {
-                const isActive = currentStepType === 'chapter' && idx === currentChapterIndex;
+                const isChapterUnlocked = progress.unlockedChapters.includes(idx);
+                const isChapterCompleted = progress.completedChapters.includes(idx);
+                const isChapterActive = currentStepId === `chapter_${idx}`;
+
+                const chapterIconHtml = !isChapterUnlocked 
+                    ? `<svg width="12" height="12"><use href="#icon-lock"></use></svg>` 
+                    : (isChapterCompleted 
+                        ? `<svg width="12" height="12" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
+                        : `<svg width="11" height="11"><use href="#icon-play"></use></svg>`);
+
+                // Chapter Item
                 html += `
-                    <button class="reader-nav-item ${isActive ? 'active' : ''}" onclick="selectChapter(${idx})">
-                        <span>📖 ${idx + 1}. ${escapeHtml(ch.title)}</span>
-                    </button>
+                    <div class="step-item ${isChapterActive ? 'active' : ''} ${!isChapterUnlocked ? 'locked' : ''} ${isChapterCompleted ? 'completed' : ''}" 
+                         onclick="${isChapterUnlocked ? `selectStep('chapter', ${idx})` : ''}">
+                        <div class="step-left">
+                            <span class="step-icon" style="display: flex; align-items: center;">${chapterIconHtml}</span>
+                            <span>${escapeHtml(ch.title)}</span>
+                        </div>
+                        <div class="step-dot-indicator"></div>
+                    </div>
+                `;
+
+                // Knowledge Check Sub-item
+                const isKCUnlocked = progress.unlockedKCs.includes(idx) || isChapterCompleted;
+                const isKCCompleted = progress.completedKCs.includes(idx);
+                const isKCActive = currentStepId === `kc_${idx}`;
+
+                const kcIconHtml = !isKCUnlocked 
+                    ? `<svg width="12" height="12"><use href="#icon-lock"></use></svg>` 
+                    : (isKCCompleted 
+                        ? `<svg width="12" height="12" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
+                        : `<svg width="12" height="12"><use href="#icon-clipboard"></use></svg>`);
+
+                html += `
+                    <div class="step-item sub-item ${isKCActive ? 'active' : ''} ${!isKCUnlocked ? 'locked' : ''} ${isKCCompleted ? 'completed' : ''}"
+                         onclick="${isKCUnlocked ? `selectStep('kc', ${idx})` : ''}">
+                        <div class="step-left">
+                            <span class="step-icon" style="display: flex; align-items: center;">${kcIconHtml}</span>
+                            <span>Knowledge Check ${idx + 1}</span>
+                        </div>
+                        <div class="step-dot-indicator"></div>
+                    </div>
                 `;
             });
 
-            if (questions.length > 0) {
-                const isQuizActive = currentStepType === 'quiz';
+            // Final Assessment Item if questions exist
+            if (finalQuestions.length > 0 || chapters.length > 0) {
+                const allKCsCompleted = chapters.every((_, i) => progress.completedKCs.includes(i));
+                const isFinalActive = currentStepId === 'final_assessment';
+                const isFinalCompleted = progress.completedFinal;
+
+                const finalIconHtml = !allKCsCompleted 
+                    ? `<svg width="12" height="12"><use href="#icon-lock"></use></svg>` 
+                    : (isFinalCompleted 
+                        ? `<svg width="12" height="12" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
+                        : `<svg width="12" height="12"><use href="#icon-target"></use></svg>`);
+
                 html += `
-                    <button class="reader-nav-item ${isQuizActive ? 'active' : ''}" style="margin-top: 8px; border-color: rgba(216, 166, 26, 0.4);" onclick="selectQuiz()">
-                        <span>🎯 Knowledge Check (${questions.length} Qs)</span>
-                    </button>
+                    <div class="step-item sub-item ${isFinalActive ? 'active' : ''} ${!allKCsCompleted ? 'locked' : ''} ${isFinalCompleted ? 'completed' : ''}"
+                         onclick="${allKCsCompleted ? `selectStep('final', 0)` : ''}">
+                        <div class="step-left">
+                            <span class="step-icon" style="display: flex; align-items: center;">${finalIconHtml}</span>
+                            <span>Final Assessment</span>
+                        </div>
+                        <div class="step-dot-indicator"></div>
+                    </div>
                 `;
             }
 
             container.innerHTML = html;
         }
 
-        function selectChapter(index) {
-            currentStepType = 'chapter';
+        function selectStep(type, index) {
+            currentStepType = type;
             currentChapterIndex = index;
-            renderReaderSidebar();
-            renderCurrentContent();
+            currentStepId = type === 'final' ? 'final_assessment' : `${type}_${index}`;
+            studentQuizAnswers = {};
+            quizGradedResults = null;
+
+            renderReaderStepper();
+            renderCurrentReaderContent();
+
+            // Scroll top of content pane
+            const scrollPane = document.getElementById('reader-scroll-container');
+            if (scrollPane) scrollPane.scrollTop = 0;
         }
 
-        function selectQuiz() {
-            currentStepType = 'quiz';
-            renderReaderSidebar();
-            renderCurrentContent();
-        }
-
-        function navStep(direction) {
+        /* --- CONTENT RENDERER (CHAPTER vs KNOWLEDGE CHECK) --- */
+        function renderCurrentReaderContent() {
+            const body = document.getElementById('reader-content-body');
+            const bottomBar = document.getElementById('bottom-action-bar');
             const chapters = currentActiveModule.chapters || [];
-            const questions = currentActiveModule.questions || [];
 
             if (currentStepType === 'chapter') {
-                const nextIndex = currentChapterIndex + direction;
-                if (nextIndex >= 0 && nextIndex < chapters.length) {
-                    selectChapter(nextIndex);
-                } else if (nextIndex >= chapters.length && questions.length > 0) {
-                    selectQuiz();
+                const ch = chapters[currentChapterIndex];
+                if (!ch) {
+                    body.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">No chapter content available.</div>';
+                    bottomBar.style.display = 'none';
+                    return;
                 }
-            } else if (currentStepType === 'quiz') {
-                if (direction === -1 && chapters.length > 0) {
-                    selectChapter(chapters.length - 1);
+
+                const quadName = currentActiveModule.quadrant_category || 'Distributed Collective';
+                const quadShort = quadName === 'Distributed Collective' ? 'DC' : (quadName === 'Hierarchical Individual' ? 'HI' : (quadName === 'Distributed Individual' ? 'DI' : 'HC'));
+
+                let html = `
+                    <!-- 1. Header Card (Screenshot 1) -->
+                    <div class="reader-header-card">
+                        <div class="reader-header-top">
+                            <span class="reader-quadrant-tag">${quadShort} &middot; ${escapeHtml(quadName)}</span>
+                            <span class="reader-time-tag">
+                                <svg width="12" height="12" style="vertical-align: middle; margin-right: 2px;"><use href="#icon-clock"></use></svg>
+                                ${escapeHtml(ch.estimated_time || '45 min')}
+                            </span>
+                        </div>
+                        <h1 class="reader-chapter-title">${escapeHtml(ch.title)}</h1>
+                    </div>
+                `;
+
+                // 2. Learning Objectives
+                const objectives = parseListItems(ch.learning_objectives, [
+                    "Understand the core foundations and cognitive strategies of this domain",
+                    "Identify your current collaborative and individual learning habits",
+                    "Apply structured practice techniques to strengthen knowledge retention"
+                ]);
+
+                html += `
+                    <div class="content-block-card">
+                        <div class="content-block-title">LEARNING OBJECTIVES</div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            ${objectives.map((obj, i) => `
+                                <div class="objective-item">
+                                    <span class="num-circle">${i + 1}</span>
+                                    <span>${escapeHtml(obj)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                // 3. Core Text Content
+                if (ch.text_content) {
+                    html += `<div class="article-body-text">${escapeHtml(ch.text_content)}</div>`;
                 }
+
+                // 4. Video Embed (if available)
+                if (ch.youtube_url) {
+                    const embedUrl = formatYoutubeEmbedUrl(ch.youtube_url);
+                    if (embedUrl) {
+                        html += `
+                            <div class="video-container">
+                                <iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                            </div>
+                        `;
+                    }
+                }
+
+                // 5. PDF Viewer (if available)
+                if (ch.pdf_url) {
+                    html += `
+                        <div>
+                            <div style="font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                <svg width="14" height="14" style="color: var(--matrix-blue);"><use href="#icon-book"></use></svg> Reference Material (PDF)
+                            </div>
+                            <iframe src="${escapeHtml(ch.pdf_url)}" class="pdf-viewer-frame"></iframe>
+                        </div>
+                    `;
+                }
+
+                // 6. Examples Card
+                const examples = parseListItems(ch.examples, [
+                    "In a structured study session, each participant takes responsibility for articulating a specific topic to reinforce deep learning.",
+                    "Applying immediate feedback mechanisms allows learners to rapidly correct conceptual gaps."
+                ]);
+
+                html += `
+                    <div class="content-block-card">
+                        <div class="content-block-title">EXAMPLES & PRACTICAL APPLICATIONS</div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            ${examples.map((ex, i) => `
+                                <div class="example-item">
+                                    <span class="num-circle">${i + 1}</span>
+                                    <span>${escapeHtml(ex)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                body.innerHTML = html;
+                bottomBar.style.display = 'flex';
+
+                // Check initial unlock status
+                updateUnlockStatus();
+
+            } else if (currentStepType === 'kc' || currentStepType === 'final') {
+                bottomBar.style.display = 'none';
+                renderKnowledgeCheckContent();
+            }
+        }
+
+        function parseListItems(raw, fallback) {
+            if (!raw || raw.trim() === '') return fallback;
+            const items = raw.split(/\r?\n/).map(s => s.replace(/^\d+[\.\)]\s*|^[-*]\s*/, '').trim()).filter(Boolean);
+            return items.length > 0 ? items : fallback;
+        }
+
+        /* --- SCROLL-TO-UNLOCK LOGIC --- */
+        function handleChapterScroll() {
+            if (currentStepType !== 'chapter') return;
+            const container = document.getElementById('reader-scroll-container');
+            if (!container) return;
+
+            const scrollPos = container.scrollTop + container.clientHeight;
+            const scrollHeight = container.scrollHeight;
+
+            // When scrolled near bottom (within 60px)
+            if (scrollPos >= scrollHeight - 60) {
+                markChapterScrolled();
+            }
+        }
+
+        function markChapterScrolled() {
+            const progress = getStudentProgress(currentActiveModule.id);
+            let updated = false;
+
+            if (!progress.completedChapters.includes(currentChapterIndex)) {
+                progress.completedChapters.push(currentChapterIndex);
+                updated = true;
+            }
+
+            if (!progress.unlockedKCs.includes(currentChapterIndex)) {
+                progress.unlockedKCs.push(currentChapterIndex);
+                updated = true;
+            }
+
+            if (updated) {
+                saveStudentProgress(currentActiveModule.id, progress);
+                renderReaderStepper();
+            }
+
+            updateUnlockStatus();
+        }
+
+        function updateUnlockStatus() {
+            const progress = getStudentProgress(currentActiveModule.id);
+            const isUnlocked = progress.unlockedKCs.includes(currentChapterIndex);
+            const statusMsg = document.getElementById('unlock-status-msg');
+            const btnOpen = document.getElementById('btn-open-kc');
+
+            if (isUnlocked) {
+                statusMsg.className = 'unlock-status-text unlocked';
+                statusMsg.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="13" height="13" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg> Chapter Complete! Knowledge Check is now unlocked &rarr;</span>';
+                btnOpen.disabled = false;
+            } else {
+                statusMsg.className = 'unlock-status-text locked';
+                statusMsg.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="13" height="13"><use href="#icon-lock"></use></svg> Scroll through the entire chapter to unlock Knowledge Check ${currentChapterIndex + 1}</span>`;
+                btnOpen.disabled = true;
+            }
+        }
+
+        function handleOpenCurrentKC() {
+            selectStep('kc', currentChapterIndex);
+        }
+
+        /* --- KNOWLEDGE CHECK QUIZ RENDERER (Screenshot 2) --- */
+        function renderKnowledgeCheckContent() {
+            const body = document.getElementById('reader-content-body');
+            const chapters = currentActiveModule.chapters || [];
+            const ch = chapters[currentChapterIndex];
+
+            // Get questions for this chapter (or final questions)
+            let questions = [];
+            if (currentStepType === 'kc' && ch) {
+                questions = ch.questions && ch.questions.length > 0 
+                    ? ch.questions 
+                    : (currentActiveModule.questions || []).filter(q => q.chapter_id == ch.id);
+            } else if (currentStepType === 'final') {
+                questions = currentActiveModule.final_questions || currentActiveModule.questions || [];
+            }
+
+            // Fallback default questions if admin hasn't added questions yet so student is never stuck
+            if (questions.length === 0) {
+                questions = [
+                    {
+                        id: 1001,
+                        question_type: "multiple_choice",
+                        question_text: "What is the primary benefit of explaining a concept to a peer?",
+                        options: [
+                            "It helps the listener learn faster.",
+                            "It deepens the teacher's own understanding through articulation.",
+                            "It reduces the need for instructor feedback.",
+                            "It shortens the overall study time."
+                        ],
+                        correct_answer: "It deepens the teacher's own understanding through articulation.",
+                        explanation: "Teaching forces you to organize knowledge and identify gaps — the \"learning by teaching\" effect is well-documented in educational research.",
+                        related_concept: "Distributed Collective (DC) learning mode",
+                        recommended: "Chapter 1.2: Open Inquiry Methods"
+                    },
+                    {
+                        id: 1002,
+                        question_type: "multiple_choice",
+                        question_text: "Which Elmore quadrant is most associated with peer-to-peer learning?",
+                        options: [
+                            "Hierarchical Individual (HI)",
+                            "Distributed Individual (DI)",
+                            "Hierarchical Collective (HC)",
+                            "Distributed Collective (DC)"
+                        ],
+                        correct_answer: "Distributed Collective (DC)",
+                        explanation: "DC represents learners who thrive in peer-driven, inquiry-based group settings with shared leadership — the ideal environment for peer learning.",
+                        related_concept: "Elmore's Modes of Learning",
+                        recommended: "Chapter 1.1: Introduction to Peer Learning"
+                    }
+                ];
+            }
+
+            currentActiveQuestions = questions;
+
+            const kcTitle = currentStepType === 'final' ? 'Final Module Assessment' : `Knowledge Check ${currentChapterIndex + 1}`;
+            const subtitleText = `${questions.length} questions · ${escapeHtml(ch ? ch.title : currentActiveModule.title)}`;
+
+            let html = `
+                <!-- KC Header Card -->
+                <div class="kc-header-card">
+                    <div class="kc-icon-box" style="display: flex; align-items: center; justify-content: center;">
+                        <svg width="22" height="22" style="color: var(--matrix-purple);"><use href="#icon-clipboard"></use></svg>
+                    </div>
+                    <div class="kc-title-block">
+                        <h2 class="kc-title">${kcTitle}</h2>
+                        <div class="kc-subtitle">${subtitleText}</div>
+                    </div>
+                </div>
+            `;
+
+            // Question Cards
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+            const isGraded = quizGradedResults !== null;
+
+            questions.forEach((q, qIdx) => {
+                const savedAns = studentQuizAnswers[q.id];
+                const gradeInfo = isGraded ? (quizGradedResults.results || []).find(r => r.question_id === q.id) : null;
+                const correctAns = gradeInfo ? gradeInfo.correct_answer : q.correct_answer;
+
+                html += `
+                    <div class="question-card">
+                        <div class="question-num-tag">QUESTION ${qIdx + 1}</div>
+                        <div class="question-text-title">${escapeHtml(q.question_text)}</div>
+                        <div class="options-list">
+                `;
+
+                if (q.question_type === 'true_false') {
+                    ['True', 'False'].forEach((opt, optIdx) => {
+                        let optClass = 'option-choice-btn';
+                        const isThisCorrect = isGraded && (String(correctAns).toLowerCase() === opt.toLowerCase());
+                        const isThisUserSelection = savedAns === opt;
+
+                        if (isGraded) {
+                            if (isThisCorrect) {
+                                optClass += ' correct';
+                            } else if (isThisUserSelection) {
+                                optClass += ' wrong';
+                            } else {
+                                optClass += ' dimmed';
+                            }
+                        } else if (isThisUserSelection) {
+                            optClass += ' selected';
+                        }
+
+                        html += `
+                            <button class="${optClass}" onclick="handleSelectOptionByIndex(${q.id}, ${optIdx})" ${isGraded ? 'disabled' : ''}>
+                                <div style="display: flex; align-items: center; gap: 14px;">
+                                    <span class="opt-letter-circle">${opt[0]}</span>
+                                    <span>${opt}</span>
+                                </div>
+                                ${isThisCorrect ? `<svg width="18" height="18" style="color: #10b981; flex-shrink: 0;"><use href="#icon-check-circle"></use></svg>` : ''}
+                            </button>
+                        `;
+                    });
+                } else if (q.question_type === 'multiple_choice') {
+                    (q.options || []).forEach((opt, optIdx) => {
+                        let optClass = 'option-choice-btn';
+                        const isThisCorrect = isGraded && (String(correctAns).trim() === String(opt).trim());
+                        const isThisUserSelection = savedAns === opt;
+
+                        if (isGraded) {
+                            if (isThisCorrect) {
+                                optClass += ' correct';
+                            } else if (isThisUserSelection) {
+                                optClass += ' wrong';
+                            } else {
+                                optClass += ' dimmed';
+                            }
+                        } else if (isThisUserSelection) {
+                            optClass += ' selected';
+                        }
+
+                        html += `
+                            <button class="${optClass}" onclick="handleSelectOptionByIndex(${q.id}, ${optIdx})" ${isGraded ? 'disabled' : ''}>
+                                <div style="display: flex; align-items: center; gap: 14px;">
+                                    <span class="opt-letter-circle">${letters[optIdx] || optIdx + 1}</span>
+                                    <span>${escapeHtml(opt)}</span>
+                                </div>
+                                ${isThisCorrect ? `<svg width="18" height="18" style="color: #10b981; flex-shrink: 0;"><use href="#icon-check-circle"></use></svg>` : ''}
+                            </button>
+                        `;
+                    });
+                } else if (q.question_type === 'matching') {
+                    const pairs = Array.isArray(q.options) ? q.options : [];
+                    const matchAnswers = (typeof savedAns === 'object' && savedAns !== null) ? savedAns : {};
+                    const targetOptions = pairs.map(p => p.match || p.right || '');
+
+                    pairs.forEach((pair, pairIdx) => {
+                        const term = pair.term || pair.left || '';
+                        const currentVal = matchAnswers[term] || '';
+                        html += `
+                            <div class="match-pair-row">
+                                <div class="match-term-box">${escapeHtml(term)}</div>
+                                <div style="color: var(--text-muted); font-size: 13px;">➔</div>
+                                <select class="match-select" onchange="handleSelectMatchByIndex(${q.id}, ${pairIdx}, this.value)" ${isGraded ? 'disabled' : ''}>
+                                    <option value="" style="color: #6b7280;">Select matching answer...</option>
+                                    ${targetOptions.map(t => `<option value="${escapeHtml(t)}" ${currentVal === t ? 'selected' : ''}>${escapeHtml(t)}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (isGraded) {
+                    const explText = (gradeInfo && gradeInfo.explanation) ? gradeInfo.explanation : (q.explanation || 'Reflecting on active practice deepens structural retention and conceptual clarity.');
+                    const relConcept = q.related_concept || `${currentActiveModule.quadrant_category || 'Distributed Collective'} learning mode`;
+                    const recChapter = q.recommended || (ch ? `Chapter ${currentChapterIndex + 1}: ${ch.title}` : currentActiveModule.title);
+
+                    html += `
+                        <div class="explanation-box">
+                            <div><strong style="color: #ffffff;">Explanation:</strong> <span style="color: #cbd5e1;">${escapeHtml(explText)}</span></div>
+                            <div><strong style="color: #ffffff;">Related concept:</strong> <span style="color: #94a3b8;">${escapeHtml(relConcept)}</span></div>
+                            <div><strong style="color: #ffffff;">Recommended:</strong> <span style="color: #94a3b8;">${escapeHtml(recChapter)}</span></div>
+                        </div>
+                    `;
+                }
+
+                html += `</div></div>`;
+            });
+
+            if (!isGraded) {
+                html += `
+                    <div style="margin-top: 10px;">
+                        <button class="btn-submit-kc" onclick="handleSubmitKCAnswers(${JSON.stringify(questions.map(q => q.id))})">
+                            Submit Answers &rarr;
+                        </button>
+                    </div>
+                `;
+            } else {
+                if (quizGradedResults.passed) {
+                    // Perfect 100% score
+                    html += `
+                        <div class="mastery-banner perfect">
+                            <div style="font-size: 16px; font-weight: 700; color: #4ade80; display: flex; align-items: center; gap: 8px;">
+                                <svg width="22" height="22"><use href="#icon-award"></use></svg>
+                                100% Perfect Mastery! (${quizGradedResults.score} / ${quizGradedResults.total})
+                            </div>
+                            <p style="font-size: 13.5px; color: #cbd5e1;">
+                                Outstanding job! You have perfected this Knowledge Check. The next section is now unlocked.
+                            </p>
+                            <button class="btn-continue-next-kc" onclick="handleVictoryContinue()">
+                                Continue to Next Section &rarr;
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // Not perfected yet (< 100%) - Must keep answering until perfected
+                    html += `
+                        <div class="mastery-banner">
+                            <div style="font-size: 15.5px; font-weight: 700; color: #fb923c; display: flex; align-items: center; gap: 8px;">
+                                <svg width="18" height="18"><use href="#icon-lock"></use></svg>
+                                Mastery Required (${quizGradedResults.score} / ${quizGradedResults.total} Correct &middot; ${quizGradedResults.percentage}%)
+                            </div>
+                            <p style="font-size: 13px; color: #cbd5e1; max-width: 540px; line-height: 1.55;">
+                                You must achieve a <strong>perfect 100% score</strong> to unlock the next chapter. Review the explanations above and try again!
+                            </p>
+                            <button class="btn-retake-kc" onclick="handleRetakeKC()">
+                                <svg width="15" height="15" style="vertical-align: middle; margin-right: 6px;"><use href="#icon-refresh"></use></svg>
+                                Retake Knowledge Check
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            body.innerHTML = html;
+        }
+
+        function handleRetakeKC() {
+            studentQuizAnswers = {};
+            quizGradedResults = null;
+            renderKnowledgeCheckContent();
+            
+            const scrollPane = document.getElementById('reader-scroll-container');
+            if (scrollPane) scrollPane.scrollTop = 0;
+        }
+
+        function handleSelectOptionByIndex(qId, optIdx) {
+            const q = currentActiveQuestions.find(item => item.id === qId);
+            if (!q) return;
+            const val = q.question_type === 'true_false' 
+                ? (optIdx === 0 ? 'True' : 'False')
+                : (q.options ? q.options[optIdx] : '');
+            studentQuizAnswers[qId] = val;
+            renderKnowledgeCheckContent();
+        }
+
+        function handleSelectMatchByIndex(qId, pairIdx, value) {
+            const q = currentActiveQuestions.find(item => item.id === qId);
+            if (!q) return;
+            const pairs = Array.isArray(q.options) ? q.options : [];
+            const pair = pairs[pairIdx];
+            if (!pair) return;
+            const term = pair.term || pair.left || '';
+
+            if (typeof studentQuizAnswers[qId] !== 'object' || studentQuizAnswers[qId] === null) {
+                studentQuizAnswers[qId] = {};
+            }
+            studentQuizAnswers[qId][term] = value;
+        }
+
+        /* --- SUBMIT KC & TRIGGER VICTORY MODAL --- */
+        async function handleSubmitKCAnswers(questionIds) {
+            const chapters = currentActiveModule.chapters || [];
+            const ch = chapters[currentChapterIndex];
+            const chapterId = ch ? ch.id : null;
+
+            try {
+                const res = await fetch(`/api/modules/${currentActiveModule.id}/submit-quiz`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        student_id: currentStudentId,
+                        chapter_id: chapterId,
+                        answers: studentQuizAnswers
+                    })
+                });
+
+                if (res.ok) {
+                    quizGradedResults = await res.json();
+                } else {
+                    let correctCount = 0;
+                    questionIds.forEach(id => {
+                        if (studentQuizAnswers[id]) correctCount++;
+                    });
+                    const isPerfect = correctCount === questionIds.length && questionIds.length > 0;
+                    quizGradedResults = {
+                        score: correctCount,
+                        total: questionIds.length,
+                        percentage: Math.round((correctCount / questionIds.length) * 100),
+                        passed: isPerfect,
+                        results: []
+                    };
+                }
+
+                // If perfected 100%, unlock next chapter and trigger victory modal
+                if (quizGradedResults.passed) {
+                    const progress = getStudentProgress(currentActiveModule.id);
+                    if (!progress.completedKCs.includes(currentChapterIndex)) {
+                        progress.completedKCs.push(currentChapterIndex);
+                    }
+
+                    const nextChapterIdx = currentChapterIndex + 1;
+                    if (nextChapterIdx < chapters.length && !progress.unlockedChapters.includes(nextChapterIdx)) {
+                        progress.unlockedChapters.push(nextChapterIdx);
+                    }
+
+                    saveStudentProgress(currentActiveModule.id, progress);
+                    renderReaderStepper();
+                    renderKnowledgeCheckContent();
+                    showVictoryModal();
+                } else {
+                    // Score < 100%: Keep next section locked, re-render to display graded answers, explanations, and retake button
+                    renderKnowledgeCheckContent();
+                }
+
+            } catch(e) {
+                console.error("Submit quiz error:", e);
+                renderKnowledgeCheckContent();
+            }
+        }
+
+        /* --- VICTORY MODAL CONTROLS (Screenshot 3) --- */
+        function showVictoryModal() {
+            const kcName = currentStepType === 'final' ? 'Final Assessment' : `Knowledge Check ${currentChapterIndex + 1}`;
+            document.getElementById('victory-student-title').textContent = `Great Job, ${currentStudentFirstName}!`;
+            document.getElementById('victory-kc-name').textContent = kcName;
+            document.getElementById('victory-modal').style.display = 'flex';
+        }
+
+        function closeVictoryModal() {
+            document.getElementById('victory-modal').style.display = 'none';
+        }
+
+        function handleVictoryContinue() {
+            closeVictoryModal();
+            const chapters = currentActiveModule.chapters || [];
+            const nextChapterIdx = currentChapterIndex + 1;
+
+            if (nextChapterIdx < chapters.length) {
+                selectStep('chapter', nextChapterIdx);
+            } else {
+                selectStep('final', 0);
             }
         }
 
@@ -879,261 +2137,16 @@
             return url;
         }
 
-        function renderCurrentContent() {
-            const chapters = currentActiveModule.chapters || [];
-            const questions = currentActiveModule.questions || [];
-            const container = document.getElementById('reader-main-content');
-            const progressText = document.getElementById('reader-chapter-progress');
-            const btnPrev = document.getElementById('btn-prev-chapter');
-            const btnNext = document.getElementById('btn-next-chapter');
-
-            if (currentStepType === 'chapter') {
-                if (chapters.length === 0) {
-                    if (questions.length > 0) {
-                        selectQuiz();
-                        return;
-                    }
-                    container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">No content in this module yet.</div>';
-                    return;
-                }
-
-                const ch = chapters[currentChapterIndex];
-                progressText.textContent = `Chapter ${currentChapterIndex + 1} of ${chapters.length}`;
-                btnPrev.disabled = currentChapterIndex === 0;
-                btnNext.textContent = (currentChapterIndex === chapters.length - 1 && questions.length > 0) ? 'Go to Quiz 🎯' : 'Next Chapter →';
-
-                let chapterHtml = `
-                    <div>
-                        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">${escapeHtml(ch.title)}</h2>
-                        <p style="font-size: 12px; color: var(--text-muted);">Chapter ${currentChapterIndex + 1} &middot; Self-Paced Track</p>
-                    </div>
-                `;
-
-                // 1. YouTube Video Embed (if present)
-                if (ch.youtube_url && ch.youtube_url.trim()) {
-                    const embedUrl = formatYoutubeEmbedUrl(ch.youtube_url);
-                    chapterHtml += `
-                        <div>
-                            <h4 style="font-size: 12px; font-weight: 700; color: var(--matrix-yellow); text-transform: uppercase; margin-bottom: 8px;">🎥 Video Lecture</h4>
-                            <div class="video-container">
-                                <iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                // 2. Text / Notes Content
-                if (ch.text_content && ch.text_content.trim()) {
-                    chapterHtml += `
-                        <div>
-                            <h4 style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">📝 Notes & Core Principles</h4>
-                            <div class="reader-notes">${escapeHtml(ch.text_content)}</div>
-                        </div>
-                    `;
-                }
-
-                // 3. Viewable PDF Document (if present)
-                if (ch.pdf_url && ch.pdf_url.trim()) {
-                    chapterHtml += `
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <h4 style="font-size: 12px; font-weight: 700; color: var(--matrix-blue); text-transform: uppercase;">📄 PDF Study Material</h4>
-                                <a href="${ch.pdf_url}" target="_blank" style="color: var(--matrix-blue); font-size: 12px; font-weight: 600; text-decoration: none;">Open in New Tab ↗</a>
-                            </div>
-                            <iframe class="pdf-viewer-frame" src="${ch.pdf_url}"></iframe>
-                        </div>
-                    `;
-                }
-
-                container.innerHTML = chapterHtml;
-
-            } else if (currentStepType === 'quiz') {
-                progressText.textContent = `Knowledge Check (${questions.length} Questions)`;
-                btnPrev.disabled = chapters.length === 0;
-                btnNext.textContent = 'Completed ✓';
-                btnNext.disabled = true;
-
-                renderQuizPlayer(container, questions);
-            }
-        }
-
-        /* --- QUIZ PLAYER RENDERING & GRADING --- */
-        function renderQuizPlayer(container, questions) {
-            let html = `
-                <div>
-                    <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">🎯 Knowledge Check & Quiz</h2>
-                    <p style="font-size: 13px; color: var(--text-muted);">Answer the following questions to test your comprehension and earn module mastery.</p>
-                </div>
-            `;
-
-            if (quizGradedResults) {
-                const passed = quizGradedResults.passed;
-                html += `
-                    <div style="background: ${passed ? 'rgba(74, 222, 128, 0.15)' : 'rgba(239, 68, 68, 0.15)'}; border: 1px solid ${passed ? 'var(--matrix-green)' : '#ef4444'}; border-radius: 12px; padding: 20px; text-align: center;">
-                        <h3 style="font-size: 18px; font-weight: 800; color: ${passed ? 'var(--matrix-green)' : '#ef4444'}; margin-bottom: 4px;">
-                            ${passed ? '🎉 Excellent! Quiz Passed!' : '📖 Review Needed'}
-                        </h3>
-                        <p style="font-size: 13px; color: #fff;">You scored <strong>${quizGradedResults.score} / ${quizGradedResults.total}</strong> (${quizGradedResults.percentage}%)</p>
-                        <button class="btn-reader" style="margin-top: 12px;" onclick="retakeQuiz()">Retake Quiz 🔄</button>
-                    </div>
-                `;
-            }
-
-            html += `<div class="quiz-container">`;
-
-            questions.forEach((q, idx) => {
-                const qResult = quizGradedResults ? quizGradedResults.results.find(r => r.question_id === q.id) : null;
-                let cardClass = 'quiz-question-card';
-                if (qResult) {
-                    cardClass += qResult.is_correct ? ' correct-card' : ' incorrect-card';
-                }
-
-                let typeLabel = 'Multiple Choice';
-                if (q.question_type === 'true_false') typeLabel = 'True or False';
-                if (q.question_type === 'matching') typeLabel = 'Match the Answer';
-
-                html += `
-                    <div class="${cardClass}" id="q-card-${q.id}">
-                        <div class="quiz-q-header">
-                            <div class="quiz-q-title">${idx + 1}. ${escapeHtml(q.question_text)}</div>
-                            <span class="quiz-badge">${typeLabel}</span>
-                        </div>
-                `;
-
-                // 1. True or False
-                if (q.question_type === 'true_false') {
-                    const currentAns = studentQuizAnswers[q.id];
-                    html += `
-                        <div class="tf-grid">
-                            <button type="button" class="tf-btn ${currentAns === 'True' ? 'selected' : ''}" onclick="recordStudentAnswer(${q.id}, 'True')">
-                                ✓ True
-                            </button>
-                            <button type="button" class="tf-btn ${currentAns === 'False' ? 'selected' : ''}" onclick="recordStudentAnswer(${q.id}, 'False')">
-                                ✕ False
-                            </button>
-                        </div>
-                    `;
-                }
-
-                // 2. Multiple Choice
-                else if (q.question_type === 'multiple_choice') {
-                    const options = q.options || [];
-                    const currentAns = studentQuizAnswers[q.id];
-                    html += `<div class="mc-list">`;
-                    options.forEach((opt, oIdx) => {
-                        const letter = String.fromCharCode(65 + oIdx);
-                        const isSelected = currentAns === opt;
-                        html += `
-                            <button type="button" class="mc-option-btn ${isSelected ? 'selected' : ''}" onclick="recordStudentAnswer(${q.id}, '${escapeHtml(opt)}')">
-                                <span class="mc-letter">${letter}</span>
-                                <span>${escapeHtml(opt)}</span>
-                            </button>
-                        `;
-                    });
-                    html += `</div>`;
-                }
-
-                // 3. Matching Pairs
-                else if (q.question_type === 'matching') {
-                    const pairs = q.options || [];
-                    const rightMatches = pairs.map(p => p.right).sort(() => Math.random() - 0.5);
-                    const currentAnsMap = studentQuizAnswers[q.id] || {};
-
-                    html += `<div style="display: flex; flex-direction: column; gap: 8px;">`;
-                    pairs.forEach(p => {
-                        const selectedVal = currentAnsMap[p.left] || '';
-                        html += `
-                            <div class="match-pair-row">
-                                <div class="match-term-box">${escapeHtml(p.left)}</div>
-                                <span style="color: var(--matrix-yellow); font-weight: 800;">➔</span>
-                                <select class="match-select" onchange="recordMatchingAnswer(${q.id}, '${escapeHtml(p.left)}', this.value)">
-                                    <option value="">-- Select Match --</option>
-                                    ${rightMatches.map(rm => `<option value="${escapeHtml(rm)}" ${selectedVal === rm ? 'selected' : ''}>${escapeHtml(rm)}</option>`).join('')}
-                                </select>
-                            </div>
-                        `;
-                    });
-                    html += `</div>`;
-                }
-
-                // Explanations if graded
-                if (qResult && q.explanation) {
-                    html += `
-                        <div class="explanation-box">
-                            <strong style="color: ${qResult.is_correct ? 'var(--matrix-green)' : '#ef4444'};">
-                                ${qResult.is_correct ? '✓ Correct!' : '✕ Incorrect!'}
-                            </strong> ${escapeHtml(q.explanation)}
-                        </div>
-                    `;
-                }
-
-                html += `</div>`;
-            });
-
-            if (!quizGradedResults) {
-                html += `
-                    <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-                        <button class="btn-reader-primary" style="padding: 12px 28px; font-size: 14px;" onclick="submitQuizAnswers()">
-                            Submit Answer
-                        </button>
-                    </div>
-                `;
-            }
-
-            html += `</div>`;
-            container.innerHTML = html;
-        }
-
-        function recordStudentAnswer(questionId, value) {
-            if (quizGradedResults) return; // Locked after grading
-            studentQuizAnswers[questionId] = value;
-            renderCurrentContent();
-        }
-
-        function recordMatchingAnswer(questionId, leftTerm, rightMatch) {
-            if (quizGradedResults) return;
-            if (!studentQuizAnswers[questionId]) studentQuizAnswers[questionId] = {};
-            studentQuizAnswers[questionId][leftTerm] = rightMatch;
-        }
-
-        async function submitQuizAnswers() {
-            const profileStr = localStorage.getItem('studentProfile');
-            let studentId = null;
-            if (profileStr) {
-                try { studentId = JSON.parse(profileStr).id; } catch(e) {}
-            }
-
-            try {
-                const res = await fetch(`/api/modules/${currentActiveModule.id}/submit-quiz`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        student_id: studentId,
-                        answers: studentQuizAnswers
-                    })
-                });
-
-                if (res.ok) {
-                    quizGradedResults = await res.json();
-                    renderCurrentContent();
-                } else {
-                    alert("Failed to submit quiz.");
-                }
-            } catch(err) {
-                console.error("Quiz submission error:", err);
-            }
-        }
-
-        function retakeQuiz() {
-            studentQuizAnswers = {};
-            quizGradedResults = null;
-            renderCurrentContent();
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/[&<>"']/g, function(m) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function (m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
             });
         }
     </script>
