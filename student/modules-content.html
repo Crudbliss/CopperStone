@@ -61,6 +61,8 @@
         }
 
         body {
+            margin: 0;
+            padding: 0;
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-base);
             color: var(--text-main);
@@ -379,7 +381,7 @@
            ========================================================================== */
         #view-reader {
             display: none;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             background: var(--bg-base);
             grid-template-columns: 320px 1fr;
@@ -1119,6 +1121,22 @@
             box-shadow: none;
         }
 
+        .submit-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: submit-spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes submit-spin {
+            to { transform: rotate(360deg); }
+        }
+
         .kc-step-dots {
             display: flex;
             align-items: center;
@@ -1476,25 +1494,40 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadStudentModules();
+            const urlParams = new URLSearchParams(window.location.search);
+            let targetModuleId = urlParams.get('moduleId') || urlParams.get('module');
+            if (!targetModuleId) {
+                const prev = urlParams.get('preview');
+                if (prev && prev !== 'true' && !isNaN(parseInt(prev))) {
+                    targetModuleId = prev;
+                }
+            }
+            if (targetModuleId && !isNaN(parseInt(targetModuleId))) {
+                launchModuleReader(parseInt(targetModuleId));
+            }
         });
 
         /* --- PROGRESS TRACKING ENGINE (PER MODULE) --- */
         function getStudentProgress(moduleId) {
+            let data = null;
             try {
-                const stored = localStorage.getItem(`student_mod_prog_v2_${currentStudentId}_${moduleId}`);
-                if (stored) return JSON.parse(stored);
+                const stored = localStorage.getItem(`student_mod_prog_v2_${currentStudentId}_${moduleId}`)
+                            || localStorage.getItem(`student_mod_prog_${currentStudentId}_${moduleId}`);
+                if (stored) data = JSON.parse(stored);
             } catch(e) {}
-            return {
-                unlockedChapters: [0], // Chapter 0 unlocked by default
-                unlockedKCs: [],       // KCs unlocked after scrolling through chapter
-                completedKCs: [],      // KCs passed
-                completedChapters: []  // Chapters scrolled/read
-            };
+
+            if (!data || typeof data !== 'object') data = {};
+            if (!Array.isArray(data.unlockedChapters)) data.unlockedChapters = [0];
+            if (!Array.isArray(data.unlockedKCs)) data.unlockedKCs = [];
+            if (!Array.isArray(data.completedKCs)) data.completedKCs = [];
+            if (!Array.isArray(data.completedChapters)) data.completedChapters = [];
+            return data;
         }
 
         function saveStudentProgress(moduleId, progressData) {
             try {
                 localStorage.setItem(`student_mod_prog_v2_${currentStudentId}_${moduleId}`, JSON.stringify(progressData));
+                localStorage.setItem(`student_mod_prog_${currentStudentId}_${moduleId}`, JSON.stringify(progressData));
             } catch(e) {}
         }
 
@@ -1676,8 +1709,14 @@
            FULL-SCREEN READER CONTROLLER
            ========================================================================== */
         async function launchModuleReader(moduleId) {
+            const numId = parseInt(moduleId);
+            if (!numId || isNaN(numId)) {
+                console.warn("Invalid moduleId for launchModuleReader:", moduleId);
+                return;
+            }
+
             try {
-                const res = await fetch(`/api/modules/${moduleId}`);
+                const res = await fetch(`/api/modules/${numId}`);
                 if (!res.ok) throw new Error("Failed to load module");
                 currentActiveModule = await res.json();
 
@@ -1726,12 +1765,11 @@
         function renderReaderStepper() {
             const container = document.getElementById('reader-stepper-list');
             const chapters = currentActiveModule.chapters || [];
-            const finalQuestions = currentActiveModule.final_questions || [];
             const progress = getStudentProgress(currentActiveModule.id);
 
             // Compute percentage
-            const totalSteps = (chapters.length * 2) + (finalQuestions.length > 0 ? 1 : 0);
-            const completedSteps = progress.completedChapters.length + progress.completedKCs.length;
+            const totalSteps = (chapters.length * 2) + 1;
+            const completedSteps = progress.completedChapters.length + progress.completedKCs.length + (progress.completedFinal ? 1 : 0);
             const pct = totalSteps > 0 ? Math.min(100, Math.round((completedSteps / totalSteps) * 100)) : 0;
             
             document.getElementById('sidebar-mod-pct').textContent = `${pct}%`;
@@ -1799,8 +1837,8 @@
                 `;
             });
 
-            // Final Assessment Item if questions exist
-            if (finalQuestions.length > 0 || chapters.length > 0) {
+            // Final Assessment Item (Available after completing all chapter KCs)
+            if (chapters.length > 0) {
                 const allKCsCompleted = chapters.every((_, i) => progress.completedKCs.includes(i));
                 const isFinalActive = currentStepId === 'final_assessment';
                 const isFinalCompleted = progress.completedFinal;
@@ -1879,88 +1917,101 @@
                     </div>
                 `;
 
-                // 2. Learning Objectives
-                const objectives = parseListItems(ch.learning_objectives, [
-                    "Understand the core foundations and cognitive strategies of this domain",
-                    "Identify your current collaborative and individual learning habits",
-                    "Apply structured practice techniques to strengthen knowledge retention"
-                ]);
-
-                html += `
-                    <div class="content-block-card">
-                        <div class="content-block-title">LEARNING OBJECTIVES</div>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                            ${objectives.map((obj, i) => `
-                                <div class="objective-item">
-                                    <span class="num-circle">${i + 1}</span>
-                                    <span>${escapeHtml(obj)}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-
-                // 3. Core Text Content (Formatted with paragraph spacing)
-                if (ch.text_content) {
-                    const paragraphs = ch.text_content.split(/\n\s*\n/).filter(p => p.trim() !== '');
-                    const formattedHtml = paragraphs.map(p => `<p>${escapeHtml(p).replace(/\n/g, '<br>')}</p>`).join('');
-                    html += `<div class="article-body-text">${formattedHtml}</div>`;
-                }
-
-                // 4. Video Embed (if available)
-                if (ch.youtube_url) {
-                    const embedUrl = formatYoutubeEmbedUrl(ch.youtube_url);
-                    if (embedUrl) {
-                        html += `
-                            <div class="video-container">
-                                <iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                            </div>
-                        `;
+                // Dynamic Content Blocks Rendering in exact sequence
+                let blocks = ch.content_blocks;
+                if (!blocks || !Array.isArray(blocks) || blocks.length === 0) {
+                    // Fallback to legacy structure if content_blocks is not defined
+                    blocks = [];
+                    if (ch.learning_objectives) {
+                        const objs = parseListItems(ch.learning_objectives, []);
+                        if (objs.length) blocks.push({ type: 'card', title: 'LEARNING OBJECTIVES', items: objs });
+                    }
+                    if (ch.text_content && ch.text_content.trim()) {
+                        blocks.push({ type: 'text', content: ch.text_content.trim() });
+                    }
+                    if (ch.youtube_url && ch.youtube_url.trim()) {
+                        blocks.push({ type: 'video', url: ch.youtube_url.trim() });
+                    }
+                    if (ch.pdf_url && ch.pdf_url.trim()) {
+                        blocks.push({ type: 'pdf', url: ch.pdf_url.trim(), title: 'Reference Material (PDF)' });
+                    }
+                    if (ch.examples) {
+                        const exs = parseListItems(ch.examples, []);
+                        if (exs.length) blocks.push({ type: 'card', title: 'EXAMPLES & PRACTICAL APPLICATIONS', items: exs });
                     }
                 }
 
-                // 5. PDF Viewer (if available)
-                if (ch.pdf_url) {
-                    html += `
-                        <div>
-                            <div style="font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                                <svg width="14" height="14" style="color: var(--matrix-blue);"><use href="#icon-book"></use></svg> Reference Material (PDF)
-                            </div>
-                            <iframe src="${escapeHtml(ch.pdf_url)}" class="pdf-viewer-frame"></iframe>
-                        </div>
-                    `;
-                }
-
-                // 6. Examples Card
-                const examples = parseListItems(ch.examples, [
-                    "In a structured study session, each participant takes responsibility for articulating a specific topic to reinforce deep learning.",
-                    "Applying immediate feedback mechanisms allows learners to rapidly correct conceptual gaps."
-                ]);
-
-                html += `
-                    <div class="content-block-card">
-                        <div class="content-block-title">EXAMPLES & PRACTICAL APPLICATIONS</div>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                            ${examples.map((ex, i) => `
-                                <div class="example-item">
-                                    <span class="num-circle">${i + 1}</span>
-                                    <span>${escapeHtml(ex)}</span>
+                // Render each block sequentially
+                blocks.forEach(block => {
+                    if (block.type === 'card') {
+                        const items = Array.isArray(block.items) ? block.items : parseListItems(block.items, []);
+                        if (items.length > 0) {
+                            html += `
+                                <div class="content-block-card">
+                                    <div class="content-block-title">${escapeHtml(block.title || 'KEY POINTS')}</div>
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                        ${items.map((it, i) => `
+                                            <div class="objective-item">
+                                                <span class="num-circle">${i + 1}</span>
+                                                <span>${escapeHtml(it)}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
                                 </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
+                            `;
+                        }
+                    } else if (block.type === 'text') {
+                        if (block.content && block.content.trim()) {
+                            const paragraphs = block.content.split(/\n\s*\n/).filter(p => p.trim() !== '');
+                            const formattedHtml = paragraphs.map(p => `<p>${escapeHtml(p).replace(/\n/g, '<br>')}</p>`).join('');
+                            html += `<div class="article-body-text">${formattedHtml}</div>`;
+                        }
+                    } else if (block.type === 'video') {
+                        if (block.url && block.url.trim()) {
+                            const embedUrl = formatYoutubeEmbedUrl(block.url);
+                            if (embedUrl) {
+                                html += `
+                                    <div class="video-container">
+                                        <iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                    </div>
+                                `;
+                            }
+                        }
+                    } else if (block.type === 'pdf') {
+                        if (block.url && block.url.trim()) {
+                            html += `
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                        <svg width="14" height="14" style="color: var(--matrix-blue);"><use href="#icon-book"></use></svg> ${escapeHtml(block.title || 'Reference Material (PDF)')}
+                                    </div>
+                                    <iframe src="${escapeHtml(block.url)}" class="pdf-viewer-frame"></iframe>
+                                </div>
+                            `;
+                        }
+                    }
+                });
 
                 body.innerHTML = html;
                 bottomBar.style.display = 'flex';
 
-                // Check initial unlock status
+                // Check initial unlock status and auto-unlock if content is short/fits on screen
                 updateUnlockStatus();
+                checkAutoUnlockIfShort();
 
             } else if (currentStepType === 'kc' || currentStepType === 'final') {
                 bottomBar.style.display = 'none';
                 renderKnowledgeCheckContent();
             }
+        }
+
+        function checkAutoUnlockIfShort() {
+            setTimeout(() => {
+                const container = document.getElementById('reader-scroll-container');
+                if (!container || currentStepType !== 'chapter') return;
+                if (container.scrollHeight <= container.clientHeight + 60) {
+                    markChapterScrolled();
+                }
+            }, 80);
         }
 
         function parseListItems(raw, fallback) {
@@ -1978,8 +2029,8 @@
             const scrollPos = container.scrollTop + container.clientHeight;
             const scrollHeight = container.scrollHeight;
 
-            // When scrolled near bottom (within 60px)
-            if (scrollPos >= scrollHeight - 60) {
+            // When scrolled near bottom (within 80px) or if content fits on screen
+            if (scrollPos >= scrollHeight - 80 || scrollHeight <= container.clientHeight + 60) {
                 markChapterScrolled();
             }
         }
@@ -2040,7 +2091,10 @@
                     ? ch.questions 
                     : (currentActiveModule.questions || []).filter(q => q.chapter_id == ch.id);
             } else if (currentStepType === 'final') {
-                questions = currentActiveModule.final_questions || currentActiveModule.questions || [];
+                // Compile EVERY question from the whole module for the comprehensive Final Assessment!
+                questions = (currentActiveModule.questions && currentActiveModule.questions.length > 0)
+                    ? currentActiveModule.questions
+                    : (currentActiveModule.final_questions || []);
             }
 
             // Fallback default questions if admin hasn't added questions yet so student is never stuck
@@ -2087,7 +2141,9 @@
             if (!q) return;
 
             const kcTitle = currentStepType === 'final' ? 'Final Module Assessment' : `Knowledge Check ${currentChapterIndex + 1}`;
-            const subtitleText = `${questions.length} questions · ${escapeHtml(ch ? ch.title : currentActiveModule.title)}`;
+            const subtitleText = currentStepType === 'final'
+                ? `${questions.length} questions · Comprehensive Final Assessment for ${escapeHtml(currentActiveModule.title)}`
+                : `${questions.length} questions · ${escapeHtml(ch ? ch.title : currentActiveModule.title)}`;
             const isGraded = quizGradedResults !== null;
 
             // Answer status check for carousel navigation
@@ -2383,46 +2439,91 @@
         async function handleSubmitKCAnswers(questionIds) {
             const chapters = currentActiveModule.chapters || [];
             const ch = chapters[currentChapterIndex];
-            const chapterId = ch ? ch.id : null;
+            // When submitting Final Assessment, send chapter_id = null so backend evaluates all module questions!
+            const chapterId = (currentStepType === 'final') ? null : (ch ? ch.id : null);
+
+            const submitBtns = document.querySelectorAll('.btn-kc-submit');
+            submitBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="submit-spinner"></span> Grading Answers...';
+            });
 
             try {
-                const res = await fetch(`/api/modules/${currentActiveModule.id}/submit-quiz`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        student_id: currentStudentId,
-                        chapter_id: chapterId,
-                        answers: studentQuizAnswers
-                    })
-                });
-
-                if (res.ok) {
-                    quizGradedResults = await res.json();
-                } else {
-                    let correctCount = 0;
-                    questionIds.forEach(id => {
-                        if (studentQuizAnswers[id]) correctCount++;
+                let resData = null;
+                try {
+                    const res = await fetch(`/api/modules/${currentActiveModule.id}/submit-quiz`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            student_id: currentStudentId,
+                            chapter_id: chapterId,
+                            answers: studentQuizAnswers
+                        })
                     });
-                    const isPerfect = correctCount === questionIds.length && questionIds.length > 0;
+                    if (res.ok) {
+                        resData = await res.json();
+                    }
+                } catch(netErr) {
+                    console.warn("Quiz submission network fallback:", netErr);
+                }
+
+                if (resData && resData.total > 0 && resData.results && resData.results.length > 0) {
+                    quizGradedResults = resData;
+                } else {
+                    // Fallback accurate client-side evaluation of currentActiveQuestions
+                    let correctCount = 0;
+                    const results = currentActiveQuestions.map(q => {
+                        const studentVal = studentQuizAnswers[q.id];
+                        let isCorrect = false;
+                        if (q.question_type === 'true_false') {
+                            isCorrect = String(studentVal).toLowerCase() === String(q.correct_answer).toLowerCase();
+                        } else if (q.question_type === 'multiple_choice') {
+                            isCorrect = String(studentVal).trim() === String(q.correct_answer).trim();
+                        } else if (q.question_type === 'matching') {
+                            const pairs = Array.isArray(q.options) ? q.options : [];
+                            const isAllMatched = pairs.every(p => {
+                                const term = p.term || p.left || '';
+                                const match = p.match || p.right || '';
+                                return studentVal && studentVal[term] === match;
+                            });
+                            isCorrect = isAllMatched && pairs.length > 0;
+                        }
+                        if (isCorrect) correctCount++;
+                        return {
+                            question_id: q.id,
+                            is_correct: isCorrect,
+                            student_answer: studentVal,
+                            correct_answer: q.correct_answer,
+                            explanation: q.explanation || ''
+                        };
+                    });
+
+                    const totalQ = currentActiveQuestions.length;
+                    const isPerfect = totalQ > 0 && correctCount === totalQ;
                     quizGradedResults = {
                         score: correctCount,
-                        total: questionIds.length,
-                        percentage: Math.round((correctCount / questionIds.length) * 100),
+                        total: totalQ,
+                        percentage: totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0,
                         passed: isPerfect,
-                        results: []
+                        results: results
                     };
                 }
 
                 // If perfected 100%, unlock next chapter and trigger victory modal
-                if (quizGradedResults.passed) {
+                if (quizGradedResults.passed && quizGradedResults.total > 0) {
                     const progress = getStudentProgress(currentActiveModule.id);
-                    if (!progress.completedKCs.includes(currentChapterIndex)) {
-                        progress.completedKCs.push(currentChapterIndex);
-                    }
+                    if (currentStepType === 'final') {
+                        progress.completedFinal = true;
+                        progress.moduleCompleted = true;
+                    } else {
+                        if (!progress.completedKCs.includes(currentChapterIndex)) {
+                            progress.completedKCs.push(currentChapterIndex);
+                        }
 
-                    const nextChapterIdx = currentChapterIndex + 1;
-                    if (nextChapterIdx < chapters.length && !progress.unlockedChapters.includes(nextChapterIdx)) {
-                        progress.unlockedChapters.push(nextChapterIdx);
+                        const nextChapterIdx = currentChapterIndex + 1;
+                        if (nextChapterIdx < chapters.length && !progress.unlockedChapters.includes(nextChapterIdx)) {
+                            progress.unlockedChapters.push(nextChapterIdx);
+                        }
                     }
 
                     saveStudentProgress(currentActiveModule.id, progress);
@@ -2442,9 +2543,15 @@
 
         /* --- VICTORY MODAL CONTROLS (Screenshot 3) --- */
         function showVictoryModal() {
-            const kcName = currentStepType === 'final' ? 'Final Assessment' : `Knowledge Check ${currentChapterIndex + 1}`;
-            document.getElementById('victory-student-title').textContent = `Great Job, ${currentStudentFirstName}!`;
+            const isFinal = currentStepType === 'final';
+            const kcName = isFinal ? 'the Final Assessment and completed this module!' : `Knowledge Check ${currentChapterIndex + 1}`;
+            document.getElementById('victory-student-title').textContent = isFinal ? `Module Mastered, ${currentStudentFirstName}!` : `Great Job, ${currentStudentFirstName}!`;
             document.getElementById('victory-kc-name').textContent = kcName;
+            
+            const btnContinue = document.querySelector('.btn-victory-continue');
+            if (btnContinue) {
+                btnContinue.innerHTML = isFinal ? 'Finish & Back to Modules &rarr;' : 'Continue to Next &rarr;';
+            }
             document.getElementById('victory-modal').style.display = 'flex';
         }
 
@@ -2454,6 +2561,10 @@
 
         function handleVictoryContinue() {
             closeVictoryModal();
+            if (currentStepType === 'final') {
+                exitReaderView();
+                return;
+            }
             const chapters = currentActiveModule.chapters || [];
             const nextChapterIdx = currentChapterIndex + 1;
 

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Modules Management</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg-base: #060f17;
@@ -153,175 +155,317 @@
             font-weight: 800;
         }
 
-        /* Quadrant Filter Pills */
-        .filter-bar {
+        /* Admin Toolbar: Stats & Dropdown Filter */
+        .admin-toolbar-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 10px;
+        }
+
+        .stats-grid-compact {
+            display: flex;
+            gap: 14px;
+        }
+
+        .stats-grid-compact .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 140px;
+        }
+
+        .filter-dropdown-container {
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-light);
         }
 
-        .filter-pill {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-light);
-            color: var(--text-muted);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
+        .filter-dropdown-label {
+            font-size: 13px;
             font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quadrant-select-dropdown {
+            background: #0d1520;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 9px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+            min-width: 220px;
+        }
+
+        .quadrant-select-dropdown:hover,
+        .quadrant-select-dropdown:focus {
+            border-color: rgba(255, 255, 255, 0.35);
+            background: #111b27;
+        }
+
+        .quadrant-select-dropdown option {
+            background: #0d1520;
+            color: #ffffff;
+            padding: 8px;
+        }
+
+        /* Modules List (Horizontal Cards Matching Screenshot) */
+        .modules-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .admin-module-card {
+            background: rgba(13, 21, 32, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .admin-module-card:hover {
+            border-color: rgba(255, 255, 255, 0.16);
+            background: rgba(13, 21, 32, 0.85);
+        }
+
+        .admin-card-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .admin-card-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            flex: 1;
+        }
+
+        .admin-mod-index-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .admin-mod-index-box.dc {
+            background: rgba(192, 132, 252, 0.12);
+            color: #c084fc;
+            border: 1px solid rgba(192, 132, 252, 0.25);
+        }
+
+        .admin-mod-index-box.di {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+
+        .admin-mod-index-box.hc {
+            background: rgba(251, 146, 60, 0.12);
+            color: #fb923c;
+            border: 1px solid rgba(251, 146, 60, 0.25);
+        }
+
+        .admin-mod-index-box.hi {
+            background: rgba(74, 222, 128, 0.12);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.25);
+        }
+
+        .admin-mod-index-box.all {
+            background: rgba(216, 166, 26, 0.12);
+            color: #d8a61a;
+            border: 1px solid rgba(216, 166, 26, 0.25);
+        }
+
+        .admin-mod-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .admin-mod-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.35;
+        }
+
+        .admin-mod-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin: 2px 0 6px 0;
+        }
+
+        .admin-mod-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+            flex-wrap: wrap;
+        }
+
+        .admin-mod-meta-row span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .admin-card-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .badge-published {
+            background: rgba(74, 222, 128, 0.1);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.25);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+
+        .btn-card-trash {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-card-trash:hover {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .admin-progress-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .admin-progress-track {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .admin-progress-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .admin-progress-fill.dc {
+            background: #c084fc;
+        }
+
+        .admin-progress-fill.di {
+            background: #38bdf8;
+        }
+
+        .admin-progress-fill.hc {
+            background: #fb923c;
+        }
+
+        .admin-progress-fill.hi {
+            background: #4ade80;
+        }
+
+        .admin-progress-fill.all {
+            background: #d8a61a;
+        }
+
+        .admin-progress-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .admin-card-actions-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 4px;
+        }
+
+        .btn-admin-action {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 13.5px;
+            font-weight: 700;
+            font-family: inherit;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
+            text-align: center;
         }
 
-        .filter-pill:hover {
-            background: rgba(255, 255, 255, 0.07);
-            color: var(--text-main);
+        .btn-admin-view {
+            color: #c084fc;
         }
 
-        .filter-pill.active {
-            background: rgba(216, 166, 26, 0.15);
-            border-color: var(--matrix-yellow);
-            color: var(--matrix-yellow);
+        .btn-admin-view:hover {
+            background: rgba(192, 132, 252, 0.08);
+            border-color: rgba(192, 132, 252, 0.3);
+            color: #ffffff;
         }
 
-        .filter-pill.active-hi {
-            background: rgba(74, 222, 128, 0.15);
-            border-color: var(--matrix-green);
-            color: var(--matrix-green);
+        .btn-admin-edit {
+            color: #94a3b8;
         }
 
-        .filter-pill.active-di {
-            background: rgba(56, 189, 248, 0.15);
-            border-color: var(--matrix-blue);
-            color: var(--matrix-blue);
-        }
-
-        .filter-pill.active-hc {
-            background: rgba(251, 146, 60, 0.15);
-            border-color: var(--matrix-orange);
-            color: var(--matrix-orange);
-        }
-
-        .filter-pill.active-dc {
-            background: rgba(192, 132, 252, 0.15);
-            border-color: var(--matrix-purple);
-            color: var(--matrix-purple);
-        }
-
-        .count-badge {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 10px;
-        }
-
-        /* Modules Grid */
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-            gap: 20px;
-        }
-
-        .module-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 14px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .module-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.18);
-            background: var(--bg-card-hover);
-        }
-
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .badge-quadrant {
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 6px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .badge-hi { background: rgba(74, 222, 128, 0.1); color: var(--matrix-green); border: 1px solid rgba(74, 222, 128, 0.2); }
-        .badge-di { background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); border: 1px solid rgba(56, 189, 248, 0.2); }
-        .badge-hc { background: rgba(251, 146, 60, 0.1); color: var(--matrix-orange); border: 1px solid rgba(251, 146, 60, 0.2); }
-        .badge-dc { background: rgba(192, 132, 252, 0.1); color: var(--matrix-purple); border: 1px solid rgba(192, 132, 252, 0.2); }
-        .badge-all { background: rgba(216, 166, 26, 0.1); color: var(--matrix-yellow); border: 1px solid rgba(216, 166, 26, 0.2); }
-
-        .meta-tags {
-            display: flex;
-            gap: 6px;
-        }
-
-        .meta-tag {
-            font-size: 10px;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 3px 8px;
-            border-radius: 4px;
-            color: var(--text-muted);
-        }
-
-        .module-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-
-        .module-desc {
-            font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            margin-bottom: 20px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-light);
-        }
-
-        .chapter-count {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .card-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .btn-admin-edit:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
         }
 
         /* Modal Base */
@@ -386,12 +530,20 @@
             color: #fff;
         }
 
-        /* Nav Tabs in Customizer Modal */
+        /* Nav Tabs in Customizer */
         .customizer-nav {
             display: flex;
-            gap: 8px;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 1px solid var(--border-light);
-            padding-bottom: 10px;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            gap: 12px;
+        }
+
+        .customizer-nav-tabs {
+            display: flex;
+            gap: 8px;
         }
 
         .customizer-tab-btn {
@@ -415,6 +567,133 @@
             color: var(--matrix-yellow);
         }
 
+        .btn-highlight-add {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-highlight-add:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-back-link {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Quadrant Badges */
+        .badge-quadrant {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .badge-quadrant.badge-dc {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(192, 132, 252, 0.35) 100%);
+            border: 1px solid rgba(192, 132, 252, 0.6);
+            color: #f3e8ff;
+            box-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
+        }
+
+        .badge-quadrant.badge-dc svg {
+            color: #c084fc;
+        }
+
+        .badge-quadrant.badge-di {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.25) 0%, rgba(56, 189, 248, 0.35) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.6);
+            color: #e0f2fe;
+            box-shadow: 0 0 16px rgba(14, 165, 233, 0.4);
+        }
+
+        .badge-quadrant.badge-di svg {
+            color: #38bdf8;
+        }
+
+        .badge-quadrant.badge-hc {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.25) 0%, rgba(251, 146, 60, 0.35) 100%);
+            border: 1px solid rgba(251, 146, 60, 0.6);
+            color: #ffedd5;
+            box-shadow: 0 0 16px rgba(249, 115, 22, 0.4);
+        }
+
+        .badge-quadrant.badge-hc svg {
+            color: #fb923c;
+        }
+
+        .badge-quadrant.badge-hi {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(52, 211, 153, 0.35) 100%);
+            border: 1px solid rgba(52, 211, 153, 0.6);
+            color: #d1fae5;
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .badge-quadrant.badge-hi svg {
+            color: #34d399;
+        }
+
+        .badge-quadrant.badge-all {
+            background: linear-gradient(135deg, rgba(216, 166, 26, 0.25) 0%, rgba(245, 158, 11, 0.35) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.6);
+            color: #fef9c3;
+            box-shadow: 0 0 16px rgba(216, 166, 26, 0.4);
+        }
+
+        .badge-quadrant.badge-all svg {
+            color: #fbbf24;
+        }
+
+        .customizer-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            gap: 16px;
+        }
+
         /* Form Controls */
         .form-group {
             display: flex;
@@ -430,7 +709,9 @@
             letter-spacing: 0.5px;
         }
 
-        .form-input, .form-textarea, .form-select {
+        .form-input,
+        .form-textarea,
+        .form-select {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-light);
             border-radius: 8px;
@@ -442,7 +723,9 @@
             transition: border-color 0.2s ease;
         }
 
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
             border-color: var(--matrix-yellow);
         }
 
@@ -468,9 +751,8 @@
             display: grid;
             grid-template-columns: 300px 1fr;
             gap: 20px;
-            flex: 1;
-            overflow: hidden;
-            min-height: 480px;
+            min-height: 580px;
+            align-items: start;
         }
 
         .customizer-sidebar {
@@ -546,6 +828,191 @@
             background: #1e293b;
         }
 
+        /* Chapter Content Block Builder */
+        .blocks-manager-section {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 6px;
+        }
+
+        .blocks-container {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .block-editor-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .block-editor-card:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .block-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 10px;
+        }
+
+        .block-type-badge {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-type-card {
+            background: rgba(192, 132, 252, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(192, 132, 252, 0.3);
+        }
+
+        .badge-type-text {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .badge-type-video {
+            background: rgba(248, 113, 113, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+
+        .badge-type-pdf {
+            background: rgba(216, 166, 26, 0.15);
+            color: #d8a61a;
+            border: 1px solid rgba(216, 166, 26, 0.3);
+        }
+
+        .block-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-block-nav {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 9px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-block-nav:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+        }
+
+        .btn-block-nav:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
+        .btn-block-delete {
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #ef4444;
+            font-size: 12px;
+            padding: 4px 9px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-block-delete:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #ef4444;
+        }
+
+        .card-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .card-item-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .card-item-row input.form-input {
+            flex: 1 1 auto;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .card-item-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .add-blocks-toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .btn-add-block {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-add-block:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
         /* Dynamic Options / Matching Rows */
         .dynamic-row {
             display: flex;
@@ -568,123 +1035,315 @@
         }
     </style>
 </head>
+
 <body>
 
     <svg class="svg-defs" style="display: none;">
-        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
         </symbol>
-        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
         </symbol>
-        <symbol id="icon-lightbulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <symbol id="icon-lightbulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 18h6"></path>
             <path d="M10 22h4"></path>
-            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5z"></path>
+            <path
+                d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5z">
+            </path>
         </symbol>
-        <symbol id="icon-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <symbol id="icon-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+            </path>
         </symbol>
-        <symbol id="icon-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z"/>
-            <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"/>
+        <symbol id="icon-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+                d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z" />
+            <path
+                d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z" />
         </symbol>
-        <symbol id="icon-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+        <symbol id="icon-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
         </symbol>
-        <symbol id="icon-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <symbol id="icon-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <circle cx="12" cy="12" r="6"></circle>
             <circle cx="12" cy="12" r="2"></circle>
         </symbol>
-        <symbol id="icon-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <symbol id="icon-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
         </symbol>
-        <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <polyline points="3 6 5 6 21 6"></polyline>
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
         </symbol>
-        <symbol id="icon-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <symbol id="icon-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </symbol>
+        <symbol id="icon-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </symbol>
+        <symbol id="icon-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+        </symbol>
+        <symbol id="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </symbol>
+        <symbol id="icon-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
         </symbol>
     </svg>
 
-    <div class="content-container">
-        
+    <!-- VIEW 1: MODULES LIST OVERVIEW -->
+    <div id="view-modules-list" class="content-container">
+
         <!-- Header -->
         <div class="page-header">
             <div>
-                <h1 class="page-title" style="display: flex; align-items: center; gap: 10px;">
-                    <svg width="22" height="22" style="color: var(--matrix-yellow);"><use href="#icon-book"></use></svg>
-                    Learning Modules & Activities
-                </h1>
-                <p class="page-subtitle">Design self-paced learning tracks, interactive chapters (video/PDF), and custom quizzes (True/False, Multiple Choice, Matching).</p>
+                <h1 class="page-title">Modules</h1>
+                <p class="page-subtitle">Manage learning modules, chapters, and content.</p>
             </div>
-            <button class="btn-primary" onclick="openCreateModuleModal()">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                Create New Module
+            <button class="btn-primary" onclick="openCreateModuleModal()"
+                style="padding: 10px 20px; border-radius: 10px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px;">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                New Module
             </button>
         </div>
 
-        <!-- Metrics Strip -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <span class="stat-label">Total Modules</span>
-                <span class="stat-val" id="metric-total-modules">0</span>
+        <!-- Toolbar: Compact Stats & Quadrant Filter Dropdown -->
+        <div class="admin-toolbar-row">
+            <div class="stats-grid-compact">
+                <div class="stat-card">
+                    <span class="stat-label">Total Modules</span>
+                    <span class="stat-val" id="metric-total-modules">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Chapters</span>
+                    <span class="stat-val" id="metric-total-chapters">0</span>
+                </div>
             </div>
-            <div class="stat-card">
-                <span class="stat-label">Total Chapters</span>
-                <span class="stat-val" id="metric-total-chapters">0</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Total Quiz Questions</span>
-                <span class="stat-val" style="color: var(--matrix-yellow);" id="metric-total-questions">0</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Quadrant Tracks</span>
-                <span class="stat-val" style="color: var(--matrix-green);" id="metric-quadrant-tracks">4 / 4</span>
-            </div>
-        </div>
 
-        <!-- Quadrant Filters -->
-        <div class="filter-bar">
-            <button class="filter-pill active" onclick="setFilter('All', this)">
-                <span>All Modules</span>
-                <span class="count-badge" id="pill-count-all">0</span>
-            </button>
-            <button class="filter-pill" onclick="setFilter('Hierarchical Individual', this)">
-                <span style="color: var(--matrix-green); display: inline-flex; align-items: center; gap: 6px;">
-                    <svg width="13" height="13"><use href="#icon-book"></use></svg> Hierarchical Individual
-                </span>
-                <span class="count-badge" id="pill-count-hi">0</span>
-            </button>
-            <button class="filter-pill" onclick="setFilter('Distributed Individual', this)">
-                <span style="color: var(--matrix-blue); display: inline-flex; align-items: center; gap: 6px;">
-                    <svg width="13" height="13"><use href="#icon-lightbulb"></use></svg> Distributed Individual
-                </span>
-                <span class="count-badge" id="pill-count-di">0</span>
-            </button>
-            <button class="filter-pill" onclick="setFilter('Hierarchical Collective', this)">
-                <span style="color: var(--matrix-orange); display: inline-flex; align-items: center; gap: 6px;">
-                    <svg width="13" height="13"><use href="#icon-gear"></use></svg> Hierarchical Collective
-                </span>
-                <span class="count-badge" id="pill-count-hc">0</span>
-            </button>
-            <button class="filter-pill" onclick="setFilter('Distributed Collective', this)">
-                <span style="color: var(--matrix-purple); display: inline-flex; align-items: center; gap: 6px;">
-                    <svg width="13" height="13"><use href="#icon-brain"></use></svg> Distributed Collective
-                </span>
-                <span class="count-badge" id="pill-count-dc">0</span>
-            </button>
+            <div class="filter-dropdown-container">
+                <label class="filter-dropdown-label" for="quadrant-filter-select">
+                    <svg width="14" height="14" style="color: var(--text-muted);">
+                        <use href="#icon-folder"></use>
+                    </svg>
+                    Filter Quadrant:
+                </label>
+                <select id="quadrant-filter-select" class="quadrant-select-dropdown"
+                    onchange="handleDropdownFilter(this.value)">
+                    <option value="All">All Modules</option>
+                    <option value="Hierarchical Individual">Hierarchical Individual</option>
+                    <option value="Distributed Individual">Distributed Individual</option>
+                    <option value="Hierarchical Collective">Hierarchical Collective</option>
+                    <option value="Distributed Collective">Distributed Collective</option>
+                </select>
+            </div>
         </div>
 
         <!-- Modules Grid -->
         <div id="modules-list" class="modules-grid">
             <div class="empty-state">Loading modules...</div>
+        </div>
+
+    </div>
+
+    <!-- VIEW 2: FULL-PAGE MODULE CUSTOMIZER (CHAPTERS & QUIZ BUILDER) -->
+    <div id="view-module-customizer" class="content-container" style="display: none;">
+
+        <!-- Top Header with Back Button and Title -->
+        <div class="customizer-header-bar">
+            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                <button type="button" class="btn-back-link" onclick="closeCustomizerView()">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+                        viewBox="0 0 24 24">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Back to Modules
+                </button>
+                <div style="height: 24px; width: 1px; background: rgba(255, 255, 255, 0.12);"></div>
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <span id="customizer-module-badge-wrap"><span class="badge-quadrant badge-dc"><svg width="13" height="13" style="vertical-align: middle; margin-right: 4px;"><use href="#icon-brain"></use></svg>Distributed Collective</span></span>
+                    <h2 class="page-title" style="font-size: 20px; font-weight: 800; margin: 0; color: #ffffff; letter-spacing: -0.3px;" id="customizer-module-title">Customize
+                        Module Content</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customizer Tab Switcher + Inline Highlighted Add Button & Preview Button -->
+        <div class="customizer-nav">
+            <div class="customizer-nav-tabs">
+                <button class="customizer-tab-btn active" id="tab-btn-chapters"
+                    onclick="switchCustomizerTab('chapters')">
+                    <span style="display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14">
+                            <use href="#icon-book"></use>
+                        </svg> Chapters
+                    </span>
+                </button>
+                <button class="customizer-tab-btn" id="tab-btn-quiz" onclick="switchCustomizerTab('quiz')">
+                    <span style="display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14">
+                            <use href="#icon-target"></use>
+                        </svg> Knowledge Checks
+                    </span>
+                </button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" id="btn-preview-module" class="btn-secondary" onclick="previewCurrentModule()"
+                    style="padding: 8px 16px; font-weight: 700; display: inline-flex; align-items: center; gap: 7px; background: rgba(56, 189, 248, 0.12); color: var(--matrix-blue); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s ease;">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg> Preview Module
+                </button>
+                <button type="button" id="nav-btn-highlight-action" class="btn-highlight-add"
+                    onclick="handleNavAddAction()"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add Chapter</button>
+            </div>
+        </div>
+
+        <!-- SECTION A: CHAPTERS BUILDER -->
+        <div id="pane-chapters" class="customizer-workspace">
+            <!-- Sidebar: Chapters List -->
+            <div class="customizer-sidebar">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span
+                        style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Chapters</span>
+                </div>
+                <div id="chapters-list-sidebar" style="display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Chapters populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Main Area: Chapter Editor Form & Dynamic Block Builder -->
+            <div class="customizer-editor-pane">
+                <form id="chapter-form" onsubmit="handleSaveChapter(event)">
+                    <input type="hidden" id="edit-chapter-id" value="">
+
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4 id="chapter-editor-heading" style="font-size: 16px; font-weight: 700;">Add / Edit Chapter
+                        </h4>
+                        <button type="button" id="btn-delete-chapter" class="btn-danger" style="display: none;"
+                            onclick="handleDeleteCurrentChapter()">Delete Chapter</button>
+                    </div>
+
+                    <!-- Add Block Toolbar placed directly below heading! -->
+                    <div class="add-blocks-toolbar" style="margin-bottom: 16px;">
+                        <span style="font-size: 11.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">+
+                            Add Section:</span>
+                        <button type="button" class="btn-add-block" onclick="addContentBlock('card')">
+                            <svg width="13" height="13" style="color: #c084fc;">
+                                <use href="#icon-clipboard"></use>
+                            </svg>
+                            Block Card (Callout)
+                        </button>
+                        <button type="button" class="btn-add-block" onclick="addContentBlock('text')">
+                            <svg width="13" height="13" style="color: #38bdf8;">
+                                <use href="#icon-book"></use>
+                            </svg>
+                            Body Text
+                        </button>
+                        <button type="button" class="btn-add-block" onclick="addContentBlock('video')">
+                            <svg width="13" height="13" style="color: #f87171;">
+                                <use href="#icon-play"></use>
+                            </svg>
+                            Video Embed
+                        </button>
+                        <button type="button" class="btn-add-block" onclick="addContentBlock('pdf')">
+                            <svg width="13" height="13" style="color: #d8a61a;">
+                                <use href="#icon-file"></use>
+                            </svg>
+                            PDF Document
+                        </button>
+                    </div>
+
+                    <div class="grid-2-col" style="margin-bottom: 14px;">
+                        <div class="form-group">
+                            <label class="form-label">Chapter Title</label>
+                            <input type="text" id="chapter-title" class="form-input"
+                                placeholder="e.g. The Feynman Technique in Peer Circles" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sequence Order</label>
+                            <input type="number" id="chapter-order" class="form-input" value="1" min="1" required>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Content Blocks Section -->
+                    <div class="blocks-manager-section">
+                        <div id="chapter-blocks-list" class="blocks-container">
+                            <!-- Dynamic blocks rendered here via JS -->
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn-primary" id="btn-save-chapter"
+                            style="padding: 10px 24px; font-weight: 700;">Save Chapter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SECTION B: QUIZ & ACTIVITIES BUILDER (CHAPTER-BASED) -->
+        <div id="pane-quiz" class="customizer-workspace" style="display: none;">
+            <!-- Sidebar: Chapters List for Quiz -->
+            <div class="customizer-sidebar">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Chapters &amp; Sections</span>
+                </div>
+                <div id="quiz-chapters-sidebar" style="display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Chapters populated dynamically with question counts -->
+                </div>
+            </div>
+
+            <!-- Main Area: Questions List & Form for the Selected Chapter -->
+            <div class="customizer-editor-pane">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h4 id="quiz-active-chapter-heading" style="font-size: 17px; font-weight: 800; margin: 0 0 4px 0;">Chapter 1 Questions</h4>
+                        <div id="quiz-active-chapter-subheading" style="font-size: 12.5px; color: var(--text-muted);">Knowledge Check Questions</div>
+                    </div>
+                    <button type="button" class="btn-highlight-add" onclick="addNewQuestionToActiveQuizChapter()" style="padding: 8px 16px; font-size: 13px;">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Add Question
+                    </button>
+                </div>
+
+                <!-- Questions Container -->
+                <div id="quiz-chapter-questions-container" style="display: flex; flex-direction: column; gap: 16px;">
+                    <!-- Dynamically rendered question cards -->
+                </div>
+            </div>
         </div>
 
     </div>
@@ -698,15 +1357,18 @@
             </div>
             <form id="module-form" onsubmit="handleSaveModule(event)">
                 <input type="hidden" id="edit-module-id" value="">
-                
+
                 <div class="form-group">
                     <label class="form-label">Module Title</label>
-                    <input type="text" id="module-title" class="form-input" placeholder="e.g. Master Cornell Note-Taking" required>
+                    <input type="text" id="module-title" class="form-input"
+                        placeholder="e.g. Master Cornell Note-Taking" required>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Description / Summary</label>
-                    <textarea id="module-desc" class="form-textarea" placeholder="Provide an overview of what the learner will discover in this module..." rows="3"></textarea>
+                    <textarea id="module-desc" class="form-textarea"
+                        placeholder="Provide an overview of what the learner will discover in this module..."
+                        rows="3"></textarea>
                 </div>
 
                 <div class="grid-2-col">
@@ -734,7 +1396,8 @@
                 <div class="grid-2-col">
                     <div class="form-group">
                         <label class="form-label">Topic Tag</label>
-                        <input type="text" id="module-topic" class="form-input" placeholder="e.g. Note-Taking, Socratic Method, Mind Mapping">
+                        <input type="text" id="module-topic" class="form-input"
+                            placeholder="e.g. Note-Taking, Socratic Method, Mind Mapping">
                     </div>
 
                     <div class="form-group">
@@ -748,178 +1411,6 @@
                     <button type="submit" class="btn-primary" id="btn-save-module-submit">Save Module</button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- 2. MODULE CUSTOMIZER MODAL (CHAPTERS + QUIZ BUILDER) -->
-    <div id="customizer-modal" class="modal-overlay">
-        <div class="modal-content large-modal">
-            <div class="modal-header">
-                <div>
-                    <span id="customizer-module-badge-wrap"><span class="badge-quadrant badge-hi">HI</span></span>
-                    <h3 class="modal-title" style="margin-top: 4px;" id="customizer-module-title">Customize Module Content</h3>
-                </div>
-                <button class="close-modal-btn" onclick="closeCustomizerModal()">&times;</button>
-            </div>
-
-            <!-- Customizer Tab Switcher -->
-            <div class="customizer-nav">
-                <button class="customizer-tab-btn active" id="tab-btn-chapters" onclick="switchCustomizerTab('chapters')">
-                    <span style="display: inline-flex; align-items: center; gap: 6px;">
-                        <svg width="14" height="14"><use href="#icon-book"></use></svg> Chapters (Text, PDF, Video)
-                    </span>
-                </button>
-                <button class="customizer-tab-btn" id="tab-btn-quiz" onclick="switchCustomizerTab('quiz')">
-                    <span style="display: inline-flex; align-items: center; gap: 6px;">
-                        <svg width="14" height="14"><use href="#icon-target"></use></svg> Quiz & Activities (T/F, Multiple Choice, Matching)
-                    </span>
-                </button>
-            </div>
-
-            <!-- SECTION A: CHAPTERS BUILDER -->
-            <div id="pane-chapters" class="customizer-workspace">
-                <!-- Sidebar: Chapters List -->
-                <div class="customizer-sidebar">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Chapters</span>
-                        <button class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="initNewChapterForm()">+ Add</button>
-                    </div>
-                    <div id="chapters-list-sidebar" style="display: flex; flex-direction: column; gap: 8px;">
-                        <!-- Chapters populated dynamically -->
-                    </div>
-                </div>
-
-                <!-- Main Area: Chapter Editor Form & Preview -->
-                <div class="customizer-editor-pane">
-                    <form id="chapter-form" onsubmit="handleSaveChapter(event)">
-                        <input type="hidden" id="edit-chapter-id" value="">
-                        
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <h4 id="chapter-editor-heading" style="font-size: 15px; font-weight: 700;">Add / Edit Chapter</h4>
-                            <button type="button" id="btn-delete-chapter" class="btn-danger" style="display: none;" onclick="handleDeleteCurrentChapter()">Delete Chapter</button>
-                        </div>
-
-                        <div class="grid-2-col">
-                            <div class="form-group">
-                                <label class="form-label">Chapter Title</label>
-                                <input type="text" id="chapter-title" class="form-input" placeholder="e.g. Chapter 1: Foundations" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Sequence Order</label>
-                                <input type="number" id="chapter-order" class="form-input" value="1" min="1" required>
-                            </div>
-                        </div>
-
-                        <!-- 1. Text Content -->
-                        <div class="form-group">
-                            <label class="form-label">Lecture Notes & Core Text</label>
-                            <textarea id="chapter-text" class="form-textarea" rows="4" placeholder="Write comprehensive study notes and explanations..."></textarea>
-                        </div>
-
-                        <!-- 2. YouTube Video Embed -->
-                        <div class="form-group">
-                            <label class="form-label">YouTube Video Embed (Optional)</label>
-                            <div style="display: flex; gap: 8px;">
-                                <input type="text" id="chapter-youtube" class="form-input" style="flex: 1;" placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..." oninput="updateYoutubePreview()">
-                                <button type="button" class="btn-secondary" onclick="updateYoutubePreview()">Preview</button>
-                            </div>
-                            <div id="youtube-preview-container" style="display: none; margin-top: 8px;">
-                                <div class="video-responsive">
-                                    <iframe id="youtube-iframe-preview" src="" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 3. PDF Document Attachment -->
-                        <div class="form-group">
-                            <label class="form-label">PDF Reference Material (Optional)</label>
-                            <div style="display: flex; gap: 8px; align-items: center;">
-                                <input type="text" id="chapter-pdf" class="form-input" style="flex: 1;" placeholder="/public/uploads/modules/... or https://..." oninput="updatePdfPreview()">
-                                <label class="btn-secondary" style="cursor: pointer; margin: 0;">
-                                    Upload PDF
-                                    <input type="file" id="chapter-pdf-file" accept="application/pdf" style="display: none;" onchange="handlePdfFileUpload(event)">
-                                </label>
-                            </div>
-                            <div id="pdf-preview-container" style="display: none; margin-top: 8px;">
-                                <iframe id="pdf-iframe-preview" class="pdf-preview-frame" src=""></iframe>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
-                            <button type="submit" class="btn-primary" id="btn-save-chapter">Save Chapter</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- SECTION B: QUIZ & ACTIVITIES BUILDER -->
-            <div id="pane-quiz" class="customizer-workspace" style="display: none;">
-                <!-- Sidebar: Questions List -->
-                <div class="customizer-sidebar">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Quiz Questions</span>
-                        <button class="btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="initNewQuestionForm()">+ Add</button>
-                    </div>
-                    <div id="questions-list-sidebar" style="display: flex; flex-direction: column; gap: 8px;">
-                        <!-- Questions populated dynamically -->
-                    </div>
-                </div>
-
-                <!-- Main Area: Question Editor Form -->
-                <div class="customizer-editor-pane">
-                    <form id="question-form" onsubmit="handleSaveQuestion(event)">
-                        <input type="hidden" id="edit-question-id" value="">
-
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <h4 id="question-editor-heading" style="font-size: 15px; font-weight: 700;">Add / Edit Quiz Question</h4>
-                            <button type="button" id="btn-delete-question" class="btn-danger" style="display: none;" onclick="handleDeleteCurrentQuestion()">Delete Question</button>
-                        </div>
-
-                        <div class="grid-2-col">
-                            <div class="form-group">
-                                <label class="form-label">Assign to Section / Knowledge Check</label>
-                                <select id="question-chapter-select" class="form-select">
-                                    <option value="">General / Final Assessment Quiz</option>
-                                    <!-- Chapter options populated via JS -->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Question Type</label>
-                                <select id="question-type-select" class="form-select" onchange="renderQuestionTypeFields()">
-                                    <option value="true_false">True or False</option>
-                                    <option value="multiple_choice">Multiple Choice</option>
-                                    <option value="matching">Match the Answer / Pairs</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Sequence Order</label>
-                            <input type="number" id="question-order" class="form-input" value="1" min="1" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Question Prompt / Title</label>
-                            <input type="text" id="question-text" class="form-input" placeholder="e.g. Which column in Cornell notes contains summary keywords?" required>
-                        </div>
-
-                        <!-- Dynamic Type Sub-forms -->
-                        <div id="question-type-fields-container">
-                            <!-- Populated via JS based on type -->
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Explanation / Feedback (Shown after student answers)</label>
-                            <textarea id="question-explanation" class="form-textarea" rows="2" placeholder="e.g. The left Cue column is dedicated to keywords and study questions."></textarea>
-                        </div>
-
-                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
-                            <button type="submit" class="btn-primary" id="btn-save-question">Save Question</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
         </div>
     </div>
 
@@ -949,38 +1440,16 @@
         function renderMetrics() {
             const totalModules = allModules.length;
             let totalChapters = 0;
-            let hiCount = 0, diCount = 0, hcCount = 0, dcCount = 0;
-
             allModules.forEach(m => {
                 totalChapters += (m.chapter_count || 0);
-                const q = m.quadrant_category || '';
-                if (q === 'Hierarchical Individual') hiCount++;
-                if (q === 'Distributed Individual') diCount++;
-                if (q === 'Hierarchical Collective') hcCount++;
-                if (q === 'Distributed Collective') dcCount++;
             });
 
             document.getElementById('metric-total-modules').textContent = totalModules;
             document.getElementById('metric-total-chapters').textContent = totalChapters;
-            document.getElementById('metric-total-questions').textContent = (totalChapters * 2); // Dynamic estimation or query
-
-            document.getElementById('pill-count-all').textContent = totalModules;
-            document.getElementById('pill-count-hi').textContent = hiCount;
-            document.getElementById('pill-count-di').textContent = diCount;
-            document.getElementById('pill-count-hc').textContent = hcCount;
-            document.getElementById('pill-count-dc').textContent = dcCount;
         }
 
-        function setFilter(quadrant, btn) {
+        function handleDropdownFilter(quadrant) {
             currentFilter = quadrant;
-            document.querySelectorAll('.filter-pill').forEach(p => p.className = 'filter-pill');
-            
-            if (quadrant === 'All') btn.classList.add('active');
-            else if (quadrant === 'Hierarchical Individual') btn.classList.add('active-hi');
-            else if (quadrant === 'Distributed Individual') btn.classList.add('active-di');
-            else if (quadrant === 'Hierarchical Collective') btn.classList.add('active-hc');
-            else if (quadrant === 'Distributed Collective') btn.classList.add('active-dc');
-
             renderModulesGrid();
         }
 
@@ -998,49 +1467,65 @@
 
             if (filtered.length === 0) {
                 container.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1 / -1;">
+                    <div class="empty-state">
                         <div style="margin-bottom: 12px; color: var(--text-muted);"><svg width="36" height="36"><use href="#icon-folder"></use></svg></div>
                         <h3 style="font-size: 16px; margin-bottom: 6px;">No modules found</h3>
                         <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">Create your first module for this quadrant to get started.</p>
-                        <button class="btn-primary" onclick="openCreateModuleModal()">+ Create Module</button>
+                        <button class="btn-primary" onclick="openCreateModuleModal()">+ New Module</button>
                     </div>`;
                 return;
             }
 
-            container.innerHTML = filtered.map(m => {
-                const badge = getQuadrantBadge(m.quadrant_category);
+            container.innerHTML = filtered.map((m, index) => {
                 const chapterCount = m.chapter_count || 0;
+                const qCategory = m.quadrant_category || 'Distributed Collective';
+
+                let colorKey = 'dc';
+                let targetShort = 'D. Collective';
+                if (qCategory === 'Distributed Individual') { colorKey = 'di'; targetShort = 'D. Individual'; }
+                else if (qCategory === 'Hierarchical Collective') { colorKey = 'hc'; targetShort = 'H. Collective'; }
+                else if (qCategory === 'Hierarchical Individual') { colorKey = 'hi'; targetShort = 'H. Individual'; }
+                else if (qCategory === 'All') { colorKey = 'all'; targetShort = 'Universal'; }
+
+                const indexFormatted = String(index + 1).padStart(2, '0');
+                const estTime = m.estimated_time || (chapterCount ? `${(chapterCount * 1.1).toFixed(1)} hrs` : '4.5 hrs');
+                const completionPct = m.completion_pct !== undefined ? m.completion_pct : (index === 0 ? 50 : 25);
+
                 return `
-                    <div class="module-card">
-                        <div>
-                            <div class="card-top">
-                                ${badge}
-                                <div class="meta-tags">
-                                    <span class="meta-tag">${m.difficulty || 'Beginner'}</span>
-                                    <span class="meta-tag">${m.topic || 'General'}</span>
+                    <div class="admin-module-card">
+                        <div class="admin-card-top-row">
+                            <div class="admin-card-left">
+                                <div class="admin-mod-index-box ${colorKey}">
+                                    ${indexFormatted}
+                                </div>
+                                <div class="admin-mod-details">
+                                    <h3 class="admin-mod-title">Module ${index + 1}: ${escapeHtml(m.title)}</h3>
+                                    <p class="admin-mod-desc">${escapeHtml(m.description || `Develop your ${qCategory} skills through peer-driven inquiry, co-creation, and shared leadership activities.`)}</p>
+                                    <div class="admin-mod-meta-row">
+                                        <span><svg width="13" height="13"><use href="#icon-book"></use></svg> ${chapterCount} ${chapterCount === 1 ? 'chapter' : 'chapters'}</span>
+                                        <span><span style="font-size: 10px; opacity: 0.8;">✦</span> Targets: ${targetShort}</span>
+                                        <span><svg width="13" height="13"><use href="#icon-clock"></use></svg> ${escapeHtml(estTime)}</span>
+                                    </div>
                                 </div>
                             </div>
-                            <h3 class="module-title">${escapeHtml(m.title)}</h3>
-                            <p class="module-desc">${escapeHtml(m.description || 'No description provided.')}</p>
+
+                            <div class="admin-card-right">
+                                <span class="badge-published">Published</span>
+                                <button class="btn-card-trash" onclick="handleDeleteModule(${m.id})" title="Delete Module">
+                                    <svg width="15" height="15"><use href="#icon-trash"></use></svg>
+                                </button>
+                            </div>
                         </div>
-                        
-                        <div class="card-footer">
-                            <div class="chapter-count">
-                                <span><svg width="13" height="13" style="vertical-align: text-bottom; margin-right: 4px;"><use href="#icon-book"></use></svg>${chapterCount} ${chapterCount === 1 ? 'Chapter' : 'Chapters'}</span>
-                                <span>&middot;</span>
-                                <span><svg width="13" height="13" style="vertical-align: text-bottom; margin-right: 4px;"><use href="#icon-clock"></use></svg>${m.estimated_time || '30 min'}</span>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="openModuleCustomizer(${m.id})">
-                                    Customize Content
-                                </button>
-                                <button class="btn-secondary" style="padding: 6px 10px;" onclick="openEditModuleModal(${m.id})" title="Edit Module Info">
-                                    <svg width="13" height="13"><use href="#icon-edit"></use></svg>
-                                </button>
-                                <button class="btn-danger" style="padding: 6px 10px;" onclick="handleDeleteModule(${m.id})" title="Delete Module">
-                                    <svg width="13" height="13"><use href="#icon-trash"></use></svg>
-                                </button>
-                            </div>
+
+                        <div class="admin-card-actions-row">
+                            <button class="btn-admin-action btn-admin-view" onclick="openModuleCustomizer(${m.id})">
+                                <svg width="14" height="14"><use href="#icon-book"></use></svg>
+                                View Chapters
+                            </button>
+                            <button class="btn-admin-action btn-admin-edit" onclick="openEditModuleModal(${m.id})">
+                                <svg width="14" height="14"><use href="#icon-edit"></use></svg>
+                                Edit Module & Sequence
+                            </button>
                         </div>
                     </div>
                 `;
@@ -1113,7 +1598,7 @@
                     const errData = await res.json();
                     alert(errData.error || 'Failed to save module');
                 }
-            } catch(err) {
+            } catch (err) {
                 console.error("Save module error:", err);
             }
         }
@@ -1127,12 +1612,12 @@
                 } else {
                     alert("Failed to delete module");
                 }
-            } catch(err) {
+            } catch (err) {
                 console.error("Delete module error:", err);
             }
         }
 
-        /* --- MODULE CUSTOMIZER (CHAPTERS & QUIZZES) --- */
+        /* --- MODULE CUSTOMIZER (CHAPTERS & QUIZZES) FULL-PAGE VIEW --- */
         async function openModuleCustomizer(moduleId) {
             try {
                 activeChapter = null;
@@ -1150,34 +1635,75 @@
 
                 switchCustomizerTab('chapters');
                 renderChaptersSidebar();
-                initNewChapterForm();
 
-                document.getElementById('customizer-modal').style.display = 'flex';
-            } catch(err) {
+                // Put the screen on the first chapter instead of adding a new one!
+                if (activeModule.chapters && activeModule.chapters.length > 0) {
+                    selectChapter(activeModule.chapters[0].id);
+                } else {
+                    initNewChapterForm();
+                }
+
+                // Switch to full-page customizer view
+                document.getElementById('view-modules-list').style.display = 'none';
+                document.getElementById('view-module-customizer').style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
                 console.error("Error opening customizer:", err);
                 alert("Failed to load module content");
             }
         }
 
-        function closeCustomizerModal() {
-            document.getElementById('customizer-modal').style.display = 'none';
+        function closeCustomizerView() {
+            document.getElementById('view-module-customizer').style.display = 'none';
+            document.getElementById('view-modules-list').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             loadModules();
+        }
+
+        function previewCurrentModule() {
+            if (!activeModule || !activeModule.id) {
+                alert("Please select or save a module first.");
+                return;
+            }
+            window.open(`/student/modules-content.html?moduleId=${activeModule.id}&preview=true`, '_blank');
+        }
+
+        function handleNavAddAction() {
+            const isQuizTab = document.getElementById('tab-btn-quiz').classList.contains('active');
+            if (isQuizTab) {
+                addNewQuestionToActiveQuizChapter();
+            } else {
+                initNewChapterForm();
+            }
         }
 
         function switchCustomizerTab(tab) {
             document.getElementById('tab-btn-chapters').className = 'customizer-tab-btn' + (tab === 'chapters' ? ' active' : '');
             document.getElementById('tab-btn-quiz').className = 'customizer-tab-btn' + (tab === 'quiz' ? ' active' : '');
-            
+
             document.getElementById('pane-chapters').style.display = tab === 'chapters' ? 'grid' : 'none';
             document.getElementById('pane-quiz').style.display = tab === 'quiz' ? 'grid' : 'none';
 
+            const addBtn = document.getElementById('nav-btn-highlight-action');
+            if (addBtn) {
+                if (tab === 'quiz') {
+                    addBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add Question';
+                } else {
+                    addBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add Chapter';
+                }
+            }
+
             if (tab === 'quiz') {
-                renderQuestionsSidebar();
-                initNewQuestionForm();
+                renderQuizChaptersSidebar();
+                renderQuizChapterQuestions();
+            } else {
+                renderChaptersSidebar();
             }
         }
 
-        /* --- CHAPTERS MANAGEMENT --- */
+        /* --- CHAPTERS MANAGEMENT & DYNAMIC BLOCK BUILDER --- */
+        let currentChapterBlocks = [];
+
         function renderChaptersSidebar() {
             const container = document.getElementById('chapters-list-sidebar');
             const chapters = activeModule.chapters || [];
@@ -1207,14 +1733,18 @@
             document.getElementById('chapter-title').value = '';
             const nextOrder = (activeModule.chapters ? activeModule.chapters.length : 0) + 1;
             document.getElementById('chapter-order').value = nextOrder;
-            document.getElementById('chapter-text').value = '';
-            document.getElementById('chapter-youtube').value = '';
-            document.getElementById('chapter-pdf').value = '';
             document.getElementById('btn-delete-chapter').style.display = 'none';
             document.getElementById('btn-save-chapter').textContent = 'Save New Chapter';
 
-            updateYoutubePreview();
-            updatePdfPreview();
+            // Default initial block template
+            currentChapterBlocks = [
+                { type: 'card', title: 'LEARNING OBJECTIVES', items: ['Understand core foundations and strategies', 'Identify personal study habits', 'Apply structured practice methods'] },
+                { type: 'text', content: 'Write study notes and lecture text here.' },
+                { type: 'video', url: '' },
+                { type: 'card', title: 'EXAMPLES & PRACTICAL APPLICATIONS', items: ['Case study on peer collaboration', 'Practical review workflow'] }
+            ];
+
+            renderChapterBlocks();
             renderChaptersSidebar();
         }
 
@@ -1227,57 +1757,225 @@
             document.getElementById('chapter-editor-heading').textContent = `Edit: ${ch.title}`;
             document.getElementById('chapter-title').value = ch.title || '';
             document.getElementById('chapter-order').value = ch.chapter_order || 1;
-            document.getElementById('chapter-text').value = ch.text_content || '';
-            document.getElementById('chapter-youtube').value = ch.youtube_url || '';
-            document.getElementById('chapter-pdf').value = ch.pdf_url || '';
             document.getElementById('btn-delete-chapter').style.display = 'inline-block';
             document.getElementById('btn-save-chapter').textContent = 'Update Chapter';
 
-            updateYoutubePreview();
-            updatePdfPreview();
+            // Load parsed blocks from chapter or fallback from legacy columns
+            if (ch.content_blocks && Array.isArray(ch.content_blocks) && ch.content_blocks.length > 0) {
+                currentChapterBlocks = JSON.parse(JSON.stringify(ch.content_blocks));
+            } else {
+                currentChapterBlocks = [];
+                if (ch.learning_objectives) {
+                    const objs = typeof ch.learning_objectives === 'string'
+                        ? ch.learning_objectives.split('\n').map(s => s.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean)
+                        : ch.learning_objectives;
+                    if (objs.length) currentChapterBlocks.push({ type: 'card', title: 'LEARNING OBJECTIVES', items: objs });
+                }
+                if (ch.text_content && ch.text_content.trim()) {
+                    currentChapterBlocks.push({ type: 'text', content: ch.text_content.trim() });
+                }
+                if (ch.youtube_url && ch.youtube_url.trim()) {
+                    currentChapterBlocks.push({ type: 'video', url: ch.youtube_url.trim() });
+                }
+                if (ch.pdf_url && ch.pdf_url.trim()) {
+                    currentChapterBlocks.push({ type: 'pdf', url: ch.pdf_url.trim(), title: 'Reference Material (PDF)' });
+                }
+                if (ch.examples) {
+                    const exs = typeof ch.examples === 'string'
+                        ? ch.examples.split('\n').map(s => s.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean)
+                        : ch.examples;
+                    if (exs.length) currentChapterBlocks.push({ type: 'card', title: 'EXAMPLES & PRACTICAL APPLICATIONS', items: exs });
+                }
+            }
+
+            renderChapterBlocks();
             renderChaptersSidebar();
         }
 
-        function formatYoutubeEmbedUrl(url) {
-            if (!url || url.trim() === '') return '';
-            let videoId = '';
-            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-            if (match && match[1]) {
-                videoId = match[1];
-                return `https://www.youtube.com/embed/${videoId}`;
+        function renderChapterBlocks() {
+            const container = document.getElementById('chapter-blocks-list');
+            if (!container) return;
+
+            if (currentChapterBlocks.length === 0) {
+                container.innerHTML = '<div style="font-size: 13px; color: var(--text-muted); text-align: center; padding: 24px; background: rgba(0,0,0,0.15); border-radius: 8px;">No content blocks yet. Use the buttons below to add sections!</div>';
+                return;
             }
-            return url;
+
+            container.innerHTML = currentChapterBlocks.map((block, bIdx) => {
+                const isFirst = bIdx === 0;
+                const isLast = bIdx === currentChapterBlocks.length - 1;
+
+                let typeBadge = '';
+                let blockContentHtml = '';
+
+                if (block.type === 'card') {
+                    typeBadge = '<span class="block-type-badge badge-type-card"><svg width="12" height="12"><use href="#icon-clipboard"></use></svg> Block Card</span>';
+                    const items = block.items || [];
+                    blockContentHtml = `
+                        <div class="form-group" style="margin-bottom: 8px;">
+                            <label class="form-label" style="font-size: 11px;">Card Title</label>
+                            <input type="text" class="form-input" placeholder="e.g. LEARNING OBJECTIVES or EXAMPLES" value="${escapeHtml(block.title || '')}" oninput="updateBlockCardTitle(${bIdx}, this.value)">
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size: 11px;">List Items</label>
+                            <div class="card-items-list">
+                                ${items.map((it, iIdx) => `
+                                    <div class="card-item-row">
+                                        <span class="card-item-num">${iIdx + 1}</span>
+                                        <input type="text" class="form-input" style="flex: 1; width: 100%;" placeholder="Item description or key point..." value="${escapeHtml(it)}" oninput="updateBlockCardItem(${bIdx}, ${iIdx}, this.value)">
+                                        <button type="button" class="btn-block-delete" style="padding: 6px 10px; flex-shrink: 0;" onclick="removeBlockCardItem(${bIdx}, ${iIdx})" title="Remove Item">&times;</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button type="button" class="btn-secondary" style="margin-top: 8px; font-size: 11px; padding: 4px 10px;" onclick="addBlockCardItem(${bIdx})">+ Add Item</button>
+                        </div>
+                    `;
+                } else if (block.type === 'text') {
+                    typeBadge = '<span class="block-type-badge badge-type-text"><svg width="12" height="12"><use href="#icon-book"></use></svg> Body Text</span>';
+                    blockContentHtml = `
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 11px;">Lecture Notes & Paragraphs</label>
+                            <textarea class="form-textarea" rows="4" placeholder="Write comprehensive study notes and explanations..." oninput="updateBlockText(${bIdx}, this.value)">${escapeHtml(block.content || '')}</textarea>
+                        </div>
+                    `;
+                } else if (block.type === 'video') {
+                    typeBadge = '<span class="block-type-badge badge-type-video"><svg width="12" height="12"><use href="#icon-play"></use></svg> Video Embed</span>';
+                    const embedUrl = formatYoutubeEmbedUrl(block.url || '');
+                    blockContentHtml = `
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 11px;">YouTube Video URL</label>
+                            <input type="text" class="form-input" placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..." value="${escapeHtml(block.url || '')}" oninput="updateBlockVideoUrl(${bIdx}, this.value)">
+                            ${embedUrl ? `
+                                <div class="video-responsive" style="margin-top: 8px;">
+                                    <iframe src="${embedUrl}" allowfullscreen></iframe>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                } else if (block.type === 'pdf') {
+                    typeBadge = '<span class="block-type-badge badge-type-pdf"><svg width="12" height="12"><use href="#icon-file"></use></svg> PDF Document</span>';
+                    blockContentHtml = `
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 11px;">PDF Title & Reference Link</label>
+                            <input type="text" class="form-input" style="margin-bottom: 6px;" placeholder="Document Title (e.g. Reference Material (PDF))" value="${escapeHtml(block.title || 'Reference Material (PDF)')}" oninput="updateBlockPdfTitle(${bIdx}, this.value)">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <input type="text" class="form-input" style="flex: 1;" placeholder="/public/uploads/... or https://..." value="${escapeHtml(block.url || '')}" oninput="updateBlockPdfUrl(${bIdx}, this.value)">
+                                <label class="btn-secondary" style="cursor: pointer; margin: 0; font-size: 12px; padding: 7px 12px;">
+                                    Upload PDF
+                                    <input type="file" accept="application/pdf" style="display: none;" onchange="handleBlockPdfUpload(event, ${bIdx})">
+                                </label>
+                            </div>
+                            ${block.url ? `
+                                <div style="margin-top: 8px;">
+                                    <iframe class="pdf-preview-frame" src="${escapeHtml(block.url)}"></iframe>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="block-editor-card">
+                        <div class="block-card-top">
+                            <div>${typeBadge} <span style="font-size: 11px; color: var(--text-muted); margin-left: 6px;">#${bIdx + 1}</span></div>
+                            <div class="block-actions">
+                                <button type="button" class="btn-block-nav" ${isFirst ? 'disabled' : ''} onclick="moveBlockUp(${bIdx})" title="Move Section Up">&uarr; Move Up</button>
+                                <button type="button" class="btn-block-nav" ${isLast ? 'disabled' : ''} onclick="moveBlockDown(${bIdx})" title="Move Section Down">&darr; Move Down</button>
+                                <button type="button" class="btn-block-delete" onclick="deleteBlock(${bIdx})" title="Delete Section">
+                                    <svg width="12" height="12"><use href="#icon-trash"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            ${blockContentHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        function updateYoutubePreview() {
-            const rawUrl = document.getElementById('chapter-youtube').value.trim();
-            const previewContainer = document.getElementById('youtube-preview-container');
-            const iframe = document.getElementById('youtube-iframe-preview');
+        function addContentBlock(type) {
+            if (type === 'card') {
+                currentChapterBlocks.push({ type: 'card', title: 'LEARNING OBJECTIVES', items: ['Understand key principles', 'Apply structured methods'] });
+            } else if (type === 'text') {
+                currentChapterBlocks.push({ type: 'text', content: 'Enter study notes and lecture text here.' });
+            } else if (type === 'video') {
+                currentChapterBlocks.push({ type: 'video', url: '' });
+            } else if (type === 'pdf') {
+                currentChapterBlocks.push({ type: 'pdf', url: '', title: 'Reference Material (PDF)' });
+            }
+            renderChapterBlocks();
+        }
 
-            if (rawUrl) {
-                iframe.src = formatYoutubeEmbedUrl(rawUrl);
-                previewContainer.style.display = 'block';
-            } else {
-                iframe.src = '';
-                previewContainer.style.display = 'none';
+        function moveBlockUp(index) {
+            if (index <= 0) return;
+            const temp = currentChapterBlocks[index];
+            currentChapterBlocks[index] = currentChapterBlocks[index - 1];
+            currentChapterBlocks[index - 1] = temp;
+            renderChapterBlocks();
+        }
+
+        function moveBlockDown(index) {
+            if (index >= currentChapterBlocks.length - 1) return;
+            const temp = currentChapterBlocks[index];
+            currentChapterBlocks[index] = currentChapterBlocks[index + 1];
+            currentChapterBlocks[index + 1] = temp;
+            renderChapterBlocks();
+        }
+
+        function deleteBlock(index) {
+            currentChapterBlocks.splice(index, 1);
+            renderChapterBlocks();
+        }
+
+        function updateBlockCardTitle(bIdx, val) {
+            if (currentChapterBlocks[bIdx]) currentChapterBlocks[bIdx].title = val;
+        }
+
+        function addBlockCardItem(bIdx) {
+            if (currentChapterBlocks[bIdx]) {
+                if (!currentChapterBlocks[bIdx].items) currentChapterBlocks[bIdx].items = [];
+                currentChapterBlocks[bIdx].items.push('New bullet point item');
+                renderChapterBlocks();
             }
         }
 
-        function updatePdfPreview() {
-            const pdfUrl = document.getElementById('chapter-pdf').value.trim();
-            const previewContainer = document.getElementById('pdf-preview-container');
-            const iframe = document.getElementById('pdf-iframe-preview');
-
-            if (pdfUrl) {
-                iframe.src = pdfUrl;
-                previewContainer.style.display = 'block';
-            } else {
-                iframe.src = '';
-                previewContainer.style.display = 'none';
+        function updateBlockCardItem(bIdx, iIdx, val) {
+            if (currentChapterBlocks[bIdx] && currentChapterBlocks[bIdx].items) {
+                currentChapterBlocks[bIdx].items[iIdx] = val;
             }
         }
 
-        async function handlePdfFileUpload(e) {
+        function removeBlockCardItem(bIdx, iIdx) {
+            if (currentChapterBlocks[bIdx] && currentChapterBlocks[bIdx].items) {
+                currentChapterBlocks[bIdx].items.splice(iIdx, 1);
+                renderChapterBlocks();
+            }
+        }
+
+        function updateBlockText(bIdx, val) {
+            if (currentChapterBlocks[bIdx]) currentChapterBlocks[bIdx].content = val;
+        }
+
+        function updateBlockVideoUrl(bIdx, val) {
+            if (currentChapterBlocks[bIdx]) {
+                currentChapterBlocks[bIdx].url = val;
+                renderChapterBlocks();
+            }
+        }
+
+        function updateBlockPdfTitle(bIdx, val) {
+            if (currentChapterBlocks[bIdx]) currentChapterBlocks[bIdx].title = val;
+        }
+
+        function updateBlockPdfUrl(bIdx, val) {
+            if (currentChapterBlocks[bIdx]) {
+                currentChapterBlocks[bIdx].url = val;
+                renderChapterBlocks();
+            }
+        }
+
+        async function handleBlockPdfUpload(e, bIdx) {
             const file = e.target.files[0];
             if (!file) return;
 
@@ -1291,14 +1989,27 @@
                 });
                 const data = await res.json();
                 if (res.ok && data.file_url) {
-                    document.getElementById('chapter-pdf').value = data.file_url;
-                    updatePdfPreview();
+                    if (currentChapterBlocks[bIdx]) {
+                        currentChapterBlocks[bIdx].url = data.file_url;
+                        renderChapterBlocks();
+                    }
                 } else {
                     alert(data.error || 'Failed to upload PDF');
                 }
-            } catch(err) {
+            } catch (err) {
                 console.error("PDF upload error:", err);
             }
+        }
+
+        function formatYoutubeEmbedUrl(url) {
+            if (!url || url.trim() === '') return '';
+            let videoId = '';
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            if (match && match[1]) {
+                videoId = match[1];
+                return `https://www.youtube.com/embed/${videoId}`;
+            }
+            return url;
         }
 
         async function handleSaveChapter(e) {
@@ -1306,12 +2017,36 @@
             if (!activeModule) return;
 
             const editChapterId = document.getElementById('edit-chapter-id').value;
+
+            // Fallback fields extraction
+            let legacyText = '';
+            let legacyVideo = '';
+            let legacyPdf = '';
+            let legacyObjectives = '';
+            let legacyExamples = '';
+
+            currentChapterBlocks.forEach(b => {
+                if (b.type === 'text' && !legacyText) legacyText = b.content;
+                if (b.type === 'video' && !legacyVideo) legacyVideo = b.url;
+                if (b.type === 'pdf' && !legacyPdf) legacyPdf = b.url;
+                if (b.type === 'card') {
+                    if ((b.title || '').toLowerCase().includes('objective') && !legacyObjectives) {
+                        legacyObjectives = (b.items || []).join('\n');
+                    } else if (!legacyExamples) {
+                        legacyExamples = (b.items || []).join('\n');
+                    }
+                }
+            });
+
             const payload = {
                 title: document.getElementById('chapter-title').value,
                 chapter_order: parseInt(document.getElementById('chapter-order').value) || 1,
-                text_content: document.getElementById('chapter-text').value,
-                youtube_url: document.getElementById('chapter-youtube').value,
-                pdf_url: document.getElementById('chapter-pdf').value
+                content_blocks: currentChapterBlocks,
+                text_content: legacyText,
+                youtube_url: legacyVideo,
+                pdf_url: legacyPdf,
+                learning_objectives: legacyObjectives,
+                examples: legacyExamples
             };
 
             try {
@@ -1339,7 +2074,7 @@
                     const errData = await res.json();
                     alert(errData.error || 'Failed to save chapter');
                 }
-            } catch(err) {
+            } catch (err) {
                 console.error("Save chapter error:", err);
             }
         }
@@ -1358,303 +2093,503 @@
                 } else {
                     alert("Failed to delete chapter");
                 }
-            } catch(err) {
+            } catch (err) {
                 console.error("Delete chapter error:", err);
             }
         }
 
-        /* --- QUIZ & QUESTIONS MANAGEMENT --- */
-        function renderQuestionsSidebar() {
-            const container = document.getElementById('questions-list-sidebar');
+        /* --- QUIZ & QUESTIONS MANAGEMENT (CHAPTER-BASED) --- */
+        let activeQuizChapterId = null;
+
+        function renderQuizChaptersSidebar() {
+            const container = document.getElementById('quiz-chapters-sidebar');
+            if (!container || !activeModule) return;
+
+            const chapters = activeModule.chapters || [];
             const questions = activeModule.questions || [];
 
-            if (questions.length === 0) {
-                container.innerHTML = '<div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 16px;">No questions added yet.<br>Create your first quiz question!</div>';
+            // If activeQuizChapterId not set or invalid, select first chapter
+            if (activeQuizChapterId === null && chapters.length > 0) {
+                activeQuizChapterId = chapters[0].id;
+            }
+
+            let html = '';
+            chapters.forEach((ch, idx) => {
+                const count = questions.filter(q => q.chapter_id == ch.id).length;
+                const isActive = activeQuizChapterId !== null && String(activeQuizChapterId) === String(ch.id);
+
+                html += `
+                    <button class="customizer-list-item ${isActive ? 'active' : ''}" onclick="selectQuizChapter(${ch.id})">
+                        <span style="display: inline-flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.08); color: var(--text-muted);">CH ${idx + 1}</span>
+                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;">${escapeHtml(ch.title)}</span>
+                        </span>
+                        <span style="font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 10px; background: ${count > 0 ? 'rgba(192, 132, 252, 0.2)' : 'rgba(255,255,255,0.06)'}; color: ${count > 0 ? 'var(--matrix-purple)' : 'var(--text-muted)'};">
+                            ${count} ${count === 1 ? 'q' : 'q\'s'}
+                        </span>
+                    </button>
+                `;
+            });
+
+            // Final Assessment Info Note
+            html += `
+                <div style="margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px;"></div>
+                <div style="padding: 10px 12px; border-radius: 8px; background: rgba(216, 166, 26, 0.08); border: 1px solid rgba(216, 166, 26, 0.2); font-size: 11.5px; color: var(--matrix-yellow); line-height: 1.4;">
+                    <div style="font-weight: 700; display: flex; align-items: center; gap: 5px; margin-bottom: 3px;">
+                        <span>⭐</span> Final Assessment
+                    </div>
+                    <div style="color: #cbd5e1; font-size: 11px;">Automatically compiles all ${questions.length} questions across all chapters for the student's end-of-module test.</div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function selectQuizChapter(chapterId) {
+            activeQuizChapterId = chapterId;
+            renderQuizChaptersSidebar();
+            renderQuizChapterQuestions();
+        }
+
+        function renderQuizChapterQuestions() {
+            const container = document.getElementById('quiz-chapter-questions-container');
+            const heading = document.getElementById('quiz-active-chapter-heading');
+            const subheading = document.getElementById('quiz-active-chapter-subheading');
+
+            if (!container || !activeModule) return;
+
+            const chapters = activeModule.chapters || [];
+            const isGeneral = activeQuizChapterId === 'general' || activeQuizChapterId === null;
+            let currentChapterObj = null;
+
+            if (!isGeneral) {
+                currentChapterObj = chapters.find(c => String(c.id) === String(activeQuizChapterId));
+            }
+
+            const chapterQuestions = (activeModule.questions || []).filter(q => {
+                if (isGeneral) return !q.chapter_id || q.chapter_id === 'general';
+                return String(q.chapter_id) === String(activeQuizChapterId);
+            });
+
+            // Update headings
+            if (isGeneral) {
+                if (heading) heading.textContent = '⭐ General / Final Module Assessment';
+                if (subheading) subheading.textContent = `Overall assessment questions (${chapterQuestions.length} questions)`;
+            } else if (currentChapterObj) {
+                const chIdx = chapters.indexOf(currentChapterObj) + 1;
+                if (heading) heading.textContent = `Chapter ${chIdx}: ${currentChapterObj.title}`;
+                if (subheading) subheading.textContent = `Knowledge Check ${chIdx} Questions (${chapterQuestions.length} ${chapterQuestions.length === 1 ? 'question' : 'questions'})`;
+            } else {
+                if (heading) heading.textContent = 'Chapter Questions';
+                if (subheading) subheading.textContent = `${chapterQuestions.length} questions`;
+            }
+
+            if (chapterQuestions.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 48px 24px; background: rgba(0,0,0,0.18); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.15);">
+                        <div style="font-size: 32px; margin-bottom: 10px;">📋</div>
+                        <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 6px;">No Questions in this Section Yet</h4>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px; max-width: 420px; margin-left: auto; margin-right: auto;">
+                            Add knowledge check questions to verify students grasp this chapter before unlocking the next section.
+                        </p>
+                        <button type="button" class="btn-primary" onclick="addNewQuestionToActiveQuizChapter()" style="padding: 9px 20px; font-weight: 700;">
+                            + Add First Question
+                        </button>
+                    </div>
+                `;
                 return;
             }
 
-            container.innerHTML = questions.map((q, idx) => {
-                const isActive = activeQuestion && activeQuestion.id === q.id;
-                let typeBadge = 'TF';
-                if (q.question_type === 'multiple_choice') typeBadge = 'MC';
-                if (q.question_type === 'matching') typeBadge = 'Match';
+            container.innerHTML = chapterQuestions.map((q, qIdx) => {
+                const isFirst = qIdx === 0;
+                const isLast = qIdx === chapterQuestions.length - 1;
+
+                let typeBadge = '<span class="block-type-badge badge-type-card">TF</span>';
+                if (q.question_type === 'multiple_choice') typeBadge = '<span class="block-type-badge badge-type-text">Multiple Choice</span>';
+                if (q.question_type === 'matching') typeBadge = '<span class="block-type-badge badge-type-pdf">Matching Pairs</span>';
+
+                let dynamicFieldsHtml = '';
+
+                if (q.question_type === 'true_false') {
+                    const isTrue = String(q.correct_answer).toLowerCase() === 'true';
+                    dynamicFieldsHtml = `
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label class="form-label" style="font-size: 11px;">Correct Answer</label>
+                            <div style="display: flex; gap: 20px; align-items: center; padding: 4px 0;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--matrix-green); font-weight: 700; font-size: 13px;">
+                                    <input type="radio" name="q_tf_${q.id}" value="True" ${isTrue ? 'checked' : ''} onchange="updateQuestionCorrectAnswer(${q.id}, 'True')"> True
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #ef4444; font-weight: 700; font-size: 13px;">
+                                    <input type="radio" name="q_tf_${q.id}" value="False" ${!isTrue ? 'checked' : ''} onchange="updateQuestionCorrectAnswer(${q.id}, 'False')"> False
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                } else if (q.question_type === 'multiple_choice') {
+                    const options = (q.options && q.options.length > 0) ? q.options : ['Option A', 'Option B', 'Option C', 'Option D'];
+                    const currentCorrect = q.correct_answer || options[0];
+
+                    dynamicFieldsHtml = `
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label class="form-label" style="font-size: 11px;">Multiple Choice Options (Select radio for correct answer)</label>
+                                <button type="button" class="btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="addMcChoiceToQuestion(${q.id})">+ Add Choice</button>
+                            </div>
+                            <div id="mc-options-list-${q.id}" style="display: flex; flex-direction: column; gap: 8px;">
+                                ${options.map((opt, optIdx) => `
+                                    <div class="dynamic-row mc-row" style="display: flex; gap: 8px; align-items: center;">
+                                        <input type="radio" name="q_mc_correct_${q.id}" value="${optIdx}" ${opt === currentCorrect ? 'checked' : ''} onchange="updateQuestionMcCorrect(${q.id}, ${optIdx})" title="Mark as correct answer">
+                                        <input type="text" class="form-input mc-opt-input" style="flex: 1;" value="${escapeHtml(opt)}" placeholder="Option text..." oninput="updateQuestionMcOptionText(${q.id}, ${optIdx}, this.value)">
+                                        <button type="button" class="btn-danger" style="padding: 6px 10px;" onclick="removeMcChoiceFromQuestion(${q.id}, ${optIdx})">✕</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else if (q.question_type === 'matching') {
+                    const pairs = Array.isArray(q.options) ? q.options : [
+                        { left: 'Term 1', right: 'Definition 1' },
+                        { left: 'Term 2', right: 'Definition 2' }
+                    ];
+
+                    dynamicFieldsHtml = `
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label class="form-label" style="font-size: 11px;">Matching Pairs (Left Item ↔ Right Match)</label>
+                                <button type="button" class="btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="addMatchingPairToQuestion(${q.id})">+ Add Pair</button>
+                            </div>
+                            <div id="match-pairs-list-${q.id}" style="display: flex; flex-direction: column; gap: 8px;">
+                                ${pairs.map((pair, pIdx) => `
+                                    <div class="dynamic-row matching-row" style="display: flex; gap: 8px; align-items: center;">
+                                        <input type="text" class="form-input match-left" style="flex: 1;" value="${escapeHtml(pair.left || pair.term || '')}" placeholder="Left Term / Concept..." oninput="updateQuestionMatchingPair(${q.id}, ${pIdx}, 'left', this.value)">
+                                        <span style="color: var(--matrix-yellow); font-weight: 800;">↔</span>
+                                        <input type="text" class="form-input match-right" style="flex: 1;" value="${escapeHtml(pair.right || pair.match || '')}" placeholder="Right Match / Definition..." oninput="updateQuestionMatchingPair(${q.id}, ${pIdx}, 'right', this.value)">
+                                        <button type="button" class="btn-danger" style="padding: 6px 10px;" onclick="removeMatchingPairFromQuestion(${q.id}, ${pIdx})">✕</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
 
                 return `
-                    <button class="customizer-list-item ${isActive ? 'active' : ''}" onclick="selectQuestion(${q.id})">
-                        <span style="display: inline-flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 4px; background: rgba(255,255,255,0.08); color: var(--text-muted);">${typeBadge}</span>
-                            ${idx + 1}. ${escapeHtml(q.question_text)}
-                        </span>
-                        <span style="opacity: 0.6; display: flex; align-items: center;">
-                            <svg width="12" height="12"><use href="#icon-edit"></use></svg>
-                        </span>
-                    </button>
+                    <div class="block-editor-card" id="q-card-${q.id}">
+                        <div class="block-card-top">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                ${typeBadge}
+                                <span style="font-size: 12px; font-weight: 800; color: #ffffff;">Question #${qIdx + 1}</span>
+                            </div>
+                            <div class="block-actions">
+                                <button type="button" class="btn-block-nav" ${isFirst ? 'disabled' : ''} onclick="moveQuizQuestionUp(${q.id})" title="Move Question Up">&uarr; Move Up</button>
+                                <button type="button" class="btn-block-nav" ${isLast ? 'disabled' : ''} onclick="moveQuizQuestionDown(${q.id})" title="Move Question Down">&darr; Move Down</button>
+                                <button type="button" class="btn-block-delete" onclick="deleteQuizQuestion(${q.id})" title="Delete Question">
+                                    <svg width="12" height="12"><use href="#icon-trash"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="grid-2-col" style="margin-bottom: 10px;">
+                                <div class="form-group">
+                                    <label class="form-label" style="font-size: 11px;">Question Type</label>
+                                    <select class="form-select" onchange="changeQuestionType(${q.id}, this.value)">
+                                        <option value="true_false" ${q.question_type === 'true_false' ? 'selected' : ''}>True or False</option>
+                                        <option value="multiple_choice" ${q.question_type === 'multiple_choice' ? 'selected' : ''}>Multiple Choice</option>
+                                        <option value="matching" ${q.question_type === 'matching' ? 'selected' : ''}>Match the Answer / Pairs</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" style="font-size: 11px;">Sequence Order</label>
+                                    <input type="number" class="form-input" value="${q.question_order || (qIdx + 1)}" min="1" onchange="updateQuestionOrder(${q.id}, this.value)">
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label class="form-label" style="font-size: 11px;">Question Prompt / Title</label>
+                                <input type="text" class="form-input" style="width: 100%;" value="${escapeHtml(q.question_text || '')}" placeholder="e.g. Which Elmore quadrant is most associated with peer-to-peer learning?" oninput="updateQuestionPrompt(${q.id}, this.value)">
+                            </div>
+
+                            ${dynamicFieldsHtml}
+
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label class="form-label" style="font-size: 11px;">Explanation / Feedback (Shown after student answers)</label>
+                                <textarea class="form-textarea" rows="2" placeholder="e.g. Explaining concepts forces you to identify gaps in your understanding." oninput="updateQuestionExplanation(${q.id}, this.value)">${escapeHtml(q.explanation || '')}</textarea>
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05);">
+                                <span id="save-status-${q.id}" style="font-size: 12px; color: var(--matrix-green); display: none;">Saved!</span>
+                                <button type="button" class="btn-primary" style="padding: 7px 18px; font-size: 12.5px; font-weight: 700;" onclick="saveSingleQuestion(${q.id})">Save Question</button>
+                            </div>
+                        </div>
+                    </div>
                 `;
             }).join('');
         }
 
-        function populateChapterSelectOptions(selectedChapterId = null) {
-            const select = document.getElementById('question-chapter-select');
-            if (!select || !activeModule) return;
-            const chapters = activeModule.chapters || [];
-            let html = '<option value="">General / Final Assessment Quiz</option>';
-            chapters.forEach((ch, idx) => {
-                const isSel = selectedChapterId && selectedChapterId == ch.id;
-                html += `<option value="${ch.id}" ${isSel ? 'selected' : ''}>Chapter ${idx + 1}: ${escapeHtml(ch.title)} (Knowledge Check)</option>`;
+        async function addNewQuestionToActiveQuizChapter() {
+            if (!activeModule) return;
+            const isGeneral = activeQuizChapterId === 'general' || activeQuizChapterId === null;
+            const chapterId = isGeneral ? null : activeQuizChapterId;
+
+            const existingQuestions = (activeModule.questions || []).filter(q => {
+                if (isGeneral) return !q.chapter_id || q.chapter_id === 'general';
+                return String(q.chapter_id) === String(chapterId);
             });
-            select.innerHTML = html;
-        }
 
-        function initNewQuestionForm(preselectedChapterId = null) {
-            activeQuestion = null;
-            document.getElementById('edit-question-id').value = '';
-            document.getElementById('question-editor-heading').textContent = 'Add New Quiz / Knowledge Check Question';
-            populateChapterSelectOptions(preselectedChapterId);
-            document.getElementById('question-type-select').value = 'true_false';
-            const nextOrder = (activeModule.questions ? activeModule.questions.length : 0) + 1;
-            document.getElementById('question-order').value = nextOrder;
-            document.getElementById('question-text').value = '';
-            document.getElementById('question-explanation').value = '';
-            document.getElementById('btn-delete-question').style.display = 'none';
-            document.getElementById('btn-save-question').textContent = 'Save New Question';
+            const newOrder = existingQuestions.length + 1;
+            const payload = {
+                chapter_id: chapterId,
+                question_type: 'multiple_choice',
+                question_order: newOrder,
+                question_text: 'New Question Title',
+                options: ['Option A', 'Option B', 'Option C', 'Option D'],
+                correct_answer: 'Option A',
+                explanation: 'Explanation for students...'
+            };
 
-            renderQuestionTypeFields();
-            renderQuestionsSidebar();
-        }
-
-        function selectQuestion(questionId) {
-            const q = (activeModule.questions || []).find(item => item.id === questionId);
-            if (!q) return;
-            activeQuestion = q;
-
-            document.getElementById('edit-question-id').value = q.id;
-            document.getElementById('question-editor-heading').textContent = `Edit Question #${q.question_order || 1}`;
-            populateChapterSelectOptions(q.chapter_id);
-            document.getElementById('question-type-select').value = q.question_type || 'true_false';
-            document.getElementById('question-order').value = q.question_order || 1;
-            document.getElementById('question-text').value = q.question_text || '';
-            document.getElementById('question-explanation').value = q.explanation || '';
-            document.getElementById('btn-delete-question').style.display = 'inline-block';
-            document.getElementById('btn-save-question').textContent = 'Update Question';
-
-            renderQuestionTypeFields(q);
-            renderQuestionsSidebar();
-        }
-
-        function renderQuestionTypeFields(existingData = null) {
-            const type = document.getElementById('question-type-select').value;
-            const container = document.getElementById('question-type-fields-container');
-
-            if (type === 'true_false') {
-                const val = existingData ? String(existingData.correct_answer).toLowerCase() : 'true';
-                container.innerHTML = `
-                    <div class="form-group">
-                        <label class="form-label">Correct Answer</label>
-                        <div style="display: flex; gap: 20px; align-items: center; padding: 6px 0;">
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--matrix-green); font-weight: 700; font-size: 13px;">
-                                <input type="radio" name="tf_answer" value="True" ${val === 'true' ? 'checked' : ''}> True
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #ef4444; font-weight: 700; font-size: 13px;">
-                                <input type="radio" name="tf_answer" value="False" ${val === 'false' ? 'checked' : ''}> False
-                            </label>
-                        </div>
-                    </div>
-                `;
-            } else if (type === 'multiple_choice') {
-                const options = (existingData && existingData.options && existingData.options.length > 0) 
-                    ? existingData.options 
-                    : ['Option A', 'Option B', 'Option C', 'Option D'];
-                const correct = existingData ? existingData.correct_answer : options[0];
-
-                let optionsHtml = `
-                    <div class="form-group">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <label class="form-label">Multiple Choice Options (Select radio for correct answer)</label>
-                            <button type="button" class="btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="addMcOptionRow()">+ Add Choice</button>
-                        </div>
-                        <div id="mc-options-list">
-                `;
-
-                options.forEach((opt, idx) => {
-                    const isChecked = opt === correct || idx === 0;
-                    optionsHtml += `
-                        <div class="dynamic-row mc-row">
-                            <input type="radio" name="mc_correct" value="${idx}" ${isChecked ? 'checked' : ''} title="Mark as correct answer">
-                            <input type="text" class="form-input mc-opt-input" value="${escapeHtml(opt)}" placeholder="Option text..." required>
-                            <button type="button" class="btn-danger" style="padding: 6px 10px;" onclick="this.parentElement.remove()">✕</button>
-                        </div>
-                    `;
+            try {
+                const res = await fetch(`/api/modules/${activeModule.id}/questions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
 
-                optionsHtml += `</div></div>`;
-                container.innerHTML = optionsHtml;
-
-            } else if (type === 'matching') {
-                let pairs = (existingData && existingData.options && existingData.options.length > 0)
-                    ? existingData.options
-                    : [
-                        { left: 'Hierarchical Individual', right: 'Solo, linear and structured' },
-                        { left: 'Distributed Collective', right: 'Peer-to-peer and decentralized' }
-                    ];
-
-                let pairsHtml = `
-                    <div class="form-group">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <label class="form-label">Matching Pairs (Left Item $\\leftrightarrow$ Right Match)</label>
-                            <button type="button" class="btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="addMatchingPairRow()">+ Add Pair</button>
-                        </div>
-                        <div id="matching-pairs-list">
-                `;
-
-                pairs.forEach(pair => {
-                    pairsHtml += `
-                        <div class="dynamic-row matching-row">
-                            <input type="text" class="form-input match-left" value="${escapeHtml(pair.left || '')}" placeholder="Left Term / Concept..." required>
-                            <span style="color: var(--matrix-yellow); font-weight: 800;">↔</span>
-                            <input type="text" class="form-input match-right" value="${escapeHtml(pair.right || '')}" placeholder="Right Match / Definition..." required>
-                            <button type="button" class="btn-danger" style="padding: 6px 10px;" onclick="this.parentElement.remove()">✕</button>
-                        </div>
-                    `;
-                });
-
-                pairsHtml += `</div></div>`;
-                container.innerHTML = pairsHtml;
+                if (res.ok) {
+                    const modRes = await fetch(`/api/modules/${activeModule.id}`);
+                    activeModule = await modRes.json();
+                    renderQuizChaptersSidebar();
+                    renderQuizChapterQuestions();
+                } else {
+                    const err = await res.json();
+                    alert(err.error || 'Failed to create question');
+                }
+            } catch(e) {
+                console.error("Create question error:", e);
             }
         }
 
-        function addMcOptionRow() {
-            const list = document.getElementById('mc-options-list');
-            const rowCount = list.children.length;
-            const div = document.createElement('div');
-            div.className = 'dynamic-row mc-row';
-            div.innerHTML = `
-                <input type="radio" name="mc_correct" value="${rowCount}">
-                <input type="text" class="form-input mc-opt-input" value="" placeholder="Option ${String.fromCharCode(65 + rowCount)}..." required>
-                <button type="button" class="btn-danger" style="padding: 6px 10px;" onclick="this.parentElement.remove()">✕</button>
-            `;
-            list.appendChild(div);
+        function updateQuestionPrompt(qId, val) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q) q.question_text = val;
         }
 
-        function addMatchingPairRow() {
-            const list = document.getElementById('matching-pairs-list');
-            const div = document.createElement('div');
-            div.className = 'dynamic-row matching-row';
-            div.innerHTML = `
-                <input type="text" class="form-input match-left" value="" placeholder="Left Term..." required>
-                <span style="color: var(--matrix-yellow); font-weight: 800;">↔</span>
-                <input type="text" class="form-input match-right" value="" placeholder="Right Match..." required>
-                <button type="button" class="btn-danger" style="padding: 6px 10px;" onclick="this.parentElement.remove()">✕</button>
-            `;
-            list.appendChild(div);
+        function updateQuestionOrder(qId, val) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q) q.question_order = parseInt(val) || 1;
         }
 
-        async function handleSaveQuestion(e) {
-            e.preventDefault();
-            if (!activeModule) return;
+        function updateQuestionExplanation(qId, val) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q) q.explanation = val;
+        }
 
-            const editQuestionId = document.getElementById('edit-question-id').value;
-            const chapterId = document.getElementById('question-chapter-select').value || null;
-            const qType = document.getElementById('question-type-select').value;
-            const qText = document.getElementById('question-text').value;
-            const qOrder = parseInt(document.getElementById('question-order').value) || 1;
-            const qExpl = document.getElementById('question-explanation').value;
+        function updateQuestionCorrectAnswer(qId, val) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q) q.correct_answer = val;
+        }
 
-            let options = [];
-            let correctAnswer = '';
+        function updateQuestionMcCorrect(qId, idx) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q && q.options && q.options[idx]) {
+                q.correct_answer = q.options[idx];
+            }
+        }
 
-            if (qType === 'true_false') {
-                const selectedRadio = document.querySelector('input[name="tf_answer"]:checked');
-                correctAnswer = selectedRadio ? selectedRadio.value : 'True';
-                options = ['True', 'False'];
-            } else if (qType === 'multiple_choice') {
-                const rows = document.querySelectorAll('.mc-row');
-                const optInputs = document.querySelectorAll('.mc-opt-input');
-                optInputs.forEach(input => {
-                    if (input.value.trim()) options.push(input.value.trim());
-                });
+        function updateQuestionMcOptionText(qId, idx, val) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q && q.options) {
+                const wasCorrect = q.correct_answer === q.options[idx];
+                q.options[idx] = val;
+                if (wasCorrect) q.correct_answer = val;
+            }
+        }
 
-                const checkedRadio = document.querySelector('input[name="mc_correct"]:checked');
-                const checkedIndex = checkedRadio ? parseInt(checkedRadio.value) : 0;
-                correctAnswer = options[checkedIndex] || options[0] || '';
-            } else if (qType === 'matching') {
-                const rows = document.querySelectorAll('.matching-row');
+        function addMcChoiceToQuestion(qId) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q) {
+                if (!q.options) q.options = [];
+                q.options.push(`Option ${String.fromCharCode(65 + q.options.length)}`);
+                renderQuizChapterQuestions();
+            }
+        }
+
+        function removeMcChoiceFromQuestion(qId, idx) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q && q.options && q.options.length > 2) {
+                q.options.splice(idx, 1);
+                if (!q.options.includes(q.correct_answer)) {
+                    q.correct_answer = q.options[0];
+                }
+                renderQuizChapterQuestions();
+            } else {
+                alert("A multiple choice question must have at least 2 choices.");
+            }
+        }
+
+        function updateQuestionMatchingPair(qId, pIdx, side, val) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q && q.options && q.options[pIdx]) {
+                if (side === 'left') q.options[pIdx].left = val;
+                else q.options[pIdx].right = val;
+            }
+        }
+
+        function addMatchingPairToQuestion(qId) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q) {
+                if (!Array.isArray(q.options)) q.options = [];
+                q.options.push({ left: `Concept ${q.options.length + 1}`, right: `Definition ${q.options.length + 1}` });
+                renderQuizChapterQuestions();
+            }
+        }
+
+        function removeMatchingPairFromQuestion(qId, pIdx) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (q && Array.isArray(q.options) && q.options.length > 1) {
+                q.options.splice(pIdx, 1);
+                renderQuizChapterQuestions();
+            }
+        }
+
+        function changeQuestionType(qId, newType) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (!q) return;
+            q.question_type = newType;
+            if (newType === 'true_false') {
+                q.options = ['True', 'False'];
+                q.correct_answer = 'True';
+            } else if (newType === 'multiple_choice') {
+                q.options = ['Option A', 'Option B', 'Option C', 'Option D'];
+                q.correct_answer = 'Option A';
+            } else if (newType === 'matching') {
+                q.options = [
+                    { left: 'Concept 1', right: 'Definition 1' },
+                    { left: 'Concept 2', right: 'Definition 2' }
+                ];
+                q.correct_answer = { 'Concept 1': 'Definition 1', 'Concept 2': 'Definition 2' };
+            }
+            renderQuizChapterQuestions();
+        }
+
+        async function saveSingleQuestion(qId) {
+            const q = (activeModule.questions || []).find(item => item.id === qId);
+            if (!q) return;
+
+            let correctAnswer = q.correct_answer;
+            if (q.question_type === 'matching') {
                 let matchMap = {};
-                rows.forEach(r => {
-                    const left = r.querySelector('.match-left').value.trim();
-                    const right = r.querySelector('.match-right').value.trim();
-                    if (left && right) {
-                        options.push({ left: left, right: right });
-                        matchMap[left] = right;
-                    }
+                (q.options || []).forEach(pair => {
+                    const l = pair.left || pair.term || '';
+                    const r = pair.right || pair.match || '';
+                    if (l && r) matchMap[l] = r;
                 });
                 correctAnswer = matchMap;
             }
 
             const payload = {
-                chapter_id: chapterId,
-                question_type: qType,
-                question_order: qOrder,
-                question_text: qText,
-                options: options,
+                chapter_id: q.chapter_id || null,
+                question_type: q.question_type,
+                question_order: q.question_order || 1,
+                question_text: q.question_text,
+                options: q.options,
                 correct_answer: correctAnswer,
-                explanation: qExpl
+                explanation: q.explanation || ''
             };
 
             try {
-                let res;
-                if (editQuestionId) {
-                    res = await fetch(`/api/questions/${editQuestionId}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                } else {
-                    res = await fetch(`/api/modules/${activeModule.id}/questions`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                }
+                const res = await fetch(`/api/questions/${qId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
                 if (res.ok) {
+                    const statusEl = document.getElementById(`save-status-${qId}`);
+                    if (statusEl) {
+                        statusEl.style.display = 'inline';
+                        setTimeout(() => { statusEl.style.display = 'none'; }, 2000);
+                    }
                     const modRes = await fetch(`/api/modules/${activeModule.id}`);
                     activeModule = await modRes.json();
-                    renderQuestionsSidebar();
-                    initNewQuestionForm();
+                    renderQuizChaptersSidebar();
                 } else {
-                    const errData = await res.json();
-                    alert(errData.error || 'Failed to save question');
+                    const err = await res.json();
+                    alert(err.error || 'Failed to save question');
                 }
-            } catch(err) {
-                console.error("Save question error:", err);
+            } catch(e) {
+                console.error("Save single question error:", e);
             }
         }
 
-        async function handleDeleteCurrentQuestion() {
-            if (!activeQuestion) return;
-            if (!confirm(`Delete this question?`)) return;
+        async function deleteQuizQuestion(qId) {
+            if (!confirm("Are you sure you want to delete this question?")) return;
 
             try {
-                const res = await fetch(`/api/questions/${activeQuestion.id}`, { method: 'DELETE' });
+                const res = await fetch(`/api/questions/${qId}`, { method: 'DELETE' });
                 if (res.ok) {
                     const modRes = await fetch(`/api/modules/${activeModule.id}`);
                     activeModule = await modRes.json();
-                    renderQuestionsSidebar();
-                    initNewQuestionForm();
+                    renderQuizChaptersSidebar();
+                    renderQuizChapterQuestions();
                 } else {
                     alert("Failed to delete question");
                 }
-            } catch(err) {
-                console.error("Delete question error:", err);
+            } catch(e) {
+                console.error("Delete question error:", e);
             }
+        }
+
+        async function moveQuizQuestionUp(qId) {
+            const isGeneral = activeQuizChapterId === 'general' || activeQuizChapterId === null;
+            const chapterQuestions = (activeModule.questions || []).filter(q => {
+                if (isGeneral) return !q.chapter_id || q.chapter_id === 'general';
+                return String(q.chapter_id) === String(activeQuizChapterId);
+            });
+
+            const idx = chapterQuestions.findIndex(q => q.id === qId);
+            if (idx <= 0) return;
+
+            const curr = chapterQuestions[idx];
+            const prev = chapterQuestions[idx - 1];
+
+            const tempOrder = curr.question_order || (idx + 1);
+            curr.question_order = prev.question_order || idx;
+            prev.question_order = tempOrder;
+
+            await saveSingleQuestion(curr.id);
+            await saveSingleQuestion(prev.id);
+            renderQuizChapterQuestions();
+        }
+
+        async function moveQuizQuestionDown(qId) {
+            const isGeneral = activeQuizChapterId === 'general' || activeQuizChapterId === null;
+            const chapterQuestions = (activeModule.questions || []).filter(q => {
+                if (isGeneral) return !q.chapter_id || q.chapter_id === 'general';
+                return String(q.chapter_id) === String(activeQuizChapterId);
+            });
+
+            const idx = chapterQuestions.findIndex(q => q.id === qId);
+            if (idx >= chapterQuestions.length - 1) return;
+
+            const curr = chapterQuestions[idx];
+            const next = chapterQuestions[idx + 1];
+
+            const tempOrder = curr.question_order || (idx + 1);
+            curr.question_order = next.question_order || (idx + 2);
+            next.question_order = tempOrder;
+
+            await saveSingleQuestion(curr.id);
+            await saveSingleQuestion(next.id);
+            renderQuizChapterQuestions();
         }
 
         function escapeHtml(text) {
             if (!text) return '';
-            return text.replace(/[&<>"']/g, function(m) {
+            return text.replace(/[&<>"']/g, function (m) {
                 return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
             });
         }
     </script>
 </body>
+
 </html>

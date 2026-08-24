@@ -141,9 +141,17 @@ db.serialize(() => {
         text_content TEXT,
         pdf_url TEXT,
         youtube_url TEXT,
+        learning_objectives TEXT,
+        examples TEXT,
+        estimated_time TEXT DEFAULT '15 min',
+        content_blocks_json TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(module_id) REFERENCES modules(id) ON DELETE CASCADE
     )`);
+    db.run(`ALTER TABLE module_chapters ADD COLUMN learning_objectives TEXT`, (err) => {});
+    db.run(`ALTER TABLE module_chapters ADD COLUMN examples TEXT`, (err) => {});
+    db.run(`ALTER TABLE module_chapters ADD COLUMN estimated_time TEXT DEFAULT '15 min'`, (err) => {});
+    db.run(`ALTER TABLE module_chapters ADD COLUMN content_blocks_json TEXT`, (err) => {});
 
     // 12c. Module Questions (Quiz & Activities: True/False, Multiple Choice, Matching)
     db.run(`CREATE TABLE IF NOT EXISTS module_questions (
@@ -1082,9 +1090,41 @@ app.get('/api/modules/:id', (req, res) => {
                     return q;
                 });
 
-                // Attach knowledge check questions directly to their respective chapters
+                // Attach knowledge check questions & parsed content_blocks to chapters
                 moduleRow.chapters = (chapterRows || []).map(ch => {
                     ch.questions = formattedQuestions.filter(q => q.chapter_id == ch.id);
+                    
+                    let blocks = [];
+                    if (ch.content_blocks_json) {
+                        try { blocks = JSON.parse(ch.content_blocks_json); } catch(e) { blocks = []; }
+                    }
+
+                    // Fallback to legacy fields if content_blocks_json is not yet populated
+                    if (!blocks || blocks.length === 0) {
+                        blocks = [];
+                        if (ch.learning_objectives) {
+                            const objs = ch.learning_objectives.split('\n').map(s => s.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean);
+                            if (objs.length) {
+                                blocks.push({ type: 'card', title: 'LEARNING OBJECTIVES', items: objs });
+                            }
+                        }
+                        if (ch.text_content && ch.text_content.trim()) {
+                            blocks.push({ type: 'text', content: ch.text_content.trim() });
+                        }
+                        if (ch.youtube_url && ch.youtube_url.trim()) {
+                            blocks.push({ type: 'video', url: ch.youtube_url.trim() });
+                        }
+                        if (ch.pdf_url && ch.pdf_url.trim()) {
+                            blocks.push({ type: 'pdf', url: ch.pdf_url.trim(), title: 'Reference Material (PDF)' });
+                        }
+                        if (ch.examples) {
+                            const exs = ch.examples.split('\n').map(s => s.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean);
+                            if (exs.length) {
+                                blocks.push({ type: 'card', title: 'EXAMPLES & PRACTICAL APPLICATIONS', items: exs });
+                            }
+                        }
+                    }
+                    ch.content_blocks = blocks;
                     return ch;
                 });
 
@@ -1162,13 +1202,15 @@ app.delete('/api/modules/:id', (req, res) => {
 // POST /api/modules/:id/chapters - Add a chapter to a module
 app.post('/api/modules/:id/chapters', (req, res) => {
     const moduleId = req.params.id;
-    const { title, chapter_order, text_content, pdf_url, youtube_url, learning_objectives, examples, estimated_time } = req.body || {};
+    const { title, chapter_order, content_blocks, text_content, pdf_url, youtube_url, learning_objectives, examples, estimated_time } = req.body || {};
 
     if (!title || title.trim() === '') {
         return res.status(400).json({ error: 'Chapter title is required' });
     }
 
-    const sql = `INSERT INTO module_chapters (module_id, chapter_order, title, text_content, pdf_url, youtube_url, learning_objectives, examples, estimated_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const blocksJson = content_blocks ? (typeof content_blocks === 'object' ? JSON.stringify(content_blocks) : content_blocks) : '';
+
+    const sql = `INSERT INTO module_chapters (module_id, chapter_order, title, text_content, pdf_url, youtube_url, learning_objectives, examples, estimated_time, content_blocks_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     db.run(sql, [
         moduleId, 
         parseInt(chapter_order) || 1, 
@@ -1178,7 +1220,8 @@ app.post('/api/modules/:id/chapters', (req, res) => {
         youtube_url || '',
         learning_objectives || '',
         examples || '',
-        estimated_time || '15 min'
+        estimated_time || '15 min',
+        blocksJson
     ], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.status(201).json({ success: true, chapter_id: this.lastID, message: 'Chapter added successfully' });
@@ -1188,13 +1231,15 @@ app.post('/api/modules/:id/chapters', (req, res) => {
 // PUT /api/chapters/:id - Edit a chapter
 app.put('/api/chapters/:id', (req, res) => {
     const chapterId = req.params.id;
-    const { title, chapter_order, text_content, pdf_url, youtube_url, learning_objectives, examples, estimated_time } = req.body || {};
+    const { title, chapter_order, content_blocks, text_content, pdf_url, youtube_url, learning_objectives, examples, estimated_time } = req.body || {};
 
     if (!title || title.trim() === '') {
         return res.status(400).json({ error: 'Chapter title is required' });
     }
 
-    const sql = `UPDATE module_chapters SET title = ?, chapter_order = ?, text_content = ?, pdf_url = ?, youtube_url = ?, learning_objectives = ?, examples = ?, estimated_time = ? WHERE id = ?`;
+    const blocksJson = content_blocks ? (typeof content_blocks === 'object' ? JSON.stringify(content_blocks) : content_blocks) : '';
+
+    const sql = `UPDATE module_chapters SET title = ?, chapter_order = ?, text_content = ?, pdf_url = ?, youtube_url = ?, learning_objectives = ?, examples = ?, estimated_time = ?, content_blocks_json = ? WHERE id = ?`;
     db.run(sql, [
         title.trim(), 
         parseInt(chapter_order) || 1, 
@@ -1204,6 +1249,7 @@ app.put('/api/chapters/:id', (req, res) => {
         learning_objectives || '',
         examples || '',
         estimated_time || '15 min',
+        blocksJson,
         chapterId
     ], function(err) {
         if (err) return res.status(500).json({ error: err.message });
@@ -1331,9 +1377,9 @@ app.post('/api/modules/:id/submit-quiz', (req, res) => {
     db.all(query, params, (err, questions) => {
         if (err) return res.status(500).json({ error: err.message });
         
-        // If specific chapter had no questions, check if module has general questions
+        // If specific chapter had no questions
         if (!questions || questions.length === 0) {
-            return res.json({ success: true, score: 0, total: 0, percentage: 100, passed: true, results: [] });
+            return res.json({ success: true, score: 0, total: 0, percentage: 0, passed: false, results: [] });
         }
 
         let correctCount = 0;
@@ -1370,6 +1416,8 @@ app.post('/api/modules/:id/submit-quiz', (req, res) => {
             };
         });
 
+        const total = questions.length;
+        const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
         const isPerfect = total > 0 && correctCount === total;
 
         // Record student progress if student_id is provided
