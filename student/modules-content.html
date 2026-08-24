@@ -1628,16 +1628,24 @@
             const indexStr = (index + 1).toString().padStart(2, '0');
             const chapters = m.chapters || [];
             const chapterCount = chapters.length;
+            const questionCount = parseInt(m.question_count) || 0;
             const progress = getStudentProgress(m.id);
             
-            // Calculate total steps (chapters + KCs)
-            const totalSteps = chapterCount * 2;
-            const completedSteps = (progress.completedChapters.length) + (progress.completedKCs.length);
-            
+            // Calculate percentage accurately
             let pct = 0;
-            if (totalSteps > 0) {
-                pct = Math.min(100, Math.round((completedSteps / totalSteps) * 100));
+            if (progress.moduleCompleted || progress.completedFinal) {
+                pct = 100;
+            } else if (questionCount === 0) {
+                // Reading-only module (no quizzes)
+                pct = chapterCount > 0 ? Math.min(100, Math.round((progress.completedChapters.length / chapterCount) * 100)) : (progress.completedChapters.length > 0 ? 100 : 0);
+            } else {
+                // Modules with chapters, knowledge checks, and final assessment
+                const totalSteps = (chapterCount * 2) + 1;
+                const completedSteps = progress.completedChapters.length + progress.completedKCs.length + (progress.completedFinal ? 1 : 0);
+                pct = totalSteps > 0 ? Math.min(100, Math.round((completedSteps / totalSteps) * 100)) : 0;
             }
+
+            if (pct >= 100) pct = 100;
 
             // Current active chapter label
             let currentChapterTitle = 'Introduction';
@@ -1764,13 +1772,21 @@
         /* --- STEPPER RENDERER --- */
         function renderReaderStepper() {
             const container = document.getElementById('reader-stepper-list');
+            if (!container || !currentActiveModule) return;
             const chapters = currentActiveModule.chapters || [];
+            const allModuleQuestions = currentActiveModule.questions || [];
             const progress = getStudentProgress(currentActiveModule.id);
 
-            // Compute percentage
-            const totalSteps = (chapters.length * 2) + 1;
+            // Compute total steps dynamically
+            let totalSteps = chapters.length;
+            chapters.forEach(ch => {
+                const qCount = allModuleQuestions.filter(q => q.chapter_id == ch.id).length;
+                if (qCount > 0) totalSteps += 1;
+            });
+            if (allModuleQuestions.length > 0) totalSteps += 1; // Final Assessment
+
             const completedSteps = progress.completedChapters.length + progress.completedKCs.length + (progress.completedFinal ? 1 : 0);
-            const pct = totalSteps > 0 ? Math.min(100, Math.round((completedSteps / totalSteps) * 100)) : 0;
+            const pct = totalSteps > 0 ? Math.min(100, Math.round((completedSteps / totalSteps) * 100)) : (progress.moduleCompleted ? 100 : 0);
             
             document.getElementById('sidebar-mod-pct').textContent = `${pct}%`;
             document.getElementById('sidebar-mod-fill').style.width = `${pct}%`;
@@ -1781,6 +1797,7 @@
                 const isChapterUnlocked = progress.unlockedChapters.includes(idx);
                 const isChapterCompleted = progress.completedChapters.includes(idx);
                 const isChapterActive = currentStepId === `chapter_${idx}`;
+                const chQuestions = allModuleQuestions.filter(q => q.chapter_id == ch.id);
 
                 const chapterIconHtml = !isChapterUnlocked 
                     ? `<svg width="14" height="14"><use href="#icon-lock"></use></svg>` 
@@ -1806,40 +1823,42 @@
                     </div>
                 `;
 
-                // Connecting line to Knowledge Check
-                html += `<div class="stepper-connector"></div>`;
+                // Only render Knowledge Check step if this chapter actually has questions!
+                if (chQuestions.length > 0) {
+                    html += `<div class="stepper-connector"></div>`;
 
-                // Knowledge Check Sub-item
-                const isKCUnlocked = progress.unlockedKCs.includes(idx) || isChapterCompleted;
-                const isKCCompleted = progress.completedKCs.includes(idx);
-                const isKCActive = currentStepId === `kc_${idx}`;
+                    const isKCUnlocked = progress.unlockedKCs.includes(idx) || isChapterCompleted;
+                    const isKCCompleted = progress.completedKCs.includes(idx);
+                    const isKCActive = currentStepId === `kc_${idx}`;
 
-                const kcIconHtml = !isKCUnlocked 
-                    ? `<svg width="14" height="14"><use href="#icon-lock"></use></svg>` 
-                    : (isKCCompleted 
-                        ? `<svg width="14" height="14" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
-                        : (isKCActive 
-                            ? `<svg width="14" height="14" style="color: var(--matrix-purple);"><use href="#icon-play"></use></svg>`
-                            : `<svg width="14" height="14"><use href="#icon-clipboard"></use></svg>`));
+                    const kcIconHtml = !isKCUnlocked 
+                        ? `<svg width="14" height="14"><use href="#icon-lock"></use></svg>` 
+                        : (isKCCompleted 
+                            ? `<svg width="14" height="14" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
+                            : (isKCActive 
+                                ? `<svg width="14" height="14" style="color: var(--matrix-purple);"><use href="#icon-play"></use></svg>`
+                                : `<svg width="14" height="14"><use href="#icon-clipboard"></use></svg>`));
 
-                html += `
-                    <div class="step-item sub-item ${isKCActive ? 'active' : ''} ${!isKCUnlocked ? 'locked' : ''} ${isKCCompleted ? 'completed' : ''}"
-                         onclick="${isKCUnlocked ? `selectStep('kc', ${idx})` : ''}">
-                        <div class="step-left">
-                            <span class="step-icon">${kcIconHtml}</span>
-                            <div class="step-text-wrap">
-                                <span class="step-title-text">Knowledge Check ${idx + 1}</span>
-                                <span class="step-sub-text">Knowledge Check</span>
+                    html += `
+                        <div class="step-item sub-item ${isKCActive ? 'active' : ''} ${!isKCUnlocked ? 'locked' : ''} ${isKCCompleted ? 'completed' : ''}"
+                             onclick="${isKCUnlocked ? `selectStep('kc', ${idx})` : ''}">
+                            <div class="step-left">
+                                <span class="step-icon">${kcIconHtml}</span>
+                                <div class="step-text-wrap">
+                                    <span class="step-title-text">Knowledge Check ${idx + 1}</span>
+                                    <span class="step-sub-text">Knowledge Check</span>
+                                </div>
                             </div>
+                            <div class="step-dot-indicator"></div>
                         </div>
-                        <div class="step-dot-indicator"></div>
-                    </div>
-                `;
+                    `;
+                }
             });
 
-            // Final Assessment Item (Available after completing all chapter KCs)
-            if (chapters.length > 0) {
-                const allKCsCompleted = chapters.every((_, i) => progress.completedKCs.includes(i));
+            // Final Assessment Item ONLY if module has questions
+            if (allModuleQuestions.length > 0) {
+                const chaptersWithKCs = chapters.filter(c => allModuleQuestions.some(q => q.chapter_id == c.id));
+                const allKCsCompleted = chaptersWithKCs.every(c => progress.completedKCs.includes(chapters.indexOf(c)));
                 const isFinalActive = currentStepId === 'final_assessment';
                 const isFinalCompleted = progress.completedFinal;
 
@@ -2037,6 +2056,11 @@
 
         function markChapterScrolled() {
             const progress = getStudentProgress(currentActiveModule.id);
+            const chapters = currentActiveModule.chapters || [];
+            const allModuleQuestions = currentActiveModule.questions || [];
+            const ch = chapters[currentChapterIndex];
+            const chQuestions = ch ? allModuleQuestions.filter(q => q.chapter_id == ch.id) : [];
+
             let updated = false;
 
             if (!progress.completedChapters.includes(currentChapterIndex)) {
@@ -2044,9 +2068,25 @@
                 updated = true;
             }
 
-            if (!progress.unlockedKCs.includes(currentChapterIndex)) {
-                progress.unlockedKCs.push(currentChapterIndex);
-                updated = true;
+            if (chQuestions.length > 0) {
+                if (!progress.unlockedKCs.includes(currentChapterIndex)) {
+                    progress.unlockedKCs.push(currentChapterIndex);
+                    updated = true;
+                }
+            } else {
+                // Chapter has no KC questions! Unlock next chapter or complete module!
+                const nextChapterIdx = currentChapterIndex + 1;
+                if (nextChapterIdx < chapters.length) {
+                    if (!progress.unlockedChapters.includes(nextChapterIdx)) {
+                        progress.unlockedChapters.push(nextChapterIdx);
+                        updated = true;
+                    }
+                } else if (allModuleQuestions.length === 0) {
+                    // Last chapter and 0 questions in whole module -> Module is completed!
+                    progress.completedFinal = true;
+                    progress.moduleCompleted = true;
+                    updated = true;
+                }
             }
 
             if (updated) {
@@ -2059,18 +2099,64 @@
 
         function updateUnlockStatus() {
             const progress = getStudentProgress(currentActiveModule.id);
-            const isUnlocked = progress.unlockedKCs.includes(currentChapterIndex);
+            const chapters = currentActiveModule.chapters || [];
+            const allModuleQuestions = currentActiveModule.questions || [];
+            const ch = chapters[currentChapterIndex];
+            const chQuestions = ch ? allModuleQuestions.filter(q => q.chapter_id == ch.id) : [];
+            const isRead = progress.completedChapters.includes(currentChapterIndex);
+
             const statusMsg = document.getElementById('unlock-status-msg');
             const btnOpen = document.getElementById('btn-open-kc');
+            if (!statusMsg || !btnOpen) return;
 
-            if (isUnlocked) {
-                statusMsg.className = 'unlock-status-text unlocked';
-                statusMsg.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="13" height="13" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg> Chapter Complete! Knowledge Check is now unlocked &rarr;</span>';
-                btnOpen.disabled = false;
+            if (chQuestions.length > 0) {
+                const isUnlocked = progress.unlockedKCs.includes(currentChapterIndex);
+                if (isUnlocked) {
+                    statusMsg.className = 'unlock-status-text unlocked';
+                    statusMsg.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="13" height="13" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg> Chapter Complete! Knowledge Check is now unlocked &rarr;</span>';
+                    btnOpen.disabled = false;
+                    btnOpen.innerHTML = 'Open KC &rarr;';
+                    btnOpen.onclick = handleOpenCurrentKC;
+                } else {
+                    statusMsg.className = 'unlock-status-text locked';
+                    statusMsg.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="13" height="13"><use href="#icon-lock"></use></svg> Scroll through the entire chapter to unlock Knowledge Check ${currentChapterIndex + 1}</span>`;
+                    btnOpen.disabled = true;
+                    btnOpen.innerHTML = 'Open KC &rarr;';
+                }
             } else {
-                statusMsg.className = 'unlock-status-text locked';
-                statusMsg.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="13" height="13"><use href="#icon-lock"></use></svg> Scroll through the entire chapter to unlock Knowledge Check ${currentChapterIndex + 1}</span>`;
-                btnOpen.disabled = true;
+                // No KC questions for this chapter
+                const nextChapterIdx = currentChapterIndex + 1;
+                if (isRead) {
+                    statusMsg.className = 'unlock-status-text unlocked';
+                    statusMsg.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="13" height="13" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg> Chapter Read &amp; Complete!</span>';
+                    btnOpen.disabled = false;
+
+                    if (nextChapterIdx < chapters.length) {
+                        btnOpen.innerHTML = 'Next Chapter &rarr;';
+                        btnOpen.onclick = () => selectStep('chapter', nextChapterIdx);
+                    } else if (allModuleQuestions.length > 0) {
+                        btnOpen.innerHTML = 'Final Assessment &rarr;';
+                        btnOpen.onclick = () => selectStep('final', 0);
+                    } else {
+                        btnOpen.innerHTML = 'Complete Module &check;';
+                        btnOpen.onclick = () => {
+                            const prog = getStudentProgress(currentActiveModule.id);
+                            prog.moduleCompleted = true;
+                            prog.completedFinal = true;
+                            if (!prog.completedChapters.includes(currentChapterIndex)) {
+                                prog.completedChapters.push(currentChapterIndex);
+                            }
+                            saveStudentProgress(currentActiveModule.id, prog);
+                            renderReaderStepper();
+                            showVictoryModal();
+                        };
+                    }
+                } else {
+                    statusMsg.className = 'unlock-status-text locked';
+                    statusMsg.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="13" height="13"><use href="#icon-lock"></use></svg> Read through the chapter to complete</span>`;
+                    btnOpen.disabled = true;
+                    btnOpen.innerHTML = nextChapterIdx < chapters.length ? 'Next Chapter &rarr;' : 'Complete Module &check;';
+                }
             }
         }
 
@@ -2097,40 +2183,18 @@
                     : (currentActiveModule.final_questions || []);
             }
 
-            // Fallback default questions if admin hasn't added questions yet so student is never stuck
             if (questions.length === 0) {
-                questions = [
-                    {
-                        id: 1001,
-                        question_type: "multiple_choice",
-                        question_text: "What is the primary benefit of explaining a concept to a peer?",
-                        options: [
-                            "It helps the listener learn faster.",
-                            "It deepens the teacher's own understanding through articulation.",
-                            "It reduces the need for instructor feedback.",
-                            "It shortens the overall study time."
-                        ],
-                        correct_answer: "It deepens the teacher's own understanding through articulation.",
-                        explanation: "Teaching forces you to organize knowledge and identify gaps — the \"learning by teaching\" effect is well-documented in educational research.",
-                        related_concept: "Distributed Collective (DC) learning mode",
-                        recommended: "Chapter 1.2: Open Inquiry Methods"
-                    },
-                    {
-                        id: 1002,
-                        question_type: "multiple_choice",
-                        question_text: "Which Elmore quadrant is most associated with peer-to-peer learning?",
-                        options: [
-                            "Hierarchical Individual (HI)",
-                            "Distributed Individual (DI)",
-                            "Hierarchical Collective (HC)",
-                            "Distributed Collective (DC)"
-                        ],
-                        correct_answer: "Distributed Collective (DC)",
-                        explanation: "DC represents learners who thrive in peer-driven, inquiry-based group settings with shared leadership — the ideal environment for peer learning.",
-                        related_concept: "Elmore's Modes of Learning",
-                        recommended: "Chapter 1.1: Introduction to Peer Learning"
-                    }
-                ];
+                body.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; background: rgba(0,0,0,0.18); border-radius: 14px; border: 1px dashed rgba(255,255,255,0.15); max-width: 600px; margin: 40px auto;">
+                        <div style="font-size: 36px; margin-bottom: 12px;">📝</div>
+                        <h3 style="font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px;">No Knowledge Check Questions</h3>
+                        <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">
+                            This section does not have quiz questions assigned. You may continue to the next section.
+                        </p>
+                        <button type="button" class="btn-primary" style="padding: 10px 24px; font-weight: 700;" onclick="handleVictoryContinue()">Continue &rarr;</button>
+                    </div>
+                `;
+                return;
             }
 
             currentActiveQuestions = questions;
@@ -2543,8 +2607,9 @@
 
         /* --- VICTORY MODAL CONTROLS (Screenshot 3) --- */
         function showVictoryModal() {
-            const isFinal = currentStepType === 'final';
-            const kcName = isFinal ? 'the Final Assessment and completed this module!' : `Knowledge Check ${currentChapterIndex + 1}`;
+            const allModuleQuestions = (currentActiveModule && currentActiveModule.questions) || [];
+            const isFinal = currentStepType === 'final' || (allModuleQuestions.length === 0);
+            const kcName = isFinal ? 'the entire module!' : `Knowledge Check ${currentChapterIndex + 1}`;
             document.getElementById('victory-student-title').textContent = isFinal ? `Module Mastered, ${currentStudentFirstName}!` : `Great Job, ${currentStudentFirstName}!`;
             document.getElementById('victory-kc-name').textContent = kcName;
             
@@ -2561,7 +2626,8 @@
 
         function handleVictoryContinue() {
             closeVictoryModal();
-            if (currentStepType === 'final') {
+            const allModuleQuestions = (currentActiveModule && currentActiveModule.questions) || [];
+            if (currentStepType === 'final' || allModuleQuestions.length === 0) {
                 exitReaderView();
                 return;
             }
@@ -2570,8 +2636,10 @@
 
             if (nextChapterIdx < chapters.length) {
                 selectStep('chapter', nextChapterIdx);
-            } else {
+            } else if (allModuleQuestions.length > 0) {
                 selectStep('final', 0);
+            } else {
+                exitReaderView();
             }
         }
 

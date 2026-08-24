@@ -1039,7 +1039,8 @@ app.get('/api/modules', (req, res) => {
     const { quadrant_category } = req.query;
     let sql = `
         SELECT m.*, 
-            (SELECT COUNT(*) FROM module_chapters mc WHERE mc.module_id = m.id) AS chapter_count
+            (SELECT COUNT(*) FROM module_chapters mc WHERE mc.module_id = m.id) AS chapter_count,
+            (SELECT COUNT(*) FROM module_questions mq WHERE mq.module_id = m.id) AS question_count
         FROM modules m
         WHERE 1=1
     `;
