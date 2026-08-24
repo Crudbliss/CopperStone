@@ -35,6 +35,31 @@
             box-sizing: border-box;
         }
 
+        /* --- CUSTOM DARK SCROLLBAR --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #060e16;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.16);
+            border-radius: 6px;
+            border: 2px solid #060e16;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        html, body, .reader-scrollable-area {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.16) #060e16;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-base);
@@ -450,71 +475,116 @@
             transition: width 0.3s ease;
         }
 
-        /* Stepper Navigation List */
+        /* Stepper Navigation List (Reference Match) */
         .reader-stepper {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 2px;
             position: relative;
+            margin-top: 4px;
         }
 
         .step-item {
             position: relative;
-            padding: 12px 14px;
-            border-radius: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
+            gap: 10px;
             font-size: 13px;
-            font-weight: 500;
             color: var(--text-muted);
             cursor: pointer;
             transition: all 0.2s ease;
             background: transparent;
             border: 1px solid transparent;
             user-select: none;
+            width: 100%;
         }
 
         .step-item:hover:not(.locked) {
             background: rgba(255, 255, 255, 0.04);
+        }
+
+        .step-item:hover:not(.locked) .step-title-text {
             color: #ffffff;
         }
 
         .step-item.active {
-            background: rgba(192, 132, 252, 0.12);
-            border-color: rgba(192, 132, 252, 0.35);
-            color: #ffffff;
+            background: rgba(192, 132, 252, 0.08);
+            border-color: rgba(192, 132, 252, 0.3);
+            padding: 12px 14px;
+        }
+
+        .step-item.active .step-title-text {
+            color: var(--matrix-purple);
             font-weight: 700;
+        }
+
+        .step-item.active .step-sub-text {
+            color: rgba(192, 132, 252, 0.75);
         }
 
         .step-item.active .step-dot-indicator {
             background: var(--matrix-purple);
-            box-shadow: 0 0 8px rgba(192, 132, 252, 0.8);
+            box-shadow: 0 0 8px rgba(192, 132, 252, 0.85);
+            display: block;
         }
 
         .step-item.locked {
-            opacity: 0.45;
+            opacity: 0.35;
             cursor: not-allowed;
         }
 
-        .step-item.completed {
-            color: #cbd5e1;
+        .step-item.completed .step-title-text {
+            color: #94a3b8;
         }
 
         .step-item.sub-item {
-            margin-left: 14px;
-            padding: 10px 14px;
-            font-size: 12px;
+            margin-left: 6px;
         }
 
         .step-left {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            align-items: flex-start;
+            gap: 12px;
             flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            min-width: 0;
+        }
+
+        .step-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+        }
+
+        .step-text-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .step-title-text {
+            font-size: 13.5px;
+            font-weight: 600;
+            line-height: 1.35;
+            color: #cbd5e1;
+            word-break: break-word;
+            white-space: normal;
+            transition: color 0.2s;
+        }
+
+        .step-sub-text {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+            line-height: 1.2;
         }
 
         .step-dot-indicator {
@@ -523,16 +593,17 @@
             border-radius: 50%;
             background: transparent;
             flex-shrink: 0;
+            margin-top: 6px;
+            display: none;
         }
 
-        .step-icon {
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .step-status-icon {
-            font-size: 12px;
-            flex-shrink: 0;
+        .stepper-connector {
+            width: 1px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            margin-left: 20px;
+            margin-top: -1px;
+            margin-bottom: -1px;
         }
 
         /* Reader Right Content Pane */
@@ -548,31 +619,46 @@
         .reader-scrollable-area {
             flex: 1;
             overflow-y: auto;
-            padding: 36px 48px 100px 48px;
+            padding: 40px 56px 120px 56px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
-            max-width: 900px;
+            gap: 28px;
+            max-width: 880px;
             margin: 0 auto;
             width: 100%;
         }
 
-        /* Top Header Card */
-        .reader-header-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 14px;
-            padding: 20px 24px;
+        #reader-content-body {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            width: 100%;
+        }
+
+        #reader-content-body > div {
+            margin-bottom: 10px;
+        }
+
+        #reader-content-body > div:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Top Header Card (Reference Match) */
+        .reader-header-card {
+            background: rgba(13, 21, 32, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         .reader-header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12px;
+            font-size: 12.5px;
             font-weight: 700;
         }
 
@@ -587,40 +673,43 @@
             align-items: center;
             gap: 5px;
             font-weight: 500;
+            font-size: 12px;
         }
 
         .reader-chapter-title {
-            font-size: 22px;
+            font-size: 21px;
             font-weight: 800;
             color: #ffffff;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.2px;
+            line-height: 1.35;
         }
 
-        /* Learning Objectives & Examples Cards */
+        /* Content Block Cards (Callout Cards: Learning Objectives & Examples) */
         .content-block-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 14px;
-            padding: 20px 24px;
+            background: rgba(13, 21, 32, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 26px 30px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
+            margin-bottom: 10px;
         }
 
         .content-block-title {
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 800;
-            letter-spacing: 0.8px;
-            color: var(--text-muted);
+            letter-spacing: 0.9px;
+            color: #94a3b8;
             text-transform: uppercase;
         }
 
         .objective-item, .example-item {
             display: flex;
             align-items: flex-start;
-            gap: 14px;
-            font-size: 14px;
-            line-height: 1.6;
+            gap: 16px;
+            font-size: 14.5px;
+            line-height: 1.65;
             color: #cbd5e1;
         }
 
@@ -628,22 +717,30 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
-            color: #ffffff;
-            font-size: 11px;
+            background: rgba(255, 255, 255, 0.07);
+            color: #94a3b8;
+            font-size: 11.5px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
         .article-body-text {
-            font-size: 14.5px;
+            font-size: 15px;
             line-height: 1.85;
             color: #cbd5e1;
-            white-space: pre-wrap;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .article-body-text p {
+            margin: 0;
+            line-height: 1.85;
         }
 
         .video-container {
@@ -654,6 +751,7 @@
             border-radius: 12px;
             border: 1px solid var(--border-light);
             background: #000;
+            margin-bottom: 10px;
         }
 
         .video-container iframe {
@@ -671,6 +769,7 @@
             border-radius: 10px;
             border: 1px solid var(--border-light);
             background: #111;
+            margin-bottom: 10px;
         }
 
         /* Bottom Sticky Unlock Bar */
@@ -942,6 +1041,130 @@
 
         .btn-submit-kc:hover {
             background: #059669;
+        }
+
+        .kc-carousel-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-kc-nav {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-kc-nav:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .btn-kc-nav:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-kc-next {
+            background: var(--matrix-purple);
+            border-color: var(--matrix-purple);
+            color: #060f17;
+        }
+
+        .btn-kc-next:hover:not(:disabled) {
+            background: #d8b4fe;
+            color: #060f17;
+        }
+
+        .btn-kc-submit {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            color: #ffffff;
+            padding: 12px 26px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-kc-submit:hover:not(:disabled) {
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-kc-submit:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: #64748b;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .kc-step-dots {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kc-step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .kc-step-dot.active {
+            background: var(--matrix-purple);
+            box-shadow: 0 0 8px rgba(192, 132, 252, 0.9);
+            transform: scale(1.25);
+        }
+
+        .kc-step-dot.answered {
+            background: #38bdf8;
+        }
+
+        .kc-step-dot.correct {
+            background: #10b981;
+        }
+
+        .kc-step-dot.wrong {
+            background: #fb923c;
+        }
+
+        .kc-progress-bar-wrap {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .kc-progress-bar-fill {
+            height: 100%;
+            background: var(--matrix-purple);
+            transition: width 0.3s ease;
         }
 
         .mastery-banner {
@@ -1243,6 +1466,7 @@
         let currentStepId = null; // e.g. "chapter_1" or "kc_1" or "final_assessment"
         let currentStepType = 'chapter'; // 'chapter' or 'kc'
         let currentChapterIndex = 0;
+        let currentKCQuestionIndex = 0;
         let studentQuizAnswers = {};
         let quizGradedResults = null;
         let currentActiveQuestions = [];
@@ -1521,22 +1745,31 @@
                 const isChapterActive = currentStepId === `chapter_${idx}`;
 
                 const chapterIconHtml = !isChapterUnlocked 
-                    ? `<svg width="12" height="12"><use href="#icon-lock"></use></svg>` 
+                    ? `<svg width="14" height="14"><use href="#icon-lock"></use></svg>` 
                     : (isChapterCompleted 
-                        ? `<svg width="12" height="12" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
-                        : `<svg width="11" height="11"><use href="#icon-play"></use></svg>`);
+                        ? `<svg width="14" height="14" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
+                        : `<svg width="14" height="14"><use href="#icon-book"></use></svg>`);
+
+                if (idx > 0) {
+                    html += `<div class="stepper-connector"></div>`;
+                }
 
                 // Chapter Item
                 html += `
                     <div class="step-item ${isChapterActive ? 'active' : ''} ${!isChapterUnlocked ? 'locked' : ''} ${isChapterCompleted ? 'completed' : ''}" 
                          onclick="${isChapterUnlocked ? `selectStep('chapter', ${idx})` : ''}">
                         <div class="step-left">
-                            <span class="step-icon" style="display: flex; align-items: center;">${chapterIconHtml}</span>
-                            <span>${escapeHtml(ch.title)}</span>
+                            <span class="step-icon">${chapterIconHtml}</span>
+                            <div class="step-text-wrap">
+                                <span class="step-title-text">${escapeHtml(ch.title)}</span>
+                            </div>
                         </div>
                         <div class="step-dot-indicator"></div>
                     </div>
                 `;
+
+                // Connecting line to Knowledge Check
+                html += `<div class="stepper-connector"></div>`;
 
                 // Knowledge Check Sub-item
                 const isKCUnlocked = progress.unlockedKCs.includes(idx) || isChapterCompleted;
@@ -1544,17 +1777,22 @@
                 const isKCActive = currentStepId === `kc_${idx}`;
 
                 const kcIconHtml = !isKCUnlocked 
-                    ? `<svg width="12" height="12"><use href="#icon-lock"></use></svg>` 
+                    ? `<svg width="14" height="14"><use href="#icon-lock"></use></svg>` 
                     : (isKCCompleted 
-                        ? `<svg width="12" height="12" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
-                        : `<svg width="12" height="12"><use href="#icon-clipboard"></use></svg>`);
+                        ? `<svg width="14" height="14" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
+                        : (isKCActive 
+                            ? `<svg width="14" height="14" style="color: var(--matrix-purple);"><use href="#icon-play"></use></svg>`
+                            : `<svg width="14" height="14"><use href="#icon-clipboard"></use></svg>`));
 
                 html += `
                     <div class="step-item sub-item ${isKCActive ? 'active' : ''} ${!isKCUnlocked ? 'locked' : ''} ${isKCCompleted ? 'completed' : ''}"
                          onclick="${isKCUnlocked ? `selectStep('kc', ${idx})` : ''}">
                         <div class="step-left">
-                            <span class="step-icon" style="display: flex; align-items: center;">${kcIconHtml}</span>
-                            <span>Knowledge Check ${idx + 1}</span>
+                            <span class="step-icon">${kcIconHtml}</span>
+                            <div class="step-text-wrap">
+                                <span class="step-title-text">Knowledge Check ${idx + 1}</span>
+                                <span class="step-sub-text">Knowledge Check</span>
+                            </div>
                         </div>
                         <div class="step-dot-indicator"></div>
                     </div>
@@ -1568,17 +1806,23 @@
                 const isFinalCompleted = progress.completedFinal;
 
                 const finalIconHtml = !allKCsCompleted 
-                    ? `<svg width="12" height="12"><use href="#icon-lock"></use></svg>` 
+                    ? `<svg width="14" height="14"><use href="#icon-lock"></use></svg>` 
                     : (isFinalCompleted 
-                        ? `<svg width="12" height="12" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
-                        : `<svg width="12" height="12"><use href="#icon-target"></use></svg>`);
+                        ? `<svg width="14" height="14" style="color: var(--matrix-green);"><use href="#icon-check"></use></svg>` 
+                        : (isFinalActive 
+                            ? `<svg width="14" height="14" style="color: var(--matrix-purple);"><use href="#icon-target"></use></svg>`
+                            : `<svg width="14" height="14"><use href="#icon-target"></use></svg>`));
 
                 html += `
+                    <div class="stepper-connector"></div>
                     <div class="step-item sub-item ${isFinalActive ? 'active' : ''} ${!allKCsCompleted ? 'locked' : ''} ${isFinalCompleted ? 'completed' : ''}"
                          onclick="${allKCsCompleted ? `selectStep('final', 0)` : ''}">
                         <div class="step-left">
-                            <span class="step-icon" style="display: flex; align-items: center;">${finalIconHtml}</span>
-                            <span>Final Assessment</span>
+                            <span class="step-icon">${finalIconHtml}</span>
+                            <div class="step-text-wrap">
+                                <span class="step-title-text">Final Assessment</span>
+                                <span class="step-sub-text">Final Assessment</span>
+                            </div>
                         </div>
                         <div class="step-dot-indicator"></div>
                     </div>
@@ -1592,6 +1836,7 @@
             currentStepType = type;
             currentChapterIndex = index;
             currentStepId = type === 'final' ? 'final_assessment' : `${type}_${index}`;
+            currentKCQuestionIndex = 0;
             studentQuizAnswers = {};
             quizGradedResults = null;
 
@@ -1655,9 +1900,11 @@
                     </div>
                 `;
 
-                // 3. Core Text Content
+                // 3. Core Text Content (Formatted with paragraph spacing)
                 if (ch.text_content) {
-                    html += `<div class="article-body-text">${escapeHtml(ch.text_content)}</div>`;
+                    const paragraphs = ch.text_content.split(/\n\s*\n/).filter(p => p.trim() !== '');
+                    const formattedHtml = paragraphs.map(p => `<p>${escapeHtml(p).replace(/\n/g, '<br>')}</p>`).join('');
+                    html += `<div class="article-body-text">${formattedHtml}</div>`;
                 }
 
                 // 4. Video Embed (if available)
@@ -1834,183 +2081,274 @@
 
             currentActiveQuestions = questions;
 
+            // Ensure valid question index
+            if (currentKCQuestionIndex >= questions.length) currentKCQuestionIndex = 0;
+            const q = questions[currentKCQuestionIndex];
+            if (!q) return;
+
             const kcTitle = currentStepType === 'final' ? 'Final Module Assessment' : `Knowledge Check ${currentChapterIndex + 1}`;
             const subtitleText = `${questions.length} questions · ${escapeHtml(ch ? ch.title : currentActiveModule.title)}`;
+            const isGraded = quizGradedResults !== null;
+
+            // Answer status check for carousel navigation
+            const isCurrentAnswered = studentQuizAnswers[q.id] !== undefined && studentQuizAnswers[q.id] !== '' && (q.question_type !== 'matching' || Object.keys(studentQuizAnswers[q.id] || {}).length > 0);
+            const allAnswered = questions.every(item => studentQuizAnswers[item.id] !== undefined && studentQuizAnswers[item.id] !== '');
+
+            const pct = Math.round(((currentKCQuestionIndex + 1) / questions.length) * 100);
+
+            // Step dots HTML
+            let dotsHtml = '';
+            questions.forEach((item, dIdx) => {
+                let dotClass = 'kc-step-dot';
+                if (dIdx === currentKCQuestionIndex) dotClass += ' active';
+                if (isGraded) {
+                    const gr = (quizGradedResults.results || []).find(r => r.question_id === item.id);
+                    if (gr && gr.is_correct) dotClass += ' correct';
+                    else if (gr) dotClass += ' wrong';
+                } else if (studentQuizAnswers[item.id] !== undefined && studentQuizAnswers[item.id] !== '') {
+                    dotClass += ' answered';
+                }
+                dotsHtml += `<div class="${dotClass}" onclick="handleKCJmp(${dIdx})" title="Question ${dIdx + 1}"></div>`;
+            });
 
             let html = `
                 <!-- KC Header Card -->
-                <div class="kc-header-card">
-                    <div class="kc-icon-box" style="display: flex; align-items: center; justify-content: center;">
-                        <svg width="22" height="22" style="color: var(--matrix-purple);"><use href="#icon-clipboard"></use></svg>
+                <div class="kc-header-card" style="flex-direction: column; align-items: stretch; gap: 14px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <div class="kc-icon-box" style="display: flex; align-items: center; justify-content: center;">
+                                <svg width="22" height="22" style="color: var(--matrix-purple);"><use href="#icon-clipboard"></use></svg>
+                            </div>
+                            <div class="kc-title-block">
+                                <h2 class="kc-title">${kcTitle}</h2>
+                                <div class="kc-subtitle">${subtitleText}</div>
+                            </div>
+                        </div>
+                        <div style="background: rgba(192, 132, 252, 0.12); color: var(--matrix-purple); font-weight: 700; font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(192, 132, 252, 0.3);">
+                            Question ${currentKCQuestionIndex + 1} of ${questions.length}
+                        </div>
                     </div>
-                    <div class="kc-title-block">
-                        <h2 class="kc-title">${kcTitle}</h2>
-                        <div class="kc-subtitle">${subtitleText}</div>
+                    <div class="kc-progress-bar-wrap">
+                        <div class="kc-progress-bar-fill" style="width: ${pct}%;"></div>
                     </div>
                 </div>
             `;
 
-            // Question Cards
-            const letters = ['A', 'B', 'C', 'D', 'E'];
-            const isGraded = quizGradedResults !== null;
-
-            questions.forEach((q, qIdx) => {
-                const savedAns = studentQuizAnswers[q.id];
-                const gradeInfo = isGraded ? (quizGradedResults.results || []).find(r => r.question_id === q.id) : null;
-                const correctAns = gradeInfo ? gradeInfo.correct_answer : q.correct_answer;
-
-                html += `
-                    <div class="question-card">
-                        <div class="question-num-tag">QUESTION ${qIdx + 1}</div>
-                        <div class="question-text-title">${escapeHtml(q.question_text)}</div>
-                        <div class="options-list">
-                `;
-
-                if (q.question_type === 'true_false') {
-                    ['True', 'False'].forEach((opt, optIdx) => {
-                        let optClass = 'option-choice-btn';
-                        const isThisCorrect = isGraded && (String(correctAns).toLowerCase() === opt.toLowerCase());
-                        const isThisUserSelection = savedAns === opt;
-
-                        if (isGraded) {
-                            if (isThisCorrect) {
-                                optClass += ' correct';
-                            } else if (isThisUserSelection) {
-                                optClass += ' wrong';
-                            } else {
-                                optClass += ' dimmed';
-                            }
-                        } else if (isThisUserSelection) {
-                            optClass += ' selected';
-                        }
-
-                        html += `
-                            <button class="${optClass}" onclick="handleSelectOptionByIndex(${q.id}, ${optIdx})" ${isGraded ? 'disabled' : ''}>
-                                <div style="display: flex; align-items: center; gap: 14px;">
-                                    <span class="opt-letter-circle">${opt[0]}</span>
-                                    <span>${opt}</span>
-                                </div>
-                                ${isThisCorrect ? `<svg width="18" height="18" style="color: #10b981; flex-shrink: 0;"><use href="#icon-check-circle"></use></svg>` : ''}
-                            </button>
-                        `;
-                    });
-                } else if (q.question_type === 'multiple_choice') {
-                    (q.options || []).forEach((opt, optIdx) => {
-                        let optClass = 'option-choice-btn';
-                        const isThisCorrect = isGraded && (String(correctAns).trim() === String(opt).trim());
-                        const isThisUserSelection = savedAns === opt;
-
-                        if (isGraded) {
-                            if (isThisCorrect) {
-                                optClass += ' correct';
-                            } else if (isThisUserSelection) {
-                                optClass += ' wrong';
-                            } else {
-                                optClass += ' dimmed';
-                            }
-                        } else if (isThisUserSelection) {
-                            optClass += ' selected';
-                        }
-
-                        html += `
-                            <button class="${optClass}" onclick="handleSelectOptionByIndex(${q.id}, ${optIdx})" ${isGraded ? 'disabled' : ''}>
-                                <div style="display: flex; align-items: center; gap: 14px;">
-                                    <span class="opt-letter-circle">${letters[optIdx] || optIdx + 1}</span>
-                                    <span>${escapeHtml(opt)}</span>
-                                </div>
-                                ${isThisCorrect ? `<svg width="18" height="18" style="color: #10b981; flex-shrink: 0;"><use href="#icon-check-circle"></use></svg>` : ''}
-                            </button>
-                        `;
-                    });
-                } else if (q.question_type === 'matching') {
-                    const pairs = Array.isArray(q.options) ? q.options : [];
-                    const matchAnswers = (typeof savedAns === 'object' && savedAns !== null) ? savedAns : {};
-                    const targetOptions = pairs.map(p => p.match || p.right || '');
-
-                    pairs.forEach((pair, pairIdx) => {
-                        const term = pair.term || pair.left || '';
-                        const currentVal = matchAnswers[term] || '';
-                        html += `
-                            <div class="match-pair-row">
-                                <div class="match-term-box">${escapeHtml(term)}</div>
-                                <div style="color: var(--text-muted); font-size: 13px;">➔</div>
-                                <select class="match-select" onchange="handleSelectMatchByIndex(${q.id}, ${pairIdx}, this.value)" ${isGraded ? 'disabled' : ''}>
-                                    <option value="" style="color: #6b7280;">Select matching answer...</option>
-                                    ${targetOptions.map(t => `<option value="${escapeHtml(t)}" ${currentVal === t ? 'selected' : ''}>${escapeHtml(t)}</option>`).join('')}
-                                </select>
-                            </div>
-                        `;
-                    });
-                }
-
-                if (isGraded) {
-                    const explText = (gradeInfo && gradeInfo.explanation) ? gradeInfo.explanation : (q.explanation || 'Reflecting on active practice deepens structural retention and conceptual clarity.');
-                    const relConcept = q.related_concept || `${currentActiveModule.quadrant_category || 'Distributed Collective'} learning mode`;
-                    const recChapter = q.recommended || (ch ? `Chapter ${currentChapterIndex + 1}: ${ch.title}` : currentActiveModule.title);
-
-                    html += `
-                        <div class="explanation-box">
-                            <div><strong style="color: #ffffff;">Explanation:</strong> <span style="color: #cbd5e1;">${escapeHtml(explText)}</span></div>
-                            <div><strong style="color: #ffffff;">Related concept:</strong> <span style="color: #94a3b8;">${escapeHtml(relConcept)}</span></div>
-                            <div><strong style="color: #ffffff;">Recommended:</strong> <span style="color: #94a3b8;">${escapeHtml(recChapter)}</span></div>
-                        </div>
-                    `;
-                }
-
-                html += `</div></div>`;
-            });
-
-            if (!isGraded) {
-                html += `
-                    <div style="margin-top: 10px;">
-                        <button class="btn-submit-kc" onclick="handleSubmitKCAnswers(${JSON.stringify(questions.map(q => q.id))})">
-                            Submit Answers &rarr;
-                        </button>
-                    </div>
-                `;
-            } else {
+            // Graded summary banner if graded
+            if (isGraded) {
                 if (quizGradedResults.passed) {
-                    // Perfect 100% score
                     html += `
-                        <div class="mastery-banner perfect">
+                        <div class="mastery-banner perfect" style="margin-bottom: 8px;">
                             <div style="font-size: 16px; font-weight: 700; color: #4ade80; display: flex; align-items: center; gap: 8px;">
                                 <svg width="22" height="22"><use href="#icon-award"></use></svg>
                                 100% Perfect Mastery! (${quizGradedResults.score} / ${quizGradedResults.total})
                             </div>
                             <p style="font-size: 13.5px; color: #cbd5e1;">
-                                Outstanding job! You have perfected this Knowledge Check. The next section is now unlocked.
+                                Outstanding job! You have perfected this Knowledge Check. You can review your answers below or proceed.
                             </p>
-                            <button class="btn-continue-next-kc" onclick="handleVictoryContinue()">
-                                Continue to Next Section &rarr;
-                            </button>
                         </div>
                     `;
                 } else {
-                    // Not perfected yet (< 100%) - Must keep answering until perfected
                     html += `
-                        <div class="mastery-banner">
+                        <div class="mastery-banner" style="margin-bottom: 8px;">
                             <div style="font-size: 15.5px; font-weight: 700; color: #fb923c; display: flex; align-items: center; gap: 8px;">
                                 <svg width="18" height="18"><use href="#icon-lock"></use></svg>
                                 Mastery Required (${quizGradedResults.score} / ${quizGradedResults.total} Correct &middot; ${quizGradedResults.percentage}%)
                             </div>
                             <p style="font-size: 13px; color: #cbd5e1; max-width: 540px; line-height: 1.55;">
-                                You must achieve a <strong>perfect 100% score</strong> to unlock the next chapter. Review the explanations above and try again!
+                                You must achieve a <strong>perfect 100% score</strong> to unlock the next chapter. Review the explanation slides below and try again!
                             </p>
-                            <button class="btn-retake-kc" onclick="handleRetakeKC()">
-                                <svg width="15" height="15" style="vertical-align: middle; margin-right: 6px;"><use href="#icon-refresh"></use></svg>
-                                Retake Knowledge Check
-                            </button>
                         </div>
                     `;
                 }
             }
 
+            // Render Current Question Card (Slide)
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+            const savedAns = studentQuizAnswers[q.id];
+            const gradeInfo = isGraded ? (quizGradedResults.results || []).find(r => r.question_id === q.id) : null;
+            const correctAns = gradeInfo ? gradeInfo.correct_answer : q.correct_answer;
+
+            html += `
+                <div class="question-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="question-num-tag">QUESTION ${currentKCQuestionIndex + 1} OF ${questions.length}</div>
+                        <div class="kc-step-dots">${dotsHtml}</div>
+                    </div>
+                    <div class="question-text-title">${escapeHtml(q.question_text)}</div>
+                    <div class="options-list">
+            `;
+
+            if (q.question_type === 'true_false') {
+                ['True', 'False'].forEach((opt, optIdx) => {
+                    let optClass = 'option-choice-btn';
+                    const isThisCorrect = isGraded && (String(correctAns).toLowerCase() === opt.toLowerCase());
+                    const isThisUserSelection = savedAns === opt;
+
+                    if (isGraded) {
+                        if (isThisCorrect) {
+                            optClass += ' correct';
+                        } else if (isThisUserSelection) {
+                            optClass += ' wrong';
+                        } else {
+                            optClass += ' dimmed';
+                        }
+                    } else if (isThisUserSelection) {
+                        optClass += ' selected';
+                    }
+
+                    html += `
+                        <button class="${optClass}" onclick="handleSelectOptionByIndex(${q.id}, ${optIdx})" ${isGraded ? 'disabled' : ''}>
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                <span class="opt-letter-circle">${opt[0]}</span>
+                                <span>${opt}</span>
+                            </div>
+                            ${isThisCorrect ? `<svg width="18" height="18" style="color: #10b981; flex-shrink: 0;"><use href="#icon-check-circle"></use></svg>` : ''}
+                        </button>
+                    `;
+                });
+            } else if (q.question_type === 'multiple_choice') {
+                (q.options || []).forEach((opt, optIdx) => {
+                    let optClass = 'option-choice-btn';
+                    const isThisCorrect = isGraded && (String(correctAns).trim() === String(opt).trim());
+                    const isThisUserSelection = savedAns === opt;
+
+                    if (isGraded) {
+                        if (isThisCorrect) {
+                            optClass += ' correct';
+                        } else if (isThisUserSelection) {
+                            optClass += ' wrong';
+                        } else {
+                            optClass += ' dimmed';
+                        }
+                    } else if (isThisUserSelection) {
+                        optClass += ' selected';
+                    }
+
+                    html += `
+                        <button class="${optClass}" onclick="handleSelectOptionByIndex(${q.id}, ${optIdx})" ${isGraded ? 'disabled' : ''}>
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                <span class="opt-letter-circle">${letters[optIdx] || optIdx + 1}</span>
+                                <span>${escapeHtml(opt)}</span>
+                            </div>
+                            ${isThisCorrect ? `<svg width="18" height="18" style="color: #10b981; flex-shrink: 0;"><use href="#icon-check-circle"></use></svg>` : ''}
+                        </button>
+                    `;
+                });
+            } else if (q.question_type === 'matching') {
+                const pairs = Array.isArray(q.options) ? q.options : [];
+                const matchAnswers = (typeof savedAns === 'object' && savedAns !== null) ? savedAns : {};
+                const targetOptions = pairs.map(p => p.match || p.right || '');
+
+                pairs.forEach((pair, pairIdx) => {
+                    const term = pair.term || pair.left || '';
+                    const currentVal = matchAnswers[term] || '';
+                    html += `
+                        <div class="match-pair-row">
+                            <div class="match-term-box">${escapeHtml(term)}</div>
+                            <div style="color: var(--text-muted); font-size: 13px;">➔</div>
+                            <select class="match-select" onchange="handleSelectMatchByIndex(${q.id}, ${pairIdx}, this.value)" ${isGraded ? 'disabled' : ''}>
+                                <option value="" style="color: #6b7280;">Select matching answer...</option>
+                                ${targetOptions.map(t => `<option value="${escapeHtml(t)}" ${currentVal === t ? 'selected' : ''}>${escapeHtml(t)}</option>`).join('')}
+                            </select>
+                        </div>
+                    `;
+                });
+            }
+
+            if (isGraded) {
+                const explText = (gradeInfo && gradeInfo.explanation) ? gradeInfo.explanation : (q.explanation || 'Reflecting on active practice deepens structural retention and conceptual clarity.');
+                const relConcept = q.related_concept || `${currentActiveModule.quadrant_category || 'Distributed Collective'} learning mode`;
+                const recChapter = q.recommended || (ch ? `Chapter ${currentChapterIndex + 1}: ${ch.title}` : currentActiveModule.title);
+
+                html += `
+                    <div class="explanation-box">
+                        <div><strong style="color: #ffffff;">Explanation:</strong> <span style="color: #cbd5e1;">${escapeHtml(explText)}</span></div>
+                        <div><strong style="color: #ffffff;">Related concept:</strong> <span style="color: #94a3b8;">${escapeHtml(relConcept)}</span></div>
+                        <div><strong style="color: #ffffff;">Recommended:</strong> <span style="color: #94a3b8;">${escapeHtml(recChapter)}</span></div>
+                    </div>
+                `;
+            }
+
+            html += `</div>`; // end options-list
+
+            // Carousel Navigation Footer
+            const isLastQuestion = currentKCQuestionIndex === questions.length - 1;
+
+            html += `
+                <div class="kc-carousel-footer">
+                    <button class="btn-kc-nav" onclick="handleKCCarouselNav(-1)" ${currentKCQuestionIndex === 0 ? 'disabled' : ''}>
+                        &larr; Previous
+                    </button>
+                    
+                    <div style="display: flex; align-items: center; gap: 10px;">
+            `;
+
+            if (!isGraded) {
+                if (!isLastQuestion) {
+                    html += `
+                        <button class="btn-kc-nav btn-kc-next" onclick="handleKCCarouselNav(1)" ${!isCurrentAnswered ? 'disabled' : ''}>
+                            Next Question &rarr;
+                        </button>
+                    `;
+                } else {
+                    html += `
+                        <button class="btn-kc-submit" onclick="handleSubmitKCAnswers(${JSON.stringify(questions.map(item => item.id))})" ${!isCurrentAnswered || !allAnswered ? 'disabled' : ''}>
+                            Submit Answers &rarr;
+                        </button>
+                    `;
+                }
+            } else {
+                if (!isLastQuestion) {
+                    html += `
+                        <button class="btn-kc-nav btn-kc-next" onclick="handleKCCarouselNav(1)">
+                            Next Question &rarr;
+                        </button>
+                    `;
+                } else {
+                    if (quizGradedResults.passed) {
+                        html += `
+                            <button class="btn-continue-next-kc" onclick="handleVictoryContinue()">
+                                Continue to Next Section &rarr;
+                            </button>
+                        `;
+                    } else {
+                        html += `
+                            <button class="btn-retake-kc" onclick="handleRetakeKC()">
+                                <svg width="15" height="15" style="vertical-align: middle; margin-right: 6px;"><use href="#icon-refresh"></use></svg>
+                                Retake Knowledge Check
+                            </button>
+                        `;
+                    }
+                }
+            }
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            html += `</div>`; // end question-card
+
             body.innerHTML = html;
+        }
+
+        function handleKCCarouselNav(direction) {
+            currentKCQuestionIndex += direction;
+            if (currentKCQuestionIndex < 0) currentKCQuestionIndex = 0;
+            if (currentKCQuestionIndex >= currentActiveQuestions.length) currentKCQuestionIndex = currentActiveQuestions.length - 1;
+            renderKnowledgeCheckContent();
+        }
+
+        function handleKCJmp(index) {
+            currentKCQuestionIndex = index;
+            renderKnowledgeCheckContent();
         }
 
         function handleRetakeKC() {
             studentQuizAnswers = {};
             quizGradedResults = null;
+            currentKCQuestionIndex = 0;
             renderKnowledgeCheckContent();
             
             const scrollPane = document.getElementById('reader-scroll-container');

@@ -803,13 +803,15 @@
 
             // Check if on last question and all answered
             const nextBtn = container.querySelector('#next-btn-action');
+            const hasAnsweredCurrent = answers[item.i] !== undefined;
+
             if (index === shuffledQuestions.length - 1) {
                 nextBtn.textContent = 'Submit';
                 nextBtn.style.backgroundColor = 'var(--matrix-green)';
                 nextBtn.style.color = '#000';
-                if (Object.keys(answers).length !== surveyQuestions.length) {
-                    nextBtn.disabled = true;
-                }
+                nextBtn.disabled = !hasAnsweredCurrent || Object.keys(answers).length !== surveyQuestions.length;
+            } else {
+                nextBtn.disabled = !hasAnsweredCurrent;
             }
 
             // Answer clicks
@@ -821,7 +823,9 @@
                     answers[item.i] = val;
                     updateProgress();
 
-                    if (index === shuffledQuestions.length - 1 && Object.keys(answers).length === surveyQuestions.length) {
+                    if (index === shuffledQuestions.length - 1) {
+                        nextBtn.disabled = Object.keys(answers).length !== surveyQuestions.length;
+                    } else {
                         nextBtn.disabled = false;
                     }
                 });
@@ -841,6 +845,8 @@
 
             // Next / Submit Button
             nextBtn.addEventListener('click', () => {
+                if (answers[item.i] === undefined) return; // Must answer before proceeding
+
                 if (index === shuffledQuestions.length - 1) {
                     // Trigger submit logic
                     submitAssessment();
