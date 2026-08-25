@@ -220,6 +220,11 @@ app.post('/api/students/register', async (req, res) => {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Normalize email to lowercase and trim
+    email = email.trim().toLowerCase();
+    first_name = first_name.trim();
+    last_name = last_name.trim();
+
     // Format and validate optional Middle Initial (M.I.)
     if (mi && mi.trim() !== '') {
         mi = mi.trim().toUpperCase();
@@ -269,12 +274,17 @@ app.post('/api/students/register', async (req, res) => {
 
 // POST /api/teachers/register - Register a new teacher
 app.post('/api/teachers/register', async (req, res) => {
-    const { first_name, last_name, mi, email, password, learning_mode } = req.body;
+    let { first_name, last_name, mi, email, password, learning_mode } = req.body;
     
     // Basic validation
     if (!first_name || !last_name || !email || !password) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
+
+    // Normalize email to lowercase and trim
+    email = email.trim().toLowerCase();
+    first_name = first_name.trim();
+    last_name = last_name.trim();
 
     try {
         // Hash the password securely
@@ -338,8 +348,10 @@ app.post('/api/login', async (req, res) => {
     const { email, password, requested_role } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     if (requested_role === 'student') {
-        db.get(`SELECT * FROM students WHERE email = ?`, [email], async (err, student) => {
+        db.get(`SELECT * FROM students WHERE LOWER(TRIM(email)) = ?`, [normalizedEmail], async (err, student) => {
             if (err) return res.status(500).json({ error: err.message });
             if (student) {
                 const match = await bcrypt.compare(password, student.password_hash);
@@ -349,7 +361,8 @@ app.post('/api/login', async (req, res) => {
                         role: 'student', 
                         user: { 
                             id: student.id, name: student.first_name, last_name: student.last_name,
-                            student_no: student.student_no, program: student.program, year_level: student.year_level, section: student.section
+                            student_no: student.student_no, program: student.program, year_level: student.year_level, section: student.section,
+                            email: student.email
                         } 
                     });
                 } else return res.status(401).json({ error: 'Invalid password' });
@@ -357,14 +370,14 @@ app.post('/api/login', async (req, res) => {
             return res.status(404).json({ error: 'Student not found' });
         });
     } else if (requested_role === 'teacher') {
-        db.get(`SELECT * FROM teachers WHERE email = ?`, [email], async (err, teacher) => {
+        db.get(`SELECT * FROM teachers WHERE LOWER(TRIM(email)) = ?`, [normalizedEmail], async (err, teacher) => {
             if (err) return res.status(500).json({ error: err.message });
             if (teacher) {
                 const match = await bcrypt.compare(password, teacher.password_hash);
                 if (match) {
                     return res.json({ 
                         success: true, role: 'teacher', 
-                        user: { id: teacher.id, name: teacher.first_name, last_name: teacher.last_name } 
+                        user: { id: teacher.id, name: teacher.first_name, last_name: teacher.last_name, email: teacher.email } 
                     });
                 } else return res.status(401).json({ error: 'Invalid password' });
             }

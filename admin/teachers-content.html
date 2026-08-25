@@ -94,7 +94,7 @@
                     <div class="form-group"><label>First Name</label><input type="text" id="first_name" required></div>
                     <div class="form-group"><label>Last Name</label><input type="text" id="last_name" required></div>
                     <div class="form-group"><label>Middle Initial</label><input type="text" id="mi"></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="email" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="email" style="text-transform: lowercase;" oninput="this.value = this.value.toLowerCase()" required></div>
                     <div class="form-group"><label>Password</label>
                         <div style="position: relative; display: flex; align-items: center;">
                             <input type="password" id="password" required style="width: 100%; padding-right: 40px;">
@@ -213,10 +213,10 @@
             msg.textContent = '';
             
             const data = {
-                first_name: document.getElementById('first_name').value,
-                last_name: document.getElementById('last_name').value,
-                mi: document.getElementById('mi').value,
-                email: document.getElementById('email').value,
+                first_name: document.getElementById('first_name').value.trim(),
+                last_name: document.getElementById('last_name').value.trim(),
+                mi: document.getElementById('mi').value.trim(),
+                email: document.getElementById('email').value.trim().toLowerCase(),
                 password: document.getElementById('password').value,
                 learning_mode: document.getElementById('learning_mode').value
             };
