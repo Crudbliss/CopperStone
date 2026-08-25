@@ -986,6 +986,7 @@
             gap: 12px;
             align-items: center;
             margin-bottom: 8px;
+            transition: all 0.2s ease;
         }
 
         .match-term-box {
@@ -995,6 +996,67 @@
             padding: 12px 16px;
             font-size: 13px;
             font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .match-arrow {
+            color: var(--text-muted);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .match-pair-row.correct .match-term-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            color: #ffffff;
+        }
+
+        .match-pair-row.correct .match-arrow {
+            color: #10b981;
+        }
+
+        .match-pair-row.wrong .match-term-box {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            color: #ffffff;
+        }
+
+        .match-pair-row.wrong .match-arrow {
+            color: #ef4444;
+        }
+
+        .match-result-pill {
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .match-result-pill.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #4ade80;
+        }
+
+        .match-result-pill.wrong {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #f87171;
+        }
+
+        .match-correct-hint {
+            font-size: 12px;
+            color: #4ade80;
+            margin-top: 4px;
+            padding-left: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            line-height: 1.4;
         }
 
         .match-select {
@@ -2211,8 +2273,8 @@
             const isGraded = quizGradedResults !== null;
 
             // Answer status check for carousel navigation
-            const isCurrentAnswered = studentQuizAnswers[q.id] !== undefined && studentQuizAnswers[q.id] !== '' && (q.question_type !== 'matching' || Object.keys(studentQuizAnswers[q.id] || {}).length > 0);
-            const allAnswered = questions.every(item => studentQuizAnswers[item.id] !== undefined && studentQuizAnswers[item.id] !== '');
+            const isCurrentAnswered = isQuestionAnswered(q);
+            const allAnswered = questions.every(item => isQuestionAnswered(item));
 
             const pct = Math.round(((currentKCQuestionIndex + 1) / questions.length) * 100);
 
@@ -2225,7 +2287,7 @@
                     const gr = (quizGradedResults.results || []).find(r => r.question_id === item.id);
                     if (gr && gr.is_correct) dotClass += ' correct';
                     else if (gr) dotClass += ' wrong';
-                } else if (studentQuizAnswers[item.id] !== undefined && studentQuizAnswers[item.id] !== '') {
+                } else if (isQuestionAnswered(item)) {
                     dotClass += ' answered';
                 }
                 dotsHtml += `<div class="${dotClass}" onclick="handleKCJmp(${dIdx})" title="Question ${dIdx + 1}"></div>`;
@@ -2363,16 +2425,42 @@
                 pairs.forEach((pair, pairIdx) => {
                     const term = pair.term || pair.left || '';
                     const currentVal = matchAnswers[term] || '';
+                    const expectedMatch = (correctAns && typeof correctAns === 'object') ? (correctAns[term] || pair.match || pair.right || '') : (pair.match || pair.right || '');
+                    const isPairCorrect = isGraded && (String(currentVal).trim() === String(expectedMatch).trim());
+                    const isPairWrong = isGraded && !isPairCorrect;
+
+                    let rowClass = 'match-pair-row';
+                    if (isGraded) {
+                        rowClass += isPairCorrect ? ' correct' : ' wrong';
+                    }
+
                     html += `
-                        <div class="match-pair-row">
+                        <div class="${rowClass}">
                             <div class="match-term-box">${escapeHtml(term)}</div>
-                            <div style="color: var(--text-muted); font-size: 13px;">➔</div>
-                            <select class="match-select" onchange="handleSelectMatchByIndex(${q.id}, ${pairIdx}, this.value)" ${isGraded ? 'disabled' : ''}>
+                            <div class="match-arrow">➔</div>
+                    `;
+
+                    if (!isGraded) {
+                        html += `
+                            <select class="match-select" onchange="handleSelectMatchByIndex(${q.id}, ${pairIdx}, this.value)">
                                 <option value="" style="color: #6b7280;">Select matching answer...</option>
                                 ${targetOptions.map(t => `<option value="${escapeHtml(t)}" ${currentVal === t ? 'selected' : ''}>${escapeHtml(t)}</option>`).join('')}
                             </select>
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        // Graded View: Show clear color-coded pill with student choice & correct answer
+                        html += `
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                                <div class="match-result-pill ${isPairCorrect ? 'correct' : 'wrong'}">
+                                    <span>${isPairCorrect ? '✓' : '✗'} ${escapeHtml(currentVal || '(No Answer)')}</span>
+                                    ${isPairCorrect ? '<span style="font-size: 11px; font-weight: 700; opacity: 0.9; text-transform: uppercase;">Correct</span>' : '<span style="font-size: 11px; font-weight: 700; opacity: 0.9; text-transform: uppercase;">Incorrect</span>'}
+                                </div>
+                                ${isPairWrong ? `<div class="match-correct-hint"><span>✓ Correct:</span> <strong>${escapeHtml(expectedMatch)}</strong></div>` : ''}
+                            </div>
+                        `;
+                    }
+
+                    html += `</div>`;
                 });
             }
 
@@ -2485,6 +2573,51 @@
             renderKnowledgeCheckContent();
         }
 
+        function isQuestionAnswered(question) {
+            if (!question) return false;
+            const ans = studentQuizAnswers[question.id];
+            if (ans === undefined || ans === null || ans === '') return false;
+            if (question.question_type === 'matching') {
+                const pairs = Array.isArray(question.options) ? question.options : [];
+                if (pairs.length === 0) return true;
+                if (typeof ans !== 'object' || ans === null) return false;
+                return pairs.every(p => {
+                    const term = p.term || p.left || '';
+                    return ans[term] !== undefined && ans[term] !== null && String(ans[term]).trim() !== '';
+                });
+            }
+            return true;
+        }
+
+        function updateKCNavState() {
+            const q = currentActiveQuestions[currentKCQuestionIndex];
+            if (!q) return;
+            const isCurrentAnswered = isQuestionAnswered(q);
+            const allAnswered = currentActiveQuestions.every(item => isQuestionAnswered(item));
+
+            const nextBtn = document.querySelector('.btn-kc-next');
+            if (nextBtn) {
+                nextBtn.disabled = !isCurrentAnswered;
+            }
+
+            const submitBtn = document.querySelector('.btn-kc-submit');
+            if (submitBtn) {
+                submitBtn.disabled = (!isCurrentAnswered || !allAnswered);
+            }
+
+            // Update step dots
+            const dots = document.querySelectorAll('.kc-step-dot');
+            currentActiveQuestions.forEach((item, dIdx) => {
+                if (dots[dIdx]) {
+                    if (isQuestionAnswered(item)) {
+                        dots[dIdx].classList.add('answered');
+                    } else {
+                        dots[dIdx].classList.remove('answered');
+                    }
+                }
+            });
+        }
+
         function handleSelectMatchByIndex(qId, pairIdx, value) {
             const q = currentActiveQuestions.find(item => item.id === qId);
             if (!q) return;
@@ -2497,6 +2630,7 @@
                 studentQuizAnswers[qId] = {};
             }
             studentQuizAnswers[qId][term] = value;
+            updateKCNavState();
         }
 
         /* --- SUBMIT KC & TRIGGER VICTORY MODAL --- */
