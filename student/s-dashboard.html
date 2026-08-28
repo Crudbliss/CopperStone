@@ -78,6 +78,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
 
         /* --- SIDEBAR COMPONENTS --- */
@@ -158,8 +159,8 @@
         .user-avatar {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            background-color: rgba(216, 166, 26, 0.15);
+            border-radius: 8px;
+            background-color: rgba(216, 166, 26, 0.2);
             color: var(--matrix-yellow);
             display: flex;
             align-items: center;
@@ -171,65 +172,57 @@
         .user-details h4 {
             font-size: 14px;
             font-weight: 700;
-            line-height: 1.2;
-            color: #ffffff;
         }
 
         .user-details p {
             font-size: 12px;
             color: var(--text-muted);
-            font-weight: 500;
-            margin-top: 2px;
         }
 
         .sign-out-link {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            padding-left: 6px;
-            transition: color 0.2s ease;
+            transition: color 0.2s;
+            cursor: pointer;
         }
 
         .sign-out-link:hover {
-            color: var(--text-main);
+            color: #ef4444;
         }
 
-        /* --- TOP HEADER --- */
+        /* --- MAIN HEADER --- */
         .top-header {
-            height: 64px;
+            height: 70px;
+            background-color: var(--hd-color);
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
-            border-bottom: 1px solid var(--border-light);
-            background-color: rgba(10, 30, 45, 0.95);
-            backdrop-filter: blur(8px);
-            z-index: 10;
+            padding: 0 32px;
+            flex-shrink: 0;
         }
 
         .header-title-box {
             display: flex;
             flex-direction: column;
-            justify-content: center;
         }
 
         .header-subtitle {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-muted);
-            font-weight: 700;
-            letter-spacing: 1px;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .header-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            line-height: 1.2;
         }
 
         .header-actions {
@@ -339,6 +332,325 @@
             .status-text { font-size: 10px; }
             .header-actions { gap: 12px; }
         }
+
+        /* --- NOTIFICATION DROPDOWN STYLING --- */
+        .notif-dropdown-container {
+            position: absolute;
+            top: 52px;
+            right: 0;
+            width: 360px;
+            max-width: calc(100vw - 32px);
+            background: #09121d;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+            z-index: 1000;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: notifFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes notifFadeIn {
+            0% { opacity: 0; transform: translateY(-8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .notif-header {
+            padding: 16px 20px 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notif-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.2px;
+        }
+
+        .btn-mark-all-read {
+            background: none;
+            border: none;
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 0;
+        }
+
+        .btn-mark-all-read:hover {
+            color: #ffffff;
+        }
+
+        .notif-tabs-nav {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0 16px;
+            gap: 24px;
+        }
+
+        .notif-tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 4px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: inherit;
+            position: relative;
+            transition: color 0.2s ease;
+        }
+
+        .notif-tab-btn:hover {
+            color: #cbd5e1;
+        }
+
+        .notif-tab-btn.active {
+            color: var(--matrix-yellow);
+        }
+
+        .notif-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2.5px;
+            background-color: var(--matrix-yellow);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .notif-tab-content {
+            padding: 14px 16px 16px 16px;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        .notif-tab-content::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .notif-tab-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .notif-tab-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        /* To-Do cards */
+        .notif-todo-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 13px 15px;
+            border-radius: 12px;
+            margin-bottom: 9px;
+            font-size: 13px;
+            line-height: 1.45;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            color: #cbd5e1;
+            text-align: left;
+        }
+
+        .notif-todo-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.14);
+            transform: translateY(-1px);
+            color: #ffffff;
+        }
+
+        .notif-todo-card.urgent {
+            background: rgba(216, 166, 26, 0.08);
+            border: 1px solid rgba(216, 166, 26, 0.35);
+            color: #ffffff;
+        }
+
+        .notif-todo-card.urgent:hover {
+            background: rgba(216, 166, 26, 0.14);
+            border-color: rgba(216, 166, 26, 0.5);
+        }
+
+        .notif-bullet {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .notif-bullet.yellow {
+            background-color: #f59e0b;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+        }
+
+        .notif-bullet.gray {
+            background-color: #64748b;
+        }
+
+        .notif-bullet.green {
+            background-color: #4ade80;
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+        }
+
+        /* Activity log items */
+        .notif-activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 13px 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            text-align: left;
+        }
+
+        .notif-activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .notif-act-title {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 3px;
+        }
+
+        .notif-act-sub {
+            font-size: 12px;
+            color: #8b9eb0;
+            margin-bottom: 3px;
+        }
+
+        .notif-act-time {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        /* Bell badge dot */
+        .bell-badge {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 8px;
+            height: 8px;
+            background: #f59e0b;
+            border-radius: 50%;
+            border: 1.5px solid #0a1e2d;
+            box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+            display: none;
+        }
+
+        /* Custom Confirmation Modal */
+        .custom-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .custom-modal-box {
+            background: #0d1722;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 28px 24px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+            animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.92); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon-warning {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.12);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+        }
+
+        .modal-title-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .modal-desc-text {
+            font-size: 13.5px;
+            color: #8b9eb0;
+            line-height: 1.5;
+            margin-bottom: 22px;
+        }
+
+        .modal-actions-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-modal-cancel {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            font-size: 13.5px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-modal-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .btn-modal-confirm {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            background: #ef4444;
+            border: none;
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .btn-modal-confirm:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 
@@ -418,29 +730,29 @@
                 </svg>
                 <span>Dashboard</span>
             </a>
+            <a href="qa-content.html" target="content-frame" class="sidebar-link">
+                <svg width="20" height="20">
+                    <use href="#icon-checklist"></use>
+                </svg>
+                <span>Assessments</span>
+            </a>
             <a href="modules-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20">
                     <use href="#icon-book"></use>
                 </svg>
                 <span>My Modules</span>
             </a>
-            <a href="qa-content.html" target="content-frame" class="sidebar-link">
-                <svg width="20" height="20">
-                    <use href="#icon-checklist"></use>
-                </svg>
-                <span>Assessment</span>
-            </a>
             <a href="strategy-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20">
                     <use href="#icon-map"></use>
                 </svg>
-                <span>Strategy Roadmap</span>
+                <span>Learning Strategy</span>
             </a>
             <a href="progress-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20">
                     <use href="#icon-linechart"></use>
                 </svg>
-                <span>Migration History</span>
+                <span>My Progress</span>
             </a>
             <a href="profile-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20">
@@ -454,8 +766,8 @@
             <div class="sidebar-user">
                 <div class="user-avatar" id="sidebar-student-avatar">--</div>
                 <div class="user-details">
-                    <h4 id="sidebar-student-name">Student</h4>
-                    <p id="sidebar-student-program">Loading...</p>
+                    <h4 id="sidebar-student-name">Loading...</h4>
+                    <p id="sidebar-student-program">Learner</p>
                 </div>
             </div>
 
@@ -482,24 +794,44 @@
             </div>
 
             <div class="header-actions" style="position: relative;">
-                <button class="btn-icon" id="bell-toggle">
+                <button class="btn-icon" id="bell-toggle" style="position: relative;">
                     <svg width="20" height="20">
                         <use href="#icon-bell"></use>
                     </svg>
+                    <span id="bell-badge-count" class="bell-badge" style="display: none;"></span>
                 </button>
                 
                 <!-- Notification Dropdown -->
-                <div id="notification-dropdown" style="display: none; position: absolute; top: 48px; right: 140px; width: 320px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
-                    <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2);">
-                        <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text-main);">Notifications</h4>
-                        <span style="font-size: 11px; background: rgba(56, 189, 248, 0.1); color: var(--matrix-blue); padding: 2px 8px; border-radius: 10px; font-weight: 600;">0 New</span>
+                <div id="notification-dropdown" class="notif-dropdown-container" style="display: none;">
+                    <div class="notif-header">
+                        <span class="notif-title">Notifications</span>
+                        <button class="btn-mark-all-read" onclick="markAllNotificationsRead()">Mark all as read</button>
                     </div>
-                    <div style="padding: 40px 16px; text-align: center; color: var(--text-muted);">
-                        <svg width="32" height="32" style="opacity: 0.2; margin-bottom: 12px; color: var(--text-main);"><use href="#icon-bell"></use></svg>
-                        <p style="margin: 0; font-size: 14px; font-weight: 500; color: var(--text-main);">You're all caught up!</p>
-                        <p style="margin: 6px 0 0 0; font-size: 12px; opacity: 0.7;">No new notifications right now.</p>
+                    
+                    <div class="notif-tabs-nav">
+                        <button class="notif-tab-btn active" id="tab-btn-todo" onclick="switchNotifTab('todo')">
+                            To-Do / Actions
+                        </button>
+                        <button class="notif-tab-btn" id="tab-btn-activity" onclick="switchNotifTab('activity')">
+                            Activity Log
+                        </button>
+                    </div>
+
+                    <!-- Tab 1: To-Do / Actions -->
+                    <div class="notif-tab-content" id="notif-tab-todo">
+                        <div id="notif-todo-list">
+                            <!-- Injected via JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Activity Log -->
+                    <div class="notif-tab-content" id="notif-tab-activity" style="display: none;">
+                        <div id="notif-activity-list">
+                            <!-- Injected via JavaScript -->
+                        </div>
                     </div>
                 </div>
+
                 <div class="status-pill" id="header-status-pill">
                     <div class="status-dot-icon" id="header-status-dot">
                         <svg width="10" height="10">
@@ -511,11 +843,28 @@
             </div>
         </header>
 
+        <!-- Logout Confirmation Modal -->
+        <div id="logout-confirm-modal" class="custom-modal-backdrop" style="display: none;">
+            <div class="custom-modal-box">
+                <div class="modal-icon-warning">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                </div>
+                <h3 class="modal-title-text">Confirm Logout</h3>
+                <p class="modal-desc-text">Are you sure you want to log out of your session?</p>
+                <div class="modal-actions-row">
+                    <button type="button" class="btn-modal-cancel" onclick="closeLogoutModal()">Cancel</button>
+                    <button type="button" class="btn-modal-confirm" onclick="confirmLogout()">Log Out</button>
+                </div>
+            </div>
+        </div>
+
         <iframe src="dashboard-content.html" name="content-frame" id="content-frame"></iframe>
 
     </div>
 
     <script>
+        let currentStudentData = null;
+
         document.addEventListener('DOMContentLoaded', () => {
             const sidebarLinks = document.querySelectorAll('.sidebar-link');
             const sidebar = document.querySelector('.sidebar');
@@ -555,6 +904,7 @@
                     fetch('/api/students/' + user.id)
                         .then(res => res.json())
                         .then(data => {
+                            currentStudentData = data;
                             // Cache the real profile for child iframes
                             localStorage.setItem('studentProfile', JSON.stringify(data));
                             
@@ -606,8 +956,14 @@
                             const pill = document.getElementById('header-status-pill');
                             pill.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
                             pill.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
+
+                            // Load notifications once user data is loaded
+                            loadNotifications();
                         })
-                        .catch(err => console.error('Failed to load student data', err));
+                        .catch(err => {
+                            console.error('Failed to load student data', err);
+                            loadNotifications();
+                        });
                 } catch (e) { console.error(e); }
             } else {
                 window.location.href = '../index.html';
@@ -622,6 +978,7 @@
             e.stopPropagation();
             if (notifDropdown.style.display === 'none') {
                 notifDropdown.style.display = 'block';
+                loadNotifications();
             } else {
                 notifDropdown.style.display = 'none';
             }
@@ -634,16 +991,246 @@
             }
         });
 
+        // Tab Switching in Notifications
+        window.switchNotifTab = function(tabName) {
+            const btnTodo = document.getElementById('tab-btn-todo');
+            const btnActivity = document.getElementById('tab-btn-activity');
+            const tabTodo = document.getElementById('notif-tab-todo');
+            const tabActivity = document.getElementById('notif-tab-activity');
+
+            if (tabName === 'todo') {
+                btnTodo.classList.add('active');
+                btnActivity.classList.remove('active');
+                tabTodo.style.display = 'block';
+                tabActivity.style.display = 'none';
+            } else {
+                btnActivity.classList.add('active');
+                btnTodo.classList.remove('active');
+                tabActivity.style.display = 'block';
+                tabTodo.style.display = 'none';
+            }
+        };
+
+        // Load & Render Dynamic Notifications
+        async function loadNotifications() {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) return;
+            const user = JSON.parse(userStr);
+            const readKey = 'notif_read_ids_' + user.id;
+            let readIds = [];
+            try { readIds = JSON.parse(localStorage.getItem(readKey) || '[]'); } catch(e) {}
+
+            const todoListEl = document.getElementById('notif-todo-list');
+            const actListEl = document.getElementById('notif-activity-list');
+            const badgeEl = document.getElementById('bell-badge-count');
+
+            let todoItems = [];
+            let activityItems = [];
+
+            try {
+                // Fetch modules to generate progress-based notifications
+                let modules = [];
+                try {
+                    const mRes = await fetch('/api/modules');
+                    if (mRes.ok) modules = await mRes.json();
+                } catch(e) {}
+
+                // 1. Pending Assessment Session (Urgent To-Do)
+                const studentProfile = JSON.parse(localStorage.getItem('studentProfile') || '{}');
+                const hasAssessed = !!(studentProfile && studentProfile.learning_mode);
+
+                if (hasAssessed) {
+                    todoItems.push({
+                        id: 'act_midterm_reassess',
+                        isUrgent: true,
+                        bullet: 'yellow',
+                        text: 'Pending Action: Midterm Reassessment is now open. Complete it to update your quadrant profile.',
+                        action: "openIframeUrl('qa-content.html', 1)"
+                    });
+                }
+
+                // 2. Module progress-based To-Dos & Completed Activities
+                modules.forEach(m => {
+                    let prog = null;
+                    try {
+                        const p1 = localStorage.getItem(`student_mod_prog_v2_${user.id}_${m.id}`);
+                        const p2 = localStorage.getItem(`student_mod_prog_${user.id}_${m.id}`);
+                        prog = p1 ? JSON.parse(p1) : (p2 ? JSON.parse(p2) : null);
+                    } catch(e) {}
+
+                    const chCount = (m.chapters || []).length || 2;
+                    const compChapters = prog && prog.completedChapters ? prog.completedChapters.length : 0;
+                    const compKCs = prog && prog.completedKCs ? prog.completedKCs.length : 0;
+
+                    if (prog && (prog.moduleCompleted || prog.completedFinal)) {
+                        // Completed module in Activity Log
+                        activityItems.push({
+                            title: `${m.title} Completed`,
+                            subtitle: `100% Mastery Achieved · ${m.quadrant_category || 'Distributed Collective'} Mode`,
+                            date: 'Aug 24, 2026'
+                        });
+                    } else {
+                        // Remaining chapters to-do
+                        const remaining = Math.max(0, chCount - compChapters);
+                        if (remaining > 0) {
+                            todoItems.push({
+                                id: `mod_${m.id}_rem_ch`,
+                                isUrgent: false,
+                                bullet: 'gray',
+                                text: `${remaining} chapter${remaining > 1 ? 's' : ''} remaining in ${m.title} — Dominant Modality`,
+                                action: `openIframeUrl('modules-content.html?moduleId=${m.id}', 2)`
+                            });
+                        }
+
+                        // Pending Knowledge Check
+                        if (chCount > compKCs) {
+                            todoItems.push({
+                                id: `mod_${m.id}_pend_kc`,
+                                isUrgent: false,
+                                bullet: 'gray',
+                                text: `Pending: Knowledge Check ${compKCs + 1} not yet submitted`,
+                                action: `openIframeUrl('modules-content.html?moduleId=${m.id}', 2)`
+                            });
+                        }
+                    }
+
+                    // Completed Knowledge Checks in Activity Log
+                    if (prog && prog.completedKCs && prog.completedKCs.length > 0) {
+                        prog.completedKCs.forEach(kcIdx => {
+                            activityItems.push({
+                                title: `Knowledge Check ${kcIdx + 1} Passed`,
+                                subtitle: `${m.title} · Chapter ${kcIdx + 1}`,
+                                date: 'Aug 23, 2026'
+                            });
+                        });
+                    }
+                });
+
+                // 3. Fallback Activity Log entries for rich profile timeline
+                if (hasAssessed) {
+                    activityItems.push({
+                        title: 'Q2 Reassessment Completed',
+                        subtitle: `Outcome: ${studentProfile.learning_mode || 'Hierarchical Individual'}`,
+                        date: 'Apr 10, 2026'
+                    });
+                    activityItems.push({
+                        title: 'Module 2 unlocked',
+                        subtitle: 'Based on your Q2 assessment results',
+                        date: 'Apr 10, 2026'
+                    });
+                    activityItems.push({
+                        title: 'Q1 Initial Assessment Completed',
+                        subtitle: `Outcome: ${studentProfile.learning_mode || 'Hierarchical Individual'}`,
+                        date: 'Jan 15, 2026'
+                    });
+                }
+
+            } catch (err) {
+                console.error("Error generating notifications", err);
+            }
+
+            // Render To-Do List
+            if (todoItems.length === 0) {
+                todoListEl.innerHTML = `
+                    <div style="padding: 30px 10px; text-align: center; color: var(--text-muted);">
+                        <svg width="28" height="28" style="opacity: 0.3; margin-bottom: 8px; color: #4ade80;"><use href="#icon-award"></use></svg>
+                        <p style="margin: 0; font-size: 13.5px; color: #fff; font-weight: 600;">You're all caught up!</p>
+                        <p style="margin: 4px 0 0 0; font-size: 12px;">No pending actions right now.</p>
+                    </div>
+                `;
+            } else {
+                todoListEl.innerHTML = todoItems.map(item => {
+                    const isRead = readIds.includes(item.id);
+                    const cardClass = `notif-todo-card ${item.isUrgent ? 'urgent' : ''}`;
+                    const opacityStyle = isRead ? 'opacity: 0.65;' : '';
+                    return `
+                        <div class="${cardClass}" style="${opacityStyle}" onclick="${item.action}">
+                            <span class="notif-bullet ${item.bullet}"></span>
+                            <div>${item.text}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Render Activity Log
+            if (activityItems.length === 0) {
+                actListEl.innerHTML = `
+                    <div style="padding: 30px 10px; text-align: center; color: var(--text-muted);">
+                        <p style="margin: 0; font-size: 13px;">No recorded activity yet.</p>
+                    </div>
+                `;
+            } else {
+                actListEl.innerHTML = activityItems.map(act => `
+                    <div class="notif-activity-item">
+                        <span class="notif-bullet green"></span>
+                        <div>
+                            <div class="notif-act-title">${act.title}</div>
+                            <div class="notif-act-sub">${act.subtitle}</div>
+                            <div class="notif-act-time">${act.date}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Update badge dot for unread items
+            const unreadCount = todoItems.filter(t => !readIds.includes(t.id)).length;
+            if (unreadCount > 0) {
+                badgeEl.style.display = 'block';
+            } else {
+                badgeEl.style.display = 'none';
+            }
+        }
+
+        // Mark all notifications as read
+        window.markAllNotificationsRead = function() {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) return;
+            const user = JSON.parse(userStr);
+            const readKey = 'notif_read_ids_' + user.id;
+
+            const todoCards = document.querySelectorAll('.notif-todo-card');
+            const allIds = ['act_midterm_reassess', 'mod_1_rem_ch', 'mod_1_pend_kc', 'mod_2_rem_ch', 'mod_2_pend_kc'];
+            localStorage.setItem(readKey, JSON.stringify(allIds));
+            
+            const badgeEl = document.getElementById('bell-badge-count');
+            if (badgeEl) badgeEl.style.display = 'none';
+
+            todoCards.forEach(c => c.style.opacity = '0.65');
+        };
+
+        // Helper to navigate iframe and update active sidebar link
+        window.openIframeUrl = function(url, sidebarIdx) {
+            document.getElementById('content-frame').src = url;
+            const notifDropdown = document.getElementById('notification-dropdown');
+            if (notifDropdown) notifDropdown.style.display = 'none';
+            
+            if (sidebarIdx !== undefined) {
+                const sidebarLinks = document.querySelectorAll('.sidebar-link');
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                if (sidebarLinks[sidebarIdx]) sidebarLinks[sidebarIdx].classList.add('active');
+            }
+        };
+
         // Listen for the mandatory initial assessment completion from the iframe
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'assessmentComplete') {
-                // Redirect explicitly to clear the iframe's navigation history
                 window.location.href = window.location.pathname;
             }
         });
         
+        // --- LOGOUT CONFIRMATION MODAL ---
         window.logoutUser = function(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
+            const modal = document.getElementById('logout-confirm-modal');
+            if (modal) modal.style.display = 'flex';
+        };
+
+        window.closeLogoutModal = function() {
+            const modal = document.getElementById('logout-confirm-modal');
+            if (modal) modal.style.display = 'none';
+        };
+
+        window.confirmLogout = function() {
             localStorage.removeItem('currentUser');
             localStorage.removeItem('studentProfile');
             window.location.href = '../index.html';

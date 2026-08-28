@@ -241,6 +241,110 @@
             .header-title { font-size: 18px; }
             .status-pill { display: none; }
         }
+
+        /* --- LOGOUT MODAL STYLING --- */
+        .custom-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .custom-modal-box {
+            background: #0d1722;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 28px 24px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+            animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.92); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon-warning {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.12);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+        }
+
+        .modal-title-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .modal-desc-text {
+            font-size: 13.5px;
+            color: #8b9eb0;
+            line-height: 1.5;
+            margin-bottom: 22px;
+        }
+
+        .modal-actions-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-modal-cancel {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            font-size: 13.5px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-modal-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .btn-modal-confirm {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            background: #ef4444;
+            border: none;
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .btn-modal-confirm:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
     <script>
@@ -348,6 +452,21 @@
             </div>
         </header>
 
+        <!-- Logout Confirmation Modal -->
+        <div id="logout-confirm-modal" class="custom-modal-backdrop" style="display: none;">
+            <div class="custom-modal-box">
+                <div class="modal-icon-warning">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                </div>
+                <h3 class="modal-title-text">Confirm Logout</h3>
+                <p class="modal-desc-text">Are you sure you want to log out of the Teacher Portal?</p>
+                <div class="modal-actions-row">
+                    <button type="button" class="btn-modal-cancel" onclick="closeLogoutModal()">Cancel</button>
+                    <button type="button" class="btn-modal-confirm" onclick="confirmLogout()">Log Out</button>
+                </div>
+            </div>
+        </div>
+
         <iframe src="overview-content.html" name="content-frame" id="content-frame"></iframe>
     </div>
 
@@ -429,7 +548,17 @@
         });
         
         window.logoutTeacher = function(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
+            const modal = document.getElementById('logout-confirm-modal');
+            if (modal) modal.style.display = 'flex';
+        };
+
+        window.closeLogoutModal = function() {
+            const modal = document.getElementById('logout-confirm-modal');
+            if (modal) modal.style.display = 'none';
+        };
+
+        window.confirmLogout = function() {
             localStorage.removeItem('currentUser');
             window.location.href = '../index.html';
         };
