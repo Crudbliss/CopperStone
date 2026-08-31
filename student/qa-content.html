@@ -463,11 +463,8 @@
         function renderAssessmentPage(activeSessions, history) {
             let html = '';
 
-            const quarters = ['Prelim', 'Midterm', 'Final'];
-            let completedCount = 0;
-            quarters.forEach(q => {
-                if (history.find(h => h.quarter_name.includes(q))) completedCount++;
-            });
+            const quarters = ['Initial Assessment', 'Reassessment 1', 'Reassessment 2'];
+            let completedCount = Math.min(history.length, quarters.length);
             const progressPct = (completedCount / quarters.length) * 100;
 
             // 1. Render Timeline Header
@@ -475,8 +472,8 @@
                 <div class="card" style="padding: 32px 40px; margin-bottom: 24px;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
                         <div>
-                            <h3 style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px;">ASSESSMENT PROGRESS LOCK</h3>
-                            <h2 style="font-size: 18px; font-weight: 700;">Academic Year 2025–2026</h2>
+                            <h3 style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px;">ASSESSMENT PROGRESS</h3>
+                            <h2 style="font-size: 18px; font-weight: 700;">Adaptive Learning Track</h2>
                         </div>
                         <div style="text-align: right;">
                             <div style="font-size: 24px; font-weight: 800; color: var(--matrix-yellow); line-height: 1;">${completedCount}/${quarters.length}</div>
@@ -492,41 +489,41 @@
                         <div style="position: absolute; top: 22px; left: 40px; right: 40px; height: 1px; background: var(--border-light); z-index: 1;"></div>
             `;
 
-            quarters.forEach(q => {
-                const histItem = history.find(h => h.quarter_name.includes(q));
-                const activeItem = activeSessions.find(s => s.quarter_name.includes(q));
+            quarters.forEach((q, idx) => {
+                const histItem = history[idx];
+                const isActiveNext = (idx === history.length);
 
                 if (histItem) {
-                    const dateStr = new Date(histItem.taken_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                    const dateStr = new Date(histItem.taken_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                     const initials = getModeInitials(histItem.learning_mode);
                     html += `
-                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 100px;">
+                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 110px;">
                             <div style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--matrix-green); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--matrix-green);">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                             </div>
-                            <p style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">${q}</p>
+                            <p style="font-size: 13px; font-weight: 700; margin-bottom: 4px; text-align: center;">${q}</p>
                             <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">${dateStr}</p>
                             <span style="background: rgba(74, 222, 128, 0.1); color: var(--matrix-green); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">${initials}</span>
                         </div>
                     `;
-                } else if (activeItem) {
+                } else if (isActiveNext) {
                     html += `
-                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 100px;">
+                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 110px;">
                             <div style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--matrix-yellow); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--matrix-yellow);">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                             </div>
-                            <p style="font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--matrix-yellow);">${q}</p>
-                            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Next</p>
+                            <p style="font-size: 13px; font-weight: 700; margin-bottom: 4px; color: var(--matrix-yellow); text-align: center;">${q}</p>
+                            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Ready</p>
                             <span style="background: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px;">NEXT</span>
                         </div>
                     `;
                 } else {
                     html += `
-                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 100px;">
+                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 110px;">
                             <div style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-light); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--text-dark-muted);">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                             </div>
-                            <p style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">${q}</p>
+                            <p style="font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; text-align: center;">${q}</p>
                             <p style="font-size: 11px; color: var(--text-dark-muted); margin-bottom: 10px;">Locked</p>
                         </div>
                     `;

@@ -577,13 +577,25 @@
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
             body { padding: 0; background-color: var(--bg-base); }
-            .container { padding: 16px; min-height: 100vh; }
-            .top-navbar { flex-direction: column; gap: 12px; }
-            .question-card { padding: 24px 16px; border-radius: 0; border: none; border-bottom: 1px solid var(--border-light); }
-            .question-text { font-size: 20px; }
-            .card-footer { flex-direction: column; gap: 16px; }
-            .nav-btn { width: 100%; text-align: center; }
-            .quadrant-graph { max-width: 100%; aspect-ratio: auto; min-height: 250px; }
+            .container { padding: 14px 12px; min-height: 100vh; width: 100%; max-width: 100%; }
+            .top-navbar { flex-direction: row; justify-content: space-between; gap: 8px; margin-bottom: 20px; }
+            .logo-container { font-size: 16px; gap: 8px; }
+            .logo-container img { width: 26px; height: 26px; }
+            .pre-assessment-pill { font-size: 11px; padding: 4px 10px; }
+            .question-card { padding: 20px 14px; border-radius: 12px; }
+            .question-title { font-size: 15px; }
+            .answer-option { padding: 12px 14px; gap: 12px; font-size: 13.5px; }
+            .card-footer { flex-direction: column-reverse; gap: 10px; }
+            .btn-nav, .btn-submit { width: 100%; padding: 14px; text-align: center; justify-content: center; }
+            .quadrant-card { padding: 16px 12px; width: 100%; }
+            .quadrant-graph { max-width: 100%; aspect-ratio: 1 / 1; min-height: 240px; }
+            .result-mode { font-size: 22px; }
+            .fuzzy-bar-header { font-size: 12.5px; }
+        }
+
+        @media (max-width: 480px) {
+            .answer-option { padding: 10px 12px; font-size: 13px; }
+            .radio-circle { width: 18px; height: 18px; }
         }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">

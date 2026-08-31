@@ -1400,6 +1400,97 @@
         .btn-victory-stay:hover {
             color: #ffffff;
         }
+
+        /* --- MOBILE & TABLET RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            #view-overview {
+                padding: 20px 14px;
+            }
+
+            .module-card-horizontal {
+                padding: 18px 16px;
+                gap: 14px;
+            }
+
+            .card-top-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .card-right-group {
+                align-items: flex-start;
+                text-align: left;
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .pct-large {
+                font-size: 20px;
+            }
+
+            #view-reader {
+                grid-template-columns: 1fr;
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+
+            .reader-sidebar-pane {
+                height: auto;
+                max-height: 260px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+                padding: 16px;
+            }
+
+            .reader-main-pane {
+                height: auto;
+                padding: 16px;
+            }
+
+            .reader-content-wrap {
+                padding: 16px;
+            }
+
+            .block-video iframe {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 16 / 9;
+            }
+
+            .block-code pre {
+                font-size: 12px;
+                overflow-x: auto;
+            }
+
+            .kc-carousel-footer {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .btn-kc-nav, .btn-kc-submit {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .match-pair-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .match-arrow {
+                transform: rotate(90deg);
+                margin: -2px 0;
+            }
+
+            .victory-modal-card {
+                padding: 24px 18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1442,7 +1533,7 @@
         </symbol>
         <symbol id="icon-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="23 4 23 10 17 10"></polyline>
-            <polyline points="1 compat 20 1 14 7 14"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
             <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
         </symbol>
         <symbol id="icon-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

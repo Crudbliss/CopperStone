@@ -1033,6 +1033,21 @@
             border-radius: 14px;
             border: 1px solid var(--border-light);
         }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body { padding: 16px 12px; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .modules-grid { grid-template-columns: 1fr; gap: 16px; }
+            .admin-card-actions-row { grid-template-columns: 1fr; gap: 8px; }
+            .modal-content { padding: 20px 16px; max-width: calc(100vw - 24px); }
+            .modal-content.large-modal { width: calc(100vw - 24px); max-width: calc(100vw - 24px); height: 92vh; padding: 18px 14px; }
+            .customizer-nav { flex-direction: column; align-items: stretch; gap: 10px; }
+            .customizer-nav-tabs { flex-wrap: wrap; gap: 6px; }
+            .chapter-composer-layout { grid-template-columns: 1fr; }
+            .add-blocks-toolbar { flex-direction: column; align-items: stretch; }
+            .btn-add-block { justify-content: center; }
+        }
     </style>
 </head>
 

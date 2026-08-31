@@ -437,12 +437,19 @@
 
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            body { padding: 16px; }
-            .dashboard-header h1 { font-size: 22px; }
-            .metrics-grid { grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
+            body { padding: 16px 12px; }
+            .dashboard-header h1 { font-size: 20px; }
+            .dashboard-header p { font-size: 13px; }
+            .metrics-grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 20px; }
             .bottom-grid { grid-template-columns: 1fr; gap: 16px; }
-            .metric-card, .quadrant-card, .quick-actions-card { padding: 16px; }
-            .quadrant-graph { max-width: 100%; aspect-ratio: auto; min-height: 250px; }
+            .metric-card, .quadrant-card, .quick-actions-card { padding: 18px 14px; }
+            .quadrant-graph { max-width: 100%; aspect-ratio: 1 / 1; margin: 0 auto; }
+            .action-item { padding: 12px; }
+        }
+
+        @media (max-width: 480px) {
+            .axis-label { font-size: 8.5px; }
+            .q-label { font-size: 9.5px; }
         }
     </style>
 </head>
@@ -638,7 +645,7 @@
                         </a>
 
                         <a href="progress-content.html" class="action-item" onclick="updateParentSidebar(3)">
-                            <span>Check your quarterly progress</span>
+                            <span>Check your migration progress</span>
                             <svg>
                                 <use href="#icon-arrow-right"></use>
                             </svg>

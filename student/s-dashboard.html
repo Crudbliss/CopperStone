@@ -651,6 +651,44 @@
             opacity: 0.9;
             transform: translateY(-1px);
         }
+
+        @media (max-width: 480px) {
+            .notif-dropdown-container {
+                position: fixed;
+                top: 56px;
+                left: 12px;
+                right: 12px;
+                width: auto;
+                max-width: calc(100vw - 24px);
+                max-height: calc(100vh - 80px);
+            }
+
+            .top-header {
+                padding: 0 12px;
+                height: 56px;
+            }
+
+            .header-title {
+                font-size: 14px;
+            }
+
+            .status-pill {
+                padding: 4px 8px;
+                gap: 5px;
+            }
+
+            .status-text {
+                font-size: 9.5px;
+                max-width: 90px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .custom-modal-box {
+                padding: 22px 16px;
+            }
+        }
     </style>
 </head>
 
@@ -1041,10 +1079,10 @@
 
                 if (hasAssessed) {
                     todoItems.push({
-                        id: 'act_midterm_reassess',
+                        id: 'act_post_module_reassess',
                         isUrgent: true,
                         bullet: 'yellow',
-                        text: 'Pending Action: Midterm Reassessment is now open. Complete it to update your quadrant profile.',
+                        text: 'Pending Action: 1–2 Week Post-Module Reassessment is now open. Complete it to update your quadrant profile.',
                         action: "openIframeUrl('qa-content.html', 1)"
                     });
                 }

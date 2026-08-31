@@ -624,8 +624,8 @@ app.get('/api/students/:id/active-sessions', (req, res) => {
     db.all(`SELECT id, taken_at FROM assessment_history WHERE student_id = ? ORDER BY taken_at ASC`, [req.params.id], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         const historyCount = (rows ? rows.length : 0);
-        const quarterLabels = ['Prelim', 'Midterm', 'Final', 'Quarter 4', 'Quarter 5'];
-        const nextQuarter = quarterLabels[historyCount] || `Period ${historyCount + 1}`;
+        const quarterLabels = ['Initial Assessment', 'Reassessment 1', 'Reassessment 2', 'Reassessment 3', 'Reassessment 4'];
+        const nextQuarter = quarterLabels[historyCount] || `Assessment ${historyCount + 1}`;
 
         res.json([{
             session_id: historyCount + 1,
@@ -648,12 +648,12 @@ app.get('/api/students/:id/history', (req, res) => {
     db.all(sql, [req.params.id], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         
-        const quarterLabels = ['Prelim', 'Midterm', 'Final', 'Quarter 4', 'Quarter 5'];
+        const quarterLabels = ['Initial Assessment', 'Reassessment 1', 'Reassessment 2', 'Reassessment 3', 'Reassessment 4'];
 
         if (rows && rows.length > 0) {
             const enriched = rows.map((r, idx) => ({
                 ...r,
-                quarter_name: quarterLabels[idx] || `Period ${idx + 1}`,
+                quarter_name: quarterLabels[idx] || `Assessment ${idx + 1}`,
                 course_subj_name: 'Learning Mode Track'
             }));
             return res.json(enriched);
@@ -671,7 +671,7 @@ app.get('/api/students/:id/history', (req, res) => {
                 x_coord: student.x_coord || 0,
                 y_coord: student.y_coord || 0,
                 learning_mode: student.learning_mode,
-                quarter_name: 'Prelim',
+                quarter_name: 'Initial Assessment',
                 course_subj_name: 'Learning Mode Track',
                 taken_at: new Date().toISOString()
             }]);

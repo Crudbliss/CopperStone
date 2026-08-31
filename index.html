@@ -1070,30 +1070,66 @@
         @media (max-width: 768px) {
             nav {
                 padding: 0 16px;
-                height: 60px;
+                height: 64px;
             }
 
             .nav-actions {
-                display: none;
+                display: flex;
+                align-items: center;
+                gap: 8px;
             }
 
-            /* Hide auth buttons, move them to menu or just show hamburger */
+            .nav-actions .btn-primary {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
             .btn-menu {
                 display: grid;
             }
 
-            .hero-title {
-                font-size: 48px;
-            }
-
             .hero {
-                padding: 120px 16px 60px;
+                padding: 100px 16px 48px;
             }
 
-            .role-buttons {
-                flex-direction: column;
+            .hero-title {
+                font-size: clamp(40px, 13vw, 68px);
+                letter-spacing: -1px;
+            }
+
+            .hero-subtitle {
+                font-size: 12px;
+                letter-spacing: 0.5px;
+                padding: 0 8px;
+            }
+
+            .hero-description {
+                font-size: 14px;
+                padding: 0 8px;
+            }
+
+            .hero-description br {
+                display: none;
+            }
+
+            .btn-large {
                 width: 100%;
-                max-width: 300px;
+                max-width: 320px;
+                padding: 14px 20px;
+                font-size: 15px;
+            }
+
+            .quadrant-tags {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+                padding: 0 12px;
+            }
+
+            .tag {
+                font-size: 11px;
+                padding: 6px 12px;
             }
 
             .process-grid,
@@ -1101,7 +1137,7 @@
             .roles-grid,
             .features-grid {
                 grid-template-columns: 1fr;
-                gap: 24px;
+                gap: 20px;
             }
 
             .framework-cards {
@@ -1112,25 +1148,62 @@
                 flex-direction: column;
                 gap: 16px;
                 text-align: center;
+                padding: 32px 16px;
             }
 
             .modal-content {
-                padding: 24px;
-                margin: 16px;
-                max-width: calc(100% - 32px);
+                padding: 24px 18px;
+                margin: 12px;
+                max-width: calc(100vw - 24px);
                 max-height: calc(100vh - 32px);
                 overflow-y: auto;
+                border-radius: 18px;
             }
 
             .role-select-header h2 {
-                font-size: 24px;
+                font-size: 22px;
+            }
+
+            .role-select-card {
+                padding: 16px;
+                gap: 14px;
+            }
+
+            .role-card-icon {
+                width: 46px;
+                height: 46px;
             }
 
             .modal-header {
                 flex-direction: column;
                 text-align: center;
                 gap: 12px;
-                margin-bottom: 24px;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-logo {
+                font-size: 16px;
+                gap: 8px;
+            }
+
+            .nav-logo-icon {
+                width: 28px;
+                height: 28px;
+            }
+
+            .university-badge {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .modal-content {
+                padding: 20px 14px;
             }
         }
     </style>
@@ -1324,7 +1397,7 @@
                                 <use href="#icon-bar-chart"></use>
                             </svg></div>
                         <h3>Take the Assessment</h3>
-                        <p>Complete a quarterly question-based evaluation designed to capture your behavioral and
+                        <p>Complete a question-based diagnostic evaluation designed to capture your behavioral and
                             cognitive learning patterns.</p>
                     </div>
 
@@ -1414,7 +1487,7 @@
                             <li>
                                 <div class="role-list-icon"><svg width="18px" height="18px">
                                         <use href="#icon-circle-check"></use>
-                                    </svg></div>Take quarterly learning mode assessments
+                                    </svg></div>Take learning mode diagnostic assessments
                             </li>
                             <li>
                                 <div class="role-list-icon"><svg width="18px" height="18px">
@@ -1434,7 +1507,7 @@
                             <li>
                                 <div class="role-list-icon"><svg width="18px" height="18px">
                                         <use href="#icon-circle-check"></use>
-                                    </svg></div>Track how your learning mode evolves each quarter
+                                    </svg></div>Track how your learning mode evolves with post-module reassessments
                             </li>
                         </ul>
                         <button class="btn-role btn-student-portal" onclick="openLoginModal('student')">Student Portal
@@ -1453,9 +1526,8 @@
                                 <use href="#icon-lightning"></use>
                             </svg>
                         </div>
-                        <h4>Quarterly Tracking</h4>
-                        <p>Reassess every quarter and track how your dominant learning mode evolves throughout the
-                            school year.</p>
+                        <h4>Periodic Reassessment</h4>
+                        <p>Reassess 1–2 weeks after taking modules and track how your dominant learning mode evolves.</p>
                     </div>
                     <div class="feature-small-card">
                         <div class="icon-box icon-green"><svg width="24px" height="24px">
