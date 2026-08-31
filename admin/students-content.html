@@ -109,6 +109,14 @@
                             </span>
                         </div>
                     </div>
+                    <div class="form-group"><label>Confirm Password</label>
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <input type="password" id="confirm_password" required style="width: 100%; padding-right: 40px;">
+                            <span class="toggle-password" style="position: absolute; right: 10px; cursor: pointer; color: #8b9eb0;" onclick="togglePasswordVisibility('confirm_password', this)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
                     <button type="button" onclick="closeModal()" style="background: transparent; color: #8b9eb0; border: 1px solid rgba(255,255,255,0.2);">Cancel</button>
@@ -221,8 +229,18 @@
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
             const msg = document.getElementById('message');
-            btn.textContent = 'Saving...';
             msg.textContent = '';
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+
+            if (password !== confirmPassword) {
+                msg.style.color = '#ef4444';
+                msg.textContent = 'Passwords do not match.';
+                return;
+            }
+
+            btn.textContent = 'Saving...';
             
             const payloadData = {
                 email: document.getElementById('email').value.trim().toLowerCase(),
@@ -230,7 +248,7 @@
                 last_name: document.getElementById('last_name').value.trim(),
                 mi: document.getElementById('mi').value.trim(),
                 year_level: document.getElementById('year_level') ? document.getElementById('year_level').value : null,
-                password: document.getElementById('password').value
+                password: password
             };
 
             const student_no = document.getElementById('student_no').value.trim();

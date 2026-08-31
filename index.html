@@ -1760,11 +1760,25 @@
                 <div class="form-group">
                     <label>Password</label>
                     <div class="password-wrapper">
-                        <input type="password" id="regPassword" placeholder="........" autocomplete="new-password"
+                        <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password"
                             required>
                         <button type="button" class="btn-eye" aria-label="Toggle password visibility"
                             onclick="togglePasswordVisibility('regPassword', 'eyeIconReg')">
                             <svg width="20" height="20" id="eyeIconReg">
+                                <use href="#icon-eye"></use>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="regConfirmPassword" placeholder="••••••••" autocomplete="new-password"
+                            required>
+                        <button type="button" class="btn-eye" aria-label="Toggle confirm password visibility"
+                            onclick="togglePasswordVisibility('regConfirmPassword', 'eyeIconRegConfirm')">
+                            <svg width="20" height="20" id="eyeIconRegConfirm">
                                 <use href="#icon-eye"></use>
                             </svg>
                         </button>
@@ -1985,6 +1999,7 @@
             registerForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
                 const pwd = document.getElementById('regPassword').value;
+                const confirmPwd = document.getElementById('regConfirmPassword').value;
                 const firstName = document.getElementById('regFirstName').value.trim();
                 const lastName = document.getElementById('regLastName').value.trim();
                 let mi = document.getElementById('regMI').value.trim();
@@ -2022,6 +2037,13 @@
                 const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
                 if (!pwRegex.test(pwd)) {
                     errorMsg.textContent = 'Password must be at least 8 characters and contain a capital letter, lowercase letter, number, and special character.';
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+
+                // Confirm Password validation
+                if (pwd !== confirmPwd) {
+                    errorMsg.textContent = 'Passwords do not match. Please ensure both passwords match.';
                     errorMsg.style.display = 'block';
                     return;
                 }
