@@ -1780,41 +1780,62 @@
         function renderHorizontalModuleCard(m, index, config) {
             const indexStr = (index + 1).toString().padStart(2, '0');
             const chapters = m.chapters || [];
-            const chapterCount = chapters.length;
-            const questionCount = parseInt(m.question_count) || 0;
+            const chapterCount = chapters.length || 1;
+            const questionCount = parseInt(m.question_count) || (m.questions ? m.questions.length : 0);
             const progress = getStudentProgress(m.id);
             
-            // Calculate percentage accurately
-            let pct = 0;
-            if (progress.moduleCompleted || progress.completedFinal) {
-                pct = 100;
-            } else if (questionCount === 0) {
-                // Reading-only module (no quizzes)
-                pct = chapterCount > 0 ? Math.min(100, Math.round((progress.completedChapters.length / chapterCount) * 100)) : (progress.completedChapters.length > 0 ? 100 : 0);
-            } else {
-                // Modules with chapters, knowledge checks, and final assessment
-                const totalSteps = (chapterCount * 2) + 1;
-                const completedSteps = progress.completedChapters.length + progress.completedKCs.length + (progress.completedFinal ? 1 : 0);
-                pct = totalSteps > 0 ? Math.min(100, Math.round((completedSteps / totalSteps) * 100)) : 0;
+            const completedChaptersCount = progress.completedChapters ? progress.completedChapters.length : 0;
+            const completedKCsCount = progress.completedKCs ? progress.completedKCs.length : 0;
+            const isFinalDone = !!(progress.completedFinal || progress.moduleCompleted);
+
+            // Compute total actual steps
+            let totalSteps = chapterCount;
+            let completedSteps = completedChaptersCount;
+
+            if (questionCount > 0) {
+                totalSteps = (chapterCount * 2) + 1;
+                completedSteps = completedChaptersCount + completedKCsCount + (isFinalDone ? 1 : 0);
             }
 
-            if (pct >= 100) pct = 100;
+            const isFullyCompleted = isFinalDone || (completedChaptersCount >= chapterCount && (questionCount === 0 || completedKCsCount >= chapterCount));
+
+            let pct = 0;
+            if (isFullyCompleted) {
+                pct = 100;
+            } else if (totalSteps > 0) {
+                pct = Math.min(99, Math.round((completedSteps / totalSteps) * 100));
+            }
 
             // Current active chapter label
             let currentChapterTitle = 'Introduction';
             if (chapters.length > 0) {
-                const nextChapterIdx = Math.min(progress.completedKCs.length, chapters.length - 1);
-                currentChapterTitle = chapters[nextChapterIdx].title;
+                const nextChapterIdx = Math.min(completedChaptersCount, chapters.length - 1);
+                currentChapterTitle = chapters[nextChapterIdx] ? chapters[nextChapterIdx].title : chapters[0].title;
             }
 
-            const totalDots = Math.max(chapterCount, 4);
+            // Step dots: exactly match total chapters in this module
+            const totalDots = chapterCount;
             let dotsHtml = '';
             for (let i = 0; i < totalDots; i++) {
-                const isDotActive = i <= progress.completedKCs.length;
+                const isDotActive = isFullyCompleted || (i < completedChaptersCount);
                 dotsHtml += `<div class="step-dot ${isDotActive ? 'active-' + config.colorName : ''}"></div>`;
             }
 
             const isRecommended = index === 0;
+
+            let progressText = `${completedChaptersCount}/${chapterCount} chapters`;
+            if (isFullyCompleted) {
+                progressText = `Completed (${chapterCount}/${chapterCount} chapters)`;
+            } else if (completedChaptersCount >= chapterCount && questionCount > 0 && !isFinalDone) {
+                progressText = `${completedChaptersCount}/${chapterCount} chapters • Final Test Ready`;
+            }
+
+            let btnText = 'Start Module &gt;';
+            if (isFullyCompleted) {
+                btnText = 'Review Module ↺';
+            } else if (pct > 0) {
+                btnText = 'Continue &gt;';
+            }
 
             return `
                 <div class="module-card-horizontal" onclick="launchModuleReader(${m.id})">
@@ -1831,23 +1852,23 @@
                                 <p class="module-description-text">${escapeHtml(m.description || `Develop your ${config.title} skills through peer-driven inquiry, co-creation, and shared leadership activities.`)}</p>
                                 <div class="module-meta-info">
                                     <span><svg width="13" height="13" style="vertical-align: middle; margin-right: 2px;"><use href="#icon-book"></use></svg> ${chapterCount} chapters</span>
-                                    <span><svg width="13" height="13" style="vertical-align: middle; margin-right: 2px; color: var(--matrix-green);"><use href="#icon-check"></use></svg> ${progress.completedChapters.length} completed</span>
+                                    <span><svg width="13" height="13" style="vertical-align: middle; margin-right: 2px; color: var(--matrix-green);"><use href="#icon-check"></use></svg> ${completedChaptersCount} completed</span>
                                     <span><svg width="13" height="13" style="vertical-align: middle; margin-right: 2px;"><use href="#icon-clock"></use></svg> ${m.estimated_time || '30 min'}</span>
-                                    ${chapterCount > 0 ? `<span><svg width="11" height="11" style="vertical-align: middle; margin-right: 2px; color: #38bdf8;"><use href="#icon-play"></use></svg> Current: <strong class="current-chapter-highlight">${escapeHtml(currentChapterTitle)}</strong></span>` : ''}
+                                    ${chapterCount > 0 ? `<span><svg width="11" height="11" style="vertical-align: middle; margin-right: 2px; color: #38bdf8;"><use href="#icon-play"></use></svg> ${isFullyCompleted ? 'Status: <strong style="color:var(--matrix-green);">Completed ✓</strong>' : `Current: <strong class="current-chapter-highlight">${escapeHtml(currentChapterTitle)}</strong>`}</span>` : ''}
                                 </div>
                             </div>
                         </div>
 
                         <div class="card-right-group">
                             <div class="pct-large">${pct}%</div>
-                            <div class="pct-label">complete</div>
+                            <div class="pct-label">${isFullyCompleted ? 'completed' : 'in progress'}</div>
                         </div>
                     </div>
 
                     <div class="progress-section">
                         <div class="progress-labels">
                             <span>Progress</span>
-                            <span>${progress.completedChapters.length}/${chapterCount} chapters</span>
+                            <span>${progressText}</span>
                         </div>
                         <div class="progress-track-bar">
                             <div class="progress-fill-bar fill-${config.colorName}" style="width: ${pct}%;"></div>
@@ -1859,7 +1880,7 @@
                             ${dotsHtml}
                         </div>
                         <button class="btn-continue btn-${config.colorName}" onclick="event.stopPropagation(); launchModuleReader(${m.id});">
-                            Continue &gt;
+                            ${btnText}
                         </button>
                     </div>
                 </div>
