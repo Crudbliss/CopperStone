@@ -1328,13 +1328,13 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 18px;
             width: 100%;
-            max-width: 440px;
-            padding: 36px 30px;
+            max-width: 460px;
+            padding: 34px 28px;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            gap: 15px;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
             animation: victoryPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -2879,14 +2879,30 @@
             const iconBox = document.getElementById('victory-icon-box');
 
             if (isFinal) {
-                iconBox.innerHTML = '🏆';
+                iconBox.innerHTML = `
+                    <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(216, 166, 26, 0.12); border: 1.5px solid rgba(216, 166, 26, 0.35); display: flex; align-items: center; justify-content: center; margin: 0 auto; color: var(--matrix-yellow);">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2"></path>
+                            <path d="M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"></path>
+                            <path d="M4 22h16"></path>
+                            <path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1h10c.55 0 1-.45 1-1v-1c0-.55-.45-1-1-1h-2c-.55 0-1-.45-1-1v-2.34"></path>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
+                        </svg>
+                    </div>
+                `;
                 modalTitle.textContent = `Module Mastered, ${currentStudentFirstName}!`;
 
                 badgeBox.style.display = 'block';
                 badgeBox.innerHTML = `
-                    <span style="background: rgba(74, 222, 128, 0.12); color: var(--matrix-green); border: 1px solid rgba(74, 222, 128, 0.3); font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
-                        ✓ 100% Complete &middot; ${escapeHtml(currentActiveModule.title)}
-                    </span>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%;">
+                        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(74, 222, 128, 0.12); color: var(--matrix-green); border: 1px solid rgba(74, 222, 128, 0.35); font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.6px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            <span>100% Completed</span>
+                        </div>
+                        <div style="font-size: 13.5px; font-weight: 700; color: #94a3b8; text-align: center; max-width: 380px; line-height: 1.45; word-break: break-word;">
+                            ${escapeHtml(currentActiveModule.title)}
+                        </div>
+                    </div>
                 `;
 
                 descBody.innerHTML = `Congratulations on completing this learning module! Your spaced learning track has recorded your mastery.`;
@@ -2900,7 +2916,14 @@
                 noticeBox.style.display = 'block';
                 noticeBox.innerHTML = `
                     <div style="display: flex; align-items: flex-start; gap: 10px;">
-                        <div style="font-size: 20px; line-height: 1;">📅</div>
+                        <div style="color: #38bdf8; flex-shrink: 0; margin-top: 2px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
                         <div>
                             <div style="font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 2px;">
                                 Next Assessment Status:
@@ -2914,11 +2937,20 @@
 
                 const buttonsWrap = document.getElementById('victory-action-buttons-wrap');
                 buttonsWrap.innerHTML = `
-                    <button class="btn-victory-continue" style="background: var(--matrix-yellow); color: #060f17; font-weight: 800;" onclick="handleNavigateToAssessments()">
-                        📅 View Assessment Schedule &rarr;
+                    <button class="btn-victory-continue" style="background: var(--matrix-yellow); color: #060f17; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 8px;" onclick="handleNavigateToAssessments()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span>View Assessment Schedule &rarr;</span>
                     </button>
-                    <button style="width: 100%; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-weight: 700; padding: 11px 20px; border-radius: 10px; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" onclick="handleDemoUnlockAndTake()">
-                        ⚡ Take Assessment Now (Demo Mode)
+                    <button style="width: 100%; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-weight: 700; padding: 11px 20px; border-radius: 10px; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;" onclick="handleDemoUnlockAndTake()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                        <span>Take Assessment Now (Demo Mode)</span>
                     </button>
                     <button class="btn-victory-stay" onclick="handleVictoryContinue()">
                         Back to All Modules

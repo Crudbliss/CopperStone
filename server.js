@@ -130,6 +130,8 @@ db.serialize(() => {
         db.run(`ALTER TABLE modules ADD COLUMN difficulty TEXT DEFAULT 'Beginner'`, (err) => {});
         db.run(`ALTER TABLE modules ADD COLUMN topic TEXT DEFAULT 'General'`, (err) => {});
         db.run(`ALTER TABLE modules ADD COLUMN estimated_time TEXT DEFAULT '30 min'`, (err) => {});
+        db.run(`ALTER TABLE modules ADD COLUMN is_published INTEGER DEFAULT 1`, (err) => {});
+        db.run(`ALTER TABLE modules ADD COLUMN is_archived INTEGER DEFAULT 0`, (err) => {});
     });
 
     // 12b. Module Chapters (Chapters inside a module)
@@ -1094,7 +1096,7 @@ app.get('/api/ai/download', (req, res) => {
 // --- MODULES ---
 // GET /api/modules - Fetch all modules with chapter counts
 app.get('/api/modules', (req, res) => {
-    const { quadrant_category } = req.query;
+    const { quadrant_category, include_archived, include_unpublished, role } = req.query;
     let sql = `
         SELECT m.*, 
             (SELECT COUNT(*) FROM module_chapters mc WHERE mc.module_id = m.id) AS chapter_count,
@@ -1104,6 +1106,18 @@ app.get('/api/modules', (req, res) => {
     `;
     let params = [];
     
+    // Students should only ever see active published & non-archived modules
+    if (role === 'student' || (!include_archived && !include_unpublished && role !== 'admin' && role !== 'teacher')) {
+        sql += ` AND (m.is_archived = 0 OR m.is_archived IS NULL) AND (m.is_published = 1 OR m.is_published IS NULL)`;
+    } else {
+        if (include_archived === 'false' || include_archived === '0') {
+            sql += ` AND (m.is_archived = 0 OR m.is_archived IS NULL)`;
+        }
+        if (include_unpublished === 'false' || include_unpublished === '0') {
+            sql += ` AND (m.is_published = 1 OR m.is_published IS NULL)`;
+        }
+    }
+
     if (quadrant_category && quadrant_category !== 'All') {
         sql += ` AND (m.quadrant_category = ? OR m.quadrant_category = 'All')`;
         params.push(quadrant_category);
@@ -1123,6 +1137,8 @@ app.get('/api/modules', (req, res) => {
             
             const enriched = (rows || []).map(m => ({
                 ...m,
+                is_published: (m.is_published !== undefined && m.is_published !== null) ? m.is_published : 1,
+                is_archived: (m.is_archived !== undefined && m.is_archived !== null) ? m.is_archived : 0,
                 chapters: chaptersByModule[m.id] || []
             }));
             
@@ -1198,20 +1214,22 @@ app.get('/api/modules/:id', (req, res) => {
 
 // POST /api/modules - Create a new module
 app.post('/api/modules', (req, res) => {
-    const { title, description, quadrant_category, difficulty, topic, estimated_time } = req.body || {};
+    const { title, description, quadrant_category, difficulty, topic, estimated_time, is_published, is_archived } = req.body || {};
     
     if (!title || title.trim() === '') {
         return res.status(400).json({ error: 'Module title is required' });
     }
 
-    const sql = `INSERT INTO modules (title, description, quadrant_category, difficulty, topic, estimated_time) VALUES (?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO modules (title, description, quadrant_category, difficulty, topic, estimated_time, is_published, is_archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     db.run(sql, [
         title.trim(), 
         description || '', 
         quadrant_category || 'All', 
         difficulty || 'Beginner', 
         topic || 'General', 
-        estimated_time || '30 min'
+        estimated_time || '30 min',
+        is_published !== undefined ? is_published : 1,
+        is_archived !== undefined ? is_archived : 0
     ], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.status(201).json({ success: true, module_id: this.lastID, message: 'Module created successfully' });
@@ -1221,13 +1239,13 @@ app.post('/api/modules', (req, res) => {
 // PUT /api/modules/:id - Update an existing module
 app.put('/api/modules/:id', (req, res) => {
     const moduleId = req.params.id;
-    const { title, description, quadrant_category, difficulty, topic, estimated_time } = req.body || {};
+    const { title, description, quadrant_category, difficulty, topic, estimated_time, is_published, is_archived } = req.body || {};
 
     if (!title || title.trim() === '') {
         return res.status(400).json({ error: 'Module title is required' });
     }
 
-    const sql = `UPDATE modules SET title = ?, description = ?, quadrant_category = ?, difficulty = ?, topic = ?, estimated_time = ? WHERE id = ?`;
+    const sql = `UPDATE modules SET title = ?, description = ?, quadrant_category = ?, difficulty = ?, topic = ?, estimated_time = ?, is_published = COALESCE(?, is_published, 1), is_archived = COALESCE(?, is_archived, 0) WHERE id = ?`;
     db.run(sql, [
         title.trim(), 
         description || '', 
@@ -1235,10 +1253,48 @@ app.put('/api/modules/:id', (req, res) => {
         difficulty || 'Beginner', 
         topic || 'General', 
         estimated_time || '30 min',
+        is_published,
+        is_archived,
         moduleId
     ], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true, message: 'Module updated successfully' });
+    });
+});
+
+// PUT /api/modules/:id/publish - Publish module
+app.put('/api/modules/:id/publish', (req, res) => {
+    const moduleId = req.params.id;
+    db.run(`UPDATE modules SET is_published = 1, is_archived = 0 WHERE id = ?`, [moduleId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Module published successfully' });
+    });
+});
+
+// PUT /api/modules/:id/unpublish - Unpublish module (Draft mode)
+app.put('/api/modules/:id/unpublish', (req, res) => {
+    const moduleId = req.params.id;
+    db.run(`UPDATE modules SET is_published = 0 WHERE id = ?`, [moduleId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Module unpublished (saved as draft)' });
+    });
+});
+
+// PUT /api/modules/:id/archive - Archive module
+app.put('/api/modules/:id/archive', (req, res) => {
+    const moduleId = req.params.id;
+    db.run(`UPDATE modules SET is_archived = 1 WHERE id = ?`, [moduleId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Module archived successfully' });
+    });
+});
+
+// PUT /api/modules/:id/unarchive - Restore / Unarchive module
+app.put('/api/modules/:id/unarchive', (req, res) => {
+    const moduleId = req.params.id;
+    db.run(`UPDATE modules SET is_archived = 0 WHERE id = ?`, [moduleId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: 'Module unarchived successfully' });
     });
 });
 

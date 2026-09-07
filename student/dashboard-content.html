@@ -4,31 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Content</title>
+    <title>Student Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
-        /* --- CSS VARIABLES (Theme Colors) --- */
+        /* --- CSS VARIABLES & THEME --- */
         :root {
             --bg-base: #060f17;
             --bg-panel: #0a1e2d;
-            --bg-card: #12181f;
-            --bg-yellow: #1a1c16;
-            --bg-green: #0e1b1d;
-            --hd-color: #0a1e2c;
+            --bg-card: #0d1722;
+            --bg-card-inner: rgba(255, 255, 255, 0.02);
+            --border-card: rgba(255, 255, 255, 0.08);
+            --border-card-subtle: rgba(255, 255, 255, 0.05);
 
             --matrix-yellow: #d8a61a;
             --matrix-yellow-hover: #eab308;
-            --matrix-dg: #4a8f4b;
             --matrix-green: #4ade80;
             --matrix-blue: #38bdf8;
             --matrix-orange: #fb923c;
             --matrix-purple: #c084fc;
+            --matrix-purple-dark: #a855f7;
 
             --text-main: #ffffff;
-            --text-muted: #8b9eb0;
-            --border-light: rgba(255, 255, 255, 0.05);
-            --border-lighter: rgba(255, 255, 255, 0.1);
+            --text-muted: #94a3b8;
+            --text-subtle: #64748b;
         }
 
         /* --- RESET & BASE --- */
@@ -41,843 +40,1064 @@
         body {
             font-family: 'Poppins', sans-serif;
             background-color: transparent;
-            /* Allows parent background to show */
             color: var(--text-main);
-            /* Removed flex and hidden overflow so it scrolls properly inside iframe */
+            padding: 24px;
+            overflow-x: hidden;
         }
 
-        .svg-defs {
-            display: none;
-        }
-
-        svg {
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        /* --- MAIN CONTENT CONTAINER --- */
-        .content-container {
-            padding: 15px;
-            max-width: 1400px;
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        /* --- GLASS CARD BASE --- */
-        .glass-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 24px;
-        }
-
-        /* --- WELCOME BANNER --- */
-        .welcome-banner {
-            background-color: var(--bg-yellow);
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-color: rgba(216, 166, 26, 0.3);
-            margin: 10px;
-        }
-
-        .welcome-text-box {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .welcome-eyebrow {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--matrix-yellow);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .welcome-title {
-            font-size: 1.3rem;
-            font-weight: 800;
-            margin-top: 4px;
-        }
-
-        .welcome-sub {
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .btn-primary {
-            background-color: var(--matrix-yellow);
-            color: #fff;
-            padding: 14px 24px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
-            font-size: 14px;
-            font-family: inherit;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 20px rgba(216, 166, 26, 0.15);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--matrix-yellow-hover);
-            transform: translateY(-2px);
-        }
-
-        /* --- STATS GRID --- */
-        .stats-grid {
+        /* --- 2x2 MAIN GRID --- */
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .stat-card {
-            padding: 14px;
+        /* --- CARD BASE --- */
+        .dash-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 28px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
+            position: relative;
+            transition: border-color 0.2s ease;
         }
 
-        .stat-title {
-            font-size: 20px;
+        .dash-card:hover {
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        /* --- CARD 1: WELCOME & DOMINANT MODE --- */
+        .eyebrow-green {
+            color: var(--matrix-green);
+            font-size: 11px;
             font-weight: 700;
-            line-height: 1.2;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
-        .stat-title.lg {
+        .user-name {
             font-size: 26px;
             font-weight: 800;
+            color: #ffffff;
+            margin-top: 6px;
+            margin-bottom: 2px;
+            letter-spacing: -0.2px;
         }
 
-        .stat-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .stat-sub {
-            font-size: 11px;
+        .user-email {
+            font-size: 13.5px;
             color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        /* --- BOTTOM GRID --- */
-        .bottom-grid {
-            display: grid;
-            grid-template-columns: 1fr .7fr;
-            gap: 24px;
-        }
-
-        /* --- QUADRANT MAP --- */
-        .quadrant-card {
-            padding: 32px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .section-title {
-            font-size: 0.9rem;
-            font-weight: 800;
             margin-bottom: 24px;
         }
 
-        .quadrant-map-container {
-            flex: 1;
-            width: 100%;
-            position: relative;
+        .dominant-mode-box {
+            background: rgba(74, 222, 128, 0.04);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: 14px;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
-            justify-content: center;
-        }
-
-        .quadrant-graph {
-            position: relative;
-            width: 100%;
-            max-width: 340px;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            flex-direction: column;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--border-lighter);
-        }
-
-        .quadrant-grid-lines {
-            position: absolute;
-            inset: 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-        }
-
-        .q-cell {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .q-cell.top-left {
-            border-right: 1px solid var(--border-lighter);
-            border-bottom: 1px solid var(--border-lighter);
-            background-color: rgba(74, 222, 128, 0.04);
-        }
-
-        .q-cell.top-right {
-            border-bottom: 1px solid var(--border-lighter);
-            background-color: rgba(56, 189, 248, 0.04);
-        }
-
-        .q-cell.bottom-left {
-            border-right: 1px solid var(--border-lighter);
-            background-color: rgba(251, 146, 60, 0.04);
-        }
-
-        .q-cell.bottom-right {
-            background-color: rgba(192, 132, 252, 0.04);
-        }
-
-        .q-label {
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .axis-label {
-            position: absolute;
-            font-size: 10px;
-            color: var(--text-muted);
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .axis-y-top {
-            left: -28px;
-            top: 25%;
-            transform: translateY(-50%) rotate(-90deg);
-        }
-
-        .axis-y-bot {
-            left: -28px;
-            top: 75%;
-            transform: translateY(-50%) rotate(-90deg);
-        }
-
-        .axis-x-container {
-            position: absolute;
-            bottom: -32px;
-            width: 100%;
-            display: flex;
             justify-content: space-between;
-            padding: 0 16px;
+            margin-bottom: 26px;
+            transition: all 0.3s ease;
         }
 
-        .data-point {
-            position: absolute;
-            top: 30%;
-            left: 45%;
-            width: 16px;
-            height: 16px;
-            background-color: var(--bg-card);
-            border-radius: 50%;
-            border: 4px solid var(--matrix-green);
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            box-shadow: 0 0 20px 5px rgba(74, 222, 128, 0.3);
-        }
-
-        .quadrant-footer-text {
-            text-align: center;
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--text-muted);
-            margin-top: 40px;
-        }
-
-        /* --- RIGHT INFO STACK --- */
-        .right-stack {
+        .dominant-mode-info {
             display: flex;
-            flex-direction: column;
-            gap: 24px;
+            align-items: center;
+            gap: 14px;
         }
 
-        .dominant-mode-card {
-            padding: 32px;
-            border-color: var(--border-light);
-        }
-
-        .dm-header {
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .dm-icon-wrapper {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            background-color: rgba(74, 222, 128, 0.1);
-            color: var(--matrix-green);
+        .dominant-mode-icon {
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
 
-        .dm-title-box p {
+        .dominant-mode-label {
+            color: var(--matrix-green);
             font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
             font-weight: 700;
             letter-spacing: 1px;
-            margin-bottom: 4px;
+            text-transform: uppercase;
         }
 
-        .dm-title-box h4 {
-            font-size: 20px;
-            font-weight: 800;
+        .dominant-mode-title {
             color: var(--matrix-green);
-            line-height: 1.2;
-        }
-
-        .dm-description {
-            font-size: 13px;
-            line-height: 1.6;
-            color: #a1b3be;
-            margin-bottom: 24px;
-        }
-
-        .dm-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .tag {
-            padding: 6px 12px;
-            background-color: rgba(74, 222, 128, 0.1);
-            border: 1px solid rgba(74, 222, 128, 0.2);
-            color: var(--matrix-green);
-            font-size: 10px;
-            border-radius: 8px;
+            font-size: 15px;
             font-weight: 700;
+            margin-top: 1px;
         }
 
-        /* --- QUICK ACTIONS --- */
-        .quick-actions-card {
-            padding: 32px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .quick-actions-card h3 {
+        .dominant-mode-badge {
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--matrix-green);
+            border-radius: 6px;
+            padding: 3px 10px;
             font-size: 11px;
             font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
+            letter-spacing: 0.5px;
         }
 
-        .action-links {
-            flex: 1;
+        .btn-continue-learning {
+            background: var(--matrix-green);
+            color: #062816;
+            font-weight: 700;
+            font-size: 14px;
+            font-family: inherit;
+            border-radius: 9999px;
+            padding: 12px 28px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(74, 222, 128, 0.25);
+        }
+
+        .btn-continue-learning:hover {
+            background: #3ec46f;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.35);
+        }
+
+        /* --- CARD 2: ACTIVE LEARNING ROADMAP --- */
+        #card-roadmap {
+            --target-color: var(--matrix-blue);
+        }
+
+        .roadmap-eyebrow {
+            color: var(--target-color, var(--matrix-purple));
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 18px;
+            margin-bottom: 22px;
+        }
+
+        .roadmap-subcard {
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-card-subtle);
+            border-radius: 14px;
+            padding: 14px 16px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
         }
 
-        .action-item {
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border-light);
+        .roadmap-subcard-label {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .roadmap-target-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .roadmap-target-sub {
+            color: var(--target-color, var(--matrix-purple-dark));
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .roadmap-active-title {
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .roadmap-active-pct {
+            color: var(--target-color, var(--matrix-purple));
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .progress-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-track {
+            background: rgba(255, 255, 255, 0.08);
+            height: 8px;
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-bottom: 22px;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--target-color, var(--matrix-purple-dark));
+            border-radius: 9999px;
+            transition: width 0.4s ease, background-color 0.3s ease;
+        }
+
+        .btn-open-module {
+            background: color-mix(in srgb, var(--target-color, #a855f7) 12%, transparent);
+            border: 1px solid color-mix(in srgb, var(--target-color, #a855f7) 35%, transparent);
+            color: var(--target-color, var(--matrix-purple));
+            font-weight: 600;
+            font-size: 13.5px;
+            font-family: inherit;
+            border-radius: 9999px;
+            padding: 10px 24px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            transition: all 0.2s ease;
+        }
+
+        .btn-open-module:hover {
+            background: color-mix(in srgb, var(--target-color, #a855f7) 22%, transparent);
+            border-color: color-mix(in srgb, var(--target-color, #a855f7) 55%, transparent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px color-mix(in srgb, var(--target-color, #a855f7) 25%, transparent);
+        }
+
+        /* --- CARD 3: LEARNING MODE DISTRIBUTION --- */
+        .eyebrow-muted {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+        }
+
+        .dist-rows-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .dist-row {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dist-row-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            color: var(--text-main);
+            margin-bottom: 2px;
         }
 
-        .action-item:last-child {
-            border-bottom: none;
+        .dist-label-left {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
         }
 
-        .action-item span {
-            font-size: 13px;
-            font-weight: 600;
-            transition: color 0.2s ease;
+        .dist-label-left svg {
+            flex-shrink: 0;
         }
 
-        .action-item svg {
-            width: 16px;
-            height: 16px;
+        .dist-code-muted {
+            color: var(--text-subtle);
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 2px;
+        }
+
+        .dist-tag-strength {
+            background: rgba(74, 222, 128, 0.12);
+            color: var(--matrix-green);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+
+        .dist-tag-intervention {
+            background: rgba(251, 146, 60, 0.12);
+            color: var(--matrix-orange);
+            border: 1px solid rgba(251, 146, 60, 0.3);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+
+        .dist-val-pct {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .dist-val-pct.green {
+            color: var(--matrix-green);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .dist-val-pct.purple {
+            color: var(--matrix-purple);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .dist-sub-code {
+            color: var(--text-subtle);
+            font-size: 11px;
+            margin-top: 1px;
+            margin-bottom: 6px;
+        }
+
+        .dist-track {
+            background: rgba(255, 255, 255, 0.06);
+            height: 6px;
+            border-radius: 9999px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .dist-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.4s ease;
+        }
+
+        .dist-fill.green { background-color: var(--matrix-green); }
+        .dist-fill.orange { background-color: var(--matrix-orange); }
+        .dist-fill.blue { background-color: var(--matrix-blue); }
+        .dist-fill.purple { background-color: var(--matrix-purple); }
+
+        .dist-footnote {
             color: var(--text-muted);
-            transition: color 0.2s ease;
+            font-size: 12px;
+            margin-top: 8px;
         }
 
-        .action-item:hover span,
-        .action-item:hover svg {
+        /* --- CARD 4: ASSESSMENT JOURNEY --- */
+        .journey-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .journey-title {
+            color: #ffffff;
+            font-size: 17px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .btn-take-now {
+            background: var(--matrix-yellow);
+            color: #000000;
+            font-weight: 700;
+            font-size: 13px;
+            font-family: inherit;
+            border-radius: 9999px;
+            padding: 7px 18px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(216, 166, 26, 0.2);
+        }
+
+        .btn-take-now:hover {
+            background: var(--matrix-yellow-hover);
+            transform: translateY(-1px);
+        }
+
+        .journey-stages-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .journey-stage-card {
+            background: var(--bg-card-inner);
+            border: 1px solid var(--border-card-subtle);
+            border-radius: 14px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+
+        .journey-stage-card.interactive {
+            border-color: rgba(216, 166, 26, 0.3);
+            cursor: pointer;
+        }
+
+        .journey-stage-card.interactive:hover {
+            background: rgba(216, 166, 26, 0.05);
+            border-color: rgba(216, 166, 26, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .journey-stage-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .journey-icon-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .journey-icon-circle.completed {
+            background: rgba(74, 222, 128, 0.08);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+            color: var(--matrix-green);
+        }
+
+        .journey-icon-circle.open {
+            background: rgba(216, 166, 26, 0.1);
+            border: 1px solid rgba(216, 166, 26, 0.3);
             color: var(--matrix-yellow);
         }
 
-        /* Utilities */
-        .text-matrix-green { color: var(--matrix-green); }
-        .text-matrix-blue { color: var(--matrix-blue); }
-        .text-matrix-orange { color: var(--matrix-orange); }
-
-        /* --- MOBILE RESPONSIVENESS --- */
-        @media (max-width: 768px) {
-            body { padding: 16px 12px; }
-            .dashboard-header h1 { font-size: 20px; }
-            .dashboard-header p { font-size: 13px; }
-            .metrics-grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 20px; }
-            .bottom-grid { grid-template-columns: 1fr; gap: 16px; }
-            .metric-card, .quadrant-card, .quick-actions-card { padding: 18px 14px; }
-            .quadrant-graph { max-width: 100%; aspect-ratio: 1 / 1; margin: 0 auto; }
-            .action-item { padding: 12px; }
+        .journey-icon-circle.locked {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #64748b;
         }
 
-        @media (max-width: 480px) {
-            .axis-label { font-size: 8.5px; }
-            .q-label { font-size: 9.5px; }
+        .journey-stage-name {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .journey-stage-date {
+            color: var(--text-subtle);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .journey-stage-date.gold {
+            color: var(--matrix-yellow);
+        }
+
+        .journey-stage-right {
+            text-align: right;
+        }
+
+        .journey-stage-pct {
+            color: var(--matrix-green);
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .journey-stage-mode {
+            color: var(--matrix-green);
+            font-size: 11px;
+            margin-top: 1px;
+        }
+
+        .journey-stage-open-tag {
+            color: var(--matrix-yellow);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .journey-stage-lock-tag {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* --- RESPONSIVE LAYOUT --- */
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            body {
+                padding: 16px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <svg class="svg-defs">
-        <symbol id="icon-speedometer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-            <path d="M13 7h-2v5.41l3.3 3.3 1.41-1.41L13 11.59z" />
-        </symbol>
-        <symbol id="icon-checklist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-        </symbol>
-        <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-        </symbol>
-        <symbol id="icon-linechart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-        </symbol>
-        <symbol id="icon-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-        </symbol>
-        <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-        </symbol>
-        <symbol id="icon-books-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 6h16v4H4zM4 14h16v4H4z" />
-        </symbol>
-        <symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 5l7 7-7 7" />
-        </symbol>
-    </svg>
+    <main class="dashboard-grid">
 
-    <main class="content-container">
+        <!-- ================= CARD 1: TOP LEFT (WELCOME BACK) ================= -->
+        <section class="dash-card">
+            <div>
+                <div class="eyebrow-green">WELCOME BACK</div>
+                <h1 class="user-name" id="user-display-name">Maria Santos</h1>
+                <p class="user-email" id="user-display-email">maria.santos@student.olfu.edu.ph</p>
 
-        <div class="container">
-
-            <div class="glass-card welcome-banner" id="welcome-banner"
-                style="display: flex; flex-direction: row; align-items: stretch; padding: 0; overflow: hidden; border-color: rgba(212, 160, 23, 0.2);">
-                <!-- Left side: Welcome & Class Info -->
-                <div
-                    style="flex: 1; padding: 24px 32px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 32px;">
-
-                    <!-- Welcome -->
-                    <div class="welcome-text-box" style="flex: 1;">
-                        <p class="welcome-eyebrow">Welcome Back</p>
-                        <h2 class="welcome-title" id="welcome-student-name">Loading...</h2>
-                        <p class="welcome-sub" id="welcome-student-details">Loading...</p>
+                <div class="dominant-mode-box" id="dominant-mode-box">
+                    <div class="dominant-mode-info">
+                        <span class="dominant-mode-icon" id="dominant-mode-icon">
+                            <!-- Injected SVG Book Icon -->
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                        </span>
+                        <div>
+                            <div class="dominant-mode-label" id="dominant-mode-label">DOMINANT MODE</div>
+                            <div class="dominant-mode-title" id="dominant-mode-name">Hierarchical Individual</div>
+                        </div>
                     </div>
+                    <span class="dominant-mode-badge" id="dominant-mode-code">HI</span>
+                </div>
+            </div>
 
+            <div>
+                <button class="btn-continue-learning" id="btn-continue-learning" onclick="navigateToModules()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="6 4 20 12 6 20 6 4"></polygon>
+                    </svg>
+                    <span>Continue Learning</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= CARD 2: TOP RIGHT (ACTIVE LEARNING ROADMAP) ================= -->
+        <section class="dash-card" id="card-roadmap">
+            <div>
+                <div class="roadmap-eyebrow" id="roadmap-eyebrow">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <circle cx="12" cy="12" r="6"></circle>
+                        <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                    <span>ACTIVE LEARNING ROADMAP</span>
                 </div>
 
-                <!-- Right side: Learning Track Card -->
-                <div
-                    style="padding: 28px 32px; display: flex; align-items: center; justify-content: center; min-width: 260px; background: rgba(255,255,255,0.02); border-left: 1px solid var(--border-light);">
-                    <div id="learning-track-card" style="flex: 1; display: flex; align-items: center; gap: 16px;">
-                        <div style="flex: 1;">
-                            <h3 style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
-                                Learning Track</h3>
-                            <h2 id="learning-track-title" style="font-size: 17px; font-weight: 700; color: var(--matrix-green); margin-bottom: 2px;">Self-Paced Track</h2>
-                            <p id="learning-track-sub" style="font-size: 13px; color: var(--text-muted);">Adaptive module delivery</p>
+                <div class="roadmap-grid">
+                    <div class="roadmap-subcard">
+                        <div class="roadmap-subcard-label">Target Quadrant</div>
+                        <div class="roadmap-target-title">
+                            <span id="target-quadrant-icon" style="display: flex; align-items: center;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.54z"></path>
+                                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.54z"></path>
+                                </svg>
+                            </span>
+                            <span id="target-quadrant-title">D. Collective</span>
                         </div>
-                        <div id="learning-track-badge-container">
-                            <span id="learning-track-badge" style="font-size: 11px; font-weight: 700; color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(216, 166, 26, 0.3);">Active</span>
-                        </div>
+                        <div class="roadmap-target-sub" id="target-quadrant-sub">DC · 48%</div>
+                    </div>
+
+                    <div class="roadmap-subcard">
+                        <div class="roadmap-subcard-label">Active Module</div>
+                        <div class="roadmap-active-title" id="active-module-name">Collaborative Learning & Peer Engagement</div>
+                        <div class="roadmap-active-pct" id="active-module-pct">50%</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="progress-header-row">
+                        <span>Module Progress</span>
+                        <span id="module-chapters-text">2/4 chapters</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="module-progress-fill" style="width: 50%;"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="bottom-grid">
-
-                <div class="glass-card quadrant-card">
-                    <h3 class="section-title">Your Quadrant Position</h3>
-
-                    <div class="quadrant-map-container">
-
-                        <div style="position: relative; width: 100%; max-width: 340px;">
-
-                            <div class="axis-label axis-y-top">INDIVIDUAL</div>
-                            <div class="axis-label axis-y-bot">COLLECTIVE</div>
-
-                            <div class="quadrant-graph">
-                                <div class="quadrant-grid-lines">
-                                    <div class="q-cell top-left">
-                                        <span class="q-label text-matrix-green">H. Individual</span>
-                                    </div>
-                                    <div class="q-cell top-right">
-                                        <span class="q-label text-matrix-blue">D. Individual</span>
-                                    </div>
-                                    <div class="q-cell bottom-left">
-                                        <span class="q-label text-matrix-orange">H. Collective</span>
-                                    </div>
-                                    <div class="q-cell bottom-right">
-                                        <span class="q-label text-matrix-purple">D. Collective</span>
-                                    </div>
-                                </div>
-
-                                <div class="data-point" id="quadrant-dot"></div>
-                            </div>
-
-                            <div class="axis-x-container">
-                                <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
-                                <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="quadrant-footer-text" id="quadrant-footer">Loading data...</div>
-                </div>
-
-                <div class="glass-card quadrant-card" style="padding: 32px;">
-                    <div
-                        style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase;">
-                        FUZZY K-NN BREAKDOWN
-                    </div>
-                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 24px; color: var(--text-main);">Profile
-                        Distribution</h3>
-
-                    <div id="fuzzy-bars-container"
-                        style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; flex: 1;">
-                        <!-- JS injects fuzzy bars here -->
-                    </div>
-
-                    <div id="fuzzy-summary-box"
-                        style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 16px 20px; border-radius: 12px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-                        <!-- JS injects summary here -->
-                    </div>
-                </div>
-
+            <div>
+                <button class="btn-open-module" id="btn-open-module" onclick="navigateToModules()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    <span>Open Module</span>
+                </button>
             </div>
+        </section>
 
-            <div class="bottom-grid" style="margin-top: 18px;">
+        <!-- ================= CARD 3: BOTTOM LEFT (LEARNING MODE DISTRIBUTION) ================= -->
+        <section class="dash-card">
+            <div class="eyebrow-muted">LEARNING MODE DISTRIBUTION</div>
 
-                <div class="glass-card dominant-mode-card" id="dm-card" style="background-color: var(--bg-green);">
-                    <div class="dm-header">
-                        <div class="dm-icon-wrapper">
-                            <svg width="28" height="28">
-                                <use href="#icon-books-stack"></use>
-                            </svg>
-                        </div>
-                        <div class="dm-title-box">
-                            <p>Your Dominant Mode</p>
-                            <h4 id="dm-title">Hierarchical Individual</h4>
-                        </div>
-                    </div>
-
-                    <p class="dm-description" id="dm-desc">
-                        You learn best through structured, teacher-directed instruction in a solo setting. Clear
-                        guidelines and direct authority from an instructor help you thrive.
-                    </p>
-
-                    <div class="dm-tags" id="dm-tags">
-                        <span class="tag">Structured lessons</span>
-                        <span class="tag">Direct instruction</span>
-                        <span class="tag">Solo study</span>
-                        <span class="tag">Teacher-led</span>
-                    </div>
-                </div>
-
-                <div class="glass-card quick-actions-card"
-                    style="padding: 32px; display: flex; flex-direction: column;">
-                    <h3
-                        style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 24px; text-transform: uppercase;">
-                        Quick Navigation</h3>
-                    <div class="action-links">
-                        <a href="modules-content.html" class="action-item" onclick="updateParentSidebar(2)">
-                            <span>View your personalized modules</span>
-                            <svg>
-                                <use href="#icon-arrow-right"></use>
-                            </svg>
-                        </a>
-
-                        <a href="qa-content.html" class="action-item" onclick="updateParentSidebar(1)">
-                            <span>See your assessment details</span>
-                            <svg>
-                                <use href="#icon-arrow-right"></use>
-                            </svg>
-                        </a>
-
-                        <a href="progress-content.html" class="action-item" onclick="updateParentSidebar(3)">
-                            <span>Check your migration progress</span>
-                            <svg>
-                                <use href="#icon-arrow-right"></use>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-
+            <div class="dist-rows-container" id="dist-container">
+                <!-- Dynamically populated via renderLearningDistribution -->
             </div>
-        </div>
+        </section>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', async () => {
+        <!-- ================= CARD 4: BOTTOM RIGHT (ASSESSMENT JOURNEY) ================= -->
+        <section class="dash-card">
+            <div>
+                <div class="journey-header">
+                    <div>
+                        <div class="eyebrow-muted" style="margin-bottom: 4px;">ASSESSMENT JOURNEY</div>
+                        <h3 class="journey-title">28-Item Survey · 3 Stages</h3>
+                    </div>
+                    <button class="btn-take-now" id="btn-journey-action" onclick="navigateToAssessment()">
+                        <span>&rarr;</span>
+                        <span id="journey-action-text">Take Now</span>
+                    </button>
+                </div>
+
+                <div class="journey-stages-container" id="journey-stages-list">
+                    <!-- Dynamic stages will be injected here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation & Dynamic Backend Data Handler -->
+    <script>
+        let activeModuleId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStudentData();
+        });
+
+        // Calculate Quadrant Percentages from coordinates (-5 to 5)
+        function getPercentages(x, y) {
+            let normX = (x + 5) / 10;
+            let normY = (y + 5) / 10;
+
+            let HI = (1 - normX) * normY;
+            let DI = normX * normY;
+            let HC = (1 - normX) * (1 - normY);
+            let DC = normX * (1 - normY);
+
+            const total = (HI + DI + HC + DC) || 1;
+
+            return {
+                HI: Math.round((HI / total) * 100),
+                DI: Math.round((DI / total) * 100),
+                HC: Math.round((HC / total) * 100),
+                DC: Math.round((DC / total) * 100)
+            };
+        }
+
+        // SVG icon definitions for each learning mode
+        const svgIcons = {
+            HI: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`,
+            HC: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+            DI: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>`,
+            DC: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.54z"></path><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.54z"></path></svg>`
+        };
+
+        const modeMap = {
+            'Hierarchical Individual': { code: 'HI', short: 'H. Individual', iconSvg: svgIcons.HI, color: 'var(--matrix-green)' },
+            'Hierarchical Collective': { code: 'HC', short: 'H. Collective', iconSvg: svgIcons.HC, color: 'var(--matrix-orange)' },
+            'Distributed Individual': { code: 'DI', short: 'D. Individual', iconSvg: svgIcons.DI, color: 'var(--matrix-blue)' },
+            'Distributed Collective': { code: 'DC', short: 'D. Collective', iconSvg: svgIcons.DC, color: 'var(--matrix-purple)' }
+        };
+
+        async function loadStudentData() {
+            let user = null;
+            try {
                 const userStr = localStorage.getItem('currentUser');
-                if (!userStr) return; // Allow parent layout to handle redirection if missing
+                if (userStr) user = JSON.parse(userStr);
+            } catch(e) {}
 
+            // 1. Fetch Fresh Student Profile & Data from Backend
+            if (user && user.id) {
                 try {
-                    const user = JSON.parse(userStr);
+                    const studentRes = await fetch(`/api/students/${user.id}`);
+                    if (studentRes.ok) {
+                        const freshStudent = await studentRes.json();
+                        user = { ...user, ...freshStudent };
+                        localStorage.setItem('currentUser', JSON.stringify(user));
+                        localStorage.setItem('studentProfile', JSON.stringify(freshStudent));
+                    }
+                } catch (e) {
+                    console.error('Student fetch error', e);
+                }
+            }
 
-                    // 1. Populate Welcome Banner
-                    const fullName = `${user.name || user.first_name || ''} ${user.last_name || ''}`.trim();
-                    document.getElementById('welcome-student-name').innerHTML = `${fullName || 'Student'}`;
+            if (user) {
+                const fullName = `${user.name || user.first_name || ''} ${user.last_name || ''}`.trim();
+                if (fullName) {
+                    document.getElementById('user-display-name').textContent = fullName;
+                }
+                if (user.email) {
+                    document.getElementById('user-display-email').textContent = user.email;
+                } else if (user.student_no) {
+                    document.getElementById('user-display-email').textContent = `${user.student_no}@student.olfu.edu.ph`;
+                }
+            }
 
-                    const detailsStr = user.student_no ? `Student ID: ${user.student_no}` : 'Learner Account';
-                    document.getElementById('welcome-student-details').textContent = detailsStr;
+            // 2. Fetch Assessment History & Student Profile
+            let history = [];
+            let latestCoords = { x: -3, y: 3 }; // default baseline
+            let dominantMode = 'Hierarchical Individual';
 
-                    // 2. Populate Learning Track Card & Mode from profile
-                    const profileStr = localStorage.getItem('studentProfile');
-                    const trackTitleEl = document.getElementById('learning-track-title');
-                    const trackSubEl = document.getElementById('learning-track-sub');
-                    const trackBadgeEl = document.getElementById('learning-track-badge');
+            if (user && user.id) {
+                try {
+                    const res = await fetch(`/api/students/${user.id}/history`);
+                    if (res.ok) {
+                        history = await res.json();
+                    }
+                } catch(err) {
+                    console.error('History fetch error', err);
+                }
+            }
 
-                    if (profileStr) {
-                        const profile = JSON.parse(profileStr);
-                        const mode = profile.learning_mode || user.learning_mode;
+            // Determine latest assessment coordinates and dominant mode
+            if (history && history.length > 0) {
+                const latest = history[history.length - 1];
+                latestCoords.x = (latest.x_coord !== undefined) ? latest.x_coord : (user.x_coord || -3);
+                latestCoords.y = (latest.y_coord !== undefined) ? latest.y_coord : (user.y_coord || 3);
+                dominantMode = latest.learning_mode || user.learning_mode || 'Hierarchical Individual';
+            } else if (user && user.learning_mode) {
+                dominantMode = user.learning_mode;
+                latestCoords.x = user.x_coord || -3;
+                latestCoords.y = user.y_coord || 3;
+            }
 
-                        if (mode && mode !== 'Unknown') {
-                            trackTitleEl.textContent = mode;
-                            trackTitleEl.style.color = "var(--matrix-green)";
-                            trackSubEl.textContent = "Personalized modules ready";
-                            trackBadgeEl.textContent = "Assessed";
-                        } else {
-                            trackTitleEl.textContent = "Initial Assessment";
-                            trackTitleEl.style.color = "var(--matrix-orange)";
-                            trackSubEl.textContent = "Complete assessment to unlock";
-                            trackBadgeEl.textContent = "Pending";
-                        }
-                    } else {
-                        trackTitleEl.textContent = "Self-Paced Track";
-                        trackSubEl.textContent = "Adaptive module delivery";
+            // Populate Card 1: Dominant Mode Box
+            const modeInfo = modeMap[dominantMode] || modeMap['Hierarchical Individual'];
+            document.getElementById('dominant-mode-name').textContent = dominantMode;
+            document.getElementById('dominant-mode-code').textContent = modeInfo.code;
+            document.getElementById('dominant-mode-icon').innerHTML = modeInfo.iconSvg;
+            document.getElementById('dominant-mode-icon').style.color = modeInfo.color;
+
+            // Apply mode colors
+            const domBox = document.getElementById('dominant-mode-box');
+            if (domBox) {
+                domBox.style.borderColor = `color-mix(in srgb, ${modeInfo.color} 30%, transparent)`;
+                domBox.style.background = `color-mix(in srgb, ${modeInfo.color} 5%, transparent)`;
+                document.getElementById('dominant-mode-label').style.color = modeInfo.color;
+                document.getElementById('dominant-mode-name').style.color = modeInfo.color;
+                document.getElementById('dominant-mode-code').style.color = modeInfo.color;
+                document.getElementById('dominant-mode-code').style.background = `color-mix(in srgb, ${modeInfo.color} 15%, transparent)`;
+            }
+
+            // 3. Card 3: Dynamic Learning Mode Distribution Percentages & Badges
+            const pcts = getPercentages(latestCoords.x, latestCoords.y);
+            renderLearningDistribution(pcts);
+
+            // 4. Card 2: Active Learning Roadmap (Target Quadrant & Module Progress)
+            const modesList = [
+                { key: 'HI', name: 'Hierarchical Individual', short: 'H. Individual', pct: pcts.HI, iconSvg: svgIcons.HI, color: 'var(--matrix-green)' },
+                { key: 'HC', name: 'Hierarchical Collective', short: 'H. Collective', pct: pcts.HC, iconSvg: svgIcons.HC, color: 'var(--matrix-orange)' },
+                { key: 'DI', name: 'Distributed Individual', short: 'D. Individual', pct: pcts.DI, iconSvg: svgIcons.DI, color: 'var(--matrix-blue)' },
+                { key: 'DC', name: 'Distributed Collective', short: 'D. Collective', pct: pcts.DC, iconSvg: svgIcons.DC, color: 'var(--matrix-purple)' }
+            ].sort((a, b) => a.pct - b.pct);
+
+            const lowest = modesList[0]; // Target Quadrant is the lowest (weakest) quadrant
+
+            // Dynamically tint Card 2 with the target/weak quadrant color
+            const cardRoadmap = document.getElementById('card-roadmap');
+            if (cardRoadmap) {
+                cardRoadmap.style.setProperty('--target-color', lowest.color);
+            }
+
+            document.getElementById('target-quadrant-title').textContent = lowest.short;
+            document.getElementById('target-quadrant-icon').innerHTML = lowest.iconSvg;
+            document.getElementById('target-quadrant-icon').style.color = lowest.color;
+            document.getElementById('target-quadrant-sub').textContent = `${lowest.key} · ${lowest.pct}%`;
+
+            // Fetch Real Modules & Compute Exact Module Progress
+            try {
+                let modules = [];
+                let progressRows = [];
+                
+                const modRes = await fetch('/api/modules?role=student');
+                if (modRes.ok) modules = await modRes.json();
+
+                if (user && user.id) {
+                    const progRes = await fetch(`/api/progress/${user.id}`);
+                    if (progRes.ok) progressRows = await progRes.json();
+                }
+
+                // Match module for student's weakest/target quadrant
+                let targetMod = modules.find(m => m.quadrant_category === lowest.name) || modules[0];
+                let activeProg = targetMod ? progressRows.find(p => p.module_id === targetMod.id) : null;
+
+                if (targetMod) {
+                    activeModuleId = targetMod.id;
+                    document.getElementById('active-module-name').textContent = targetMod.title;
+                    
+                    const totalChapters = (targetMod.chapters ? targetMod.chapters.length : 0) || (targetMod.chapter_count || 4);
+                    
+                    // Check local progress storage for granular chapter completions
+                    let localProg = null;
+                    if (user && user.id) {
+                        try {
+                            const lpStr = localStorage.getItem(`student_mod_prog_v2_${user.id}_${targetMod.id}`) || 
+                                          localStorage.getItem(`student_mod_prog_${user.id}_${targetMod.id}`);
+                            if (lpStr) localProg = JSON.parse(lpStr);
+                        } catch(e) {}
                     }
 
-                    if (profileStr) {
-                        const profile = JSON.parse(profileStr);
-                        const mode = profile.learning_mode;
-
-                        const dmTitle = document.getElementById('dm-title');
-                        const dmDesc = document.getElementById('dm-desc');
-                        const dmTags = document.getElementById('dm-tags');
-                        const dmCard = document.getElementById('dm-card');
-                        const dot = document.getElementById('quadrant-dot');
-
-                        if (mode) {
-                            let color = 'var(--matrix-green)';
-                            let bg = 'var(--bg-green)';
-                            let desc = '';
-                            let tags = '';
-
-                            if (mode === 'Hierarchical Individual') {
-                                color = 'var(--matrix-green)'; bg = 'rgba(74, 222, 128, 0.05)';
-                                desc = 'You learn best through structured, teacher-directed instruction in a solo setting. Clear guidelines and direct authority from an instructor help you thrive.';
-                                tags = '<span class="tag">Structured lessons</span><span class="tag">Direct instruction</span><span class="tag">Solo study</span><span class="tag">Teacher-led</span>';
-                            } else if (mode === 'Distributed Individual') {
-                                color = 'var(--matrix-blue)'; bg = 'rgba(56, 189, 248, 0.05)';
-                                desc = 'You prefer working independently but thrive when given the freedom to explore topics your own way. You rely on self-direction and personal curiosity.';
-                                tags = '<span class="tag">Self-directed</span><span class="tag">Exploratory</span><span class="tag">Solo study</span><span class="tag">Flexible</span>';
-                            } else if (mode === 'Hierarchical Collective') {
-                                color = 'var(--matrix-orange)'; bg = 'rgba(251, 146, 60, 0.05)';
-                                desc = 'You learn best in a group setting that is guided by a teacher or clear structure. Assigned roles and clear rubrics in team projects help you succeed.';
-                                tags = '<span class="tag">Group work</span><span class="tag">Structured teams</span><span class="tag">Clear roles</span><span class="tag">Teacher-guided</span>';
-                            } else if (mode === 'Distributed Collective') {
-                                color = 'var(--matrix-purple)'; bg = 'rgba(192, 132, 252, 0.05)';
-                                desc = 'You thrive in open, collaborative environments where peers share ideas freely. Brainstorming, peer-reviews, and decentralized teamwork are your strengths.';
-                                tags = '<span class="tag">Collaborative</span><span class="tag">Peer-led</span><span class="tag">Open discussion</span><span class="tag">Flexible groups</span>';
-                            }
-
-                            if (dmTitle) dmTitle.textContent = mode;
-                            if (dmTitle) dmTitle.style.color = color;
-                            if (dmCard) dmCard.style.backgroundColor = bg;
-                            if (dmCard) dmCard.style.borderColor = `color-mix(in srgb, ${color} 30%, transparent)`;
-                            if (dmDesc) dmDesc.textContent = desc;
-                            if (dmTags) dmTags.innerHTML = tags;
-
-                            // Style inner elements
-                            if (dmCard) {
-                                const iconWrap = dmCard.querySelector('.dm-icon-wrapper');
-                                if (iconWrap) {
-                                    iconWrap.style.backgroundColor = `color-mix(in srgb, ${color} 15%, transparent)`;
-                                    iconWrap.style.color = color;
-                                }
-                            }
-                            if (dmTags) {
-                                dmTags.querySelectorAll('.tag').forEach(t => {
-                                    t.style.backgroundColor = `color-mix(in srgb, ${color} 10%, transparent)`;
-                                    t.style.color = color;
-                                    t.style.borderColor = `color-mix(in srgb, ${color} 20%, transparent)`;
-                                });
-                            }
-
-                            // Calculate Plot
-                            let xPct = ((profile.x_coord + 5) / 10) * 100;
-                            let yPct = ((5 - profile.y_coord) / 10) * 100;
-                            xPct = Math.max(5, Math.min(95, xPct));
-                            yPct = Math.max(5, Math.min(95, yPct));
-
-                            if (dot) {
-                                dot.style.display = 'block';
-                                dot.style.left = xPct + '%';
-                                dot.style.top = yPct + '%';
-                                dot.style.borderColor = color;
-                                dot.style.boxShadow = `0 0 16px color-mix(in srgb, ${color} 60%, transparent)`;
-                            }
-
-                            // Render Fuzzy Graph
-                            renderFuzzyGraph(profile.x_coord || 0, profile.y_coord || 0, mode);
-
-                        } else {
-                            if (dmTitle) dmTitle.textContent = 'Not Assessed';
-                            if (dmDesc) dmDesc.textContent = 'You have not completed the Learning Mode Assessment yet. Please complete the assessment to unlock your personalized learning profile.';
-                            if (dmTags) dmTags.innerHTML = '';
-                            if (dot) dot.style.display = 'none';
-                            if (dmCard) dmCard.style.backgroundColor = 'transparent';
-                        }
+                    let completedCount = 0;
+                    if (localProg && Array.isArray(localProg.completedChapters)) {
+                        completedCount = localProg.completedChapters.length;
+                    } else if (activeProg) {
+                        completedCount = activeProg.tasks_completed || 0;
                     }
 
-                    // 4. Populate Dynamic Stats (Footer)
-                    try {
-                        const historyRes = await fetch('/api/students/' + user.id + '/history');
-                        const history = await historyRes.json();
-                        const footerEl = document.getElementById('quadrant-footer');
+                    const maxTasks = totalChapters > 0 ? totalChapters : 4;
+                    const clampedCompleted = Math.min(completedCount, maxTasks);
+                    const progressPct = maxTasks > 0 ? Math.round((clampedCompleted / maxTasks) * 100) : 0;
 
-                        if (history.length > 0) {
-                            const last = history[history.length - 1];
-                            const cx = (last.x_coord || 0).toFixed(2);
-                            const cy = (last.y_coord || 0).toFixed(2);
-                            if (footerEl) footerEl.innerHTML = `Coordinate: (${cx}, ${cy}) &middot; Based on ${last.quarter_name} results`;
-                        } else {
-                            if (footerEl) footerEl.innerHTML = `Complete an assessment to view data`;
-                        }
-                    } catch (statErr) {
-                        console.error('Failed to load stats', statErr);
-                    }
+                    document.getElementById('active-module-pct').textContent = `${progressPct}%`;
+                    document.getElementById('module-chapters-text').textContent = `${clampedCompleted}/${maxTasks} chapters`;
+                    document.getElementById('module-progress-fill').style.width = `${progressPct}%`;
+                }
+            } catch(e) {
+                console.error('Modules fetch error', e);
+            }
 
-                } catch (e) { console.error(e); }
+            // 5. Card 4: Assessment Journey (3 Stages)
+            renderAssessmentJourney(history);
+        }
+
+        function renderLearningDistribution(pcts) {
+            const modes = [
+                { key: 'HI', name: 'Hierarchical Individual', short: 'H. Individual', pct: pcts.HI, iconSvg: svgIcons.HI, colorClass: 'green' },
+                { key: 'HC', name: 'Hierarchical Collective', short: 'H. Collective', pct: pcts.HC, iconSvg: svgIcons.HC, colorClass: 'orange' },
+                { key: 'DI', name: 'Distributed Individual', short: 'D. Individual', pct: pcts.DI, iconSvg: svgIcons.DI, colorClass: 'blue' },
+                { key: 'DC', name: 'Distributed Collective', short: 'D. Collective', pct: pcts.DC, iconSvg: svgIcons.DC, colorClass: 'purple' }
+            ];
+
+            let highest = modes[0];
+            let lowest = modes[0];
+            modes.forEach(m => {
+                if (m.pct > highest.pct) highest = m;
+                if (m.pct < lowest.pct) lowest = m;
             });
 
-            function renderFuzzyGraph(x_coord, y_coord, dominant) {
-                // Inverse calculation: from X/Y (-5 to 5) to percentages
-                // Map to 0-1
-                let normX = (x_coord + 5) / 10;
-                let normY = (y_coord + 5) / 10;
+            const container = document.getElementById('dist-container');
+            if (!container) return;
 
-                let HI = (1 - normX) * normY;
-                let DI = normX * normY;
-                let HC = (1 - normX) * (1 - normY);
-                let DC = normX * (1 - normY);
+            let html = '';
+            modes.forEach(m => {
+                const isHighest = m.key === highest.key;
+                const isLowest = m.key === lowest.key;
 
-                const total = HI + DI + HC + DC;
-
-                const pHI = Math.round((HI / total) * 100);
-                const pDI = Math.round((DI / total) * 100);
-                const pHC = Math.round((HC / total) * 100);
-                const pDC = Math.round((DC / total) * 100);
-
-                const sorted = [
-                    { mode: 'Hierarchical Individual', short: 'H. Individual', pct: pHI, color: 'var(--matrix-green)', icon: '📚' },
-                    { mode: 'Distributed Individual', short: 'D. Individual', pct: pDI, color: 'var(--matrix-blue)', icon: '💻' },
-                    { mode: 'Hierarchical Collective', short: 'H. Collective', pct: pHC, color: 'var(--matrix-orange)', icon: '🤝' },
-                    { mode: 'Distributed Collective', short: 'D. Collective', pct: pDC, color: 'var(--matrix-purple)', icon: '🧠' }
-                ].sort((a, b) => b.pct - a.pct);
-
-                const domIdx = sorted.findIndex(item => item.mode === dominant);
-                if (domIdx > 0) {
-                    if (sorted[domIdx].pct <= sorted[0].pct) {
-                        sorted[domIdx].pct = sorted[0].pct + 2;
-                    }
-                    const [domItem] = sorted.splice(domIdx, 1);
-                    sorted.unshift(domItem);
+                let badgeHtml = '';
+                if (isHighest) {
+                    badgeHtml = `<span class="dist-tag-strength">Strengths &uarr;</span>`;
+                } else if (isLowest) {
+                    badgeHtml = `<span class="dist-tag-intervention">Intervention &darr;</span>`;
+                } else {
+                    badgeHtml = `<span class="dist-code-muted">${m.key}</span>`;
                 }
 
-                const container = document.getElementById('fuzzy-bars-container');
-                if (!container) return;
+                const pctClass = isHighest ? 'green' : (isLowest ? 'purple' : '');
 
-                container.innerHTML = '';
-
-                sorted.forEach((item, index) => {
-                    const row = document.createElement('div');
-                    row.style.display = 'flex';
-                    row.style.flexDirection = 'column';
-
-                    const isDominant = index === 0;
-
-                    row.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: ${isDominant ? item.color : 'var(--text-main)'}; font-weight: ${isDominant ? '700' : '500'};">
-                            <span>${item.icon} &nbsp; ${item.short} ${isDominant ? '<span style="font-size: 9px; padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-left: 8px;">DOMINANT</span>' : ''}</span>
-                            <span>${item.pct}%</span>
+                html += `
+                    <div class="dist-row">
+                        <div class="dist-row-top">
+                            <div class="dist-label-left">
+                                <span style="display: flex; align-items: center; color: var(--matrix-${m.colorClass});">${m.iconSvg}</span>
+                                <span>${m.key === 'HC' || m.key === 'DI' ? m.short : m.name}</span>
+                                ${badgeHtml}
+                            </div>
+                            <span class="dist-val-pct ${pctClass}">${m.pct}%</span>
                         </div>
-                        <div style="background: rgba(255,255,255,0.05); height: 6px; border-radius: 3px; overflow: hidden;">
-                            <div style="width: ${item.pct}%; background-color: ${item.color}; height: 100%; border-radius: 3px;"></div>
+                        ${(isHighest || isLowest) ? `<div class="dist-sub-code">${m.key}</div>` : ''}
+                        <div class="dist-track" style="${!(isHighest || isLowest) ? 'margin-top: 8px;' : ''}">
+                            <div class="dist-fill ${m.colorClass}" style="width: ${m.pct}%;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const diff = 70 - lowest.pct;
+            const noteText = diff > 0 
+                ? `${diff}% below the 70% threshold &middot; focus on ${lowest.short}` 
+                : `All quadrants balanced above standard proficiency threshold`;
+
+            html += `<div class="dist-footnote" id="dist-footnote-text">${noteText}</div>`;
+            container.innerHTML = html;
+        }
+
+        function renderAssessmentJourney(history) {
+            const container = document.getElementById('journey-stages-list');
+            if (!container) return;
+
+            const stageNames = ['First Assessment', 'Second Assessment', 'Final Assessment'];
+            let html = '';
+
+            for (let i = 0; i < 3; i++) {
+                const stageEntry = history && history[i];
+                const stageTitle = stageNames[i];
+
+                if (stageEntry) {
+                    // Completed stage
+                    const dateObj = new Date(stageEntry.taken_at || Date.now());
+                    const dateStr = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                    const pcts = getPercentages(stageEntry.x_coord || 0, stageEntry.y_coord || 0);
+                    const mode = stageEntry.learning_mode || 'Hierarchical Individual';
+                    const modeInfo = modeMap[mode] || modeMap['Hierarchical Individual'];
+                    const dominantPct = pcts[modeInfo.code] || 70;
+
+                    html += `
+                        <div class="journey-stage-card">
+                            <div class="journey-stage-left">
+                                <div class="journey-icon-circle completed">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="journey-stage-name">${stageTitle}</div>
+                                    <div class="journey-stage-date">Completed ${dateStr}</div>
+                                </div>
+                            </div>
+                            <div class="journey-stage-right">
+                                <div class="journey-stage-pct">${dominantPct}%</div>
+                                <div class="journey-stage-mode">${modeInfo.short}</div>
+                            </div>
                         </div>
                     `;
-                    container.appendChild(row);
-                });
-
-                const summaryBox = document.getElementById('fuzzy-summary-box');
-                if (summaryBox) {
-                    summaryBox.innerHTML = `You are <strong style="color: ${sorted[0].color};">${sorted[0].pct}% ${sorted[0].mode}</strong> — your primary learning mode this quarter.`;
-                }
-            }
-
-            function updateParentSidebar(activeIndex) {
-                if (window.parent && window.parent.document) {
-                    const sidebarLinks = window.parent.document.querySelectorAll('.sidebar-link');
-                    if (sidebarLinks && sidebarLinks.length > 0) {
-                        sidebarLinks.forEach(link => link.classList.remove('active'));
-                        if (sidebarLinks[activeIndex]) {
-                            sidebarLinks[activeIndex].classList.add('active');
-                        }
+                } else {
+                    const isNextAvailable = (i === 0) || (history && history[i - 1]);
+                    if (isNextAvailable) {
+                        // Open stage
+                        html += `
+                            <div class="journey-stage-card interactive" onclick="navigateToAssessment()">
+                                <div class="journey-stage-left">
+                                    <div class="journey-icon-circle open">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                                            <polygon points="6 4 20 12 6 20 6 4"></polygon>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="journey-stage-name">${stageTitle}</div>
+                                        <div class="journey-stage-date gold">Available now</div>
+                                    </div>
+                                </div>
+                                <div class="journey-stage-right">
+                                    <div class="journey-stage-open-tag">Open</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        // Locked future stage
+                        html += `
+                            <div class="journey-stage-card" style="opacity: 0.6;">
+                                <div class="journey-stage-left">
+                                    <div class="journey-icon-circle locked">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="journey-stage-name">${stageTitle}</div>
+                                        <div class="journey-stage-date">Available after milestone</div>
+                                    </div>
+                                </div>
+                                <div class="journey-stage-right">
+                                    <div class="journey-stage-lock-tag">Locked</div>
+                                </div>
+                            </div>
+                        `;
                     }
                 }
             }
-        </script>
-    </main>
+
+            container.innerHTML = html;
+
+            // Update top action button
+            const actionText = document.getElementById('journey-action-text');
+            if (actionText) {
+                if (history && history.length >= 3) {
+                    actionText.textContent = 'View Results';
+                } else {
+                    actionText.textContent = 'Take Now';
+                }
+            }
+        }
+
+        function navigateToModules() {
+            const targetUrl = activeModuleId ? `modules-content.html?moduleId=${activeModuleId}` : 'modules-content.html';
+            if (window.parent && window.parent.document) {
+                const frame = window.parent.document.getElementById('content-frame');
+                if (frame) {
+                    frame.src = targetUrl;
+                } else {
+                    window.location.href = targetUrl;
+                }
+                updateParentSidebar(2);
+            } else {
+                window.location.href = targetUrl;
+            }
+        }
+
+        function navigateToAssessment() {
+            if (window.parent && window.parent.document) {
+                const frame = window.parent.document.getElementById('content-frame');
+                if (frame) {
+                    frame.src = 'qa-content.html';
+                } else {
+                    window.location.href = 'qa-content.html';
+                }
+                updateParentSidebar(1);
+            } else {
+                window.location.href = 'qa-content.html';
+            }
+        }
+
+        function updateParentSidebar(activeIndex) {
+            if (window.parent && window.parent.document) {
+                const sidebarLinks = window.parent.document.querySelectorAll('.sidebar-link');
+                if (sidebarLinks && sidebarLinks.length > 0) {
+                    sidebarLinks.forEach(link => link.classList.remove('active'));
+                    if (sidebarLinks[activeIndex]) {
+                        sidebarLinks[activeIndex].classList.add('active');
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 
 </html>
