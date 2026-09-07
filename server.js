@@ -706,7 +706,7 @@ function calculateFKNN(answersArray, trainingData, settings) {
     distances.sort((a, b) => a.distance - b.distance);
     const nearest = distances.slice(0, K);
 
-    let memberships = {
+    let rawWeights = {
         'Hierarchical Individual': 0,
         'Distributed Individual': 0,
         'Hierarchical Collective': 0,
@@ -716,21 +716,49 @@ function calculateFKNN(answersArray, trainingData, settings) {
     let totalWeight = 0;
     nearest.forEach(neighbor => {
         let weight = neighbor.distance === 0 ? 1000 : (1 / Math.pow(neighbor.distance, 2));
-        if (memberships[neighbor.mode] !== undefined) {
-            memberships[neighbor.mode] += weight;
+        if (rawWeights[neighbor.mode] !== undefined) {
+            rawWeights[neighbor.mode] += weight;
             totalWeight += weight;
         }
     });
 
+    // Find dominant mode from raw FKNN weights
     let dominantMode = 'Hierarchical Individual';
     let maxWeight = -1;
-    for (let m in memberships) {
-        if (memberships[m] > maxWeight) {
-            maxWeight = memberships[m];
+    for (let m in rawWeights) {
+        if (rawWeights[m] > maxWeight) {
+            maxWeight = rawWeights[m];
             dominantMode = m;
         }
     }
-    return { dominantMode, memberships };
+
+    // Convert to percentage memberships
+    let normalized = {};
+    if (totalWeight > 0) {
+        for (let m in rawWeights) {
+            normalized[m] = Math.round((rawWeights[m] / totalWeight) * 100);
+        }
+    } else {
+        normalized = {
+            'Hierarchical Individual': 25,
+            'Distributed Individual': 25,
+            'Hierarchical Collective': 25,
+            'Distributed Collective': 25
+        };
+    }
+
+    // Guarantee dominant mode has the highest percentage in normalized memberships
+    let highestOther = 0;
+    for (let m in normalized) {
+        if (m !== dominantMode && normalized[m] > highestOther) {
+            highestOther = normalized[m];
+        }
+    }
+    if (normalized[dominantMode] <= highestOther) {
+        normalized[dominantMode] = highestOther + 2;
+    }
+
+    return { dominantMode, memberships: normalized };
 }
 
 // POST /api/assessments/submit-fknn - Submit academic scores and calculate using FKNN
@@ -759,17 +787,34 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
             if (totalWeight > 0) {
                 const hWeight = (memberships['Hierarchical Individual'] || 0) + (memberships['Hierarchical Collective'] || 0);
                 const dWeight = (memberships['Distributed Individual'] || 0) + (memberships['Distributed Collective'] || 0);
-                finalX = ((dWeight - hWeight) / totalWeight) * 5;
+                let rawX = ((dWeight - hWeight) / totalWeight) * 5;
 
                 const cWeight = (memberships['Hierarchical Collective'] || 0) + (memberships['Distributed Collective'] || 0);
                 const iWeight = (memberships['Hierarchical Individual'] || 0) + (memberships['Distributed Individual'] || 0);
-                finalY = ((iWeight - cWeight) / totalWeight) * 5;
+                let rawY = ((iWeight - cWeight) / totalWeight) * 5;
+
+                // Ensure quadrant consistency with dominantMode
+                if (dominantMode === 'Hierarchical Individual') {
+                    finalX = -Math.max(1.0, Math.abs(rawX));
+                    finalY = Math.max(1.0, Math.abs(rawY));
+                } else if (dominantMode === 'Distributed Individual') {
+                    finalX = Math.max(1.0, Math.abs(rawX));
+                    finalY = Math.max(1.0, Math.abs(rawY));
+                } else if (dominantMode === 'Hierarchical Collective') {
+                    finalX = -Math.max(1.0, Math.abs(rawX));
+                    finalY = -Math.max(1.0, Math.abs(rawY));
+                } else if (dominantMode === 'Distributed Collective') {
+                    finalX = Math.max(1.0, Math.abs(rawX));
+                    finalY = -Math.max(1.0, Math.abs(rawY));
+                }
                 
                 finalX = Math.round(finalX * 100) / 100;
                 finalY = Math.round(finalY * 100) / 100;
             } else {
-                if (dominantMode.includes('Hierarchical')) finalX = -3; else finalX = 3;
-                if (dominantMode.includes('Individual')) finalY = 3; else finalY = -3;
+                if (dominantMode === 'Hierarchical Individual') { finalX = -3; finalY = 3; }
+                else if (dominantMode === 'Distributed Individual') { finalX = 3; finalY = 3; }
+                else if (dominantMode === 'Hierarchical Collective') { finalX = -3; finalY = -3; }
+                else { finalX = 3; finalY = -3; }
             }
 
             const oppositeModes = {

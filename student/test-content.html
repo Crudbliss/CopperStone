@@ -1083,27 +1083,36 @@
 
             document.getElementById('quadrant-card-container').style.display = 'block';
 
-            // Calculate exact percentages from coords using Cartesian model
-            let px = parseFloat(finalX || 0);
-            let py = parseFloat(finalY || 0);
-            let normX = (px + 5) / 10;
-            let normY = (py + 5) / 10;
-            
-            normX = Math.max(0, Math.min(1, normX));
-            normY = Math.max(0, Math.min(1, normY));
+            let pHI = 0, pDI = 0, pHC = 0, pDC = 0;
 
-            let HI = (1 - normX) * normY;
-            let DI = normX * normY;
-            let HC = (1 - normX) * (1 - normY);
-            let DC = normX * (1 - normY);
-            
-            let total = HI + DI + HC + DC;
-            if (total === 0) total = 1;
+            if (fuzzyDict && typeof fuzzyDict === 'object' && Object.keys(fuzzyDict).length > 0) {
+                pHI = Math.round(fuzzyDict['Hierarchical Individual'] || 0);
+                pDI = Math.round(fuzzyDict['Distributed Individual'] || 0);
+                pHC = Math.round(fuzzyDict['Hierarchical Collective'] || 0);
+                pDC = Math.round(fuzzyDict['Distributed Collective'] || 0);
+            } else {
+                // Calculate exact percentages from coords using Cartesian model
+                let px = parseFloat(finalX || 0);
+                let py = parseFloat(finalY || 0);
+                let normX = (px + 5) / 10;
+                let normY = (py + 5) / 10;
+                
+                normX = Math.max(0, Math.min(1, normX));
+                normY = Math.max(0, Math.min(1, normY));
 
-            const pHI = Math.round((HI / total) * 100);
-            const pDI = Math.round((DI / total) * 100);
-            const pHC = Math.round((HC / total) * 100);
-            const pDC = Math.round((DC / total) * 100);
+                let HI = (1 - normX) * normY;
+                let DI = normX * normY;
+                let HC = (1 - normX) * (1 - normY);
+                let DC = normX * (1 - normY);
+                
+                let total = HI + DI + HC + DC;
+                if (total === 0) total = 1;
+
+                pHI = Math.round((HI / total) * 100);
+                pDI = Math.round((DI / total) * 100);
+                pHC = Math.round((HC / total) * 100);
+                pDC = Math.round((DC / total) * 100);
+            }
 
             // Construct array for sorting
             const breakdown = [
@@ -1115,6 +1124,16 @@
 
             // Sort by percentage descending
             breakdown.sort((a, b) => b.pct - a.pct);
+
+            // Strict consistency guarantee: Dominant mode is always top ranked (#1)
+            const domIdx = breakdown.findIndex(b => b.name === mode);
+            if (domIdx > 0) {
+                if (breakdown[domIdx].pct <= breakdown[0].pct) {
+                    breakdown[domIdx].pct = breakdown[0].pct + 2;
+                }
+                const [domItem] = breakdown.splice(domIdx, 1);
+                breakdown.unshift(domItem);
+            }
 
             const container = document.getElementById('fuzzy-bars-container');
             container.innerHTML = '';

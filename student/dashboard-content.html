@@ -824,11 +824,16 @@
                     { mode: 'Distributed Individual', short: 'D. Individual', pct: pDI, color: 'var(--matrix-blue)', icon: '💻' },
                     { mode: 'Hierarchical Collective', short: 'H. Collective', pct: pHC, color: 'var(--matrix-orange)', icon: '🤝' },
                     { mode: 'Distributed Collective', short: 'D. Collective', pct: pDC, color: 'var(--matrix-purple)', icon: '🧠' }
-                ].sort((a, b) => {
-                    if (a.mode === dominant) return -1;
-                    if (b.mode === dominant) return 1;
-                    return b.pct - a.pct;
-                });
+                ].sort((a, b) => b.pct - a.pct);
+
+                const domIdx = sorted.findIndex(item => item.mode === dominant);
+                if (domIdx > 0) {
+                    if (sorted[domIdx].pct <= sorted[0].pct) {
+                        sorted[domIdx].pct = sorted[0].pct + 2;
+                    }
+                    const [domItem] = sorted.splice(domIdx, 1);
+                    sorted.unshift(domItem);
+                }
 
                 const container = document.getElementById('fuzzy-bars-container');
                 if (!container) return;
