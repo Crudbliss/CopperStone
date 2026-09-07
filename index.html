@@ -1573,9 +1573,8 @@
             MATRIX
         </div>
         <div class="nav-actions">
-            <button class="btn-primary" onclick="openRoleSelectModal()">Log In</button>
             <div class="nav-dropdown-wrapper">
-                <button class="btn-menu" onclick="toggleDropdown()">
+                <button class="btn-menu" onclick="toggleDropdown()" aria-label="Toggle navigation menu">
                     <div class="menu-dot green"></div>
                     <div class="menu-dot blue"></div>
                     <div class="menu-dot orange"></div>
@@ -1584,8 +1583,7 @@
                 <div class="dropdown-menu" id="navDropdown">
                     <a href="#" class="dropdown-item" onclick="switchView('home'); return false;">Home</a>
                     <a href="#" class="dropdown-item" onclick="switchView('about'); return false;">About Us</a>
-                    <a href="#" class="dropdown-item" onclick="switchView('support'); return false;">Help &amp;
-                        Support</a>
+                    <a href="#" class="dropdown-item" onclick="switchView('support'); return false;">Help &amp; Support</a>
                 </div>
             </div>
         </div>
@@ -1722,51 +1720,74 @@
 
         <section class="roles">
             <div class="container">
-                <div class="text-center">
-                    <div class="section-eyebrow">Built for Everyone</div>
-                    <h2 class="section-title">For Students <span>Platform</span></h2>
+                <div class="text-center" style="margin-bottom: 48px;">
+                    <div class="section-eyebrow">DESIGNED FOR LEARNERS</div>
+                    <h2 class="section-title" style="margin-bottom: 0;">Your Personalized <span>Learning Platform</span></h2>
                 </div>
 
-                <div class="roles-grid">
-                    <div class="role-box role-student">
-                        <div class="role-header">
-                            <div class="icon-box icon-yellow"><svg width="24px" height="24px" fill="currentColor">
-                                    <use href="#icon-student"></use>
-                                </svg></div>
-                            <h3>For Students</h3>
-                        </div>
-                        <ul class="role-list">
-                            <li>
-                                <div class="role-list-icon"><svg width="18px" height="18px">
-                                        <use href="#icon-circle-check"></use>
-                                    </svg></div>Take learning mode diagnostic assessments
-                            </li>
-                            <li>
-                                <div class="role-list-icon"><svg width="18px" height="18px">
-                                        <use href="#icon-circle-check"></use>
-                                    </svg></div>See your exact position on the quadrant map
-                            </li>
-                            <li>
-                                <div class="role-list-icon"><svg width="18px" height="18px">
-                                        <use href="#icon-circle-check"></use>
-                                    </svg></div>Access personalized study modules for your dominant mode
-                            </li>
-                            <li>
-                                <div class="role-list-icon"><svg width="18px" height="18px">
-                                        <use href="#icon-circle-check"></use>
-                                    </svg></div>Get targeted tips to strengthen your weaker quadrants
-                            </li>
-                            <li>
-                                <div class="role-list-icon"><svg width="18px" height="18px">
-                                        <use href="#icon-circle-check"></use>
-                                    </svg></div>Track how your learning mode evolves with post-module reassessments
-                            </li>
-                        </ul>
-                        <button class="btn-role btn-student-portal" onclick="openLoginModal('student')">Student Portal
-                            ></button>
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; padding: 48px 40px 40px 40px; text-align: center; max-width: 980px; margin: 0 auto; box-shadow: 0 16px 40px rgba(0,0,0,0.2);">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <svg width="24" height="24" fill="currentColor">
+                            <use href="#icon-student"></use>
+                        </svg>
                     </div>
+
+                    <h3 style="color: #ffffff; font-size: 24px; font-weight: 800; margin-bottom: 8px;">For Students</h3>
+                    <p style="color: var(--text-opacity); font-size: 14.5px; margin-bottom: 36px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                        A complete adaptive learning experience built around your cognitive habits
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 36px; text-align: center;">
+                        <!-- Card 1 -->
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 32px 22px; display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                            </div>
+                            <h4 style="color: #ffffff; font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 12px;">Discover your exact learning quadrant</h4>
+                            <p style="color: var(--text-opacity); font-size: 13px; line-height: 1.6; margin: 0;">
+                                Map your position on the Elmore cognitive axis through continuous stage assessments
+                            </p>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 32px 22px; display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <svg width="20" height="20" fill="currentColor">
+                                    <use href="#icon-layer"></use>
+                                </svg>
+                            </div>
+                            <h4 style="color: #ffffff; font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 12px;">Unlock personalized modules</h4>
+                            <p style="color: var(--text-opacity); font-size: 13px; line-height: 1.6; margin: 0;">
+                                Access study content automatically routed to your dominant and weakest learning modes
+                            </p>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 32px 22px; display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                </svg>
+                            </div>
+                            <h4 style="color: #ffffff; font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 12px;">Track your learning migration</h4>
+                            <p style="color: var(--text-opacity); font-size: 13px; line-height: 1.6; margin: 0;">
+                                See how your quadrant shifts across consecutive stages throughout your academic journey
+                            </p>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="openLoginModal('student')" style="display: inline-flex; align-items: center; gap: 10px; border-radius: 9999px; padding: 14px 36px; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(216, 166, 26, 0.3);">
+                        <svg width="18" height="18" fill="currentColor">
+                            <use href="#icon-student"></use>
+                        </svg>
+                        Enter Student Portal &gt;
+                    </button>
                 </div>
-            </div>
             </div>
         </section>
 
@@ -1836,7 +1857,7 @@
             <div class="container" style="max-width: 860px;">
                 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px;">
                     <div
-                        style="width: 40px; height: 40px; border-radius: 50%; background: #0c202f; border: 1px solid rgba(216, 166, 26, 0.4); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        style="width: 40px; height: 40px; border-radius: 50%; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
@@ -1873,7 +1894,7 @@
             <div class="container" style="max-width: 860px;">
                 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px;">
                     <div
-                        style="width: 40px; height: 40px; border-radius: 50%; background: #0c202f; border: 1px solid rgba(74, 222, 128, 0.4); color: #4ade80; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        style="width: 40px; height: 40px; border-radius: 50%; background: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.35); color: #4ade80; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -2008,7 +2029,7 @@
             <div class="container" style="max-width: 860px;">
                 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
                     <div
-                        style="width: 40px; height: 40px; border-radius: 50%; background: #0c202f; border: 1px solid rgba(216, 166, 26, 0.4); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        style="width: 40px; height: 40px; border-radius: 50%; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="18" cy="18" r="3"></circle>
@@ -2035,7 +2056,7 @@
                     <div
                         style="display: flex; flex-direction: column; align-items: center; width: 44px; flex-shrink: 0;">
                         <div
-                            style="width: 44px; height: 44px; border-radius: 12px; background: #0c202f; border: 1px solid rgba(216, 166, 26, 0.4); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; z-index: 2;">
+                            style="width: 44px; height: 44px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; z-index: 2;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
@@ -2067,7 +2088,7 @@
                     <div
                         style="display: flex; flex-direction: column; align-items: center; width: 44px; flex-shrink: 0;">
                         <div
-                            style="width: 44px; height: 44px; border-radius: 12px; background: #0c202f; border: 1px solid rgba(74, 222, 128, 0.4); color: #4ade80; display: flex; align-items: center; justify-content: center; z-index: 2;">
+                            style="width: 44px; height: 44px; border-radius: 12px; background: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.35); color: #4ade80; display: flex; align-items: center; justify-content: center; z-index: 2;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="18" y1="20" x2="18" y2="10"></line>
@@ -2098,7 +2119,7 @@
                     <div
                         style="display: flex; flex-direction: column; align-items: center; width: 44px; flex-shrink: 0;">
                         <div
-                            style="width: 44px; height: 44px; border-radius: 12px; background: #0c202f; border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; display: flex; align-items: center; justify-content: center; z-index: 2;">
+                            style="width: 44px; height: 44px; border-radius: 12px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; display: flex; align-items: center; justify-content: center; z-index: 2;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="18" cy="5" r="3"></circle>
@@ -2132,7 +2153,7 @@
                     <div
                         style="display: flex; flex-direction: column; align-items: center; width: 44px; flex-shrink: 0;">
                         <div
-                            style="width: 44px; height: 44px; border-radius: 12px; background: #0c202f; border: 1px solid rgba(251, 146, 60, 0.4); color: #fb923c; display: flex; align-items: center; justify-content: center; z-index: 2;">
+                            style="width: 44px; height: 44px; border-radius: 12px; background: rgba(251, 146, 60, 0.12); border: 1px solid rgba(251, 146, 60, 0.35); color: #fb923c; display: flex; align-items: center; justify-content: center; z-index: 2;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
@@ -2161,7 +2182,7 @@
             <div class="container" style="max-width: 860px;">
                 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 28px;">
                     <div
-                        style="width: 40px; height: 40px; border-radius: 50%; background: #0c202f; border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        style="width: 40px; height: 40px; border-radius: 50%; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
@@ -2288,13 +2309,18 @@
     </main>
 
     <footer
-        style="background-color: #06111a; border-top: 1px solid rgba(255, 255, 255, 0.05); height: 75px; display: flex; justify-content: space-between; align-items: center; padding: 0 48px;">
+        style="background-color: #06111a; border-top: 1px solid rgba(255, 255, 255, 0.05); min-height: 75px; display: flex; justify-content: space-between; align-items: center; padding: 20px 48px; flex-wrap: wrap; gap: 16px;">
         <div class="nav-logo" onclick="switchView('home')"
             style="display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 18px; color: #ffffff; cursor: pointer;"
             title="Back to Home">
             <img src="images/matrix_logo.png" alt="Matrix Logo" class="nav-logo-icon"
                 style="width: 32px; height: 32px; object-fit: contain;">
             MATRIX
+        </div>
+        <div style="display: flex; gap: 24px; align-items: center; font-size: 13px;">
+            <a href="#" onclick="switchView('home'); return false;" style="color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Home</a>
+            <a href="#" onclick="switchView('about'); return false;" style="color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">About Us</a>
+            <a href="#" onclick="switchView('support'); return false;" style="color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Help &amp; Support</a>
         </div>
         <div style="color: #64748b; font-size: 13px;">
             © 2026 MATRIX - Our Lady of Fatima University — Quezon City
