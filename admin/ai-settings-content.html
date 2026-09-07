@@ -472,7 +472,7 @@
         </div>
 
         <div id="diagnostics-results" style="display:none;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
                 <div class="metric-card">
                     <div class="metric-value" id="diag-rf-acc">--%</div>
                     <div class="metric-label">Random Forest Accuracy</div>
@@ -480,6 +480,16 @@
                 <div class="metric-card">
                     <div class="metric-value" id="diag-fknn-acc" style="color: var(--matrix-green);">--%</div>
                     <div class="metric-label">FKNN Diagnostic Accuracy</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="diag-fknn-mse" style="color: var(--matrix-blue); font-size: 24px;">--</div>
+                    <div class="metric-label">FKNN Mean Squared Error (MSE)</div>
+                    <div id="diag-fknn-mse-status" style="font-size: 11px; margin-top: 6px; font-weight: 600; color: var(--text-muted);">Target: ±5% (≤ 0.05)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="diag-rf-mse" style="color: var(--matrix-purple); font-size: 24px;">--</div>
+                    <div class="metric-label">RF Mean Squared Error (MSE)</div>
+                    <div id="diag-rf-mse-status" style="font-size: 11px; margin-top: 6px; font-weight: 600; color: var(--text-muted);">Target: ±5% (≤ 0.05)</div>
                 </div>
             </div>
 
@@ -791,6 +801,32 @@
                 } else {
                     document.getElementById('diag-rf-acc').textContent = data.metrics.rf_accuracy.toFixed(1) + '%';
                     document.getElementById('diag-fknn-acc').textContent = data.metrics.fknn_accuracy.toFixed(1) + '%';
+
+                    if (data.metrics.fknn_mse_raw !== undefined) {
+                        const fknnMseRaw = data.metrics.fknn_mse_raw;
+                        const fknnMsePct = data.metrics.fknn_mse ? data.metrics.fknn_mse.toFixed(2) + '%' : (fknnMseRaw * 100).toFixed(2) + '%';
+                        document.getElementById('diag-fknn-mse').textContent = `${fknnMseRaw.toFixed(4)} (${fknnMsePct})`;
+
+                        const fknnStatusEl = document.getElementById('diag-fknn-mse-status');
+                        if (fknnMseRaw <= 0.05 || data.metrics.mse_tolerance_met) {
+                            fknnStatusEl.innerHTML = '<span style="color: var(--matrix-green); font-weight: 700;">✓ Within ±5% Tolerance (≤ 0.05)</span>';
+                        } else {
+                            fknnStatusEl.innerHTML = '<span style="color: var(--matrix-orange); font-weight: 700;">Δ Exceeds ±5% Target</span>';
+                        }
+                    }
+
+                    if (data.metrics.rf_mse_raw !== undefined) {
+                        const rfMseRaw = data.metrics.rf_mse_raw;
+                        const rfMsePct = data.metrics.rf_mse ? data.metrics.rf_mse.toFixed(2) + '%' : (rfMseRaw * 100).toFixed(2) + '%';
+                        document.getElementById('diag-rf-mse').textContent = `${rfMseRaw.toFixed(4)} (${rfMsePct})`;
+
+                        const rfStatusEl = document.getElementById('diag-rf-mse-status');
+                        if (rfMseRaw <= 0.05) {
+                            rfStatusEl.innerHTML = '<span style="color: var(--matrix-green); font-weight: 700;">✓ Within ±5% Tolerance (≤ 0.05)</span>';
+                        } else {
+                            rfStatusEl.innerHTML = '<span style="color: var(--matrix-orange); font-weight: 700;">Δ Exceeds ±5% Target</span>';
+                        }
+                    }
 
                     // Cache bust the images to force reload
                     const ts = new Date().getTime();

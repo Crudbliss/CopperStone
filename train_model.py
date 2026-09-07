@@ -5,7 +5,8 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, mean_squared_error
+from sklearn.preprocessing import LabelBinarizer
 import json
 import sys
 import os
@@ -57,6 +58,21 @@ try:
     knn_accuracy = accuracy_score(y_test, knn_predictions)
 
     # ==========================================
+    # MSE ACCURACY & PROBABILITY CALCULATION
+    # ==========================================
+    lb = LabelBinarizer()
+    lb.fit(knn.classes_)
+    y_test_bin = lb.transform(y_test)
+    if len(knn.classes_) == 2:
+        y_test_bin = np.hstack((1 - y_test_bin, y_test_bin))
+
+    rf_probs = rf.predict_proba(X_test)
+    rf_mse = float(mean_squared_error(y_test_bin, rf_probs))
+
+    knn_probs = knn.predict_proba(X_test)
+    knn_mse = float(mean_squared_error(y_test_bin, knn_probs))
+
+    # ==========================================
     # VALIDATION: CONFUSION MATRIX
     # ==========================================
     classes = knn.classes_
@@ -77,6 +93,11 @@ try:
     output = {
         "rf_accuracy": float(rf_accuracy * 100),
         "fknn_accuracy": float(knn_accuracy * 100),
+        "rf_mse": float(rf_mse * 100),
+        "fknn_mse": float(knn_mse * 100),
+        "rf_mse_raw": float(rf_mse),
+        "fknn_mse_raw": float(knn_mse),
+        "mse_tolerance_met": bool(knn_mse <= 0.05),
         "top_features": top_5,
         "sample_size": len(X),
         "test_size": len(X_test)
