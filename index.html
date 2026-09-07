@@ -1206,6 +1206,256 @@
                 padding: 20px 14px;
             }
         }
+
+        /* --- ABOUT MODAL SPECIFIC STYLES --- */
+        .modal-about-content {
+            max-width: 880px;
+            width: 94%;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 48px 44px;
+            background-color: #0c2233;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+            color: var(--text-main);
+        }
+
+        .modal-about-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-about-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .modal-about-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+        }
+
+        .about-header-wrap {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .about-pill-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(216, 166, 26, 0.1);
+            border: 1px solid rgba(216, 166, 26, 0.3);
+            color: var(--matrix-yellow);
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+        }
+
+        .about-title {
+            font-size: 42px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -0.5px;
+            margin-bottom: 14px;
+        }
+
+        .about-title span {
+            color: var(--matrix-yellow);
+        }
+
+        .about-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .about-section {
+            margin-bottom: 36px;
+        }
+
+        .about-section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .about-section-badge.yellow {
+            background: rgba(216, 166, 26, 0.12);
+            border: 1px solid rgba(216, 166, 26, 0.3);
+            color: var(--matrix-yellow);
+        }
+
+        .about-section-badge.green {
+            background: rgba(69, 124, 82, 0.15);
+            border: 1px solid rgba(69, 124, 82, 0.35);
+            color: #4ade80;
+        }
+
+        .about-section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .about-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 24px 28px;
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        .about-quadrant-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .about-quad-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .about-quad-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .about-quad-card.hi-ind {
+            border-color: rgba(216, 166, 26, 0.2);
+        }
+
+        .about-quad-card.dis-ind {
+            border-color: rgba(74, 222, 128, 0.2);
+        }
+
+        .about-quad-card.hi-col {
+            border-color: rgba(251, 146, 60, 0.2);
+        }
+
+        .about-quad-card.dis-col {
+            border-color: rgba(192, 132, 252, 0.2);
+        }
+
+        .about-quad-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .about-quad-card.hi-ind .about-quad-header {
+            color: var(--matrix-yellow);
+        }
+
+        .about-quad-card.dis-ind .about-quad-header {
+            color: #4ade80;
+        }
+
+        .about-quad-card.hi-col .about-quad-header {
+            color: #fb923c;
+        }
+
+        .about-quad-card.dis-col .about-quad-header {
+            color: #c084fc;
+        }
+
+        .about-quad-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .about-quad-card p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .about-cta-section {
+            text-align: center;
+            padding: 32px 20px 20px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: 20px;
+        }
+
+        .about-cta-section h3 {
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .about-cta-section p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .about-cta-buttons {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .about-modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .modal-about-content {
+                padding: 32px 20px;
+                width: 95%;
+            }
+
+            .about-title {
+                font-size: 28px;
+            }
+
+            .about-quadrant-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-modal-footer {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="./images/matrix_logo.ico">
 </head>
@@ -1318,7 +1568,7 @@
     </svg>
 
     <nav>
-        <div class="nav-logo">
+        <div class="nav-logo" onclick="switchView('home')" style="cursor: pointer;" title="Back to Home">
             <img src="images/matrix_logo.png" alt="Matrix Logo" class="nav-logo-icon">
             MATRIX
         </div>
@@ -1332,15 +1582,17 @@
                     <div class="menu-dot purple"></div>
                 </button>
                 <div class="dropdown-menu" id="navDropdown">
-                    <a href="#" class="dropdown-item" onclick="scrollToAbout()">About Us</a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">Help</a>
+                    <a href="#" class="dropdown-item" onclick="switchView('home'); return false;">Home</a>
+                    <a href="#" class="dropdown-item" onclick="switchView('about'); return false;">About Us</a>
+                    <a href="#" class="dropdown-item" onclick="switchView('support'); return false;">Help &amp;
+                        Support</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main>
+    <!-- HOME VIEW (MAIN LANDING) -->
+    <main id="homeView">
         <section class="hero">
             <div class="container hero-content">
                 <div class="university-badge">
@@ -1527,7 +1779,8 @@
                             </svg>
                         </div>
                         <h4>Periodic Reassessment</h4>
-                        <p>Reassess 1–2 weeks after taking modules and track how your dominant learning mode evolves.</p>
+                        <p>Reassess 1–2 weeks after taking modules and track how your dominant learning mode evolves.
+                        </p>
                     </div>
                     <div class="feature-small-card">
                         <div class="icon-box icon-green"><svg width="24px" height="24px">
@@ -1550,20 +1803,508 @@
         </section>
     </main>
 
-    <footer>
-        <div class="nav-logo">
-            <img src="images/matrix_logo.png" alt="Matrix Logo" class="nav-logo-icon">
+    <!-- ABOUT MATRIX FULL PAGE VIEW (REPLACES BODY) -->
+    <main id="aboutView" style="display: none; padding-top: 75px; min-height: calc(100vh - 160px);">
+        <!-- Top Hero Section: Header & Subtitle -->
+        <section class="about-hero" style="text-align: center; padding: 75px 24px 60px 24px;">
+            <div class="container" style="max-width: 860px;">
+                <div
+                    style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid #d8a61a; background: rgba(216, 166, 26, 0.08); border-radius: 9999px; padding: 6px 18px; color: #d8a61a; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                        </path>
+                    </svg>
+                    ABOUT THE PLATFORM
+                </div>
+                <h1
+                    style="font-size: clamp(38px, 5.5vw, 56px); font-weight: 800; color: #ffffff; margin-bottom: 20px; letter-spacing: -0.5px;">
+                    About <span style="color: var(--matrix-yellow);">MATRIX</span></h1>
+                <p
+                    style="font-size: 15px; color: var(--text-opacity); line-height: 1.7; max-width: 720px; margin: 0 auto;">
+                    An advanced assessment and targeted module delivery platform engineered exclusively to optimize the
+                    academic experience of BSIT students at Our Lady of Fatima University, Quezon City campus.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 01: Platform Overview -->
+        <section class="process" style="padding: 70px 24px 75px 24px;">
+            <div class="container" style="max-width: 860px;">
+                <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px;">
+                    <div
+                        style="width: 40px; height: 40px; border-radius: 50%; background: #0c202f; border: 1px solid rgba(216, 166, 26, 0.4); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path
+                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div
+                            style="color: var(--matrix-yellow); font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">
+                            SECTION 01</div>
+                        <div style="color: #ffffff; font-size: 22px; font-weight: 800; margin-top: 2px;">Platform
+                            Overview</div>
+                    </div>
+                </div>
+
+                <div
+                    style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 32px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <p style="font-size: 14.5px; color: var(--text-opacity); line-height: 1.75; margin: 0;">
+                        MATRIX is an advanced assessment and targeted module delivery platform engineered exclusively to
+                        optimize the academic experience of BSIT students at the Our Lady of Fatima University, Quezon
+                        City campus. Recognizing the limitations of generalized, uniform instruction, MATRIX bridges the
+                        gap between traditional teaching and personalized education through data-driven cognitive
+                        profiling.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 02: Our Methodology -->
+        <section class="framework" style="padding: 70px 24px 80px 24px;">
+            <div class="container" style="max-width: 860px;">
+                <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px;">
+                    <div
+                        style="width: 40px; height: 40px; border-radius: 50%; background: #0c202f; border: 1px solid rgba(74, 222, 128, 0.4); color: #4ade80; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div
+                            style="color: #4ade80; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">
+                            SECTION 02</div>
+                        <div style="color: #ffffff; font-size: 22px; font-weight: 800; margin-top: 2px;">Our Methodology
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 32px 36px; margin-bottom: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <p style="font-size: 14.5px; color: var(--text-opacity); line-height: 1.75; margin: 0;">
+                        At the core of the platform lies <strong style="color: #ffffff; font-weight: 700;">Richard
+                            Elmore’s Leaders of Learning framework</strong>. Utilizing a sophisticated weighted scoring
+                        algorithm, MATRIX analyzes user inputs to mathematically map learning preferences across four
+                        distinct quadrants:
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div
+                        style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 26px 30px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                        <div
+                            style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: var(--matrix-yellow); margin-bottom: 10px;">
+                            <span
+                                style="width: 8px; height: 8px; border-radius: 50%; background: var(--matrix-yellow); display: inline-block;"></span>
+                            Hierarchical Individual
+                        </div>
+                        <p style="font-size: 13.5px; color: var(--text-opacity); line-height: 1.65; margin: 0;">
+                            Direct, structured instruction optimized for solitary focus and expert-to-learner knowledge
+                            transfer.
+                        </p>
+                    </div>
+
+                    <div
+                        style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 26px 30px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                        <div
+                            style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #4ade80; margin-bottom: 10px;">
+                            <span
+                                style="width: 8px; height: 8px; border-radius: 50%; background: #4ade80; display: inline-block;"></span>
+                            Distributed Individual
+                        </div>
+                        <p style="font-size: 13.5px; color: var(--text-opacity); line-height: 1.65; margin: 0;">
+                            Self-directed, decentralized exploration tailored for independent study and flexible pacing.
+                        </p>
+                    </div>
+
+                    <div
+                        style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 26px 30px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                        <div
+                            style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #fb923c; margin-bottom: 10px;">
+                            <span
+                                style="width: 8px; height: 8px; border-radius: 50%; background: #fb923c; display: inline-block;"></span>
+                            Hierarchical Collective
+                        </div>
+                        <p style="font-size: 13.5px; color: var(--text-opacity); line-height: 1.65; margin: 0;">
+                            Guided, expert-led group instruction aimed at achieving shared academic competencies.
+                        </p>
+                    </div>
+
+                    <div
+                        style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 26px 30px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                        <div
+                            style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: #c084fc; margin-bottom: 10px;">
+                            <span
+                                style="width: 8px; height: 8px; border-radius: 50%; background: #c084fc; display: inline-block;"></span>
+                            Distributed Collective
+                        </div>
+                        <p style="font-size: 13.5px; color: var(--text-opacity); line-height: 1.65; margin: 0;">
+                            Peer-to-peer collaborative learning driven by shared network intelligence and active group
+                            problem-solving.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="roles" style="text-align: center; padding: 75px 24px 90px 24px;">
+            <div class="container" style="max-width: 720px;">
+                <h2 style="font-size: 32px; font-weight: 800; color: #ffffff; margin-bottom: 12px;">Ready to discover
+                    your learning mode?</h2>
+                <p style="font-size: 15px; color: var(--text-opacity); margin-bottom: 32px;">
+                    Join BSIT students already using MATRIX to unlock personalized learning paths.
+                </p>
+                <div style="display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                    <button class="btn-primary" onclick="openLoginModal('student')"
+                        style="border-radius: 9999px; padding: 14px 36px; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(216, 166, 26, 0.3);">Get
+                        Started</button>
+                    <button class="btn-ghost" onclick="switchView('support')"
+                        style="border-radius: 9999px; padding: 14px 32px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.2s;">Help
+                        &amp; Support</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- HELP & SUPPORT FULL PAGE VIEW (REPLACES BODY) -->
+    <main id="supportView" style="display: none; padding-top: 75px; min-height: calc(100vh - 160px);">
+        <!-- Top Hero Section: Header & Subtitle -->
+        <section class="about-hero" style="text-align: center; padding: 75px 24px 60px 24px;">
+            <div class="container" style="max-width: 860px;">
+                <div
+                    style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid #38bdf8; background: rgba(56, 189, 248, 0.08); border-radius: 9999px; padding: 6px 18px; color: #38bdf8; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    HELP &amp; SUPPORT
+                </div>
+                <h1
+                    style="font-size: clamp(38px, 5.5vw, 56px); font-weight: 800; color: #ffffff; margin-bottom: 20px; letter-spacing: -0.5px;">
+                    Help &amp; <span style="color: #38bdf8;">Support</span></h1>
+                <p
+                    style="font-size: 15px; color: var(--text-opacity); line-height: 1.7; max-width: 720px; margin: 0 auto;">
+                    Everything you need to navigate your personalized learning journey with MATRIX — from getting
+                    started to understanding your quadrant profile.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 01: Getting Started Workflow -->
+        <section class="process" style="padding: 70px 24px 85px 24px;">
+            <div class="container" style="max-width: 860px;">
+                <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
+                    <div
+                        style="width: 40px; height: 40px; border-radius: 50%; background: #0c202f; border: 1px solid rgba(216, 166, 26, 0.4); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="18" r="3"></circle>
+                            <circle cx="6" cy="6" r="3"></circle>
+                            <path d="M13 6h3a2 2 0 0 1 2 2v7"></path>
+                            <line x1="6" y1="9" x2="6" y2="21"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <div
+                            style="color: var(--matrix-yellow); font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">
+                            SECTION 01</div>
+                        <div style="color: #ffffff; font-size: 22px; font-weight: 800; margin-top: 2px;">Getting Started
+                            Workflow</div>
+                    </div>
+                </div>
+
+                <p style="font-size: 14.5px; color: var(--text-opacity); margin-bottom: 32px; margin-left: 54px;">
+                    Navigating your personalized learning journey with MATRIX involves four core phases:
+                </p>
+
+                <!-- Workflow Step 1 -->
+                <div style="display: flex; gap: 20px; position: relative; margin-bottom: 24px;">
+                    <div
+                        style="display: flex; flex-direction: column; align-items: center; width: 44px; flex-shrink: 0;">
+                        <div
+                            style="width: 44px; height: 44px; border-radius: 12px; background: #0c202f; border: 1px solid rgba(216, 166, 26, 0.4); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; z-index: 2;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
+                                </path>
+                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                                <path d="M9 14l2 2 4-4"></path>
+                            </svg>
+                        </div>
+                        <div
+                            style="width: 2px; flex-grow: 1; background: rgba(56, 189, 248, 0.15); margin-top: 8px; margin-bottom: -16px;">
+                        </div>
+                    </div>
+                    <div
+                        style="flex-grow: 1; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                        <div
+                            style="color: var(--matrix-yellow); font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">
+                            PHASE 01</div>
+                        <h3 style="color: #ffffff; font-size: 17px; font-weight: 700; margin: 4px 0 8px 0;">Diagnostic
+                            Assessment</h3>
+                        <p style="font-size: 13.5px; color: var(--text-opacity); line-height: 1.65; margin: 0;">
+                            Complete the initial structured survey. The evaluation engine’s accuracy is directly
+                            dependent on the integrity and honesty of your responses.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Workflow Step 2 -->
+                <div style="display: flex; gap: 20px; position: relative; margin-bottom: 24px;">
+                    <div
+                        style="display: flex; flex-direction: column; align-items: center; width: 44px; flex-shrink: 0;">
+                        <div
+                            style="width: 44px; height: 44px; border-radius: 12px; background: #0c202f; border: 1px solid rgba(74, 222, 128, 0.4); color: #4ade80; display: flex; align-items: center; justify-content: center; z-index: 2;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                        </div>
+                        <div
+                            style="width: 2px; flex-grow: 1; background: rgba(56, 189, 248, 0.15); margin-top: 8px; margin-bottom: -16px;">
+                        </div>
+                    </div>
+                    <div
+                        style="flex-grow: 1; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                        <div
+                            style="color: #4ade80; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">
+                            PHASE 02</div>
+                        <h3 style="color: #ffffff; font-size: 17px; font-weight: 700; margin: 4px 0 8px 0;">Profile
+                            Generation</h3>
+                        <p style="font-size: 13.5px; color: var(--text-opacity); line-height: 1.65; margin: 0;">
+                            The system calculates your unique data coordinates, visualizing your precise percentage
+                            distribution across the four learning quadrants.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Workflow Step 3 -->
+                <div style="display: flex; gap: 20px; position: relative; margin-bottom: 24px;">
+                    <div
+                        style="display: flex; flex-direction: column; align-items: center; width: 44px; flex-shrink: 0;">
+                        <div
+                            style="width: 44px; height: 44px; border-radius: 12px; background: #0c202f; border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; display: flex; align-items: center; justify-content: center; z-index: 2;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                        </div>
+                        <div
+                            style="width: 2px; flex-grow: 1; background: rgba(56, 189, 248, 0.15); margin-top: 8px; margin-bottom: -16px;">
+                        </div>
+                    </div>
+                    <div
+                        style="flex-grow: 1; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                        <div
+                            style="color: #38bdf8; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">
+                            PHASE 03</div>
+                        <h3 style="color: #ffffff; font-size: 17px; font-weight: 700; margin: 4px 0 8px 0;">Actionable
+                            Roadmaps</h3>
+                        <p style="font-size: 13.5px; color: var(--text-opacity); line-height: 1.65; margin: 0;">
+                            Access dynamically generated study plans. The system will deploy one roadmap engineered to
+                            leverage your dominant learning strengths, and a secondary plan targeted to develop your
+                            weakest quadrant.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Workflow Step 4 -->
+                <div style="display: flex; gap: 20px; position: relative;">
+                    <div
+                        style="display: flex; flex-direction: column; align-items: center; width: 44px; flex-shrink: 0;">
+                        <div
+                            style="width: 44px; height: 44px; border-radius: 12px; background: #0c202f; border: 1px solid rgba(251, 146, 60, 0.4); color: #fb923c; display: flex; align-items: center; justify-content: center; z-index: 2;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div
+                        style="flex-grow: 1; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                        <div
+                            style="color: #fb923c; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">
+                            PHASE 04</div>
+                        <h3 style="color: #ffffff; font-size: 17px; font-weight: 700; margin: 4px 0 8px 0;">Longitudinal
+                            Tracking</h3>
+                        <p style="font-size: 13.5px; color: var(--text-opacity); line-height: 1.65; margin: 0;">
+                            Re-evaluate periodically. The built-in Migration Tracker utilizes trend analysis to monitor
+                            your cognitive evolution and shifts in learning modes throughout the semester.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 02: Platform Scope & Limitations (FAQ) -->
+        <section class="framework" style="padding: 70px 24px 85px 24px;">
+            <div class="container" style="max-width: 860px;">
+                <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 28px;">
+                    <div
+                        style="width: 40px; height: 40px; border-radius: 50%; background: #0c202f; border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <div
+                            style="color: #38bdf8; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;">
+                            SECTION 02</div>
+                        <div style="color: #ffffff; font-size: 22px; font-weight: 800; margin-top: 2px;">Platform Scope
+                            &amp; Limitations (FAQ)</div>
+                    </div>
+                </div>
+
+                <!-- FAQ 1 -->
+                <div class="faq-item"
+                    style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; margin-bottom: 16px; overflow: hidden; transition: all 0.2s;">
+                    <button onclick="toggleFaq(this)"
+                        style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 22px 28px; background: transparent; border: none; cursor: pointer; text-align: left; font-family: inherit;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d8a61a"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span style="color: #ffffff; font-size: 15px; font-weight: 700;">Does MATRIX provide
+                                academic tutoring or subject-specific content?</span>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="color: #94a3b8; transition: transform 0.2s; flex-shrink: 0; margin-left: 16px;">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer"
+                        style="display: none; padding: 0 28px 24px 60px; font-size: 14.5px; color: var(--text-opacity); line-height: 1.7;">
+                        No. MATRIX is a strategic evaluation tool designed to optimize how you study, not what you
+                        study. It provides structured learning roadmaps but does not host specific curriculum material,
+                        such as mathematics, networking, or programming modules.
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="faq-item"
+                    style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; margin-bottom: 16px; overflow: hidden; transition: all 0.2s;">
+                    <button onclick="toggleFaq(this)"
+                        style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 22px 28px; background: transparent; border: none; cursor: pointer; text-align: left; font-family: inherit;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span style="color: #ffffff; font-size: 15px; font-weight: 700;">Is this a clinical
+                                diagnostic tool?</span>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="color: #94a3b8; transition: transform 0.2s; flex-shrink: 0; margin-left: 16px;">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer"
+                        style="display: none; padding: 0 28px 24px 60px; font-size: 14.5px; color: var(--text-opacity); line-height: 1.7;">
+                        No. The platform strictly evaluates educational learning preferences based on pedagogical
+                        frameworks. It is not designed, intended, or authorized to diagnose cognitive disorders,
+                        learning disabilities (such as Dyslexia or ADHD), or any medical conditions.
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="faq-item"
+                    style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; margin-bottom: 16px; overflow: hidden; transition: all 0.2s;">
+                    <button onclick="toggleFaq(this)"
+                        style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 22px 28px; background: transparent; border: none; cursor: pointer; text-align: left; font-family: inherit;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span style="color: #ffffff; font-size: 15px; font-weight: 700;">Why is my profile failing
+                                to generate?</span>
+                        </div>
+                        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="color: #94a3b8; transition: transform 0.2s; flex-shrink: 0; margin-left: 16px;">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer"
+                        style="display: none; padding: 0 28px 24px 60px; font-size: 14.5px; color: var(--text-opacity); line-height: 1.7;">
+                        MATRIX is a live web application that requires active communication with our host servers.
+                        Ensure you have a stable internet connection so the evaluation engine can process your scoring
+                        logic and retrieve your customized quadrant coordinates.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="roles" style="text-align: center; padding: 75px 24px 90px 24px;">
+            <div class="container" style="max-width: 720px;">
+                <h2 style="font-size: 32px; font-weight: 800; color: #ffffff; margin-bottom: 12px;">Still have
+                    questions?</h2>
+                <p style="font-size: 15px; color: var(--text-opacity); margin-bottom: 32px;">
+                    Reach out to your instructor or system administrator for further assistance.
+                </p>
+                <div style="display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                    <button class="btn-primary" onclick="openLoginModal('student')"
+                        style="border-radius: 9999px; padding: 14px 36px; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(216, 166, 26, 0.3);">Start
+                        Your Assessment</button>
+                    <button class="btn-ghost" onclick="switchView('about')"
+                        style="border-radius: 9999px; padding: 14px 32px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.2s;">About
+                        MATRIX</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer
+        style="background-color: #06111a; border-top: 1px solid rgba(255, 255, 255, 0.05); height: 75px; display: flex; justify-content: space-between; align-items: center; padding: 0 48px;">
+        <div class="nav-logo" onclick="switchView('home')"
+            style="display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 18px; color: #ffffff; cursor: pointer;"
+            title="Back to Home">
+            <img src="images/matrix_logo.png" alt="Matrix Logo" class="nav-logo-icon"
+                style="width: 32px; height: 32px; object-fit: contain;">
             MATRIX
         </div>
-        <div class="footer-copyright">
-            © 2026 MATRIX · Our Lady of Fatima University — Quezon City · BS Information Technology
+        <div style="color: #64748b; font-size: 13px;">
+            © 2026 MATRIX - Our Lady of Fatima University — Quezon City
         </div>
-        <div class="footer-dots">
-            <div class="dot dot-yellow"></div>
-            <div class="dot dot-green"></div>
-            <div class="dot dot-blue"></div>
-            <div class="dot dot-orange"></div>
-            <div class="dot dot-purple"></div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #d8a61a;"></div>
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #4ade80;"></div>
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #38bdf8;"></div>
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #fb923c;"></div>
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #c084fc;"></div>
         </div>
     </footer>
 
@@ -1742,8 +2483,10 @@
                         <input type="text" id="regFirstName" placeholder="e.g. Maria" autocomplete="off" required>
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
-                        <label style="font-size: 13px;">M.I. <span style="color: var(--text-muted); font-size: 11px;">(Opt)</span></label>
-                        <input type="text" id="regMI" placeholder="e.g. M." maxlength="3" autocomplete="off" style="text-transform: uppercase; text-align: center;">
+                        <label style="font-size: 13px;">M.I. <span
+                                style="color: var(--text-muted); font-size: 11px;">(Opt)</span></label>
+                        <input type="text" id="regMI" placeholder="e.g. M." maxlength="3" autocomplete="off"
+                            style="text-transform: uppercase; text-align: center;">
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
                         <label style="font-size: 13px;">Last Name <span style="color: #ef4444;">*</span></label>
@@ -1774,8 +2517,8 @@
                 <div class="form-group">
                     <label>Confirm Password</label>
                     <div class="password-wrapper">
-                        <input type="password" id="regConfirmPassword" placeholder="••••••••" autocomplete="new-password"
-                            required>
+                        <input type="password" id="regConfirmPassword" placeholder="••••••••"
+                            autocomplete="new-password" required>
                         <button type="button" class="btn-eye" aria-label="Toggle confirm password visibility"
                             onclick="togglePasswordVisibility('regConfirmPassword', 'eyeIconRegConfirm')">
                             <svg width="20" height="20" id="eyeIconRegConfirm">
@@ -1918,6 +2661,51 @@
             }
         }
 
+        // --- VIEW SWITCHING LOGIC (HOME vs ABOUT vs HELP & SUPPORT) ---
+        function switchView(viewName) {
+            const homeView = document.getElementById('homeView');
+            const aboutView = document.getElementById('aboutView');
+            const supportView = document.getElementById('supportView');
+            const navDropdown = document.getElementById('navDropdown');
+            if (navDropdown) navDropdown.classList.remove('active');
+
+            if (homeView) homeView.style.display = 'none';
+            if (aboutView) aboutView.style.display = 'none';
+            if (supportView) supportView.style.display = 'none';
+
+            if (viewName === 'about') {
+                if (aboutView) aboutView.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                history.replaceState(null, '', '#about');
+            } else if (viewName === 'support') {
+                if (supportView) supportView.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                history.replaceState(null, '', '#support');
+            } else {
+                if (homeView) homeView.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                history.replaceState(null, '', window.location.pathname);
+            }
+        }
+
+        // FAQ Toggle Accordion
+        function toggleFaq(btn) {
+            const item = btn.closest('.faq-item');
+            const answer = item.querySelector('.faq-answer');
+            const chevron = item.querySelector('.faq-chevron');
+            const isOpen = answer.style.display === 'block';
+
+            if (isOpen) {
+                answer.style.display = 'none';
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+                item.style.borderColor = 'var(--card-border)';
+            } else {
+                answer.style.display = 'block';
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+                item.style.borderColor = 'rgba(56, 189, 248, 0.25)';
+            }
+        }
+
         // --- NAV DROPDOWN MENU ---
         function toggleDropdown() {
             document.getElementById('navDropdown').classList.toggle('active');
@@ -1931,14 +2719,23 @@
             }
         });
 
-        function scrollToAbout() {
-            document.querySelector('.framework').scrollIntoView({ behavior: 'smooth' });
-            document.getElementById('navDropdown').classList.remove('active');
-        }
-
-        // Admin and API login check
+        // Route Protection Check and Initial View Routing
         document.addEventListener('DOMContentLoaded', () => {
-            // Route Protection Check
+            if (window.location.hash === '#about') {
+                switchView('about');
+            } else if (window.location.hash === '#support') {
+                switchView('support');
+            }
+            window.addEventListener('popstate', () => {
+                if (window.location.hash === '#about') {
+                    switchView('about');
+                } else if (window.location.hash === '#support') {
+                    switchView('support');
+                } else {
+                    switchView('home');
+                }
+            });
+
             const user = JSON.parse(localStorage.getItem('currentUser'));
             if (user && user.role) {
                 if (user.role === 'student') window.location.href = 'student/s-dashboard.html';
