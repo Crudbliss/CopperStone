@@ -463,7 +463,57 @@
         function renderAssessmentPage(activeSessions, history) {
             let html = '';
 
-            const quarters = ['Initial Assessment', 'Reassessment 1', 'Reassessment 2'];
+            let currentUser = null;
+            try { currentUser = JSON.parse(localStorage.getItem('currentUser')); } catch(e) {}
+            const studentId = currentUser ? currentUser.id : 1;
+
+            // Check if first module is completed
+            let isFirstModCompleted = false;
+            let firstModCompletedAt = localStorage.getItem(`student_first_mod_completed_${studentId}`);
+
+            if (!firstModCompletedAt) {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.startsWith(`student_mod_prog_v2_${studentId}_`) || key.startsWith(`student_mod_prog_${studentId}_`))) {
+                        try {
+                            const prog = JSON.parse(localStorage.getItem(key));
+                            if (prog && (prog.moduleCompleted || prog.completedFinal)) {
+                                isFirstModCompleted = true;
+                                firstModCompletedAt = prog.completedAt || new Date().toISOString();
+                                localStorage.setItem(`student_first_mod_completed_${studentId}`, firstModCompletedAt);
+                                break;
+                            }
+                        } catch(e) {}
+                    }
+                }
+            } else {
+                isFirstModCompleted = true;
+            }
+
+            const isDemoOverrideUnlocked = localStorage.getItem(`demo_reassess_1_unlocked_${studentId}`) === 'true';
+            const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+            let isReassess1Unlocked = false;
+            let unlockDateObj = null;
+            let daysRemaining = 7;
+            let compDateStr = '';
+            let unlockDateStr = '';
+
+            if (isDemoOverrideUnlocked) {
+                isReassess1Unlocked = true;
+            } else if (isFirstModCompleted && firstModCompletedAt) {
+                const compTime = new Date(firstModCompletedAt).getTime();
+                compDateStr = new Date(compTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                unlockDateObj = new Date(compTime + ONE_WEEK_MS);
+                unlockDateStr = unlockDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const timeDiff = unlockDateObj.getTime() - Date.now();
+                if (timeDiff <= 0) {
+                    isReassess1Unlocked = true;
+                } else {
+                    daysRemaining = Math.max(1, Math.ceil(timeDiff / (24 * 60 * 60 * 1000)));
+                }
+            }
+
+            const quarters = ['Initial Assessment', 'Post-Module Reassessment 1', 'Post-Module Reassessment 2'];
             let completedCount = Math.min(history.length, quarters.length);
             const progressPct = (completedCount / quarters.length) * 100;
 
@@ -491,13 +541,12 @@
 
             quarters.forEach((q, idx) => {
                 const histItem = history[idx];
-                const isActiveNext = (idx === history.length);
 
                 if (histItem) {
                     const dateStr = new Date(histItem.taken_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                     const initials = getModeInitials(histItem.learning_mode);
                     html += `
-                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 110px;">
+                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
                             <div style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--matrix-green); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--matrix-green);">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                             </div>
@@ -506,9 +555,10 @@
                             <span style="background: rgba(74, 222, 128, 0.1); color: var(--matrix-green); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">${initials}</span>
                         </div>
                     `;
-                } else if (isActiveNext) {
+                } else if (idx === 0) {
+                    // Initial assessment not taken yet
                     html += `
-                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 110px;">
+                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
                             <div style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--matrix-yellow); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--matrix-yellow);">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                             </div>
@@ -517,9 +567,44 @@
                             <span style="background: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px;">NEXT</span>
                         </div>
                     `;
+                } else if (idx === 1 && history.length === 1) {
+                    // Reassessment 1 state
+                    if (isReassess1Unlocked) {
+                        html += `
+                            <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
+                                <div style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--matrix-yellow); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--matrix-yellow);">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                                <p style="font-size: 13px; font-weight: 700; margin-bottom: 4px; color: var(--matrix-yellow); text-align: center;">${q}</p>
+                                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">1-Week Complete</p>
+                                <span style="background: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px;">READY</span>
+                            </div>
+                        `;
+                    } else if (isFirstModCompleted) {
+                        html += `
+                            <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
+                                <div style="width: 44px; height: 44px; border-radius: 50%; border: 1px dashed #38bdf8; background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: #38bdf8;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                </div>
+                                <p style="font-size: 13px; font-weight: 700; margin-bottom: 4px; color: #38bdf8; text-align: center;">${q}</p>
+                                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Unlocks ${unlockDateStr}</p>
+                                <span style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px;">IN ${daysRemaining} DAYS</span>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
+                                <div style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-light); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--text-dark-muted);">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                </div>
+                                <p style="font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; text-align: center;">${q}</p>
+                                <p style="font-size: 11px; color: var(--text-dark-muted); margin-bottom: 10px;">Complete Mod 1</p>
+                            </div>
+                        `;
+                    }
                 } else {
                     html += `
-                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 110px;">
+                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
                             <div style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-light); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--text-dark-muted);">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                             </div>
@@ -531,34 +616,117 @@
             });
             html += `</div></div>`;
 
-            // 2. Render Upcoming or Active Card
-            const active = (activeSessions && activeSessions.length > 0) ? activeSessions[0] : {
-                quarter_name: 'Periodic',
-                deadline: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0]
-            };
-
-            const deadlineStr = active.deadline ? new Date(active.deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Open access';
-            
-            html += `
-                <div class="card" style="border-color: var(--border-yellow); position: relative; overflow: hidden; margin-bottom: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                        <span style="background-color: rgba(216, 166, 26, 0.1); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(216, 166, 26, 0.2); display: inline-flex; align-items: center; gap: 6px;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                            ACTIVE NOW
-                        </span>
-                        <div style="width: 48px; height: 48px; background: rgba(216, 166, 26, 0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--matrix-yellow);">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            // 2. Render Adaptive Action Card based on 1-Week Schedule
+            if (history.length === 0) {
+                // Initial Assessment Action Card
+                html += `
+                    <div class="card" style="border-color: var(--border-yellow); position: relative; overflow: hidden; margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <span style="background-color: rgba(216, 166, 26, 0.1); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(216, 166, 26, 0.2); display: inline-flex; align-items: center; gap: 6px;">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                ACTIVE NOW
+                            </span>
+                            <div style="width: 48px; height: 48px; background: rgba(216, 166, 26, 0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--matrix-yellow);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            </div>
                         </div>
+                        <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">Initial Learning Mode Assessment</h2>
+                        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Complete your baseline questionnaire to establish your starting learning quadrant profile &middot; Estimated 15-25 minutes</p>
+                        
+                        <a href="test-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; background-color: rgba(74, 222, 128, 0.15); color: var(--matrix-green); border: 1px solid var(--matrix-green);">
+                            <svg width="16" height="16" style="color: var(--matrix-green);"><use href="#icon-play"></use></svg>
+                            Take Assessment Now
+                        </a>
                     </div>
-                    <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">${active.quarter_name} Learning Mode Reassessment</h2>
-                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Self-Paced &middot; Estimated 15-25 minutes</p>
-                    
-                    <a href="test-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; background-color: rgba(74, 222, 128, 0.15); color: var(--matrix-green); border: 1px solid var(--matrix-green);">
-                        <svg width="16" height="16" style="color: var(--matrix-green);"><use href="#icon-play"></use></svg>
-                        Take Assessment Now
-                    </a>
-                </div>
-            `;
+                `;
+            } else if (history.length === 1) {
+                // Post-Module Reassessment 1 Action Card
+                if (isReassess1Unlocked) {
+                    html += `
+                        <div class="card" style="border-color: rgba(74, 222, 128, 0.4); background: linear-gradient(180deg, rgba(74, 222, 128, 0.04) 0%, rgba(18, 24, 31, 1) 100%); position: relative; overflow: hidden; margin-bottom: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                                <span style="background-color: rgba(74, 222, 128, 0.12); color: var(--matrix-green); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(74, 222, 128, 0.3); display: inline-flex; align-items: center; gap: 6px;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    1-WEEK WINDOW OPEN
+                                </span>
+                                <div style="width: 48px; height: 48px; background: rgba(74, 222, 128, 0.08); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--matrix-green);">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                </div>
+                            </div>
+                            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">Post-Module Reassessment 1</h2>
+                            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Your 1-week knowledge consolidation period after Module 1 is complete. Take this reassessment to measure your quadrant migration path.</p>
+                            
+                            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                                <a href="test-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; background-color: var(--matrix-green); color: #060f17; font-weight: 700;">
+                                    <svg width="16" height="16" style="color: #060f17;"><use href="#icon-play"></use></svg>
+                                    Take Reassessment Now
+                                </a>
+                                ${isDemoOverrideUnlocked ? `<button onclick="toggleDemoUnlock()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #94a3b8; padding: 10px 18px; border-radius: 8px; font-size: 12px; cursor: pointer;">Re-lock (Demo)</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                } else if (isFirstModCompleted) {
+                    html += `
+                        <div class="card" style="border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.02); position: relative; overflow: hidden; margin-bottom: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                                <span style="background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.25); display: inline-flex; align-items: center; gap: 6px;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    1-WEEK CONSOLIDATION PERIOD
+                                </span>
+                                <div style="width: 48px; height: 48px; background: rgba(56, 189, 248, 0.06); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #38bdf8;">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                            </div>
+                            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">Post-Module Reassessment 1 Scheduled</h2>
+                            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">
+                                Module 1 was completed on <strong style="color: #fff;">${compDateStr}</strong>. To measure retained conceptual migration, your post-module reassessment unlocks in <strong style="color: #38bdf8;">${daysRemaining} day${daysRemaining > 1 ? 's' : ''}</strong> on <strong style="color: #fff;">${unlockDateStr}</strong>.
+                            </p>
+                            
+                            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                                <button disabled style="opacity: 0.6; cursor: not-allowed; display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; background-color: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                    Unlocks ${unlockDateStr}
+                                </button>
+                                <button onclick="toggleDemoUnlock()" style="background: rgba(216, 166, 26, 0.15); border: 1px solid var(--matrix-yellow); color: var(--matrix-yellow); padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                                    ⚡ Fast-Forward (Demo Unlock)
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="card" style="border-color: rgba(255, 255, 255, 0.1); position: relative; overflow: hidden; margin-bottom: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                                <span style="background-color: rgba(255, 255, 255, 0.05); color: #94a3b8; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); display: inline-flex; align-items: center; gap: 6px;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                    PREREQUISITE PENDING
+                                </span>
+                            </div>
+                            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">Complete Module 1 First</h2>
+                            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Complete your first adaptive learning module to begin the 1-week knowledge consolidation countdown before taking Post-Module Reassessment 1.</p>
+                            
+                            <a href="modules-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 700; background-color: var(--matrix-yellow); color: #060f17;">
+                                Go to My Modules &rarr;
+                            </a>
+                        </div>
+                    `;
+                }
+            } else {
+                html += `
+                    <div class="card" style="border-color: rgba(74, 222, 128, 0.3); background: rgba(74, 222, 128, 0.03); position: relative; overflow: hidden; margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <span style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(74, 222, 128, 0.2);">
+                                ASSESSMENT TRACK ACTIVE
+                            </span>
+                        </div>
+                        <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">All Post-Module Reassessments Up-to-Date</h2>
+                        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">Continue working on your learning modules to trigger future migration tracking milestones.</p>
+                        <a href="modules-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; background-color: rgba(255,255,255,0.08); color: #fff;">
+                            Continue Learning Modules &rarr;
+                        </a>
+                    </div>
+                `;
+            }
 
             // 3. Render Previous Results
             if (history.length > 0) {
@@ -605,6 +773,16 @@
 
             document.getElementById('dynamic-content').innerHTML = html;
         }
+
+        window.toggleDemoUnlock = function() {
+            let currentUser = null;
+            try { currentUser = JSON.parse(localStorage.getItem('currentUser')); } catch(e) {}
+            const studentId = currentUser ? currentUser.id : 1;
+            const key = `demo_reassess_1_unlocked_${studentId}`;
+            const curr = localStorage.getItem(key) === 'true';
+            localStorage.setItem(key, curr ? 'false' : 'true');
+            location.reload();
+        };
 
     </script>
 </body>

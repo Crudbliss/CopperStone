@@ -1077,14 +1077,62 @@
                 const studentProfile = JSON.parse(localStorage.getItem('studentProfile') || '{}');
                 const hasAssessed = !!(studentProfile && studentProfile.learning_mode);
 
-                if (hasAssessed) {
-                    todoItems.push({
-                        id: 'act_post_module_reassess',
-                        isUrgent: true,
-                        bullet: 'yellow',
-                        text: 'Pending Action: 1–2 Week Post-Module Reassessment is now open. Complete it to update your quadrant profile.',
-                        action: "openIframeUrl('qa-content.html', 1)"
+                let isFirstModDone = false;
+                let firstModCompAt = localStorage.getItem(`student_first_mod_completed_${user.id}`);
+                if (!firstModCompAt) {
+                    modules.forEach(m => {
+                        try {
+                            const p1 = localStorage.getItem(`student_mod_prog_v2_${user.id}_${m.id}`);
+                            const p2 = localStorage.getItem(`student_mod_prog_${user.id}_${m.id}`);
+                            const prog = p1 ? JSON.parse(p1) : (p2 ? JSON.parse(p2) : null);
+                            if (prog && (prog.moduleCompleted || prog.completedFinal)) {
+                                isFirstModDone = true;
+                                firstModCompAt = prog.completedAt || new Date().toISOString();
+                            }
+                        } catch(e) {}
                     });
+                } else {
+                    isFirstModDone = true;
+                }
+
+                const isDemoUnlock = localStorage.getItem(`demo_reassess_1_unlocked_${user.id}`) === 'true';
+                const ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
+                let isReassessReady = isDemoUnlock;
+                let unlockDateText = '';
+
+                if (isFirstModDone && firstModCompAt) {
+                    const compMs = new Date(firstModCompAt).getTime();
+                    const unlockMs = compMs + ONE_WEEK;
+                    unlockDateText = new Date(unlockMs).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    if (Date.now() >= unlockMs) isReassessReady = true;
+                }
+
+                if (hasAssessed) {
+                    if (isReassessReady) {
+                        todoItems.push({
+                            id: 'act_post_module_reassess',
+                            isUrgent: true,
+                            bullet: 'yellow',
+                            text: 'Action Required: Post-Module Reassessment 1 is now open. Take it to measure your quadrant migration.',
+                            action: "openIframeUrl('qa-content.html', 1)"
+                        });
+                    } else if (isFirstModDone) {
+                        todoItems.push({
+                            id: 'act_post_module_scheduled',
+                            isUrgent: false,
+                            bullet: 'gray',
+                            text: `Scheduled: Post-Module Reassessment 1 unlocks on ${unlockDateText} (1 week after Module 1).`,
+                            action: "openIframeUrl('qa-content.html', 1)"
+                        });
+                    } else {
+                        todoItems.push({
+                            id: 'act_complete_mod1_first',
+                            isUrgent: false,
+                            bullet: 'yellow',
+                            text: 'To-Do: Complete Module 1 to begin your 1-week post-module reassessment schedule.',
+                            action: "openIframeUrl('modules-content.html', 2)"
+                        });
+                    }
                 }
 
                 // 2. Module progress-based To-Dos & Completed Activities

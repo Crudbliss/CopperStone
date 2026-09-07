@@ -1599,22 +1599,26 @@
         </div>
     </div>
 
-    <!-- VICTORY CELEBRATION MODAL (Screenshot 3) -->
+    <!-- VICTORY CELEBRATION & NEXT ASSESSMENT MODAL -->
     <div class="victory-overlay" id="victory-modal">
-        <div class="victory-modal-card">
-            <div class="victory-icon">
+        <div class="victory-modal-card" id="victory-modal-card">
+            <div class="victory-icon" id="victory-icon-box">
                 <svg width="44" height="44" style="color: #10b981;"><use href="#icon-award"></use></svg>
             </div>
             <h3 class="victory-title" id="victory-student-title">Great Job, Maria!</h3>
-            <p class="victory-desc">
+            <div id="victory-badge-box" style="display: none;"></div>
+            <p class="victory-desc" id="victory-desc-body">
                 You've successfully completed <strong id="victory-kc-name">Knowledge Check 1</strong>. The next section is now unlocked!
             </p>
-            <button class="btn-victory-continue" onclick="handleVictoryContinue()">
-                Continue to Next &rarr;
-            </button>
-            <button class="btn-victory-stay" onclick="closeVictoryModal()">
-                Stay Here
-            </button>
+            <div id="victory-assessment-notice-box" style="display: none; width: 100%; text-align: left; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 14px 16px; margin: 4px 0;"></div>
+            <div id="victory-action-buttons-wrap" style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn-victory-continue" id="btn-victory-main" onclick="handleVictoryContinue()">
+                    Continue to Next &rarr;
+                </button>
+                <button class="btn-victory-stay" id="btn-victory-sec" onclick="closeVictoryModal()">
+                    Stay Here
+                </button>
+            </div>
         </div>
     </div>
 
@@ -2317,10 +2321,17 @@
                             const prog = getStudentProgress(currentActiveModule.id);
                             prog.moduleCompleted = true;
                             prog.completedFinal = true;
+                            if (!prog.completedAt) prog.completedAt = new Date().toISOString();
                             if (!prog.completedChapters.includes(currentChapterIndex)) {
                                 prog.completedChapters.push(currentChapterIndex);
                             }
                             saveStudentProgress(currentActiveModule.id, prog);
+
+                            const firstModKey = `student_first_mod_completed_${currentStudentId}`;
+                            if (!localStorage.getItem(firstModKey)) {
+                                localStorage.setItem(firstModKey, prog.completedAt);
+                            }
+
                             renderReaderStepper();
                             showVictoryModal();
                         };
@@ -2825,6 +2836,12 @@
                     if (currentStepType === 'final') {
                         progress.completedFinal = true;
                         progress.moduleCompleted = true;
+                        if (!progress.completedAt) progress.completedAt = new Date().toISOString();
+
+                        const firstModKey = `student_first_mod_completed_${currentStudentId}`;
+                        if (!localStorage.getItem(firstModKey)) {
+                            localStorage.setItem(firstModKey, progress.completedAt);
+                        }
                     } else {
                         if (!progress.completedKCs.includes(currentChapterIndex)) {
                             progress.completedKCs.push(currentChapterIndex);
@@ -2851,19 +2868,110 @@
             }
         }
 
-        /* --- VICTORY MODAL CONTROLS (Screenshot 3) --- */
+        /* --- VICTORY & NEXT ASSESSMENT MODAL CONTROLS --- */
         function showVictoryModal() {
             const allModuleQuestions = (currentActiveModule && currentActiveModule.questions) || [];
             const isFinal = currentStepType === 'final' || (allModuleQuestions.length === 0);
-            const kcName = isFinal ? 'the entire module!' : `Knowledge Check ${currentChapterIndex + 1}`;
-            document.getElementById('victory-student-title').textContent = isFinal ? `Module Mastered, ${currentStudentFirstName}!` : `Great Job, ${currentStudentFirstName}!`;
-            document.getElementById('victory-kc-name').textContent = kcName;
-            
-            const btnContinue = document.querySelector('.btn-victory-continue');
-            if (btnContinue) {
-                btnContinue.innerHTML = isFinal ? 'Finish & Back to Modules &rarr;' : 'Continue to Next &rarr;';
+            const badgeBox = document.getElementById('victory-badge-box');
+            const noticeBox = document.getElementById('victory-assessment-notice-box');
+            const descBody = document.getElementById('victory-desc-body');
+            const modalTitle = document.getElementById('victory-student-title');
+            const iconBox = document.getElementById('victory-icon-box');
+
+            if (isFinal) {
+                iconBox.innerHTML = '🏆';
+                modalTitle.textContent = `Module Mastered, ${currentStudentFirstName}!`;
+
+                badgeBox.style.display = 'block';
+                badgeBox.innerHTML = `
+                    <span style="background: rgba(74, 222, 128, 0.12); color: var(--matrix-green); border: 1px solid rgba(74, 222, 128, 0.3); font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        ✓ 100% Complete &middot; ${escapeHtml(currentActiveModule.title)}
+                    </span>
+                `;
+
+                descBody.innerHTML = `Congratulations on completing this learning module! Your spaced learning track has recorded your mastery.`;
+
+                // Calculate 1-week unlock schedule
+                const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+                const compTime = Date.now();
+                const unlockDateObj = new Date(compTime + ONE_WEEK_MS);
+                const unlockDateStr = unlockDateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+                noticeBox.style.display = 'block';
+                noticeBox.innerHTML = `
+                    <div style="display: flex; align-items: flex-start; gap: 10px;">
+                        <div style="font-size: 20px; line-height: 1;">📅</div>
+                        <div>
+                            <div style="font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 2px;">
+                                Next Assessment Status:
+                            </div>
+                            <div style="font-size: 12.5px; color: #cbd5e1; line-height: 1.5;">
+                                In accordance with your adaptive spaced learning schedule, <strong>Post-Module Reassessment 1</strong> is scheduled to unlock in <strong>7 days</strong> (on <strong>${unlockDateStr}</strong>) to measure your quadrant migration.
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                const buttonsWrap = document.getElementById('victory-action-buttons-wrap');
+                buttonsWrap.innerHTML = `
+                    <button class="btn-victory-continue" style="background: var(--matrix-yellow); color: #060f17; font-weight: 800;" onclick="handleNavigateToAssessments()">
+                        📅 View Assessment Schedule &rarr;
+                    </button>
+                    <button style="width: 100%; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-weight: 700; padding: 11px 20px; border-radius: 10px; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" onclick="handleDemoUnlockAndTake()">
+                        ⚡ Take Assessment Now (Demo Mode)
+                    </button>
+                    <button class="btn-victory-stay" onclick="handleVictoryContinue()">
+                        Back to All Modules
+                    </button>
+                `;
+            } else {
+                iconBox.innerHTML = `<svg width="44" height="44" style="color: #10b981;"><use href="#icon-award"></use></svg>`;
+                modalTitle.textContent = `Great Job, ${currentStudentFirstName}!`;
+                badgeBox.style.display = 'none';
+                noticeBox.style.display = 'none';
+                descBody.innerHTML = `You've successfully completed <strong>Knowledge Check ${currentChapterIndex + 1}</strong>. The next section is now unlocked!`;
+
+                const buttonsWrap = document.getElementById('victory-action-buttons-wrap');
+                buttonsWrap.innerHTML = `
+                    <button class="btn-victory-continue" onclick="handleVictoryContinue()">
+                        Continue to Next Section &rarr;
+                    </button>
+                    <button class="btn-victory-stay" onclick="closeVictoryModal()">
+                        Stay Here
+                    </button>
+                `;
             }
+
             document.getElementById('victory-modal').style.display = 'flex';
+        }
+
+        function handleNavigateToAssessments() {
+            closeVictoryModal();
+            exitReaderView();
+            if (window.parent && window.parent !== window) {
+                // If nested inside s-dashboard iframe
+                window.parent.postMessage({ type: 'openTab', tab: 'qa-content.html', index: 1 }, '*');
+                const sidebarLinks = window.parent.document.querySelectorAll('.sidebar-nav a');
+                if (sidebarLinks && sidebarLinks[1]) {
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    sidebarLinks[1].classList.add('active');
+                }
+                const frame = window.parent.document.getElementById('content-frame');
+                if (frame) frame.src = 'qa-content.html';
+            } else {
+                window.location.href = 'qa-content.html';
+            }
+        }
+
+        function handleDemoUnlockAndTake() {
+            closeVictoryModal();
+            localStorage.setItem(`demo_reassess_1_unlocked_${currentStudentId}`, 'true');
+            if (window.parent && window.parent !== window) {
+                const frame = window.parent.document.getElementById('content-frame');
+                if (frame) frame.src = 'test-content.html';
+            } else {
+                window.location.href = 'test-content.html';
+            }
         }
 
         function closeVictoryModal() {
