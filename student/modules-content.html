@@ -2982,11 +2982,11 @@
             exitReaderView();
             if (window.parent && window.parent !== window) {
                 // If nested inside s-dashboard iframe
-                window.parent.postMessage({ type: 'openTab', tab: 'qa-content.html', index: 1 }, '*');
+                window.parent.postMessage({ type: 'openTab', tab: 'qa-content.html', index: 2 }, '*');
                 const sidebarLinks = window.parent.document.querySelectorAll('.sidebar-nav a');
-                if (sidebarLinks && sidebarLinks[1]) {
+                if (sidebarLinks && sidebarLinks[2]) {
                     sidebarLinks.forEach(l => l.classList.remove('active'));
-                    sidebarLinks[1].classList.add('active');
+                    sidebarLinks[2].classList.add('active');
                 }
                 const frame = window.parent.document.getElementById('content-frame');
                 if (frame) frame.src = 'qa-content.html';

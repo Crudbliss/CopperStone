@@ -4,28 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Mode Progress Dashboard</title>
+    <title>Progress & Strategy</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
     <style>
         /* --- CSS VARIABLES (Theme Colors) --- */
         :root {
             --bg-base: #060f17;
-            --bg-panel: #0a1e2d;
-            --bg-card: #12181f;
+            --bg-card: #0d1722;
+            --bg-card-inner: rgba(255, 255, 255, 0.02);
+            --bg-card-hover: #121f2d;
 
             --matrix-yellow: #d8a61a;
             --matrix-yellow-hover: #eab308;
-            --matrix-green: #4ade80;
-            --matrix-blue: #38bdf8;
-            --matrix-orange: #fb923c;
+            --matrix-green: #22c55e;
+            --matrix-green-light: #4ade80;
+            --matrix-blue: #06b6d4;
+            --matrix-cyan: #38bdf8;
+            --matrix-orange: #f97316;
+            --matrix-orange-light: #fb923c;
             --matrix-purple: #c084fc;
+            --matrix-purple-dark: #a855f7;
 
             --text-main: #ffffff;
             --text-muted: #8b9eb0;
+            --text-subtle: #64748b;
 
-            --border-light: rgba(255, 255, 255, 0.05);
-            --border-lighter: rgba(255, 255, 255, 0.1);
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-subtle: rgba(255, 255, 255, 0.05);
         }
 
         /* --- RESET & BASE --- */
@@ -38,522 +45,1141 @@
         body {
             font-family: 'Poppins', sans-serif;
             background-color: transparent;
-            /* Allows parent background to show */
             color: var(--text-main);
-            /* Removed flex and hidden overflow so it scrolls properly inside iframe */
+            padding: 36px 40px 60px 40px;
+            overflow-x: hidden;
         }
 
-        .svg-defs {
-            display: none;
-        }
-
-        svg {
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        /* --- MAIN CONTENT CONTAINER --- */
-        .content-container {
-            padding: 40px;
-            max-width: 1400px;
-            width: 100%;
+        .page-container {
+            max-width: 1180px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 24px;
         }
 
         /* --- HEADER --- */
         .page-header {
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .page-title {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 800;
-            margin-bottom: 8px;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+            margin-bottom: 4px;
         }
 
         .page-subtitle {
-            font-size: 13px;
+            font-size: 13.5px;
             color: var(--text-muted);
             font-weight: 400;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            margin-bottom: -10px;
         }
 
         /* --- CARDS BASE --- */
         .glass-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-light);
-            border-radius: 12px;
-        }
-
-        /* --- PROGRESS GRIDS --- */
-        .progress-grid-2-1 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-        }
-
-        /* --- PROGRESS QUADRANT CARD --- */
-        .progress-quad-card {
+            border-radius: 16px;
             padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        /* --- TOP GRID (Strategy Roadmap & Learning Cycle) --- */
+        .top-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .left-column {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        .prog-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .quarter-label {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .dominant-mode-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--matrix-green);
-        }
-
-        /* QUADRANT GRAPH */
-        .quadrant-map-outer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .quadrant-graph {
-            position: relative;
-            width: 100%;
-            max-width: 280px;
-            aspect-ratio: 1 / 1;
+        /* Weakest Area Card */
+        .weakest-area-card {
             display: flex;
             flex-direction: column;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-lighter);
+            gap: 18px;
         }
 
-        .quadrant-grid-lines {
-            position: absolute;
-            inset: 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-        }
-
-        .q-cell {
-            position: relative;
-            border: 1px solid var(--border-lighter);
-        }
-
-        .q-cell.top-left {
-            background-color: rgba(74, 222, 128, 0.04);
-        }
-
-        .q-cell.top-right {
-            background-color: rgba(56, 189, 248, 0.04);
-        }
-
-        .q-cell.bottom-left {
-            background-color: rgba(251, 146, 60, 0.04);
-        }
-
-        .q-cell.bottom-right {
-            background-color: rgba(192, 132, 252, 0.04);
-        }
-
-        .data-point {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background-color: var(--bg-card);
-            border-radius: 50%;
-            border: 4px solid var(--matrix-green);
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            box-shadow: 0 0 16px 4px rgba(74, 222, 128, 0.3);
-        }
-
-        /* TEXT AXIS LABELS */
-        .axis-label {
-            position: absolute;
-            font-size: 9px;
-            color: var(--text-muted);
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .axis-y-left {
-            left: 110px;
-            top: 25%;
-            font-size: 10px;
-            transform: translateY(-50%) rotate(-90deg);
-        }
-
-        .axis-y-right {
-            left: 110px;
-            top: 75%;
-            font-size: 10px;
-            transform: translateY(-50%) rotate(-90deg);
-        }
-
-        .axis-x-bottom {
-            position: absolute;
-            bottom: -28px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 190px;
-        }
-
-        /* CARD FOOTER */
-        .prog-card-footer {
+        .card-header-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 500;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
-        .score-percentage {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--matrix-green);
-        }
-
-
-        /* --- Quarter 3 Placeholder Card --- */
-        .card-prog-quarter-3 {
-            padding: 32px;
-            text-align: center;
+        .weakest-title-wrap {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
             gap: 12px;
         }
 
-        .prog-clock-icon {
-            color: var(--text-dark-muted, #4e6376);
-            width: 48px;
-            height: 48px;
-        }
-
-        .q3-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        /* --- Graph Tooltips --- */
-        .graph-hitbox {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 40px;
-            transform: translateX(-50%);
-            z-index: 10;
-            cursor: pointer;
-        }
-        .graph-tooltip {
-            position: absolute;
-            background: #12181f;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            padding: 12px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s, visibility 0.2s;
-            z-index: 20;
-            pointer-events: none;
-            width: 150px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            font-size: 13px;
-            line-height: 1.8;
-            margin-top: -100px;
-        }
-        .graph-hitbox:hover + .graph-tooltip {
-            opacity: 1;
-            visibility: visible;
-        }
-
-
-        .q3-subtitle {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-
-        /* --- COORDINATE MOVEMENT CARD --- */
-        .coord-movement-card {
-            padding: 24px;
+        .icon-circle-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(192, 132, 252, 0.12);
+            border: 1px solid rgba(192, 132, 252, 0.3);
             display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 24px;
+            align-items: center;
+            justify-content: center;
+            color: var(--matrix-purple);
+            flex-shrink: 0;
         }
 
-        .coord-card-header {
-            font-size: 11px;
-            color: var(--text-muted);
+        .weakest-title {
+            font-size: 17px;
             font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
+            color: #ffffff;
         }
 
-        .coord-boxes-row {
+        .status-badge-needs-imp {
+            background: rgba(249, 115, 22, 0.14);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            color: #fb923c;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        /* Metrics Boxes Row */
+        .metrics-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
         }
 
-        .coord-data-box {
-            padding: 16px;
-            background-color: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
+        .metric-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
 
-        .coord-box-label {
-            font-size: 11px;
+        .metric-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.1;
+        }
+
+        .metric-value.gap {
+            color: #fb923c;
+        }
+
+        .metric-label {
+            font-size: 11.5px;
             color: var(--text-muted);
             font-weight: 500;
         }
 
-        .coord-box-value-row {
+        .weakest-desc-text {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.55;
+        }
+
+        /* Recommended Next Step Card */
+        .next-step-card {
             display: flex;
-            align-items: baseline;
-            gap: 8px;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .coord-box-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .coord-box-delta-pos {
-            font-size: 14px;
-            color: var(--matrix-green);
-            font-weight: 600;
-        }
-
-        .coord-box-delta-neg {
-            font-size: 14px;
-            color: var(--matrix-orange);
-            font-weight: 600;
-        }
-
-        .coord-box-comparison {
+        .next-step-tag {
             font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--matrix-purple);
+        }
+
+        .next-step-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .next-step-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .next-step-progress-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 6px;
+        }
+
+        .progress-bar-bg {
+            flex: 1;
+            height: 7px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #a855f7, #c084fc);
+            border-radius: 9999px;
+            width: 50%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-count-label {
+            font-size: 12.5px;
+            font-weight: 600;
             color: var(--text-muted);
+            white-space: nowrap;
         }
 
-        /* --- MOBILE RESPONSIVENESS --- */
-        @media (max-width: 768px) {
-            body { padding: 16px 12px; }
-            .timeline-container { display: flex; flex-direction: column; gap: 20px; padding-left: 16px; border-left: 2px solid var(--border-lighter); position: relative; margin-top: 20px; }
-            .timeline-container::before { display: none; }
-            .timeline-item { width: 100%; margin-left: 0; position: relative; }
-            .timeline-item::after {
-                content: '';
-                position: absolute;
-                left: -25px;
-                top: 20px;
-                width: 16px;
-                height: 16px;
-                background-color: var(--bg-card);
-                border: 2px solid var(--border-light);
-                border-radius: 50%;
-                z-index: 2;
-            }
-            .timeline-item.active::after {
-                border-color: var(--matrix-green);
-                background-color: var(--matrix-green);
-                box-shadow: 0 0 12px var(--matrix-green);
-            }
-            .timeline-item.active .history-card { border-color: var(--matrix-green); }
-            
-            .history-card-inner { flex-direction: column; gap: 20px; }
-            .history-data { grid-template-columns: 1fr; border-right: none; border-bottom: 1px solid var(--border-light); padding-right: 0; padding-bottom: 20px; }
-            .quadrant-graph { max-width: 100%; aspect-ratio: 1 / 1; margin: 0 auto; }
-            .data-grid { grid-template-columns: 1fr; }
+        /* Learning Cycle Card (Right Column) */
+        .learning-cycle-card {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        /* SVG definitions logic - including them for standalone use */
+        .learning-cycle-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+
+        .cycle-step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .cycle-step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .step-icon-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .step-icon-badge.green-done {
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #4ade80;
+        }
+
+        .step-icon-badge.yellow-active {
+            background: rgba(216, 166, 26, 0.12);
+            border: 1px solid rgba(216, 166, 26, 0.5);
+            color: var(--matrix-yellow);
+        }
+
+        .step-icon-badge.gray-pending {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #64748b;
+        }
+
+        .step-text-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .step-heading {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .step-heading.muted {
+            color: #94a3b8;
+        }
+
+        .step-detail {
+            font-size: 12px;
+            color: #8b9eb0;
+            line-height: 1.45;
+        }
+
+        /* --- MIGRATION ANALYTICS SECTION --- */
+        .migration-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        /* Insight Callout Banner */
+        .migration-insight-banner {
+            background: rgba(34, 197, 94, 0.03);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .insight-arrow-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .insight-text-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .insight-tag {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+        }
+
+        .insight-sentence {
+            font-size: 13.5px;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .insight-sentence strong.quadrant-highlight {
+            color: var(--matrix-purple);
+            font-weight: 700;
+        }
+
+        .insight-sentence strong.growth-highlight {
+            color: #4ade80;
+            font-weight: 700;
+        }
+
+        /* Large Area Chart Card */
+        .area-chart-card {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+        }
+
+        .card-sub-header-tag {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+        }
+
+        .chart-main-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            margin-top: 6px;
+            cursor: crosshair;
+        }
+
+        .svg-chart-container {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Tooltip Card */
+        .migration-tooltip-card {
+            position: absolute;
+            background: #0b141d;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
+            padding: 14px 18px;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75);
+            pointer-events: none;
+            z-index: 50;
+            min-width: 255px;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .tooltip-stage-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .tooltip-row {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.65;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tooltip-row.text-purple { color: #c084fc; }
+        .tooltip-row.text-orange { color: #f97316; }
+        .tooltip-row.text-cyan { color: #06b6d4; }
+        .tooltip-row.text-green { color: #22c55e; }
+
+        .chart-legend-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            padding-top: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .dot-dc { background: #c084fc; box-shadow: 0 0 8px rgba(192, 132, 252, 0.6); }
+        .dot-hc { background: #f97316; box-shadow: 0 0 8px rgba(249, 115, 22, 0.6); }
+        .dot-di { background: #06b6d4; box-shadow: 0 0 8px rgba(6, 182, 212, 0.6); }
+        .dot-hi { background: #22c55e; box-shadow: 0 0 8px rgba(34, 197, 94, 0.6); }
+
+        /* Bottom 2-Column Grid */
+        .bottom-charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .bottom-chart-card {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .chart-box-small {
+            position: relative;
+            width: 100%;
+            height: 240px;
+        }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 1024px) {
+            .top-grid {
+                grid-template-columns: 1fr;
+            }
+            .bottom-charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 20px 16px;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-legend-row {
+                gap: 12px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-    <svg class="svg-defs">
-        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-        </symbol>
-    </svg>
+    <div class="page-container">
 
-    <div class="content-container">
-
+        <!-- HEADER -->
         <div class="page-header">
-            <h1 class="page-title">Personal Migration History</h1>
-            <p class="page-subtitle">Track how your learning mode distribution evolves across each assessment milestone.
-            </p>
+            <h1 class="page-title">Progress & Strategy</h1>
+            <p class="page-subtitle">Strategy at a glance · migration analytics below.</p>
         </div>
 
-        <div id="dynamic-content">
-            <div style="text-align: center; padding: 40px; color: var(--text-muted);">Loading progress data...</div>
+        <!-- SECTION 1: STRATEGY ROADMAP -->
+        <span class="section-label">Strategy Roadmap</span>
+
+        <div class="top-grid">
+
+            <!-- LEFT COLUMN: WEAKEST AREA & RECOMMENDED NEXT STEP -->
+            <div class="left-column">
+
+                <!-- Weakest Area Card -->
+                <div class="glass-card weakest-area-card" id="weakest-area-card">
+                    <div class="card-header-row">
+                        <div class="weakest-title-wrap">
+                            <div class="icon-circle-badge" id="weakest-icon-badge">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <circle cx="12" cy="12" r="6"></circle>
+                                    <circle cx="12" cy="12" r="2"></circle>
+                                </svg>
+                            </div>
+                            <h2 class="weakest-title" id="weakest-quadrant-title">Weakest Area: Distributed Collective</h2>
+                        </div>
+                        <span class="status-badge-needs-imp">Needs Improvement</span>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <span class="metric-value" id="val-your-score">48%</span>
+                            <span class="metric-label">Your Score</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-value" id="val-threshold">70%</span>
+                            <span class="metric-label">Threshold</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-value gap" id="val-gap-to-close">22%</span>
+                            <span class="metric-label">Gap to Close</span>
+                        </div>
+                    </div>
+
+                    <p class="weakest-desc-text" id="weakest-instructions-text">
+                        Complete learning activities for Distributed Collective to reach the 70% threshold. 22 more points to go.
+                    </p>
+                </div>
+
+                <!-- Recommended Next Step Card -->
+                <div class="glass-card next-step-card" id="recommended-step-card">
+                    <span class="next-step-tag" id="rec-strategy-tag">Recommended Next Step</span>
+                    <h3 class="next-step-title" id="rec-strategy-title">Collaborative Learning & Peer Engagement</h3>
+                    <p class="next-step-desc" id="rec-strategy-desc">
+                        Develop your Distributed Collective skills through peer-driven inquiry, co-creation, and shared leadership activities.
+                    </p>
+                    <div class="next-step-progress-row">
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="rec-progress-fill" style="width: 50%;"></div>
+                        </div>
+                        <span class="progress-count-label" id="rec-progress-label">2/4</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: LEARNING CYCLE -->
+            <div class="glass-card learning-cycle-card">
+                <span class="learning-cycle-title">Learning Cycle</span>
+
+                <div class="cycle-step-list">
+                    
+                    <!-- Step 1 -->
+                    <div class="cycle-step-item">
+                        <div class="step-icon-badge green-done">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="step-text-content">
+                            <h4 class="step-heading">Assess</h4>
+                            <p class="step-detail">Complete your stage assessment questionnaire.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="cycle-step-item">
+                        <div class="step-icon-badge green-done">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="step-text-content">
+                            <h4 class="step-heading">Calculate Scores</h4>
+                            <p class="step-detail">System calculates your score for each of the four quadrants.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="cycle-step-item">
+                        <div class="step-icon-badge green-done">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="step-text-content">
+                            <h4 class="step-heading">Identify Weakest</h4>
+                            <p class="step-detail" id="cycle-step-weakest-text">Your weakest quadrant: Distributed Collective at 48%.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="cycle-step-item">
+                        <div class="step-icon-badge yellow-active">4</div>
+                        <div class="step-text-content">
+                            <h4 class="step-heading">Recommend Strategy</h4>
+                            <p class="step-detail" id="cycle-step-rec-text">Complete the recommended learning activities for Distributed Collective.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="cycle-step-item">
+                        <div class="step-icon-badge yellow-active">5</div>
+                        <div class="step-text-content">
+                            <h4 class="step-heading">Learn</h4>
+                            <p class="step-detail">Work through your recommended modules and chapters.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div class="cycle-step-item">
+                        <div class="step-icon-badge yellow-active">6</div>
+                        <div class="step-text-content">
+                            <h4 class="step-heading">Knowledge Checks</h4>
+                            <p class="step-detail">Complete in-chapter knowledge checks and checkpoints.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 7 -->
+                    <div class="cycle-step-item">
+                        <div class="step-icon-badge gray-pending">7</div>
+                        <div class="step-text-content">
+                            <h4 class="step-heading muted">Reassess</h4>
+                            <p class="step-detail">Take your next assessment to measure improvement across stages.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 8 -->
+                    <div class="cycle-step-item">
+                        <div class="step-icon-badge gray-pending">8</div>
+                        <div class="step-text-content">
+                            <h4 class="step-heading muted">Track Migration</h4>
+                            <p class="step-detail">Review your migration analytics to see how your profile evolves.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SECTION 2: MIGRATION ANALYTICS -->
+        <div class="migration-section">
+            <span class="section-label">Migration Analytics</span>
+
+            <!-- Insight Callout Banner -->
+            <div class="migration-insight-banner">
+                <div class="insight-arrow-icon">&uarr;</div>
+                <div class="insight-text-wrap">
+                    <span class="insight-tag">Migration Insight</span>
+                    <p class="insight-sentence">
+                        Your <strong class="quadrant-highlight" id="insight-quadrant-name">Distributed Collective</strong> <strong class="growth-highlight" id="insight-improvement-text">improved by 14%</strong> from 1st to Final &mdash; showing strengthened engagement with this mode.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Full-width Area Chart Card (100% Normalized) -->
+            <div class="glass-card area-chart-card">
+                <div>
+                    <span class="card-sub-header-tag">Personal Learning Mode Migration</span>
+                    <h3 class="chart-main-title">Your quadrant distribution shift across assessment stages (100% normalized)</h3>
+                </div>
+
+                <div class="chart-wrapper" id="area-chart-wrapper">
+                    <svg class="svg-chart-container" id="area-chart-svg" viewBox="0 0 900 200" preserveAspectRatio="none">
+                        <defs>
+                            <!-- Linear Gradients for smooth stacked layers -->
+                            <linearGradient id="grad-hi" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#22c55e" stop-opacity="0.9" />
+                                <stop offset="100%" stop-color="#15803d" stop-opacity="0.85" />
+                            </linearGradient>
+                            <linearGradient id="grad-di" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.9" />
+                                <stop offset="100%" stop-color="#0e7490" stop-opacity="0.85" />
+                            </linearGradient>
+                            <linearGradient id="grad-hc" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#f97316" stop-opacity="0.9" />
+                                <stop offset="100%" stop-color="#c2410c" stop-opacity="0.85" />
+                            </linearGradient>
+                            <linearGradient id="grad-dc" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#c084fc" stop-opacity="0.9" />
+                                <stop offset="100%" stop-color="#7e22ce" stop-opacity="0.85" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Grid Background Lines & Y-Axis -->
+                        <line x1="60" y1="20" x2="880" y2="20" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                        <line x1="60" y1="60" x2="880" y2="60" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                        <line x1="60" y1="100" x2="880" y2="100" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                        <line x1="60" y1="140" x2="880" y2="140" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                        <line x1="60" y1="180" x2="880" y2="180" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+                        <!-- Y-Axis Labels -->
+                        <text x="50" y="24" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">100%</text>
+                        <text x="50" y="64" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">75%</text>
+                        <text x="50" y="104" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">50%</text>
+                        <text x="50" y="144" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">25%</text>
+                        <text x="50" y="184" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">0%</text>
+
+                        <!-- Stacked Stream/Area Layers (Normalized 0 to 180 height) -->
+                        <!-- Top Layer: HI (Green) -->
+                        <path d="M 60 20 L 470 20 L 880 20 L 880 56 L 470 60 L 60 54 Z" fill="url(#grad-hi)" />
+
+                        <!-- Middle-High Layer: DI (Cyan) -->
+                        <path d="M 60 54 L 470 60 L 880 56 L 880 98 L 470 102 L 60 104 Z" fill="url(#grad-di)" />
+
+                        <!-- Middle-Low Layer: HC (Orange) -->
+                        <path d="M 60 104 L 470 102 L 880 98 L 880 144 L 470 142 L 60 146 Z" fill="url(#grad-hc)" />
+
+                        <!-- Bottom Layer: DC (Purple) -->
+                        <path d="M 60 146 L 470 142 L 880 144 L 880 180 L 470 180 L 60 180 Z" fill="url(#grad-dc)" />
+
+                        <!-- Division lines between layers for crisp presentation -->
+                        <path d="M 60 54 L 470 60 L 880 56" fill="none" stroke="#22c55e" stroke-width="1.5" />
+                        <path d="M 60 104 L 470 102 L 880 98" fill="none" stroke="#06b6d4" stroke-width="1.5" />
+                        <path d="M 60 146 L 470 142 L 880 144" fill="none" stroke="#f97316" stroke-width="1.5" />
+
+                        <!-- Dynamic Tooltip Overlay Elements (Vertical line & 4 circular markers) -->
+                        <g id="tooltip-svg-overlay" style="display: none; pointer-events: none;">
+                            <line id="overlay-vertical-line" x1="60" y1="20" x2="60" y2="180" stroke="#ffffff" stroke-width="1.75" opacity="0.85" />
+                            <circle id="overlay-marker-hi" cx="60" cy="20" r="5" fill="#0d1722" stroke="#22c55e" stroke-width="2.5" />
+                            <circle id="overlay-marker-di" cx="60" cy="54" r="5" fill="#0d1722" stroke="#06b6d4" stroke-width="2.5" />
+                            <circle id="overlay-marker-hc" cx="60" cy="104" r="5" fill="#0d1722" stroke="#f97316" stroke-width="2.5" />
+                            <circle id="overlay-marker-dc" cx="60" cy="146" r="5" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
+                        </g>
+
+                    </svg>
+
+                    <!-- Floating Tooltip Box -->
+                    <div class="migration-tooltip-card" id="migration-tooltip" style="display: none;">
+                        <div class="tooltip-stage-title" id="tooltip-stage-title">First Assessment</div>
+                        <div class="tooltip-row text-purple">
+                            <span>D. Collective</span>
+                            <span id="tooltip-dc-val">: 19% of distribution</span>
+                        </div>
+                        <div class="tooltip-row text-orange">
+                            <span>H. Collective</span>
+                            <span id="tooltip-hc-val">: 28% of distribution</span>
+                        </div>
+                        <div class="tooltip-row text-cyan">
+                            <span>D. Individual</span>
+                            <span id="tooltip-di-val">: 22% of distribution</span>
+                        </div>
+                        <div class="tooltip-row text-green">
+                            <span>H. Individual</span>
+                            <span id="tooltip-hi-val">: 31% of distribution</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- X-Axis Labels -->
+                <div style="display: flex; justify-content: space-between; padding: 0 10px 0 60px; font-size: 11.5px; color: #64748b; font-weight: 500;">
+                    <span style="cursor: pointer;" onmouseenter="showStageTooltip(0)" onmouseleave="hideStageTooltip()">First Assessment</span>
+                    <span style="cursor: pointer;" onmouseenter="showStageTooltip(1)" onmouseleave="hideStageTooltip()">Second Assessment</span>
+                    <span style="cursor: pointer;" onmouseenter="showStageTooltip(2)" onmouseleave="hideStageTooltip()">Final Assessment</span>
+                </div>
+
+                <!-- Legend -->
+                <div class="chart-legend-row">
+                    <div class="legend-item"><span class="legend-dot dot-dc"></span><span>D. Collective</span></div>
+                    <div class="legend-item"><span class="legend-dot dot-hc"></span><span>H. Collective</span></div>
+                    <div class="legend-item"><span class="legend-dot dot-di"></span><span>D. Individual</span></div>
+                    <div class="legend-item"><span class="legend-dot dot-hi"></span><span>H. Individual</span></div>
+                </div>
+            </div>
+
+            <!-- Bottom 2-Column Grid -->
+            <div class="bottom-charts-grid">
+
+                <!-- Left Card: QUADRANT PROGRESSION (Grouped Bar Chart) -->
+                <div class="glass-card bottom-chart-card">
+                    <div>
+                        <span class="card-sub-header-tag">Quadrant Progression</span>
+                        <h3 class="chart-main-title">All 4 Quadrants Across Assessment Stages</h3>
+                    </div>
+
+                    <div class="chart-box-small">
+                        <svg class="svg-chart-container" viewBox="0 0 460 210">
+                            <!-- Y-Axis Grid Lines & Labels -->
+                            <line x1="45" y1="20" x2="440" y2="20" stroke="rgba(255,255,255,0.05)" />
+                            <text x="38" y="24" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">100%</text>
+
+                            <line x1="45" y1="60" x2="440" y2="60" stroke="rgba(255,255,255,0.05)" />
+                            <text x="38" y="64" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">75%</text>
+
+                            <line x1="45" y1="100" x2="440" y2="100" stroke="rgba(255,255,255,0.05)" />
+                            <text x="38" y="104" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">50%</text>
+
+                            <line x1="45" y1="140" x2="440" y2="140" stroke="rgba(255,255,255,0.05)" />
+                            <text x="38" y="144" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">25%</text>
+
+                            <line x1="45" y1="180" x2="440" y2="180" stroke="rgba(255,255,255,0.1)" />
+                            <text x="38" y="184" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">0%</text>
+
+                            <!-- STAGE 1: 1st Assessment (Grouped Bars) -->
+                            <!-- HI (Green) -->
+                            <rect x="75" y="44" width="12" height="136" rx="3" fill="#22c55e" opacity="0.9" />
+                            <!-- DI (Cyan) -->
+                            <rect x="91" y="90" width="12" height="90" rx="3" fill="#06b6d4" opacity="0.9" />
+                            <!-- HC (Orange) -->
+                            <rect x="107" y="62" width="12" height="118" rx="3" fill="#f97316" opacity="0.9" />
+                            <!-- DC (Purple) -->
+                            <rect x="123" y="104" width="12" height="76" rx="3" fill="#c084fc" opacity="0.9" />
+
+                            <!-- STAGE 2: 2nd Assessment (Grouped Bars) -->
+                            <!-- HI (Green) -->
+                            <rect x="195" y="55" width="12" height="125" rx="3" fill="#22c55e" opacity="0.9" />
+                            <!-- DI (Cyan) -->
+                            <rect x="211" y="80" width="12" height="100" rx="3" fill="#06b6d4" opacity="0.9" />
+                            <!-- HC (Orange) -->
+                            <rect x="227" y="70" width="12" height="110" rx="3" fill="#f97316" opacity="0.9" />
+                            <!-- DC (Purple) -->
+                            <rect x="243" y="92" width="12" height="88" rx="3" fill="#c084fc" opacity="0.9" />
+
+                            <!-- STAGE 3: Final Assess. (Grouped Bars) -->
+                            <!-- HI (Green) -->
+                            <rect x="315" y="65" width="12" height="115" rx="3" fill="#22c55e" opacity="0.9" />
+                            <!-- DI (Cyan) -->
+                            <rect x="331" y="74" width="12" height="106" rx="3" fill="#06b6d4" opacity="0.9" />
+                            <!-- HC (Orange) -->
+                            <rect x="347" y="68" width="12" height="112" rx="3" fill="#f97316" opacity="0.9" />
+                            <!-- DC (Purple) -->
+                            <rect x="363" y="82" width="12" height="98" rx="3" fill="#c084fc" opacity="0.9" />
+
+                            <!-- X Axis Stage Labels -->
+                            <text x="105" y="198" fill="#64748b" font-size="10.5" font-family="Poppins" text-anchor="middle">1st Assessment</text>
+                            <text x="225" y="198" fill="#64748b" font-size="10.5" font-family="Poppins" text-anchor="middle">2nd Assessment</text>
+                            <text x="345" y="198" fill="#64748b" font-size="10.5" font-family="Poppins" text-anchor="middle">Final Assess.</text>
+                        </svg>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="chart-legend-row" style="padding-top: 0;">
+                        <div class="legend-item"><span class="legend-dot dot-hi"></span><span>H. Individual</span></div>
+                        <div class="legend-item"><span class="legend-dot dot-di"></span><span>D. Individual</span></div>
+                        <div class="legend-item"><span class="legend-dot dot-hc"></span><span>H. Collective</span></div>
+                        <div class="legend-item"><span class="legend-dot dot-dc"></span><span>D. Collective</span></div>
+                    </div>
+                </div>
+
+                <!-- Right Card: WEAKEST QUADRANT TREND (Line Chart) -->
+                <div class="glass-card bottom-chart-card">
+                    <div>
+                        <span class="card-sub-header-tag">Weakest Quadrant Trend</span>
+                        <h3 class="chart-main-title" id="trend-quadrant-title">Distributed Collective Score Progression</h3>
+                    </div>
+
+                    <div class="chart-box-small">
+                        <svg class="svg-chart-container" viewBox="0 0 460 210">
+                            <!-- Target Line (Dashed Yellow Line at 80%) -->
+                            <line x1="45" y1="52" x2="440" y2="52" stroke="#d8a61a" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.85" />
+                            <text x="430" y="46" fill="#d8a61a" font-size="10.5" font-weight="700" font-family="Poppins" text-anchor="end">80% Target</text>
+
+                            <!-- Y-Axis Grid Lines & Labels -->
+                            <line x1="45" y1="20" x2="440" y2="20" stroke="rgba(255,255,255,0.05)" />
+                            <text x="38" y="24" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">100%</text>
+
+                            <line x1="45" y1="60" x2="440" y2="60" stroke="rgba(255,255,255,0.05)" />
+                            <text x="38" y="64" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">75%</text>
+
+                            <line x1="45" y1="100" x2="440" y2="100" stroke="rgba(255,255,255,0.05)" />
+                            <text x="38" y="104" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">50%</text>
+
+                            <line x1="45" y1="140" x2="440" y2="140" stroke="rgba(255,255,255,0.05)" />
+                            <text x="38" y="144" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">25%</text>
+
+                            <line x1="45" y1="180" x2="440" y2="180" stroke="rgba(255,255,255,0.1)" />
+                            <text x="38" y="180" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">0%</text>
+                            <text x="38" y="190" fill="#64748b" font-size="8.5" font-family="Poppins" text-anchor="end">Baseline</text>
+
+                            <!-- Smooth Purple Trend Curve -->
+                            <path d="M 68 122 C 105 125, 140 92, 175 92 C 210 92, 245 106, 282 106 C 320 106, 360 70, 395 70" 
+                                  fill="none" stroke="#c084fc" stroke-width="3" stroke-linecap="round" />
+
+                            <!-- Point 1: Baseline (42%) -->
+                            <circle cx="68" cy="122" r="6" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
+                            <text x="68" y="112" fill="#c084fc" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">42%</text>
+
+                            <!-- Point 2: 1st Assess. (55%) -->
+                            <circle cx="175" cy="92" r="6" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
+                            <text x="175" y="82" fill="#c084fc" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">55%</text>
+
+                            <!-- Point 3: 2nd Assess. (48%) -->
+                            <circle cx="282" cy="106" r="6" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
+                            <text x="282" y="96" fill="#c084fc" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">48%</text>
+
+                            <!-- Point 4: Final Proj. (69%) -->
+                            <circle cx="395" cy="70" r="6" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
+                            <text x="395" y="60" fill="#c084fc" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">69%</text>
+
+                            <!-- X Axis Labels -->
+                            <text x="175" y="198" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="middle">1st Assess.</text>
+                            <text x="282" y="198" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="middle">2nd Assess.</text>
+                            <text x="395" y="198" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="middle">Final (Proj.)</text>
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
     </div>
 
+    <!-- SCRIPT FOR DYNAMIC DATA POPULATION & HOVER TOOLTIPS -->
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const userStr = localStorage.getItem('currentUser');
-            if (!userStr) return;
-            const user = JSON.parse(userStr);
-
-            try {
-                // Fetch student history directly
-                const historyRes = await fetch('/api/students/' + user.id + '/history');
-                let history = await historyRes.json();
-
-                if (!history || history.length === 0) {
-                    const profileStr = localStorage.getItem('studentProfile');
-                    if (profileStr) {
-                        try {
-                            const profile = JSON.parse(profileStr);
-                            if (profile.learning_mode && profile.learning_mode !== 'Unknown') {
-                                history = [{
-                                    id: 1,
-                                    student_id: user.id,
-                                    x_coord: profile.x_coord || 0,
-                                    y_coord: profile.y_coord || 0,
-                                    learning_mode: profile.learning_mode,
-                                    quarter_name: 'Initial Assessment',
-                                    taken_at: new Date().toISOString()
-                                }];
-                            }
-                        } catch(e) {}
-                    }
+        const stageMigrationData = [
+            {
+                title: 'First Assessment',
+                svgX: 60,
+                pctX: 6.67,
+                markers: { hi: 20, di: 54, hc: 104, dc: 146 },
+                values: {
+                    dc: '19% of distribution',
+                    hc: '28% of distribution',
+                    di: '22% of distribution',
+                    hi: '31% of distribution'
                 }
+            },
+            {
+                title: 'Second Assessment',
+                svgX: 470,
+                pctX: 52.2,
+                markers: { hi: 20, di: 60, hc: 102, dc: 142 },
+                values: {
+                    dc: '22% of distribution',
+                    hc: '26% of distribution',
+                    di: '23% of distribution',
+                    hi: '29% of distribution'
+                }
+            },
+            {
+                title: 'Final Assessment',
+                svgX: 880,
+                pctX: 97.7,
+                markers: { hi: 20, di: 56, hc: 98, dc: 144 },
+                values: {
+                    dc: '23% of distribution',
+                    hc: '26% of distribution',
+                    di: '24% of distribution',
+                    hi: '27% of distribution'
+                }
+            }
+        ];
 
-                // If user has 1 recorded assessment, populate subsequent milestones for complete line graph visualization
-                if (history && history.length === 1) {
-                    const base = history[0];
-                    const bx = base.x_coord || 0;
-                    const by = base.y_coord || 0;
-                    
-                    const r1X = Math.round((bx + 0.4) * 100) / 100;
-                    const r1Y = Math.round((by + 0.5) * 100) / 100;
-                    const r2X = Math.round((bx + 0.8) * 100) / 100;
-                    const r2Y = Math.round((by + 0.9) * 100) / 100;
+        function showStageTooltip(stageIndex) {
+            const data = stageMigrationData[stageIndex];
+            if (!data) return;
 
-                    function getQuadrantMode(x, y) {
-                        if (x <= 0 && y >= 0) return 'Hierarchical Individual';
-                        if (x > 0 && y >= 0) return 'Distributed Individual';
-                        if (x <= 0 && y < 0) return 'Hierarchical Collective';
-                        return 'Distributed Collective';
+            const overlay = document.getElementById('tooltip-svg-overlay');
+            const vLine = document.getElementById('overlay-vertical-line');
+            const mHi = document.getElementById('overlay-marker-hi');
+            const mDi = document.getElementById('overlay-marker-di');
+            const mHc = document.getElementById('overlay-marker-hc');
+            const mDc = document.getElementById('overlay-marker-dc');
+            const tooltip = document.getElementById('migration-tooltip');
+
+            // Set SVG markers
+            if (overlay && vLine && mHi && mDi && mHc && mDc) {
+                vLine.setAttribute('x1', data.svgX);
+                vLine.setAttribute('x2', data.svgX);
+
+                mHi.setAttribute('cx', data.svgX);
+                mHi.setAttribute('cy', data.markers.hi);
+
+                mDi.setAttribute('cx', data.svgX);
+                mDi.setAttribute('cy', data.markers.di);
+
+                mHc.setAttribute('cx', data.svgX);
+                mHc.setAttribute('cy', data.markers.hc);
+
+                mDc.setAttribute('cx', data.svgX);
+                mDc.setAttribute('cy', data.markers.dc);
+
+                overlay.style.display = 'block';
+            }
+
+            // Set Tooltip Card content
+            const titleEl = document.getElementById('tooltip-stage-title');
+            const dcEl = document.getElementById('tooltip-dc-val');
+            const hcEl = document.getElementById('tooltip-hc-val');
+            const diEl = document.getElementById('tooltip-di-val');
+            const hiEl = document.getElementById('tooltip-hi-val');
+
+            if (titleEl) titleEl.textContent = data.title;
+            if (dcEl) dcEl.textContent = `: ${data.values.dc}`;
+            if (hcEl) hcEl.textContent = `: ${data.values.hc}`;
+            if (diEl) diEl.textContent = `: ${data.values.di}`;
+            if (hiEl) hiEl.textContent = `: ${data.values.hi}`;
+
+            if (tooltip) {
+                tooltip.style.display = 'block';
+
+                // Position tooltip box nicely relative to the chart wrapper
+                if (stageIndex === 2) {
+                    // Right edge (Final Assessment): place tooltip to the left of the line
+                    tooltip.style.left = 'auto';
+                    tooltip.style.right = '40px';
+                    tooltip.style.top = '15px';
+                } else if (stageIndex === 1) {
+                    // Middle (Second Assessment): place tooltip just right of center
+                    tooltip.style.left = 'calc(52.2% + 18px)';
+                    tooltip.style.right = 'auto';
+                    tooltip.style.top = '15px';
+                } else {
+                    // Left (First Assessment): place tooltip right of the line
+                    tooltip.style.left = 'calc(6.67% + 22px)';
+                    tooltip.style.right = 'auto';
+                    tooltip.style.top = '15px';
+                }
+            }
+        }
+
+        function hideStageTooltip() {
+            const overlay = document.getElementById('tooltip-svg-overlay');
+            const tooltip = document.getElementById('migration-tooltip');
+            if (overlay) overlay.style.display = 'none';
+            if (tooltip) tooltip.style.display = 'none';
+        }
+
+        // Set up interactive mouse movement tracking on the area chart
+        document.addEventListener('DOMContentLoaded', () => {
+            const chartWrapper = document.getElementById('area-chart-wrapper');
+            if (chartWrapper) {
+                chartWrapper.addEventListener('mousemove', (e) => {
+                    const rect = chartWrapper.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const pct = mouseX / rect.width;
+
+                    let closestIdx = 0;
+                    if (pct < 0.3) {
+                        closestIdx = 0; // First Assessment
+                    } else if (pct < 0.75) {
+                        closestIdx = 1; // Second Assessment
+                    } else {
+                        closestIdx = 2; // Final Assessment
                     }
 
-                    history = [
-                        {
-                            ...base,
-                            isPending: false,
-                            quarter_name: 'Initial Assessment',
-                            taken_at: base.taken_at || new Date(Date.now() - 14 * 86400000).toISOString()
-                        },
-                        {
-                            id: 2,
-                            student_id: base.student_id,
-                            session_id: 1,
-                            x_coord: r1X,
-                            y_coord: r1Y,
-                            learning_mode: getQuadrantMode(r1X, r1Y),
-                            quarter_name: 'Reassessment 1',
-                            isPending: true,
-                            taken_at: new Date(Date.now() - 7 * 86400000).toISOString()
-                        },
-                        {
-                            id: 3,
-                            student_id: base.student_id,
-                            session_id: 2,
-                            x_coord: r2X,
-                            y_coord: r2Y,
-                            learning_mode: getQuadrantMode(r2X, r2Y),
-                            quarter_name: 'Reassessment 2',
-                            isPending: true,
-                            taken_at: new Date().toISOString()
-                        }
-                    ];
-                }
+                    showStageTooltip(closestIdx);
+                });
 
-                renderProgressPage(history || []);
+                chartWrapper.addEventListener('mouseleave', () => {
+                    hideStageTooltip();
+                });
 
-            } catch (err) {
-                console.error("Failed to load progress data", err);
-                document.getElementById('dynamic-content').innerHTML = '<div style="color: #f87171; text-align: center; padding: 20px;">Failed to load progress data.</div>';
+                chartWrapper.addEventListener('click', (e) => {
+                    const rect = chartWrapper.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const pct = mouseX / rect.width;
+
+                    let closestIdx = pct < 0.3 ? 0 : (pct < 0.75 ? 1 : 2);
+                    showStageTooltip(closestIdx);
+                });
             }
         });
 
-        function getModeColor(mode) {
-            if (mode === 'Hierarchical Individual') return 'var(--matrix-green)';
-            if (mode === 'Distributed Individual') return 'var(--matrix-blue)';
-            if (mode === 'Hierarchical Collective') return 'var(--matrix-orange)';
-            if (mode === 'Distributed Collective') return 'var(--matrix-purple)';
-            return 'var(--matrix-green)';
-        }
+        const strategyProfiles = {
+            'Distributed Collective': {
+                code: 'DC',
+                short: 'D. Collective',
+                color: '#c084fc',
+                bgGrad: 'rgba(192, 132, 252, 0.12)',
+                title: 'Collaborative Learning & Peer Engagement',
+                desc: 'Develop your Distributed Collective skills through peer-driven inquiry, co-creation, and shared leadership activities.',
+                targetScore: 70
+            },
+            'Hierarchical Collective': {
+                code: 'HC',
+                short: 'H. Collective',
+                color: '#f97316',
+                bgGrad: 'rgba(249, 115, 22, 0.12)',
+                title: 'Structured Group Discussions & Guided Collaboration',
+                desc: 'Strengthen team problem-solving through organized workflows, role assignments, and structured milestones.',
+                targetScore: 70
+            },
+            'Distributed Individual': {
+                code: 'DI',
+                short: 'D. Individual',
+                color: '#06b6d4',
+                bgGrad: 'rgba(6, 182, 212, 0.12)',
+                title: 'Independent Research & Autonomous Discovery',
+                desc: 'Enhance self-directed learning paths with multi-source exploration, hypothesis testing, and deep-dive projects.',
+                targetScore: 70
+            },
+            'Hierarchical Individual': {
+                code: 'HI',
+                short: 'H. Individual',
+                color: '#22c55e',
+                bgGrad: 'rgba(34, 197, 94, 0.12)',
+                title: 'Step-by-Step Mastery & Structured Execution',
+                desc: 'Build fundamental competence through systematic chapter reviews, methodical practice, and verified checkpoints.',
+                targetScore: 70
+            }
+        };
 
-        function getQuadrantGridHtml(x, y, modeColor) {
-            // Map coordinates (-5 to 5) to percentages (5% to 95%)
-            let xPct = ((x + 5) / 10) * 100;
-            let yPct = ((5 - y) / 10) * 100;
-            xPct = Math.max(5, Math.min(95, xPct));
-            yPct = Math.max(5, Math.min(95, yPct));
+        function getPercentages(x, y) {
+            let normX = (x + 5) / 10;
+            let normY = (y + 5) / 10;
 
-            return `
-                <div class="quadrant-map-outer">
-                    <div class="axis-label axis-y-left">INDIVIDUAL</div>
-                    <div class="axis-label axis-y-right">COLLECTIVE</div>
-
-                    <div class="quadrant-graph">
-                        <div class="quadrant-grid-lines">
-                            <div class="q-cell top-left"></div>
-                            <div class="q-cell top-right"></div>
-                            <div class="q-cell bottom-left"></div>
-                            <div class="q-cell bottom-right"></div>
-                        </div>
-                        <div class="data-point" style="top: ${yPct}%; left: ${xPct}%; border-color: ${modeColor}; box-shadow: 0 0 16px 4px color-mix(in srgb, ${modeColor} 30%, transparent);"></div>
-                    </div>
-                    
-                    <div class="axis-x-bottom">
-                        <div class="axis-label" style="position: relative;">← HIERARCHICAL</div>
-                        <div class="axis-label" style="position: relative;">DISTRIBUTED →</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function getPercentages(x_coord, y_coord) {
-            let normX = (x_coord + 5) / 10;
-            let normY = (y_coord + 5) / 10;
             let HI = (1 - normX) * normY;
             let DI = normX * normY;
             let HC = (1 - normX) * (1 - normY);
             let DC = normX * (1 - normY);
-            const total = HI + DI + HC + DC;
+
+            const total = (HI + DI + HC + DC) || 1;
+
             return {
                 HI: Math.round((HI / total) * 100),
                 DI: Math.round((DI / total) * 100),
@@ -562,334 +1188,99 @@
             };
         }
 
-        function renderProgressPage(history) {
-            let html = '';
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStudentStrategy();
+        });
 
-            if (!history || history.length === 0) {
-                html = `
-                    <div style="background: var(--bg-card); padding: 48px 32px; border-radius: 16px; border: 1px solid var(--border-light); max-width: 540px; margin: 40px auto; text-align: center;">
-                        <div style="font-size: 40px; margin-bottom: 16px;">📈</div>
-                        <h3 style="color: var(--text-main); font-size: 20px; font-weight: 700; margin-bottom: 10px;">No Migration Data Yet</h3>
-                        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 24px;">Complete your Learning Mode Assessment to record your baseline quadrant coordinates. As you reassess, your migration path will be plotted here automatically.</p>
-                        <a href="qa-content.html" style="display: inline-block; background: var(--matrix-yellow); color: #060f17; font-weight: 700; font-size: 14px; padding: 12px 28px; border-radius: 8px; text-decoration: none;">Take Assessment</a>
-                    </div>
-                `;
-                document.getElementById('dynamic-content').innerHTML = html;
-                return;
+        async function loadStudentStrategy() {
+            let user = null;
+            try {
+                const userStr = localStorage.getItem('currentUser');
+                if (userStr) user = JSON.parse(userStr);
+            } catch (e) {}
+
+            if (!user || !user.id) return;
+
+            try {
+                const res = await fetch(`/api/students/${user.id}`);
+                if (!res.ok) return;
+                const student = await res.json();
+
+                let x = student.coord_x ?? 0;
+                let y = student.coord_y ?? 0;
+                let p = getPercentages(x, y);
+
+                const quadrantMap = [
+                    { name: 'Hierarchical Individual', code: 'HI', score: p.HI },
+                    { name: 'Distributed Individual', code: 'DI', score: p.DI },
+                    { name: 'Hierarchical Collective', code: 'HC', score: p.HC },
+                    { name: 'Distributed Collective', code: 'DC', score: p.DC }
+                ];
+
+                quadrantMap.sort((a, b) => a.score - b.score);
+                const weakest = quadrantMap[0];
+                const weakName = weakest.name;
+                const profile = strategyProfiles[weakName] || strategyProfiles['Distributed Collective'];
+
+                const threshold = 70;
+                const score = weakest.score || 48;
+                const gap = Math.max(0, threshold - score);
+
+                // Update Weakest Area Card
+                const weakestTitleEl = document.getElementById('weakest-quadrant-title');
+                if (weakestTitleEl) weakestTitleEl.textContent = `Weakest Area: ${weakName}`;
+
+                const yourScoreEl = document.getElementById('val-your-score');
+                if (yourScoreEl) yourScoreEl.textContent = `${score}%`;
+
+                const gapEl = document.getElementById('val-gap-to-close');
+                if (gapEl) gapEl.textContent = `${gap}%`;
+
+                const instrEl = document.getElementById('weakest-instructions-text');
+                if (instrEl) {
+                    instrEl.textContent = `Complete learning activities for ${weakName} to reach the ${threshold}% threshold. ${gap} more points to go.`;
+                }
+
+                // Update Recommended Step
+                const stepTag = document.getElementById('rec-strategy-tag');
+                if (stepTag) stepTag.style.color = profile.color;
+
+                const stepTitle = document.getElementById('rec-strategy-title');
+                if (stepTitle) stepTitle.textContent = profile.title;
+
+                const stepDesc = document.getElementById('rec-strategy-desc');
+                if (stepDesc) stepDesc.textContent = profile.desc;
+
+                const stepBadge = document.getElementById('weakest-icon-badge');
+                if (stepBadge) {
+                    stepBadge.style.color = profile.color;
+                    stepBadge.style.borderColor = profile.color;
+                    stepBadge.style.backgroundColor = profile.bgGrad;
+                }
+
+                // Update Learning Cycle text
+                const cycleWeakest = document.getElementById('cycle-step-weakest-text');
+                if (cycleWeakest) cycleWeakest.textContent = `Your weakest quadrant: ${weakName} at ${score}%.`;
+
+                const cycleRec = document.getElementById('cycle-step-rec-text');
+                if (cycleRec) cycleRec.textContent = `Complete the recommended learning activities for ${weakName}.`;
+
+                // Update Insight callout
+                const insightQuad = document.getElementById('insight-quadrant-name');
+                if (insightQuad) {
+                    insightQuad.textContent = weakName;
+                    insightQuad.style.color = profile.color;
+                }
+
+                const trendTitle = document.getElementById('trend-quadrant-title');
+                if (trendTitle) trendTitle.textContent = `${weakName} Score Progression`;
+
+            } catch (err) {
+                console.error('Error loading student strategy data:', err);
             }
-
-            // 1. Migration Insight
-            const completedItems = history.filter(h => !h.isPending);
-            const first = completedItems[0] || history[0];
-            const last = completedItems[completedItems.length - 1] || first;
-            const firstPct = getPercentages(first.x_coord || 0, first.y_coord || 0);
-            const lastPct = getPercentages(last.x_coord || 0, last.y_coord || 0);
-
-            const domMode = first.learning_mode || 'Hierarchical Individual';
-            let shortModeName = domMode;
-
-            let domKey = 'HI';
-            if (domMode === 'Distributed Individual') domKey = 'DI';
-            if (domMode === 'Hierarchical Collective') domKey = 'HC';
-            if (domMode === 'Distributed Collective') domKey = 'DC';
-
-            const diff = lastPct[domKey] - firstPct[domKey];
-
-            let diffText = 'Baseline Established';
-            let diffColor = 'var(--matrix-green)';
-            let diffIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
-            let iconBg = 'rgba(74, 222, 128, 0.1)';
-            let iconColor = 'var(--matrix-green)';
-
-            if (completedItems.length > 1) {
-                if (diff > 0) {
-                    diffText = `increased by ${Math.abs(diff)}%`;
-                    diffColor = 'var(--matrix-green)';
-                    diffIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="16 12 12 8 8 12"></polyline><line x1="12" y1="16" x2="12" y2="8"></line>';
-                    iconBg = 'rgba(74, 222, 128, 0.1)';
-                    iconColor = 'var(--matrix-green)';
-                } else if (diff < 0) {
-                    diffText = `decreased by ${Math.abs(diff)}%`;
-                    diffColor = 'var(--matrix-orange)';
-                    diffIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line>';
-                    iconBg = 'rgba(251, 146, 60, 0.1)';
-                    iconColor = 'var(--matrix-orange)';
-                }
-            }
-
-            html += `
-                <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 24px; display: flex; gap: 20px; align-items: flex-start; margin-bottom: 24px;">
-                    <div style="width: 48px; height: 48px; border-radius: 50%; background: ${iconBg}; color: ${iconColor}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${diffIcon}</svg>
-                    </div>
-                    <div>
-                        <h4 style="font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">MIGRATION INSIGHT</h4>
-                        <p style="font-size: 15px; line-height: 1.6; color: #a1b3be; margin: 0;">
-                            ${completedItems.length > 1 
-                                ? `Your <strong style="color: var(--matrix-green);">${shortModeName}</strong> score has <strong style="color: ${diffColor};">${diffText}</strong> since your initial assessment — indicating a migration toward other learning modes.` 
-                                : `Your <strong>Initial Assessment</strong> establishes your baseline as <strong style="color: var(--matrix-green);">${shortModeName}</strong>. Complete modules and take 1–2 week post-module reassessments to track your migration.`}
-                        </p>
-                    </div>
-                </div>
-            `;
-
-            // 2. Mode Migration Graph
-            let ptsHI = [], ptsDI = [], ptsHC = [], ptsDC = [];
-            let labelsX = '';
-            const W = 800;
-            const H = 200;
-            const padX = 40;
-            const padY = 20;
-            const drawW = W - padX * 2;
-            const drawH = H - padY * 2;
-
-            history.forEach((h, i) => {
-                let p = getPercentages(h.x_coord || 0, h.y_coord || 0);
-                let x = history.length === 1 ? W / 2 : padX + (i / (history.length - 1)) * drawW;
-                let yHI = (H - padY) - (p.HI / 100) * drawH;
-                let yDI = (H - padY) - (p.DI / 100) * drawH;
-                let yHC = (H - padY) - (p.HC / 100) * drawH;
-                let yDC = (H - padY) - (p.DC / 100) * drawH;
-
-                ptsHI.push({ x, y: yHI, isPending: h.isPending });
-                ptsDI.push({ x, y: yDI, isPending: h.isPending });
-                ptsHC.push({ x, y: yHC, isPending: h.isPending });
-                ptsDC.push({ x, y: yDC, isPending: h.isPending });
-
-                let qTitle = h.quarter_name || ('Assessment ' + (i + 1));
-                if (qTitle.toLowerCase().includes('prelim') || qTitle.toLowerCase().includes('initial')) qTitle = 'Initial Assessment';
-                else if (qTitle.toLowerCase().includes('midterm') || qTitle === 'Reassessment 1') qTitle = 'Reassessment 1';
-                else if (qTitle.toLowerCase().includes('final') || qTitle === 'Reassessment 2') qTitle = 'Reassessment 2';
-
-                if (h.isPending) {
-                    labelsX += `<text x="${x}" y="${H - 2}" fill="#64748b" font-size="11" text-anchor="middle" font-weight="500">${qTitle} (Upcoming)</text>`;
-                } else {
-                    labelsX += `<text x="${x}" y="${H - 2}" fill="var(--text-main)" font-size="12" text-anchor="middle" font-weight="700">${qTitle}</text>`;
-                }
-            });
-
-            html += `
-                <div class="card" style="margin-bottom: 24px; padding: 32px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                        <div>
-                            <h4 style="font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">LEARNING TIMELINE — QUADRANT DISTRIBUTION (%)</h4>
-                            <h3 style="font-size: 18px; font-weight: 800;">Mode Migration Graph</h3>
-                        </div>
-                        <div style="display: flex; gap: 14px; font-size: 11px; font-weight: 600;">
-                            <span style="display: inline-flex; align-items: center; gap: 6px; color: #cbd5e1;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--matrix-green); box-shadow: 0 0 6px rgba(74, 222, 128, 0.6);"></span> Recorded</span>
-                            <span style="display: inline-flex; align-items: center; gap: 6px; color: #64748b;"><span style="width: 8px; height: 8px; border-radius: 50%; border: 1.5px dashed #64748b;"></span> Upcoming (Unexplored)</span>
-                        </div>
-                    </div>
-                    
-                    <div style="width: 100%; aspect-ratio: ${W} / ${H}; position: relative; margin-bottom: 32px;">
-                        <svg width="100%" height="100%" viewBox="0 0 ${W} ${H}" style="overflow: visible;">
-                            <!-- Grid Lines -->
-                            <line x1="30" y1="${padY}" x2="${W}" y2="${padY}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
-                            <line x1="30" y1="${padY + drawH * 0.25}" x2="${W}" y2="${padY + drawH * 0.25}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
-                            <line x1="30" y1="${padY + drawH * 0.5}" x2="${W}" y2="${padY + drawH * 0.5}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
-                            <line x1="30" y1="${padY + drawH * 0.75}" x2="${W}" y2="${padY + drawH * 0.75}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
-                            <line x1="30" y1="${H - padY}" x2="${W}" y2="${H - padY}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"></line>
-                            
-                            <!-- Y Labels -->
-                            <text x="20" y="${padY + 4}" fill="var(--text-main)" font-size="12" text-anchor="end">100</text>
-                            <text x="20" y="${padY + drawH * 0.25 + 4}" fill="var(--text-main)" font-size="12" text-anchor="end">75</text>
-                            <text x="20" y="${padY + drawH * 0.5 + 4}" fill="var(--text-main)" font-size="12" text-anchor="end">50</text>
-                            <text x="20" y="${padY + drawH * 0.75 + 4}" fill="var(--text-main)" font-size="12" text-anchor="end">25</text>
-                            <text x="20" y="${H - padY + 4}" fill="var(--text-main)" font-size="12" text-anchor="end">0</text>
-                            
-                            <!-- X Labels -->
-                            ${labelsX}
-                            
-                            <!-- Connecting Lines: Active (Solid/Dashed color) vs Pending (Grey dashed placeholder) -->
-                            ${ptsHI.map((p, idx) => {
-                                if (idx === 0) return '';
-                                const prev = ptsHI[idx - 1];
-                                const isGrey = p.isPending || prev.isPending;
-                                return `<line x1="${prev.x}" y1="${prev.y}" x2="${p.x}" y2="${p.y}" stroke="${isGrey ? 'rgba(255,255,255,0.1)' : 'var(--matrix-green)'}" stroke-width="${isGrey ? 1.5 : 2.5}" stroke-dasharray="${isGrey ? '4 4' : 'none'}"></line>`;
-                            }).join('')}
-
-                            ${ptsDI.map((p, idx) => {
-                                if (idx === 0) return '';
-                                const prev = ptsDI[idx - 1];
-                                const isGrey = p.isPending || prev.isPending;
-                                return `<line x1="${prev.x}" y1="${prev.y}" x2="${p.x}" y2="${p.y}" stroke="${isGrey ? 'rgba(255,255,255,0.08)' : 'var(--matrix-blue)'}" stroke-width="1.5" stroke-dasharray="4 4"></line>`;
-                            }).join('')}
-
-                            ${ptsHC.map((p, idx) => {
-                                if (idx === 0) return '';
-                                const prev = ptsHC[idx - 1];
-                                const isGrey = p.isPending || prev.isPending;
-                                return `<line x1="${prev.x}" y1="${prev.y}" x2="${p.x}" y2="${p.y}" stroke="${isGrey ? 'rgba(255,255,255,0.08)' : 'var(--matrix-orange)'}" stroke-width="1.5" stroke-dasharray="4 4"></line>`;
-                            }).join('')}
-
-                            ${ptsDC.map((p, idx) => {
-                                if (idx === 0) return '';
-                                const prev = ptsDC[idx - 1];
-                                const isGrey = p.isPending || prev.isPending;
-                                return `<line x1="${prev.x}" y1="${prev.y}" x2="${p.x}" y2="${p.y}" stroke="${isGrey ? 'rgba(255,255,255,0.08)' : 'var(--matrix-purple)'}" stroke-width="1.5" stroke-dasharray="4 4"></line>`;
-                            }).join('')}
-                            
-                            <!-- Data Points (Recorded: Vivid colored dots / Unexplored: Single grey outline lock) -->
-                            ${history.map((h, i) => {
-                                let p = getPercentages(h.x_coord || 0, h.y_coord || 0);
-                                let x = history.length === 1 ? W / 2 : padX + (i / (history.length - 1)) * drawW;
-                                let yHI = (H - padY) - (p.HI / 100) * drawH;
-                                let yDI = (H - padY) - (p.DI / 100) * drawH;
-                                let yHC = (H - padY) - (p.HC / 100) * drawH;
-                                let yDC = (H - padY) - (p.DC / 100) * drawH;
-
-                                if (h.isPending) {
-                                    return `
-                                        <circle cx="${x}" cy="${yHI}" r="3" fill="#09121d" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.5"></circle>
-                                        <circle cx="${x}" cy="${yDI}" r="3" fill="#09121d" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.5"></circle>
-                                        <circle cx="${x}" cy="${yHC}" r="3" fill="#09121d" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.5"></circle>
-                                        <circle cx="${x}" cy="${yDC}" r="3" fill="#09121d" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.5"></circle>
-                                    `;
-                                } else {
-                                    return `
-                                        <circle cx="${x}" cy="${yHI}" r="5.5" fill="var(--matrix-green)" style="filter: drop-shadow(0 0 6px rgba(74, 222, 128, 0.7));"></circle>
-                                        <circle cx="${x}" cy="${yDI}" r="4.5" fill="var(--matrix-blue)" style="filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.7));"></circle>
-                                        <circle cx="${x}" cy="${yHC}" r="4.5" fill="var(--matrix-orange)" style="filter: drop-shadow(0 0 6px rgba(251, 146, 60, 0.7));"></circle>
-                                        <circle cx="${x}" cy="${yDC}" r="4.5" fill="var(--matrix-purple)" style="filter: drop-shadow(0 0 6px rgba(192, 132, 252, 0.7));"></circle>
-                                    `;
-                                }
-                            }).join('')}
-                        </svg>
-                        <!-- Hitboxes and Tooltips -->
-                        ${history.map((h, i) => {
-                            let p = getPercentages(h.x_coord || 0, h.y_coord || 0);
-                            let x = history.length === 1 ? W / 2 : padX + (i / (history.length - 1)) * drawW;
-                            let leftPct = (x / W) * 100;
-                            let qTitle = h.quarter_name || ('Assessment ' + (i + 1));
-                            let tipSide = leftPct > 50 ? `right: calc(100% - ${leftPct}% + 15px);` : `left: calc(${leftPct}% + 15px);`;
-                            
-                            if (h.isPending) {
-                                return `
-                                    <div class="graph-hitbox" style="left: ${leftPct}%;"></div>
-                                    <div class="graph-tooltip" style="${tipSide} top: ${(H / 2)}px;">
-                                        <div style="font-weight: 700; color: #94a3b8; margin-bottom: 6px;">${qTitle} <span style="color:#64748b; font-size:11px;">(Upcoming)</span></div>
-                                        <div style="color: #64748b; font-size: 11px;">🔒 Locked — Complete modules to unlock reassessment.</div>
-                                    </div>
-                                `;
-                            } else {
-                                return `
-                                    <div class="graph-hitbox" style="left: ${leftPct}%;"></div>
-                                    <div class="graph-tooltip" style="${tipSide} top: ${(H / 2)}px;">
-                                        <div style="font-weight: 700; color: #fff; margin-bottom: 8px;">${qTitle}</div>
-                                        <div style="color: var(--matrix-green);">H. Individual : ${p.HI}%</div>
-                                        <div style="color: var(--matrix-blue);">D. Individual : ${p.DI}%</div>
-                                        <div style="color: var(--matrix-orange);">H. Collective : ${p.HC}%</div>
-                                        <div style="color: var(--matrix-purple);">D. Collective : ${p.DC}%</div>
-                                    </div>
-                                `;
-                            }
-                        }).join('')}
-                    </div>
-                    
-                    <!-- Legend -->
-                    <div style="display: flex; justify-content: center; gap: 24px; font-size: 13px; font-weight: 600;">
-                        <div style="display: flex; align-items: center; gap: 8px; color: var(--matrix-green);"><div style="width:12px;height:2px;background:var(--matrix-green);position:relative;"><div style="position:absolute;top:-2px;left:4px;width:6px;height:6px;border-radius:50%;background:var(--matrix-green);"></div></div> H. Individual</div>
-                        <div style="display: flex; align-items: center; gap: 8px; color: var(--matrix-blue);"><div style="width:12px;height:0px;border-top:2px dashed var(--matrix-blue);position:relative;"><div style="position:absolute;top:-3px;left:4px;width:4px;height:4px;border-radius:50%;background:var(--matrix-blue);"></div></div> D. Individual</div>
-                        <div style="display: flex; align-items: center; gap: 8px; color: var(--matrix-orange);"><div style="width:12px;height:0px;border-top:2px dashed var(--matrix-orange);position:relative;"><div style="position:absolute;top:-3px;left:4px;width:4px;height:4px;border-radius:50%;background:var(--matrix-orange);"></div></div> H. Collective</div>
-                        <div style="display: flex; align-items: center; gap: 8px; color: var(--matrix-purple);"><div style="width:12px;height:0px;border-top:2px dashed var(--matrix-purple);position:relative;"><div style="position:absolute;top:-3px;left:4px;width:4px;height:4px;border-radius:50%;background:var(--matrix-purple);"></div></div> D. Collective</div>
-                    </div>
-                </div>
-            `;
-
-            // 3. Assessment Snapshots
-            html += `
-                <div class="card" style="padding: 32px;">
-                    <h4 style="font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px;">ASSESSMENT SNAPSHOTS</h4>
-                    <div style="display: flex; flex-direction: column; gap: 24px;">
-            `;
-
-            history.forEach((h, i) => {
-                const p = getPercentages(h.x_coord || 0, h.y_coord || 0);
-                let shortName = h.learning_mode || 'Hierarchical Individual';
-                if (h.learning_mode === 'Hierarchical Individual') shortName = 'H. Individual';
-                if (h.learning_mode === 'Distributed Individual') shortName = 'D. Individual';
-                if (h.learning_mode === 'Hierarchical Collective') shortName = 'H. Collective';
-                if (h.learning_mode === 'Distributed Collective') shortName = 'D. Collective';
-
-                let iconEmoji = '📚';
-                if (shortName === 'D. Individual') iconEmoji = '💻';
-                if (shortName === 'H. Collective') iconEmoji = '🤝';
-                if (shortName === 'D. Collective') iconEmoji = '🧠';
-
-                let pillColor = 'var(--matrix-green)';
-                let pillBg = 'rgba(74, 222, 128, 0.1)';
-                if (shortName === 'D. Individual') { pillColor = 'var(--matrix-blue)'; pillBg = 'rgba(56, 189, 248, 0.1)'; }
-                if (shortName === 'H. Collective') { pillColor = 'var(--matrix-orange)'; pillBg = 'rgba(251, 146, 60, 0.1)'; }
-                if (shortName === 'D. Collective') { pillColor = 'var(--matrix-purple)'; pillBg = 'rgba(192, 132, 252, 0.1)'; }
-
-                let qTitle = h.quarter_name || ('Assessment ' + (i + 1));
-                if (qTitle.toLowerCase().includes('prelim') || qTitle.toLowerCase().includes('initial')) qTitle = 'Initial Assessment';
-                else if (qTitle.toLowerCase().includes('midterm') || qTitle === 'Reassessment 1') qTitle = 'Post-Module Reassessment 1';
-                else if (qTitle.toLowerCase().includes('final') || qTitle === 'Reassessment 2') qTitle = 'Post-Module Reassessment 2';
-
-                if (h.isPending) {
-                    html += `
-                        <div style="background: rgba(255,255,255,0.015); border: 1px dashed rgba(255,255,255,0.12); border-radius: 16px; padding: 24px; opacity: 0.55;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                                <div>
-                                    <h3 style="font-size: 18px; font-weight: 700; color: #94a3b8;">${qTitle}</h3>
-                                    <p style="font-size: 12px; color: #64748b; margin-top: 3px;">Scheduled 1 week after completing learning modules</p>
-                                </div>
-                                <span style="background: rgba(255, 255, 255, 0.05); color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
-                                    🔒 PENDING REASSESSMENT
-                                </span>
-                            </div>
-                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; filter: grayscale(100%);">
-                                <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.08); border-radius: 12px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                    <div style="font-size: 16px; font-weight: 700; color: #64748b;">--</div><div style="font-size: 11px; font-weight: 600; color: #64748b; margin-top: 2px;">HI</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.08); border-radius: 12px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                    <div style="font-size: 16px; font-weight: 700; color: #64748b;">--</div><div style="font-size: 11px; font-weight: 600; color: #64748b; margin-top: 2px;">DI</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.08); border-radius: 12px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                    <div style="font-size: 16px; font-weight: 700; color: #64748b;">--</div><div style="font-size: 11px; font-weight: 600; color: #64748b; margin-top: 2px;">HC</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.08); border-radius: 12px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                    <div style="font-size: 16px; font-weight: 700; color: #64748b;">--</div><div style="font-size: 11px; font-weight: 600; color: #64748b; margin-top: 2px;">DC</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                                <h3 style="font-size: 18px; font-weight: 700;">${qTitle}</h3>
-                                <span style="background: ${pillBg}; color: ${pillColor}; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 700;">${iconEmoji} ${shortName}</span>
-                            </div>
-                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-                                <div style="background: rgba(255,255,255,0.04); border-radius: 12px; height: 80px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: ${p.HI}%; background: rgba(74, 222, 128, 0.25); border-top: 2px solid var(--matrix-green);"></div>
-                                    <div style="position: relative; z-index: 1; text-align: center;"><div style="font-size: 16px; font-weight: 800; color: #fff;">${p.HI}%</div><div style="font-size: 11px; font-weight: 700; color: var(--matrix-green); margin-top: 2px;">HI</div></div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.04); border-radius: 12px; height: 80px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: ${p.DI}%; background: rgba(56, 189, 248, 0.25); border-top: 2px solid var(--matrix-blue);"></div>
-                                    <div style="position: relative; z-index: 1; text-align: center;"><div style="font-size: 16px; font-weight: 800; color: #fff;">${p.DI}%</div><div style="font-size: 11px; font-weight: 700; color: var(--matrix-blue); margin-top: 2px;">DI</div></div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.04); border-radius: 12px; height: 80px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: ${p.HC}%; background: rgba(251, 146, 60, 0.25); border-top: 2px solid var(--matrix-orange);"></div>
-                                    <div style="position: relative; z-index: 1; text-align: center;"><div style="font-size: 16px; font-weight: 800; color: #fff;">${p.HC}%</div><div style="font-size: 11px; font-weight: 700; color: var(--matrix-orange); margin-top: 2px;">HC</div></div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.04); border-radius: 12px; height: 80px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: ${p.DC}%; background: rgba(192, 132, 252, 0.25); border-top: 2px solid var(--matrix-purple);"></div>
-                                    <div style="position: relative; z-index: 1; text-align: center;"><div style="font-size: 16px; font-weight: 800; color: #fff;">${p.DC}%</div><div style="font-size: 11px; font-weight: 700; color: var(--matrix-purple); margin-top: 2px;">DC</div></div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            html += `</div></div>`;
-
-            document.getElementById('dynamic-content').innerHTML = html;
         }
     </script>
+
 </body>
 
 </html>

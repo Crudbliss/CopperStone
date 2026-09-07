@@ -119,15 +119,15 @@
         .sidebar-link {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
             padding: 12px 16px;
-            border-radius: 8px;
+            border-radius: 10px;
             text-decoration: none;
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
-            border-left: 4px solid transparent;
             transition: all 0.2s ease;
+            position: relative;
         }
 
         .sidebar-link:hover {
@@ -136,9 +136,19 @@
         }
 
         .sidebar-link.active {
-            background-color: rgba(216, 166, 26, 0.1);
-            border-left-color: var(--matrix-yellow);
+            background-color: rgba(255, 255, 255, 0.04);
             color: var(--matrix-yellow);
+        }
+
+        .sidebar-link.active::after {
+            content: '';
+            position: absolute;
+            right: 14px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--matrix-yellow);
+            box-shadow: 0 0 8px rgba(216, 166, 26, 0.6);
         }
 
         /* --- SIDEBAR FOOTER (USER + LOGOUT) --- */
@@ -768,29 +778,23 @@
                 </svg>
                 <span>Dashboard</span>
             </a>
-            <a href="qa-content.html" target="content-frame" class="sidebar-link">
-                <svg width="20" height="20">
-                    <use href="#icon-checklist"></use>
-                </svg>
-                <span>Assessments</span>
-            </a>
             <a href="modules-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20">
                     <use href="#icon-book"></use>
                 </svg>
                 <span>My Modules</span>
             </a>
-            <a href="strategy-content.html" target="content-frame" class="sidebar-link">
+            <a href="qa-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20">
-                    <use href="#icon-map"></use>
+                    <use href="#icon-checklist"></use>
                 </svg>
-                <span>Learning Strategy</span>
+                <span>Assessment</span>
             </a>
             <a href="progress-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20">
                     <use href="#icon-linechart"></use>
                 </svg>
-                <span>My Progress</span>
+                <span>Progress & Strategy</span>
             </a>
             <a href="profile-content.html" target="content-frame" class="sidebar-link">
                 <svg width="20" height="20">
@@ -922,6 +926,12 @@
                     sidebarLinks.forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
                     
+                    const spanText = this.querySelector('span');
+                    const headerTitle = document.querySelector('.header-title');
+                    if (spanText && headerTitle) {
+                        headerTitle.textContent = spanText.textContent;
+                    }
+
                     if (window.innerWidth <= 768) {
                         toggleSidebar();
                     }

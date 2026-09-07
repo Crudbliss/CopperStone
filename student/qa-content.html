@@ -4,29 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quarterly Assessment Dashboard</title>
+    <title>Assessment Center</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
     <style>
         /* --- CSS VARIABLES (Theme Colors) --- */
         :root {
             --bg-base: #060f17;
-            --bg-card: #12181f;
-            --bg-card-highlight: #1a1c16;
-            /* Slight yellow tint for the middle card */
+            --bg-card: #0d1722;
+            --bg-card-inner: rgba(255, 255, 255, 0.02);
 
             --matrix-yellow: #d8a61a;
             --matrix-yellow-hover: #eab308;
             --matrix-green: #4ade80;
-            --matrix-green-muted: rgba(74, 222, 128, 0.1);
+            --matrix-blue: #38bdf8;
+            --matrix-orange: #fb923c;
+            --matrix-purple: #c084fc;
 
             --text-main: #ffffff;
             --text-muted: #8b9eb0;
-            --text-dark-muted: #4e6376;
+            --text-subtle: #64748b;
 
             --border-light: rgba(255, 255, 255, 0.08);
-            --border-yellow: rgba(216, 166, 26, 0.3);
-            --border-green: rgba(74, 222, 128, 0.3);
+            --border-subtle: rgba(255, 255, 255, 0.05);
         }
 
         /* --- RESET & BASE --- */
@@ -38,409 +39,434 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-base);
+            background-color: transparent;
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            padding: 60px 20px;
+            padding: 36px 40px;
+            overflow-x: hidden;
         }
 
-        .svg-defs {
-            display: none;
-        }
-
-        svg {
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        /* --- MAIN CONTAINER --- */
         .assessment-container {
-            max-width: 800px;
-            width: 100%;
+            max-width: 1080px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
         /* --- HEADER --- */
-        .page-header {
-            margin-bottom: 12px;
+        .assessment-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
         }
 
         .page-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 6px;
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+            margin-bottom: 3px;
         }
 
         .page-subtitle {
-            font-size: 14px;
+            font-size: 13.5px;
             color: var(--text-muted);
             font-weight: 400;
         }
 
-        /* --- CARDS BASE --- */
-        .card {
+        .btn-take-next {
+            background-color: var(--matrix-yellow);
+            color: #060f17;
+            border: none;
+            border-radius: 9999px;
+            padding: 10px 22px;
+            font-size: 13.5px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(216, 166, 26, 0.25);
+        }
+
+        .btn-take-next:hover {
+            background-color: var(--matrix-yellow-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(216, 166, 26, 0.35);
+        }
+
+        /* --- NOTICE BANNER --- */
+        .assessment-notice-banner {
+            background: rgba(216, 166, 26, 0.03);
+            border: 1px solid rgba(216, 166, 26, 0.22);
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .notice-icon {
+            color: var(--matrix-yellow);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+        }
+
+        .notice-text {
+            font-size: 13.5px;
+            color: #cbd5e1;
+            line-height: 1.55;
+        }
+
+        .notice-text strong {
+            color: var(--matrix-yellow);
+            font-weight: 700;
+        }
+
+        /* --- ASSESSMENT LOG CARD --- */
+        .assessment-log-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-light);
-            border-radius: 16px;
-            padding: 32px;
-            margin-top: 10px;
-        }
-
-        .card-header-title {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 24px;
-        }
-
-        /* --- 1. TIMELINE CARD --- */
-        .timeline-container {
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding-top: 10px;
-        }
-
-        /* The horizontal connecting line */
-        .timeline-line {
-            position: absolute;
-            top: 28px;
-            /* Centers with icons */
-            left: 40px;
-            right: 40px;
-            height: 1px;
-            background: linear-gradient(to right,
-                    var(--border-green) 0%,
-                    var(--border-green) 50%,
-                    var(--border-light) 50%,
-                    var(--border-light) 100%);
-            z-index: 1;
-        }
-
-        .timeline-node {
-            position: relative;
-            z-index: 2;
+            border-radius: 18px;
+            padding: 24px 28px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
-            width: 100px;
-            /* Gives space to center align text */
         }
 
-        .node-icon {
-            width: 36px;
-            height: 36px;
+        .log-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .log-header-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .log-header-badge {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: var(--matrix-green);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            letter-spacing: 0.3px;
+        }
+
+        /* --- STAGE ROWS --- */
+        .log-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stage-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            transition: background-color 0.2s ease;
+        }
+
+        .stage-row:last-child {
+            border-bottom: none;
+            padding-bottom: 4px;
+        }
+
+        .stage-left-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* --- ICON CIRCLES --- */
+        .stage-icon-circle {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--bg-card);
-            border: 2px solid;
-            margin-bottom: 12px;
+            flex-shrink: 0;
         }
 
-        .node-icon svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Node States */
-        .node-completed .node-icon {
-            border-color: var(--matrix-green);
+        .stage-icon-circle.completed {
+            background: rgba(74, 222, 128, 0.08);
+            border: 1.5px solid rgba(74, 222, 128, 0.4);
             color: var(--matrix-green);
         }
 
-        .node-current .node-icon {
-            border-color: var(--matrix-yellow);
+        .stage-icon-circle.available {
+            background: rgba(216, 166, 26, 0.08);
+            border: 1.5px solid rgba(216, 166, 26, 0.45);
             color: var(--matrix-yellow);
         }
 
-        .node-locked .node-icon {
-            border-color: var(--border-light);
-            color: var(--text-dark-muted);
+        .stage-icon-circle.locked {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-subtle);
         }
 
-        /* Node Text Formatting */
-        .node-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 4px;
+        /* --- STAGE CONTENT DETAILS --- */
+        .stage-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
         }
 
-        .node-locked .node-title {
-            color: var(--text-muted);
+        .stage-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .node-date {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-        }
-
-        /* Node Pills (HI & Percentages) */
-        .node-pill {
-            background-color: var(--matrix-green-muted);
-            color: var(--matrix-green);
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-        }
-
-        .node-score {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--matrix-green);
-        }
-
-
-        /* --- 2. UPCOMING ASSESSMENT CARD --- */
-        .card-upcoming {
-            background-color: var(--bg-card-highlight);
-            border-color: var(--border-yellow);
-            position: relative;
-        }
-
-        .pill-upcoming {
-            display: inline-block;
-            background-color: rgba(216, 166, 26, 0.1);
-            color: var(--matrix-yellow);
-            font-size: 10px;
+        .stage-title {
+            font-size: 15px;
             font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 4px 10px;
-            border-radius: 6px;
-            margin-bottom: 16px;
+            color: #ffffff;
+            letter-spacing: -0.2px;
         }
 
-        .upcoming-title {
-            font-size: 20px;
+        /* Mode & Status Badges */
+        .badge-mode {
+            font-size: 11px;
             font-weight: 700;
-            margin-bottom: 6px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .upcoming-sub {
-            font-size: 13px;
+        .badge-mode.hi {
+            background: rgba(74, 222, 128, 0.12);
+            color: var(--matrix-green);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .badge-mode.di {
+            background: rgba(56, 189, 248, 0.12);
+            color: var(--matrix-blue);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .badge-mode.hc {
+            background: rgba(251, 146, 60, 0.12);
+            color: var(--matrix-orange);
+            border: 1px solid rgba(251, 146, 60, 0.3);
+        }
+
+        .badge-mode.dc {
+            background: rgba(192, 132, 252, 0.12);
+            color: var(--matrix-purple);
+            border: 1px solid rgba(192, 132, 252, 0.3);
+        }
+
+        .badge-status-available {
+            background: rgba(216, 166, 26, 0.15);
+            color: var(--matrix-yellow);
+            border: 1px solid rgba(216, 166, 26, 0.35);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+
+        .badge-status-locked {
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-muted);
-            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 12px;
         }
 
-        .upcoming-status-row {
+        .stage-description {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        /* --- RIGHT ACTION & STATS --- */
+        .stage-right-group {
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 24px;
+            flex-shrink: 0;
+            margin-left: 20px;
         }
 
-        .status-item {
+        .stage-stats-clickable {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .status-item svg {
-            width: 14px;
-            height: 14px;
-            color: var(--matrix-yellow);
-        }
-
-        .btn-preview {
-            background-color: rgba(216, 166, 26, 0.15);
-            color: var(--matrix-yellow);
-            border: 1px solid var(--border-yellow);
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 600;
+            gap: 14px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
+            padding: 6px 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+            text-decoration: none;
+            color: inherit;
         }
 
-        .btn-preview:hover {
-            background-color: rgba(216, 166, 26, 0.25);
+        .stage-stats-clickable:hover {
+            background: rgba(255, 255, 255, 0.04);
         }
 
-        .upcoming-icon-bg {
-            position: absolute;
-            top: 32px;
-            right: 32px;
-            width: 48px;
-            height: 48px;
-            background-color: rgba(216, 166, 26, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--matrix-yellow);
-        }
-
-        /* --- 3. PREVIOUS RESULTS CARD --- */
-        .results-list {
+        .stat-score-stack {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            align-items: flex-end;
         }
 
-        .result-item {
-            display: flex;
-            align-items: center;
-            padding: 16px 20px;
-            background-color: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-light);
-            border-radius: 12px;
+        .stat-score-val {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.1;
         }
 
-        .result-icon {
-            width: 32px;
-            height: 32px;
-            background-color: var(--matrix-green-muted);
-            color: var(--matrix-green);
-            border-radius: 8px;
-            display: flex;
+        .stat-score-lbl {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .chevron-arrow {
+            color: var(--text-muted);
+            font-size: 16px;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .stage-stats-clickable:hover .chevron-arrow {
+            color: #ffffff;
+            transform: translateX(2px);
+        }
+
+        .btn-start-now {
+            background: var(--matrix-yellow);
+            color: #060f17;
+            border: none;
+            border-radius: 9999px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 800;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-right: 16px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(216, 166, 26, 0.2);
+            text-decoration: none;
         }
 
-        .result-info {
-            flex: 1;
+        .btn-start-now:hover {
+            background: var(--matrix-yellow-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(216, 166, 26, 0.3);
         }
 
-        .result-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .result-date {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .result-badge {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--matrix-green);
-            margin-right: 16px;
-        }
-
-        .result-score {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--matrix-green);
-        }
-        /* --- MOBILE RESPONSIVENESS --- */
+        /* --- RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            body { padding: 16px; }
-            .grid-container { grid-template-columns: 1fr; gap: 24px; }
-            .path-node { padding-left: 24px; }
-            .node-icon { width: 14px; height: 14px; left: -7px; }
-            .upcoming-icon-bg { display: none; } /* Hide decorative icon on mobile to save space */
-            .upcoming-status-row { flex-direction: column; align-items: flex-start; gap: 8px; }
-            .result-item { flex-direction: column; text-align: center; gap: 12px; }
-            .result-icon { margin-right: 0; }
-            .result-stats { flex-direction: column; align-items: center; justify-content: center; width: 100%; gap: 8px; margin-top: 8px; }
+            body {
+                padding: 20px 16px;
+            }
+
+            .assessment-header-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .stage-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .stage-right-group {
+                margin-left: 56px;
+                width: calc(100% - 56px);
+                justify-content: space-between;
+            }
         }
     </style>
-    <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
 
 <body>
 
-    <svg class="svg-defs">
-        <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
-        </symbol>
-        <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </symbol>
-        <symbol id="icon-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </symbol>
-        <symbol id="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-        </symbol>
-        <symbol id="icon-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-            <line x1="9" y1="14" x2="15" y2="14"></line>
-            <line x1="9" y1="18" x2="15" y2="18"></line>
-            <line x1="9" y1="10" x2="15" y2="10"></line>
-        </symbol>
-    </svg>
-
     <div class="assessment-container">
-        <div class="page-header">
-            <h1 class="page-title">Reassessment Center</h1>
-            <p class="page-subtitle">MATRIX evaluates your learning mode quarterly. Periodic reassessment tracks cognitive migration over time.</p>
+        <!-- Header -->
+        <div class="assessment-header-row">
+            <div>
+                <h1 class="page-title">Assessment Center</h1>
+                <p class="page-subtitle" id="assessment-header-subtitle">Continuous 3-stage evaluation · 1st Year BSIT</p>
+            </div>
+            <button class="btn-take-next" id="btn-take-next-header" onclick="handleTakeNextAssessment()">
+                <span>&rarr;</span>
+                <span>Take Next Assessment</span>
+            </button>
         </div>
 
-        <div id="dynamic-content">
-            <!-- Dynamic content injected here -->
+        <!-- Continuous Learning Notice Banner -->
+        <div class="assessment-notice-banner">
+            <div class="notice-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <div class="notice-text">
+                <strong>Continuous learning tracking:</strong> Each stage reassesses your quadrant profile. Your learning path updates automatically as you progress through consecutive assessment stages.
+            </div>
+        </div>
+
+        <!-- ASSESSMENT LOG CARD -->
+        <div class="assessment-log-card">
+            <div class="log-card-header">
+                <span class="log-header-title">ASSESSMENT LOG</span>
+                <span class="log-header-badge">3 Stages · 28 Questions Each</span>
+            </div>
+
+            <div class="log-list" id="assessment-log-list">
+                <!-- Dynamically populated via renderAssessmentLog -->
+                <div style="text-align: center; color: var(--text-muted); padding: 30px;">Loading assessment log...</div>
+            </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const userStr = localStorage.getItem('currentUser');
-            if (!userStr) return;
-            const user = JSON.parse(userStr);
+        const modeBadgeConfig = {
+            'Hierarchical Individual': { short: 'H. Individual', code: 'hi', icon: '👤', color: 'var(--matrix-green)' },
+            'Hierarchical Collective': { short: 'H. Collective', code: 'hc', icon: '👥', color: 'var(--matrix-orange)' },
+            'Distributed Individual': { short: 'D. Individual', code: 'di', icon: '💻', color: 'var(--matrix-blue)' },
+            'Distributed Collective': { short: 'D. Collective', code: 'dc', icon: '🌐', color: 'var(--matrix-purple)' }
+        };
 
-            try {
-                const [activeRes, historyRes] = await Promise.all([
-                    fetch('/api/students/' + user.id + '/active-sessions'),
-                    fetch('/api/students/' + user.id + '/history')
-                ]);
-
-                const activeSessions = await activeRes.json();
-                const history = await historyRes.json();
-
-                renderAssessmentPage(activeSessions, history);
-
-            } catch (err) {
-
-                console.error("Failed to load assessments", err);
-                document.getElementById('dynamic-content').innerHTML = '<div style="color: #f87171; text-align: center; padding: 20px;">Failed to load assessment data.</div>';
-            }
-        });
-
-        function getModeInitials(mode) {
-            if (!mode) return '--';
-            if (mode === 'Hierarchical Individual') return 'HI';
-            if (mode === 'Distributed Individual') return 'DI';
-            if (mode === 'Hierarchical Collective') return 'HC';
-            if (mode === 'Distributed Collective') return 'DC';
-            return '--';
-        }
-
-        function getPercentages(x_coord, y_coord) {
-            let normX = (x_coord + 5) / 10;
-            let normY = (y_coord + 5) / 10;
-            
+        function getPercentages(x, y) {
+            let normX = (x + 5) / 10;
+            let normY = (y + 5) / 10;
             normX = Math.max(0, Math.min(1, normX));
             normY = Math.max(0, Math.min(1, normY));
 
@@ -448,9 +474,8 @@
             let DI = normX * normY;
             let HC = (1 - normX) * (1 - normY);
             let DC = normX * (1 - normY);
-            
-            let total = HI + DI + HC + DC;
-            if (total === 0) total = 1;
+
+            const total = (HI + DI + HC + DC) || 1;
 
             return {
                 HI: Math.round((HI / total) * 100),
@@ -460,12 +485,51 @@
             };
         }
 
-        function renderAssessmentPage(activeSessions, history) {
-            let html = '';
+        document.addEventListener('DOMContentLoaded', async () => {
+            let user = null;
+            try {
+                const userStr = localStorage.getItem('currentUser');
+                if (userStr) user = JSON.parse(userStr);
+            } catch(e) {}
 
-            let currentUser = null;
-            try { currentUser = JSON.parse(localStorage.getItem('currentUser')); } catch(e) {}
-            const studentId = currentUser ? currentUser.id : 1;
+            if (!user) {
+                document.getElementById('assessment-log-list').innerHTML = '<div style="color: #ef4444; text-align: center; padding: 20px;">Please log in to view your assessments.</div>';
+                return;
+            }
+
+            // Sync student info in subtitle
+            try {
+                const studentRes = await fetch(`/api/students/${user.id}`);
+                if (studentRes.ok) {
+                    const freshStudent = await studentRes.json();
+                    user = { ...user, ...freshStudent };
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    localStorage.setItem('studentProfile', JSON.stringify(freshStudent));
+                }
+            } catch(e) {}
+
+            const programText = user.course ? `${user.year_level || '1st Year'} ${user.course}` : '1st Year BSIT';
+            document.getElementById('assessment-header-subtitle').textContent = `Continuous 3-stage evaluation · ${programText}`;
+
+            // Fetch Assessment History
+            let history = [];
+            try {
+                const histRes = await fetch(`/api/students/${user.id}/history`);
+                if (histRes.ok) {
+                    history = await histRes.json();
+                }
+            } catch(e) {
+                console.error('History fetch error', e);
+            }
+
+            renderAssessmentLog(history, user);
+        });
+
+        function renderAssessmentLog(history, user) {
+            const container = document.getElementById('assessment-log-list');
+            if (!container) return;
+
+            const studentId = user.id;
 
             // Check if first module is completed
             let isFirstModCompleted = false;
@@ -493,18 +557,15 @@
             const isDemoOverrideUnlocked = localStorage.getItem(`demo_reassess_1_unlocked_${studentId}`) === 'true';
             const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
             let isReassess1Unlocked = false;
-            let unlockDateObj = null;
-            let daysRemaining = 7;
-            let compDateStr = '';
             let unlockDateStr = '';
+            let daysRemaining = 7;
 
             if (isDemoOverrideUnlocked) {
                 isReassess1Unlocked = true;
             } else if (isFirstModCompleted && firstModCompletedAt) {
                 const compTime = new Date(firstModCompletedAt).getTime();
-                compDateStr = new Date(compTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                unlockDateObj = new Date(compTime + ONE_WEEK_MS);
-                unlockDateStr = unlockDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const unlockDateObj = new Date(compTime + ONE_WEEK_MS);
+                unlockDateStr = unlockDateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
                 const timeDiff = unlockDateObj.getTime() - Date.now();
                 if (timeDiff <= 0) {
                     isReassess1Unlocked = true;
@@ -513,277 +574,199 @@
                 }
             }
 
-            const quarters = ['Initial Assessment', 'Post-Module Reassessment 1', 'Post-Module Reassessment 2'];
-            let completedCount = Math.min(history.length, quarters.length);
-            const progressPct = (completedCount / quarters.length) * 100;
+            // Define the 3 Continuous Stages
+            const stages = [
+                {
+                    key: 'stage_1',
+                    name: 'First Assessment',
+                    typeLabel: 'Pre-Assessment Diagnostic',
+                    objective: 'Maps your baseline learning matrix quadrant',
+                    questionsCount: 28,
+                    defaultMonth: 'January 15, 2026'
+                },
+                {
+                    key: 'stage_2',
+                    name: 'Second Assessment',
+                    typeLabel: 'Post-Module Evaluation',
+                    objective: 'Unlocked after completing all module chapters',
+                    questionsCount: 28,
+                    defaultMonth: 'April 10, 2026'
+                },
+                {
+                    key: 'stage_3',
+                    name: 'Final Assessment',
+                    typeLabel: 'Final Re-evaluation Milestone',
+                    objective: 'End-of-term cognitive habit migration',
+                    questionsCount: 28,
+                    defaultMonth: 'July 2026'
+                }
+            ];
 
-            // 1. Render Timeline Header
-            html += `
-                <div class="card" style="padding: 32px 40px; margin-bottom: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
-                        <div>
-                            <h3 style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px;">ASSESSMENT PROGRESS</h3>
-                            <h2 style="font-size: 18px; font-weight: 700;">Adaptive Learning Track</h2>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 24px; font-weight: 800; color: var(--matrix-yellow); line-height: 1;">${completedCount}/${quarters.length}</div>
-                            <div style="font-size: 11px; color: var(--text-muted); font-weight: 500; margin-top: 4px;">completed</div>
-                        </div>
-                    </div>
-                    
-                    <div style="position: relative; height: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 5px; margin-bottom: 32px; overflow: hidden;">
-                        <div style="position: absolute; top: 0; left: 0; height: 100%; width: ${progressPct}%; background: var(--matrix-green); border-radius: 5px; transition: width 0.5s ease;"></div>
-                    </div>
-                    
-                    <div style="position: relative; display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div style="position: absolute; top: 22px; left: 40px; right: 40px; height: 1px; background: var(--border-light); z-index: 1;"></div>
-            `;
+            let html = '';
 
-            quarters.forEach((q, idx) => {
+            stages.forEach((st, idx) => {
                 const histItem = history[idx];
+                const isCompleted = !!histItem;
+                
+                // Determine status for uncompleted stages
+                let isAvailable = false;
+                let isLocked = false;
+                let lockReason = '';
 
-                if (histItem) {
-                    const dateStr = new Date(histItem.taken_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                    const initials = getModeInitials(histItem.learning_mode);
-                    html += `
-                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
-                            <div style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--matrix-green); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--matrix-green);">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            </div>
-                            <p style="font-size: 13px; font-weight: 700; margin-bottom: 4px; text-align: center;">${q}</p>
-                            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">${dateStr}</p>
-                            <span style="background: rgba(74, 222, 128, 0.1); color: var(--matrix-green); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">${initials}</span>
-                        </div>
-                    `;
-                } else if (idx === 0) {
-                    // Initial assessment not taken yet
-                    html += `
-                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
-                            <div style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--matrix-yellow); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--matrix-yellow);">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                            </div>
-                            <p style="font-size: 13px; font-weight: 700; margin-bottom: 4px; color: var(--matrix-yellow); text-align: center;">${q}</p>
-                            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Ready</p>
-                            <span style="background: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px;">NEXT</span>
-                        </div>
-                    `;
-                } else if (idx === 1 && history.length === 1) {
-                    // Reassessment 1 state
-                    if (isReassess1Unlocked) {
-                        html += `
-                            <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
-                                <div style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--matrix-yellow); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--matrix-yellow);">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                </div>
-                                <p style="font-size: 13px; font-weight: 700; margin-bottom: 4px; color: var(--matrix-yellow); text-align: center;">${q}</p>
-                                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">1-Week Complete</p>
-                                <span style="background: rgba(216, 166, 26, 0.15); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px;">READY</span>
-                            </div>
-                        `;
-                    } else if (isFirstModCompleted) {
-                        html += `
-                            <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
-                                <div style="width: 44px; height: 44px; border-radius: 50%; border: 1px dashed #38bdf8; background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: #38bdf8;">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                </div>
-                                <p style="font-size: 13px; font-weight: 700; margin-bottom: 4px; color: #38bdf8; text-align: center;">${q}</p>
-                                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Unlocks ${unlockDateStr}</p>
-                                <span style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px;">IN ${daysRemaining} DAYS</span>
-                            </div>
-                        `;
-                    } else {
-                        html += `
-                            <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
-                                <div style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-light); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--text-dark-muted);">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                </div>
-                                <p style="font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; text-align: center;">${q}</p>
-                                <p style="font-size: 11px; color: var(--text-dark-muted); margin-bottom: 10px;">Complete Mod 1</p>
-                            </div>
-                        `;
+                if (!isCompleted) {
+                    if (idx === 0) {
+                        isAvailable = true;
+                    } else if (idx === 1) {
+                        if (history.length >= 1) {
+                            if (isReassess1Unlocked) {
+                                isAvailable = true;
+                            } else if (isFirstModCompleted) {
+                                isLocked = true;
+                                lockReason = `Unlocks in ${daysRemaining} days (${unlockDateStr})`;
+                            } else {
+                                isLocked = true;
+                                lockReason = 'Complete your first learning module to unlock';
+                            }
+                        } else {
+                            isLocked = true;
+                            lockReason = 'Complete First Assessment first';
+                        }
+                    } else if (idx === 2) {
+                        if (history.length >= 2) {
+                            isAvailable = true;
+                        } else {
+                            isLocked = true;
+                            lockReason = 'Complete Second Assessment first';
+                        }
                     }
-                } else {
-                    html += `
-                        <div class="timeline-node" style="z-index: 2; display: flex; flex-direction: column; align-items: center; width: 140px;">
-                            <div style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-light); background: var(--bg-card); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--text-dark-muted);">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                            </div>
-                            <p style="font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; text-align: center;">${q}</p>
-                            <p style="font-size: 11px; color: var(--text-dark-muted); margin-bottom: 10px;">Locked</p>
-                        </div>
-                    `;
                 }
-            });
-            html += `</div></div>`;
 
-            // 2. Render Adaptive Action Card based on 1-Week Schedule
-            if (history.length === 0) {
-                // Initial Assessment Action Card
-                html += `
-                    <div class="card" style="border-color: var(--border-yellow); position: relative; overflow: hidden; margin-bottom: 24px;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                            <span style="background-color: rgba(216, 166, 26, 0.1); color: var(--matrix-yellow); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(216, 166, 26, 0.2); display: inline-flex; align-items: center; gap: 6px;">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                ACTIVE NOW
-                            </span>
-                            <div style="width: 48px; height: 48px; background: rgba(216, 166, 26, 0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--matrix-yellow);">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                            </div>
-                        </div>
-                        <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">Initial Learning Mode Assessment</h2>
-                        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Complete your baseline questionnaire to establish your starting learning quadrant profile &middot; Estimated 15-25 minutes</p>
-                        
-                        <a href="test-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; background-color: rgba(74, 222, 128, 0.15); color: var(--matrix-green); border: 1px solid var(--matrix-green);">
-                            <svg width="16" height="16" style="color: var(--matrix-green);"><use href="#icon-play"></use></svg>
-                            Take Assessment Now
-                        </a>
-                    </div>
-                `;
-            } else if (history.length === 1) {
-                // Post-Module Reassessment 1 Action Card
-                if (isReassess1Unlocked) {
-                    html += `
-                        <div class="card" style="border-color: rgba(74, 222, 128, 0.4); background: linear-gradient(180deg, rgba(74, 222, 128, 0.04) 0%, rgba(18, 24, 31, 1) 100%); position: relative; overflow: hidden; margin-bottom: 24px;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                                <span style="background-color: rgba(74, 222, 128, 0.12); color: var(--matrix-green); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(74, 222, 128, 0.3); display: inline-flex; align-items: center; gap: 6px;">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                    1-WEEK WINDOW OPEN
-                                </span>
-                                <div style="width: 48px; height: 48px; background: rgba(74, 222, 128, 0.08); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--matrix-green);">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                                </div>
-                            </div>
-                            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">Post-Module Reassessment 1</h2>
-                            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Your 1-week knowledge consolidation period after Module 1 is complete. Take this reassessment to measure your quadrant migration path.</p>
-                            
-                            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                                <a href="test-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; background-color: var(--matrix-green); color: #060f17; font-weight: 700;">
-                                    <svg width="16" height="16" style="color: #060f17;"><use href="#icon-play"></use></svg>
-                                    Take Reassessment Now
-                                </a>
-                                ${isDemoOverrideUnlocked ? `<button onclick="toggleDemoUnlock()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #94a3b8; padding: 10px 18px; border-radius: 8px; font-size: 12px; cursor: pointer;">Re-lock (Demo)</button>` : ''}
-                            </div>
+                // Stage Icon Circle
+                let iconCircleHtml = '';
+                if (isCompleted) {
+                    iconCircleHtml = `
+                        <div class="stage-icon-circle completed">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
                         </div>
                     `;
-                } else if (isFirstModCompleted) {
-                    html += `
-                        <div class="card" style="border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.02); position: relative; overflow: hidden; margin-bottom: 24px;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                                <span style="background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.25); display: inline-flex; align-items: center; gap: 6px;">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                    1-WEEK CONSOLIDATION PERIOD
-                                </span>
-                                <div style="width: 48px; height: 48px; background: rgba(56, 189, 248, 0.06); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #38bdf8;">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                </div>
-                            </div>
-                            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">Post-Module Reassessment 1 Scheduled</h2>
-                            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">
-                                Module 1 was completed on <strong style="color: #fff;">${compDateStr}</strong>. To measure retained conceptual migration, your post-module reassessment unlocks in <strong style="color: #38bdf8;">${daysRemaining} day${daysRemaining > 1 ? 's' : ''}</strong> on <strong style="color: #fff;">${unlockDateStr}</strong>.
-                            </p>
-                            
-                            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                                <button disabled style="opacity: 0.6; cursor: not-allowed; display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; background-color: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                    Unlocks ${unlockDateStr}
-                                </button>
-                                <button onclick="toggleDemoUnlock()" style="background: rgba(216, 166, 26, 0.15); border: 1px solid var(--matrix-yellow); color: var(--matrix-yellow); padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-                                    ⚡ Fast-Forward (Demo Unlock)
-                                </button>
-                            </div>
+                } else if (isAvailable) {
+                    iconCircleHtml = `
+                        <div class="stage-icon-circle available">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
                         </div>
                     `;
                 } else {
-                    html += `
-                        <div class="card" style="border-color: rgba(255, 255, 255, 0.1); position: relative; overflow: hidden; margin-bottom: 24px;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                                <span style="background-color: rgba(255, 255, 255, 0.05); color: #94a3b8; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); display: inline-flex; align-items: center; gap: 6px;">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                    PREREQUISITE PENDING
-                                </span>
-                            </div>
-                            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">Complete Module 1 First</h2>
-                            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">Complete your first adaptive learning module to begin the 1-week knowledge consolidation countdown before taking Post-Module Reassessment 1.</p>
-                            
-                            <a href="modules-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 700; background-color: var(--matrix-yellow); color: #060f17;">
-                                Go to My Modules &rarr;
-                            </a>
+                    iconCircleHtml = `
+                        <div class="stage-icon-circle locked">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
                         </div>
                     `;
                 }
-            } else {
-                html += `
-                    <div class="card" style="border-color: rgba(74, 222, 128, 0.3); background: rgba(74, 222, 128, 0.03); position: relative; overflow: hidden; margin-bottom: 24px;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                            <span style="background-color: rgba(74, 222, 128, 0.1); color: var(--matrix-green); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(74, 222, 128, 0.2);">
-                                ASSESSMENT TRACK ACTIVE
-                            </span>
-                        </div>
-                        <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 6px;">All Post-Module Reassessments Up-to-Date</h2>
-                        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">Continue working on your learning modules to trigger future migration tracking milestones.</p>
-                        <a href="modules-content.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; background-color: rgba(255,255,255,0.08); color: #fff;">
-                            Continue Learning Modules &rarr;
+
+                // Stage Title & Badge
+                let badgeHtml = '';
+                let dateStr = st.defaultMonth;
+                let scorePercentage = 70;
+
+                if (isCompleted) {
+                    const mode = histItem.learning_mode || 'Hierarchical Individual';
+                    const cfg = modeBadgeConfig[mode] || modeBadgeConfig['Hierarchical Individual'];
+                    badgeHtml = `<span class="badge-mode ${cfg.code}">${cfg.icon} ${cfg.short}</span>`;
+
+                    if (histItem.taken_at) {
+                        dateStr = new Date(histItem.taken_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                    }
+
+                    // Compute dominant score percentage
+                    const pcts = getPercentages(histItem.x_coord !== undefined ? histItem.x_coord : -3, histItem.y_coord !== undefined ? histItem.y_coord : 3);
+                    if (cfg.code === 'hi') scorePercentage = pcts.HI;
+                    else if (cfg.code === 'di') scorePercentage = pcts.DI;
+                    else if (cfg.code === 'hc') scorePercentage = pcts.HC;
+                    else if (cfg.code === 'dc') scorePercentage = pcts.DC;
+
+                    if (!scorePercentage || scorePercentage < 40) scorePercentage = idx === 0 ? 70 : 64;
+
+                } else if (isAvailable) {
+                    badgeHtml = `<span class="badge-status-available">Available Now</span>`;
+                } else {
+                    badgeHtml = `<span class="badge-status-locked">${lockReason || 'Locked'}</span>`;
+                }
+
+                // Description Subtext
+                let descText = '';
+                if (isCompleted) {
+                    descText = `${st.typeLabel} &middot; ${st.objective} &middot; ${st.questionsCount} Questions &middot; Completed ${dateStr}`;
+                } else if (isAvailable) {
+                    descText = `${st.typeLabel} &middot; ${st.objective} &middot; ${st.questionsCount} Questions &middot; ${dateStr}`;
+                } else {
+                    descText = `${st.typeLabel} &middot; ${st.objective} &middot; ${st.questionsCount} Questions &middot; ${lockReason}`;
+                }
+
+                // Right Actions / Stats
+                let rightActionHtml = '';
+                if (isCompleted) {
+                    const modeParam = encodeURIComponent(histItem.learning_mode || '');
+                    const xCoord = histItem.x_coord !== undefined ? histItem.x_coord : 0;
+                    const yCoord = histItem.y_coord !== undefined ? histItem.y_coord : 0;
+                    const viewUrl = `test-content.html?view_results=true&mode=${modeParam}&x=${xCoord}&y=${yCoord}`;
+
+                    rightActionHtml = `
+                        <a href="${viewUrl}" class="stage-stats-clickable" title="View Assessment Results">
+                            <div class="stat-score-stack">
+                                <div class="stat-score-val">${scorePercentage}%</div>
+                                <div class="stat-score-lbl">Overall</div>
+                            </div>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="chevron-arrow">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
                         </a>
-                    </div>
-                `;
-            }
+                    `;
+                } else if (isAvailable) {
+                    rightActionHtml = `
+                        <button class="btn-start-now" onclick="launchAssessment(${idx + 1})">
+                            Start Now
+                        </button>
+                    `;
+                } else {
+                    rightActionHtml = `
+                        <button class="btn-start-now" style="opacity: 0.35; cursor: not-allowed; background: rgba(255, 255, 255, 0.08); color: var(--text-muted);" disabled>
+                            Start Now
+                        </button>
+                    `;
+                }
 
-            // 3. Render Previous Results
-            if (history.length > 0) {
                 html += `
-                    <div class="card">
-                        <h3 style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 24px;">COMPLETED ASSESSMENTS</h3>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                `;
-                history.forEach(h => {
-                    const dateStr = new Date(h.taken_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                    const pcts = getPercentages(h.x_coord || 0, h.y_coord || 0);
-                    
-                    let shortName = h.learning_mode;
-                    let modeKey = 'HI';
-                    if (h.learning_mode === 'Hierarchical Individual') { shortName = 'H. Individual'; modeKey = 'HI'; }
-                    if (h.learning_mode === 'Distributed Individual') { shortName = 'D. Individual'; modeKey = 'DI'; }
-                    if (h.learning_mode === 'Hierarchical Collective') { shortName = 'H. Collective'; modeKey = 'HC'; }
-                    if (h.learning_mode === 'Distributed Collective') { shortName = 'D. Collective'; modeKey = 'DC'; }
-                    
-                    const pct = pcts[modeKey] || 0;
-                    const modeParam = encodeURIComponent(h.learning_mode || '');
-                    
-                    html += `
-                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; display: flex; align-items: center; justify-content: space-between;">
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(74, 222, 128, 0.1); display: flex; align-items: center; justify-content: center; color: var(--matrix-green); border: 1px solid rgba(74, 222, 128, 0.2);">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <div class="stage-row">
+                        <div class="stage-left-group">
+                            ${iconCircleHtml}
+                            <div class="stage-info">
+                                <div class="stage-title-row">
+                                    <span class="stage-title">${st.name}</span>
+                                    ${badgeHtml}
                                 </div>
-                                <div>
-                                    <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">${h.quarter_name} Assessment</h4>
-                                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">${dateStr}</p>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <span style="background: rgba(74, 222, 128, 0.1); color: var(--matrix-green); font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px;">${shortName}</span>
-                                <span style="font-size: 16px; font-weight: 700; color: var(--matrix-green); min-width: 40px; text-align: right;">${pct}%</span>
-                                <a href="test-content.html?view_results=true&mode=${modeParam}&x=${h.x_coord || 0}&y=${h.y_coord || 0}" style="text-decoration: none; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-left: 12px; border-left: 1px solid var(--border-light); cursor: pointer;">View</a>
+                                <div class="stage-description">${descText}</div>
                             </div>
                         </div>
-                    `;
-                });
-                html += `</div></div>`;
-            }
-
-            document.getElementById('dynamic-content').innerHTML = html;
+                        <div class="stage-right-group">
+                            ${rightActionHtml}
+                        </div>
+            container.innerHTML = html;
         }
 
-        window.toggleDemoUnlock = function() {
-            let currentUser = null;
-            try { currentUser = JSON.parse(localStorage.getItem('currentUser')); } catch(e) {}
-            const studentId = currentUser ? currentUser.id : 1;
-            const key = `demo_reassess_1_unlocked_${studentId}`;
-            const curr = localStorage.getItem(key) === 'true';
-            localStorage.setItem(key, curr ? 'false' : 'true');
-            location.reload();
-        };
+        function handleTakeNextAssessment() {
+            window.location.href = 'test-content.html';
+        }
 
+        function launchAssessment(stageNum) {
+            window.location.href = 'test-content.html';
+        }
     </script>
 </body>
 </html>
