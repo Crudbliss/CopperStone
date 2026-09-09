@@ -99,11 +99,21 @@
             background: rgba(74, 222, 128, 0.04);
             border: 1px solid rgba(74, 222, 128, 0.2);
             border-radius: 14px;
-            padding: 14px 18px;
+            padding: 12px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 26px;
+            transition: all 0.3s ease;
+        }
+
+        .weakest-mode-box {
+            background: rgba(192, 132, 252, 0.04);
+            border: 1px solid rgba(192, 132, 252, 0.2);
+            border-radius: 14px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             transition: all 0.3s ease;
         }
 
@@ -113,7 +123,7 @@
             gap: 14px;
         }
 
-        .dominant-mode-icon {
+        .dominant-mode-icon, .weakest-mode-icon {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -128,9 +138,24 @@
             text-transform: uppercase;
         }
 
+        .weakest-mode-label {
+            color: var(--matrix-purple);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
         .dominant-mode-title {
             color: var(--matrix-green);
-            font-size: 15px;
+            font-size: 14.5px;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        .weakest-mode-title {
+            color: var(--matrix-purple);
+            font-size: 14.5px;
             font-weight: 700;
             margin-top: 1px;
         }
@@ -138,6 +163,16 @@
         .dominant-mode-badge {
             background: rgba(74, 222, 128, 0.15);
             color: var(--matrix-green);
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .weakest-mode-badge {
+            background: rgba(192, 132, 252, 0.15);
+            color: var(--matrix-purple);
             border-radius: 6px;
             padding: 3px 10px;
             font-size: 11px;
@@ -402,10 +437,21 @@
             transition: width 0.4s ease;
         }
 
-        .dist-fill.green { background-color: var(--matrix-green); }
-        .dist-fill.orange { background-color: var(--matrix-orange); }
-        .dist-fill.blue { background-color: var(--matrix-blue); }
-        .dist-fill.purple { background-color: var(--matrix-purple); }
+        .dist-fill.green {
+            background-color: var(--matrix-green);
+        }
+
+        .dist-fill.orange {
+            background-color: var(--matrix-orange);
+        }
+
+        .dist-fill.blue {
+            background-color: var(--matrix-blue);
+        }
+
+        .dist-fill.purple {
+            background-color: var(--matrix-purple);
+        }
 
         .dist-footnote {
             color: var(--text-muted);
@@ -561,6 +607,7 @@
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
+
             body {
                 padding: 16px;
             }
@@ -575,23 +622,44 @@
         <!-- ================= CARD 1: TOP LEFT (WELCOME) ================= -->
         <section class="dash-card">
             <div>
-                <div class="eyebrow-green">WELCOME</div>
+                <div class="eyebrow-green">WELCOME!</div>
                 <h1 class="user-name" id="user-display-name">Student</h1>
 
-                <div class="dominant-mode-box" id="dominant-mode-box">
-                    <div class="dominant-mode-info">
-                        <span class="dominant-mode-icon" id="dominant-mode-icon">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                            </svg>
-                        </span>
-                        <div>
-                            <div class="dominant-mode-label" id="dominant-mode-label">DOMINANT MODE</div>
-                            <div class="dominant-mode-title" id="dominant-mode-name">Loading...</div>
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+                    <!-- Dominant Mode Box -->
+                    <div class="dominant-mode-box" id="dominant-mode-box">
+                        <div class="dominant-mode-info">
+                            <span class="dominant-mode-icon" id="dominant-mode-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                            </span>
+                            <div>
+                                <div class="dominant-mode-label" id="dominant-mode-label">DOMINANT MODE</div>
+                                <div class="dominant-mode-title" id="dominant-mode-name">Loading...</div>
+                            </div>
                         </div>
+                        <span class="dominant-mode-badge" id="dominant-mode-code">--</span>
                     </div>
-                    <span class="dominant-mode-badge" id="dominant-mode-code">--</span>
+
+                    <!-- Weakest Quadrant Box -->
+                    <div class="weakest-mode-box" id="weakest-mode-box">
+                        <div class="dominant-mode-info">
+                            <span class="weakest-mode-icon" id="weakest-mode-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                            </span>
+                            <div>
+                                <div class="weakest-mode-label" id="weakest-mode-label">WEAKEST QUADRANT</div>
+                                <div class="weakest-mode-title" id="weakest-mode-name">Loading...</div>
+                            </div>
+                        </div>
+                        <span class="weakest-mode-badge" id="weakest-mode-code">--</span>
+                    </div>
                 </div>
             </div>
 
@@ -609,7 +677,8 @@
         <section class="dash-card" id="card-roadmap">
             <div>
                 <div class="roadmap-eyebrow" id="roadmap-eyebrow">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
                         <circle cx="12" cy="12" r="6"></circle>
                         <circle cx="12" cy="12" r="2"></circle>
@@ -622,9 +691,14 @@
                         <div class="roadmap-subcard-label">Target Quadrant</div>
                         <div class="roadmap-target-title">
                             <span id="target-quadrant-icon" style="display: flex; align-items: center;">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.54z"></path>
-                                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.54z"></path>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path
+                                        d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.54z">
+                                    </path>
+                                    <path
+                                        d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.54z">
+                                    </path>
                                 </svg>
                             </span>
                             <span id="target-quadrant-title">Loading...</span>
@@ -652,7 +726,8 @@
 
             <div>
                 <button class="btn-open-module" id="btn-open-module" onclick="navigateToModules()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                     </svg>
                     <span>Open Module</span>
@@ -739,7 +814,7 @@
             try {
                 const userStr = localStorage.getItem('currentUser');
                 if (userStr) user = JSON.parse(userStr);
-            } catch(e) {}
+            } catch (e) { }
 
             // 1. Fetch Fresh Student Profile & Data from Backend
             if (user && user.id) {
@@ -774,7 +849,7 @@
                     if (res.ok) {
                         history = await res.json();
                     }
-                } catch(err) {
+                } catch (err) {
                     console.error('History fetch error', err);
                 }
             }
@@ -834,13 +909,28 @@
             document.getElementById('target-quadrant-icon').style.color = lowest.color;
             document.getElementById('target-quadrant-sub').textContent = `${lowest.key} · ${lowest.pct}%`;
 
+            // Populate Card 1: Weakest Quadrant Box
+            const weakBox = document.getElementById('weakest-mode-box');
+            if (weakBox && lowest) {
+                weakBox.style.borderColor = `color-mix(in srgb, ${lowest.color} 30%, transparent)`;
+                weakBox.style.background = `color-mix(in srgb, ${lowest.color} 5%, transparent)`;
+                document.getElementById('weakest-mode-label').style.color = lowest.color;
+                document.getElementById('weakest-mode-name').style.color = lowest.color;
+                document.getElementById('weakest-mode-name').textContent = lowest.name;
+                document.getElementById('weakest-mode-code').style.color = lowest.color;
+                document.getElementById('weakest-mode-code').style.background = `color-mix(in srgb, ${lowest.color} 15%, transparent)`;
+                document.getElementById('weakest-mode-code').textContent = lowest.key;
+                document.getElementById('weakest-mode-icon').innerHTML = lowest.iconSvg;
+                document.getElementById('weakest-mode-icon').style.color = lowest.color;
+            }
+
             let isTargetModuleCompleted = false;
 
             // Fetch Real Modules & Compute Exact Module Progress
             try {
                 let modules = [];
                 let progressRows = [];
-                
+
                 const modRes = await fetch('/api/modules?role=student');
                 if (modRes.ok) modules = await modRes.json();
 
@@ -856,17 +946,17 @@
                 if (targetMod) {
                     activeModuleId = targetMod.id;
                     document.getElementById('active-module-name').textContent = targetMod.title;
-                    
+
                     const totalChapters = (targetMod.chapters ? targetMod.chapters.length : 0) || (targetMod.chapter_count || 4);
-                    
+
                     // Check local progress storage for granular chapter completions
                     let localProg = null;
                     if (user && user.id) {
                         try {
-                            const lpStr = localStorage.getItem(`student_mod_prog_v2_${user.id}_${targetMod.id}`) || 
-                                          localStorage.getItem(`student_mod_prog_${user.id}_${targetMod.id}`);
+                            const lpStr = localStorage.getItem(`student_mod_prog_v2_${user.id}_${targetMod.id}`) ||
+                                localStorage.getItem(`student_mod_prog_${user.id}_${targetMod.id}`);
                             if (lpStr) localProg = JSON.parse(lpStr);
-                        } catch(e) {}
+                        } catch (e) { }
                     }
 
                     let completedCount = 0;
@@ -891,7 +981,7 @@
                         isTargetModuleCompleted = true;
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error('Modules fetch error', e);
             }
 
@@ -952,8 +1042,8 @@
             });
 
             const diff = 70 - lowest.pct;
-            const noteText = diff > 0 
-                ? `${diff}% below the 70% threshold &middot; focus on ${lowest.short}` 
+            const noteText = diff > 0
+                ? `${diff}% below the 70% threshold &middot; focus on ${lowest.short}`
                 : `All quadrants balanced above standard proficiency threshold`;
 
             html += `<div class="dist-footnote" id="dist-footnote-text">${noteText}</div>`;
