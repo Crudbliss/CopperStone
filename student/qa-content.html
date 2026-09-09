@@ -511,28 +511,31 @@
             const programText = user.course ? `${user.year_level || '1st Year'} ${user.course}` : '1st Year BSIT';
             document.getElementById('assessment-header-subtitle').textContent = `Continuous 3-stage evaluation · ${programText}`;
 
-            // Fetch Assessment History
+            // Fetch Assessment History and Module Progress
             let history = [];
+            let progressRows = [];
             try {
-                const histRes = await fetch(`/api/students/${user.id}/history`);
-                if (histRes.ok) {
-                    history = await histRes.json();
-                }
+                const [histRes, progRes] = await Promise.all([
+                    fetch(`/api/students/${user.id}/history`),
+                    fetch(`/api/progress/${user.id}`)
+                ]);
+                if (histRes.ok) history = await histRes.json();
+                if (progRes.ok) progressRows = await progRes.json();
             } catch(e) {
-                console.error('History fetch error', e);
+                console.error('History/Progress fetch error', e);
             }
 
-            renderAssessmentLog(history, user);
+            renderAssessmentLog(history, user, progressRows);
         });
 
-        function renderAssessmentLog(history, user) {
+        function renderAssessmentLog(history, user, progressRows = []) {
             const container = document.getElementById('assessment-log-list');
             if (!container) return;
 
             const studentId = user.id;
 
-            // Check if first module is completed
-            let isFirstModCompleted = false;
+            // Check if first module is completed (via server progress or local storage)
+            let isFirstModCompleted = progressRows.some(p => p.status === 'Completed' || (p.total_tasks > 0 && p.tasks_completed >= p.total_tasks));
             let firstModCompletedAt = localStorage.getItem(`student_first_mod_completed_${studentId}`);
 
             if (!firstModCompletedAt) {

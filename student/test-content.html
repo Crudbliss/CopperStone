@@ -593,9 +593,100 @@
             .fuzzy-bar-header { font-size: 12.5px; }
         }
 
-        @media (max-width: 480px) {
-            .answer-option { padding: 10px 12px; font-size: 13px; }
-            .radio-circle { width: 18px; height: 18px; }
+        /* --- CONTEXTUAL HELP ACCORDION --- */
+        .contextual-help-container {
+            margin-bottom: 20px;
+            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.22);
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .contextual-help-container.expanded {
+            background: rgba(56, 189, 248, 0.08);
+            border-color: rgba(56, 189, 248, 0.45);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn-help-toggle {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 11px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--matrix-blue);
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .btn-help-toggle:hover {
+            color: #7dd3fc;
+            background: rgba(56, 189, 248, 0.08);
+        }
+
+        .help-toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .help-bulb-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .help-arrow {
+            font-size: 11px;
+            transition: transform 0.25s ease;
+            color: var(--text-muted);
+        }
+
+        .contextual-help-container.expanded .help-arrow {
+            transform: rotate(180deg);
+            color: var(--matrix-blue);
+        }
+
+        .contextual-help-body {
+            display: none;
+            padding: 0 16px 14px 16px;
+            animation: fadeInHelp 0.2s ease;
+        }
+
+        .contextual-help-container.expanded .contextual-help-body {
+            display: block;
+        }
+
+        @keyframes fadeInHelp {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .contextual-help-inner {
+            background: rgba(6, 15, 23, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 13px;
+            line-height: 1.55;
+            color: #e2e8f0;
+        }
+
+        .help-tag-pill {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--matrix-blue);
+            margin-bottom: 6px;
         }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
@@ -673,217 +764,398 @@
         const submitBtn = document.getElementById('btn-submit');
         let activeSession = null;
 
-        // 28 Questions grouped and ordered
-        const surveyQuestions = [
+        // 28 Questions grouped and ordered with default contextual explanations
+        let surveyQuestions = [
             // 1. How does learning occur? (Old 5)
-            { title: "How does learning occur?", q: "DC", text: "Learning occurs when individuals engage in activities that have meaning to them and contribute to their own as well as a communal knowledge base." },
-            { title: "How does learning occur?", q: "HI", text: "Learning occurs when experts provide scaffolding and sequencing to build knowledge and skill." },
-            { title: "How does learning occur?", q: "DI", text: "Learning occurs when individuals have to make sense of competing and diverse sources of knowledge, skill and expertise." },
-            { title: "How does learning occur?", q: "HC", text: "Learning occurs through socialization by participating in a community with strong, clear values and norms." },
+            { 
+                title: "How does learning occur?", 
+                q: "DC", 
+                text: "Learning occurs when individuals engage in activities that have meaning to them and contribute to their own as well as a communal knowledge base.",
+                contextual_help: "In this question, this means learning happens through collaborative, meaningful projects where your work contributes to a shared knowledge base for everyone."
+            },
+            { 
+                title: "How does learning occur?", 
+                q: "HI", 
+                text: "Learning occurs when experts provide scaffolding and sequencing to build knowledge and skill.",
+                contextual_help: "In this question, this means learning is best achieved through structured, step-by-step guidance provided by a teacher, syllabus, or subject expert."
+            },
+            { 
+                title: "How does learning occur?", 
+                q: "DI", 
+                text: "Learning occurs when individuals have to make sense of competing and diverse sources of knowledge, skill and expertise.",
+                contextual_help: "In this question, this means you learn most effectively when researching diverse resources independently and forming your own conclusions."
+            },
+            { 
+                title: "How does learning occur?", 
+                q: "HC", 
+                text: "Learning occurs through socialization by participating in a community with strong, clear values and norms.",
+                contextual_help: "In this question, this means learning happens by absorbing shared standards, traditions, and collective discipline within an organized class or school."
+            },
 
             // 2. What is the definition of learning? (Old 6)
-            { title: "What is the definition of learning?", q: "DC", text: "Learning is a collective activity requiring cooperation among people with diverse knowledge and skills." },
-            { title: "What is the definition of learning?", q: "DI", text: "Learning is an innate biological imperative that is driven by individual interests." },
-            { title: "What is the definition of learning?", q: "HC", text: "Learning is a social activity guided by experts who create learning opportunities." },
-            { title: "What is the definition of learning?", q: "HI", text: "Learning is the transfer of knowledge and skill from an expert to a novice." },
+            { 
+                title: "What is the definition of learning?", 
+                q: "DC", 
+                text: "Learning is a collective activity requiring cooperation among people with diverse knowledge and skills.",
+                contextual_help: "In this question, this means learning is defined as an open team effort where people with different skills solve problems together."
+            },
+            { 
+                title: "What is the definition of learning?", 
+                q: "DI", 
+                text: "Learning is an innate biological imperative that is driven by individual interests.",
+                contextual_help: "In this question, this means learning is a natural personal drive that works best when fueled by your own curiosity and personal passions."
+            },
+            { 
+                title: "What is the definition of learning?", 
+                q: "HC", 
+                text: "Learning is a social activity guided by experts who create learning opportunities.",
+                contextual_help: "In this question, this means learning is structured group education directed by teachers who design lessons and activities for the class."
+            },
+            { 
+                title: "What is the definition of learning?", 
+                q: "HI", 
+                text: "Learning is the transfer of knowledge and skill from an expert to a novice.",
+                contextual_help: "In this question, this means learning is the direct transfer of curriculum facts, techniques, and syllabus concepts from instructor to student."
+            },
 
             // 3. What constitutes successful learning? (Old 7)
-            { title: "What constitutes successful learning?", q: "DI", text: "Successful learning can only be defined by the individual learner." },
-            { title: "What constitutes successful learning?", q: "DC", text: "Successful learning means an exchange of ideas among learners in a community." },
-            { title: "What constitutes successful learning?", q: "HI", text: "Successful learning is expressed via certification or recognition from an institution or expert." },
-            { title: "What constitutes successful learning?", q: "HC", text: "Successful learning is expressed via recognition by and positive participation in a community." },
+            { 
+                title: "What constitutes successful learning?", 
+                q: "DI", 
+                text: "Successful learning can only be defined by the individual learner.",
+                contextual_help: "In this question, this means success is measured by your own personal milestones and self-satisfaction rather than external grades."
+            },
+            { 
+                title: "What constitutes successful learning?", 
+                q: "DC", 
+                text: "Successful learning means an exchange of ideas among learners in a community.",
+                contextual_help: "In this question, this means learning is successful when peers openly debate, share insights, and co-create solutions together."
+            },
+            { 
+                title: "What constitutes successful learning?", 
+                q: "HI", 
+                text: "Successful learning is expressed via certification or recognition from an institution or expert.",
+                contextual_help: "In this question, this means success is proven by passing grades, official certificates, degrees, and academic credentials."
+            },
+            { 
+                title: "What constitutes successful learning?", 
+                q: "HC", 
+                text: "Successful learning is expressed via recognition by and positive participation in a community.",
+                contextual_help: "In this question, this means success is reflected in being a reliable teammate, contributing to group harmony, and earning peer respect."
+            },
 
             // 4. What is the purpose of learning? (Old 1)
-            { title: "What is the purpose of learning?", q: "HI", text: "The purpose of learning is to gain access to knowledge that is valued in society." },
-            { title: "What is the purpose of learning?", q: "DC", text: "The purpose of learning is to know how to participate in a community with others of diverse, competing, and broadly distributed viewpoints." },
-            { title: "What is the purpose of learning?", q: "DI", text: "The purpose of learning is to live up to one's unique individual potential." },
-            { title: "What is the purpose of learning?", q: "HC", text: "The purpose of learning is to socialize citizens for participation in democracy." },
+            { 
+                title: "What is the purpose of learning?", 
+                q: "HI", 
+                text: "The purpose of learning is to gain access to knowledge that is valued in society.",
+                contextual_help: "In this question, this means education exists to help you acquire standard academic and industry skills that society rewards."
+            },
+            { 
+                title: "What is the purpose of learning?", 
+                q: "DC", 
+                text: "The purpose of learning is to know how to participate in a community with others of diverse, competing, and broadly distributed viewpoints.",
+                contextual_help: "In this question, this means education prepares you to engage with diverse perspectives and collaborate across different viewpoints."
+            },
+            { 
+                title: "What is the purpose of learning?", 
+                q: "DI", 
+                text: "The purpose of learning is to live up to one's unique individual potential.",
+                contextual_help: "In this question, this means the main goal of learning is personal growth, self-actualization, and developing your unique talents."
+            },
+            { 
+                title: "What is the purpose of learning?", 
+                q: "HC", 
+                text: "The purpose of learning is to socialize citizens for participation in democracy.",
+                contextual_help: "In this question, this means the primary purpose of education is building civic character, social responsibility, and community values."
+            },
 
             // 5. What is worth learning? (Old 2)
-            { title: "What is worth learning?", q: "DC", text: "What is worth learning is determined by communities that are formed around mutual interest." },
-            { title: "What is worth learning?", q: "DI", text: "What is worth learning can only be determined by the individual for her/himself." },
-            { title: "What is worth learning?", q: "HC", text: "What is worth learning are the knowledge and skills necessary to be an effective participant in a democratic society." },
-            { title: "What is worth learning?", q: "HI", text: "What is worth learning is measured by clear standards and assessments." },
+            { 
+                title: "What is worth learning?", 
+                q: "DC", 
+                text: "What is worth learning is determined by communities that are formed around mutual interest.",
+                contextual_help: "In this question, this means what matters most is determined by active peer communities working on shared real-world interests."
+            },
+            { 
+                title: "What is worth learning?", 
+                q: "DI", 
+                text: "What is worth learning can only be determined by the individual for her/himself.",
+                contextual_help: "In this question, this means each student should decide what topics or skills are meaningful according to their own ambitions."
+            },
+            { 
+                title: "What is worth learning?", 
+                q: "HC", 
+                text: "What is worth learning are the knowledge and skills necessary to be an effective participant in a democratic society.",
+                contextual_help: "In this question, this means valuable learning centers on civic duty, social responsibility, and shared community benefits."
+            },
+            { 
+                title: "What is worth learning?", 
+                q: "HI", 
+                text: "What is worth learning is measured by clear standards and assessments.",
+                contextual_help: "In this question, this means essential knowledge consists of established curriculum benchmarks, rubrics, and formal tests."
+            },
 
             // 6. How do people learn best? (Old 3)
-            { title: "How do people learn best?", q: "DC", text: "People learn best when motivated by pursuing shared interests, values, and preferences with others." },
-            { title: "How do people learn best?", q: "DI", text: "People learn best when they make individual choices about what they learn." },
-            { title: "How do people learn best?", q: "HI", text: "People learn best in educational institutions that provide them with competent teachers." },
-            { title: "How do people learn best?", q: "HC", text: "People learn best when they participate in a strong community with shared values about what to learn and how to learn." },
+            { 
+                title: "How do people learn best?", 
+                q: "DC", 
+                text: "People learn best when motivated by pursuing shared interests, values, and preferences with others.",
+                contextual_help: "In this question, this means you learn best in collaborative study groups, project teams, and mutual interest circles."
+            },
+            { 
+                title: "How do people learn best?", 
+                q: "DI", 
+                text: "People learn best when they make individual choices about what they learn.",
+                contextual_help: "In this question, this means you learn best when you have freedom to choose your own study paths, topics, and pacing."
+            },
+            { 
+                title: "How do people learn best?", 
+                q: "HI", 
+                text: "People learn best in educational institutions that provide them with competent teachers.",
+                contextual_help: "In this question, this means you learn best in an organized classroom environment led by experienced instructors."
+            },
+            { 
+                title: "How do people learn best?", 
+                q: "HC", 
+                text: "People learn best when they participate in a strong community with shared values about what to learn and how to learn.",
+                contextual_help: "In this question, this means you learn best in a close-knit cohort or community that shares united learning goals and values."
+            },
 
             // 7. What are individuals responsible for in learning? (Old 4)
-            { title: "What are individuals responsible for in learning?", q: "HI", text: "Individuals are responsible for acquiring the knowledge and skills that teachers and schools teach them." },
-            { title: "What are individuals responsible for in learning?", q: "DI", text: "Individuals are responsible for initiating and choosing what and how they learn." },
-            { title: "What are individuals responsible for in learning?", q: "DC", text: "Individuals are responsible for joining networks or communities in order to learn what they want." },
-            { title: "What are individuals responsible for in learning?", q: "HC", text: "Individuals are responsible for playing an active role in supporting the learning and participation of others in their community." }
+            { 
+                title: "What are individuals responsible for in learning?", 
+                q: "HI", 
+                text: "Individuals are responsible for acquiring the knowledge and skills that teachers and schools teach them.",
+                contextual_help: "In this question, this means as a student, your duty is to study assigned lessons, follow directions, and master the course syllabus."
+            },
+            { 
+                title: "What are individuals responsible for in learning?", 
+                q: "DI", 
+                text: "Individuals are responsible for initiating and choosing what and how they learn.",
+                contextual_help: "In this question, this means taking personal ownership of your education, finding learning resources, and directing your own growth."
+            },
+            { 
+                title: "What are individuals responsible for in learning?", 
+                q: "DC", 
+                text: "Individuals are responsible for joining networks or communities in order to learn what they want.",
+                contextual_help: "In this question, this means taking the initiative to join peer networks, seek feedback, and contribute to collaborative study groups."
+            },
+            { 
+                title: "What are individuals responsible for in learning?", 
+                q: "HC", 
+                text: "Individuals are responsible for playing an active role in supporting the learning and participation of others in their community.",
+                contextual_help: "In this question, this means your responsibility includes helping peers, contributing to group tasks, and supporting team success."
+            }
         ];
 
         let answers = {};
         let shuffledQuestions = [];
         let currentQuestionIndex = 0;
 
-        function updateProgress() {
-            const answered = Object.keys(answers).length;
-            const total = surveyQuestions.length;
-            const pct = Math.round((answered / total) * 100);
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
-            document.getElementById('progress-current').textContent = currentQuestionIndex + 1;
-            document.getElementById('progress-total').textContent = total;
-            document.getElementById('progress-pct').textContent = pct + '% complete';
-            document.getElementById('progress-fill').style.width = ((currentQuestionIndex + 1) / total * 100) + '%';
+        function toggleQuestionHelp(idx) {
+            const el = document.getElementById(`help-box-${idx}`);
+            if (el) {
+                el.classList.toggle('expanded');
+            }
+        }
+
+        function updateProgress() {
+            const answeredCount = Object.keys(answers).length;
+            const total = surveyQuestions.length || 28;
+            const pct = Math.round((answeredCount / total) * 100);
+
+            const currEl = document.getElementById('progress-current');
+            const totalEl = document.getElementById('progress-total');
+            const pctEl = document.getElementById('progress-pct');
+            const fillEl = document.getElementById('progress-fill');
+
+            if (currEl) currEl.textContent = currentQuestionIndex + 1;
+            if (totalEl) totalEl.textContent = total;
+            if (pctEl) pctEl.textContent = `${pct}% complete`;
+            if (fillEl) fillEl.style.width = `${pct}%`;
 
             // Update dots
-            const dotsContainer = document.getElementById('dots-container');
-            if (dotsContainer.children.length === 0) {
-                // Initialize dots
-                for (let i = 0; i < total; i++) {
-                    const dot = document.createElement('div');
-                    dot.className = 'dot';
-                    dotsContainer.appendChild(dot);
-                }
-            }
-            // highlight current dot and answered status
-            Array.from(dotsContainer.children).forEach((dot, idx) => {
-                let classes = ['dot'];
-                
-                // Check if answered using the original item index
-                if (shuffledQuestions[idx] && answers[shuffledQuestions[idx].i] !== undefined) {
-                    classes.push('answered');
-                }
-                
-                if (idx === currentQuestionIndex) {
-                    classes.push('active');
-                }
-                
-                dot.className = classes.join(' ');
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, idx) => {
+                const qItem = shuffledQuestions[idx];
+                const isAnswered = qItem && answers[qItem.i] !== undefined;
+                dot.className = 'dot';
+                if (isAnswered) dot.classList.add('answered');
+                if (idx === currentQuestionIndex) dot.classList.add('active');
             });
         }
 
+        function renderDots() {
+            const container = document.getElementById('dots-container');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 0; i < shuffledQuestions.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (i === 0 ? ' active' : '');
+                dot.title = `Question ${i + 1}`;
+                dot.style.cursor = 'pointer';
+                dot.onclick = () => {
+                    currentQuestionIndex = i;
+                    showQuestion(currentQuestionIndex);
+                };
+                container.appendChild(dot);
+            }
+        }
+
+        function renderQuestions() {
+            shuffledQuestions = surveyQuestions.map((val, i) => ({ val, i }));
+            currentQuestionIndex = 0;
+            renderDots();
+            updateProgress();
+            showQuestion(0);
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            }
+        }
+
         function showQuestion(index) {
+            currentQuestionIndex = index;
             const container = document.getElementById('questions-container');
+            if (!container || !shuffledQuestions[index]) return;
+
             const item = shuffledQuestions[index];
             const qNum = index + 1;
+            const total = shuffledQuestions.length;
+            const isLast = (index === total - 1);
+            const currentAnswer = answers[item.i];
+            const hasAnsweredAll = Object.keys(answers).length >= total;
 
-            const userStr = localStorage.getItem('currentUser');
-            let firstName = "Student";
-            if (userStr) {
-                const userObj = JSON.parse(userStr);
-                firstName = userObj.first_name || userObj.username || "Student";
-            }
+            const helpHtml = item.val.contextual_help ? `
+                <div class="contextual-help-container" id="help-box-${index}">
+                    <button type="button" class="btn-help-toggle" onclick="toggleQuestionHelp(${index})">
+                        <span class="help-toggle-left">
+                            <span class="help-bulb-icon">💡</span>
+                            <span>Need help understanding this question?</span>
+                        </span>
+                        <span class="help-arrow">▼</span>
+                    </button>
+                    <div class="contextual-help-body">
+                        <div class="contextual-help-inner">
+                            <span class="help-tag-pill">💡 In this question, this means:</span><br>
+                            ${escapeHtml(item.val.contextual_help)}
+                        </div>
+                    </div>
+                </div>
+            ` : '';
 
             container.innerHTML = `
                 <div class="question-card">
-                    <div class="greeting-box">
-                        <strong>Hello, ${firstName}!</strong>
-                        Answer honestly — there are no right or wrong answers. Your responses will map your exact position on the MATRIX learning quadrant.
-                    </div>
+                    <div class="dimension-label">${escapeHtml(item.val.title || 'Learning Dimension')}</div>
+                    <div class="question-title">${qNum}. ${escapeHtml(item.val.text)}</div>
                     
-                    <div class="dimension-label">${item.val.title}</div>
-                    
-                    <div class="question-title" style="font-size: 18px; margin-bottom: 24px;">${item.val.text}</div>
-                    
+                    ${helpHtml}
+
                     <div class="answers-grid stacked">
-                        <label class="answer-option" data-value="4">
+                        <div class="answer-option ${currentAnswer === 1 ? 'selected' : ''}" data-val="1" onclick="selectAnswerOption(${item.i}, 1, this)">
                             <div class="radio-circle"></div>
-                            <div class="answer-text">Strongly agree</div>
-                        </label>
-                        <label class="answer-option" data-value="3">
-                            <div class="radio-circle"></div>
-                            <div class="answer-text">Agree</div>
-                        </label>
-                        <label class="answer-option" data-value="2">
-                            <div class="radio-circle"></div>
-                            <div class="answer-text">Somewhat agree</div>
-                        </label>
-                        <label class="answer-option" data-value="1">
+                            <div class="answer-text">Strongly Disagree</div>
+                        </div>
+                        <div class="answer-option ${currentAnswer === 2 ? 'selected' : ''}" data-val="2" onclick="selectAnswerOption(${item.i}, 2, this)">
                             <div class="radio-circle"></div>
                             <div class="answer-text">Disagree</div>
-                        </label>
+                        </div>
+                        <div class="answer-option ${currentAnswer === 4 ? 'selected' : ''}" data-val="4" onclick="selectAnswerOption(${item.i}, 4, this)">
+                            <div class="radio-circle"></div>
+                            <div class="answer-text">Agree</div>
+                        </div>
+                        <div class="answer-option ${currentAnswer === 5 ? 'selected' : ''}" data-val="5" onclick="selectAnswerOption(${item.i}, 5, this)">
+                            <div class="radio-circle"></div>
+                            <div class="answer-text">Strongly Agree</div>
+                        </div>
                     </div>
-                    
+
                     <div class="card-footer">
-                        <button class="nav-btn prev-btn" ${index === 0 ? 'disabled' : ''}>&lt; Previous</button>
-                        <button class="nav-btn next-btn" id="next-btn-action">Next &gt;</button>
+                        <button class="nav-btn" onclick="prevQuestion()" ${index === 0 ? 'disabled' : ''}>← Previous</button>
+                        ${isLast || hasAnsweredAll ? `
+                            <button class="btn-submit" id="btn-submit-main" onclick="submitAssessment()" style="margin: 0; padding: 12px 28px; font-size: 14px;">Complete Assessment</button>
+                        ` : `
+                            <button class="nav-btn" id="next-btn" onclick="nextQuestion()" ${currentAnswer === undefined ? 'disabled' : ''}>Next →</button>
+                        `}
                     </div>
                 </div>
             `;
 
-            if (answers[item.i] !== undefined) {
-                const prev = container.querySelector(`.answer-option[data-value="${answers[item.i]}"]`);
-                if (prev) prev.classList.add('selected');
-            }
-
-            // Check if on last question and all answered
-            const nextBtn = container.querySelector('#next-btn-action');
-            const hasAnsweredCurrent = answers[item.i] !== undefined;
-
-            if (index === shuffledQuestions.length - 1) {
-                nextBtn.textContent = 'Submit';
-                nextBtn.style.backgroundColor = 'var(--matrix-green)';
-                nextBtn.style.color = '#000';
-                nextBtn.disabled = !hasAnsweredCurrent || Object.keys(answers).length !== surveyQuestions.length;
-            } else {
-                nextBtn.disabled = !hasAnsweredCurrent;
-            }
-
-            // Answer clicks
-            container.querySelectorAll('.answer-option').forEach(opt => {
-                opt.addEventListener('click', () => {
-                    container.querySelectorAll('.answer-option').forEach(o => o.classList.remove('selected'));
-                    opt.classList.add('selected');
-                    const val = parseInt(opt.dataset.value);
-                    answers[item.i] = val;
-                    updateProgress();
-
-                    if (index === shuffledQuestions.length - 1) {
-                        nextBtn.disabled = Object.keys(answers).length !== surveyQuestions.length;
-                    } else {
-                        nextBtn.disabled = false;
-                    }
-                });
-            });
-
-            // Prev Button
-            const prevBtn = container.querySelector('.prev-btn');
-            if (prevBtn) {
-                prevBtn.addEventListener('click', () => {
-                    if (currentQuestionIndex > 0) {
-                        currentQuestionIndex--;
-                        showQuestion(currentQuestionIndex);
-                        updateProgress();
-                    }
-                });
-            }
-
-            // Next / Submit Button
-            nextBtn.addEventListener('click', () => {
-                if (answers[item.i] === undefined) return; // Must answer before proceeding
-
-                if (index === shuffledQuestions.length - 1) {
-                    // Trigger submit logic
-                    submitAssessment();
-                } else {
-                    currentQuestionIndex++;
-                    showQuestion(currentQuestionIndex);
-                    updateProgress();
-                }
-            });
+            updateProgress();
         }
 
-        function renderQuestions() {
-            // Keep the exact order defined above
-            shuffledQuestions = surveyQuestions.map((val, i) => ({ val, i }));
-            currentQuestionIndex = 0;
-            answers = {};
-            document.getElementById('dots-container').innerHTML = ''; // reset dots
+        function selectAnswerOption(originalIndex, value, element) {
+            answers[originalIndex] = value;
+
+            const card = element.closest('.question-card');
+            if (card) {
+                card.querySelectorAll('.answer-option').forEach(opt => opt.classList.remove('selected'));
+                element.classList.add('selected');
+
+                const nextBtn = card.querySelector('#next-btn');
+                if (nextBtn) nextBtn.disabled = false;
+            }
+
             updateProgress();
-            showQuestion(0);
+
+            // Auto advance after 250ms if not on the last question
+            if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                setTimeout(() => {
+                    nextQuestion();
+                }, 250);
+            } else {
+                // On last question, re-render footer to show Complete Assessment button
+                showQuestion(currentQuestionIndex);
+            }
+        }
+
+        async function loadAssessmentQuestions() {
+            try {
+                const res = await fetch('/api/assessment-questions');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length === 28) {
+                        surveyQuestions = data.map(q => ({
+                            title: q.dimension_title || "Assessment Question",
+                            q: q.quadrant || "HI",
+                            text: q.question_text,
+                            contextual_help: q.contextual_help || ""
+                        }));
+                    }
+                }
+            } catch(err) {
+                console.warn("Using default survey questions", err);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const isPreview = urlParams.get('preview') === 'true';
             const isViewResults = urlParams.get('view_results') === 'true';
+
+            // Load assessment questions and contextual help from database
+            await loadAssessmentQuestions();
 
             if (isPreview) {
                 const sessionPill = document.getElementById('session-pill');

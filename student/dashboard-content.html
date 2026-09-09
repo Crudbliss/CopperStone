@@ -572,12 +572,11 @@
 
     <main class="dashboard-grid">
 
-        <!-- ================= CARD 1: TOP LEFT (WELCOME BACK) ================= -->
+        <!-- ================= CARD 1: TOP LEFT (WELCOME) ================= -->
         <section class="dash-card">
             <div>
-                <div class="eyebrow-green">WELCOME BACK</div>
+                <div class="eyebrow-green">WELCOME</div>
                 <h1 class="user-name" id="user-display-name">Student</h1>
-                <p class="user-email" id="user-display-email">Loading account...</p>
 
                 <div class="dominant-mode-box" id="dominant-mode-box">
                     <div class="dominant-mode-info">
@@ -762,11 +761,6 @@
                 if (fullName) {
                     document.getElementById('user-display-name').textContent = fullName;
                 }
-                if (user.email) {
-                    document.getElementById('user-display-email').textContent = user.email;
-                } else if (user.student_no) {
-                    document.getElementById('user-display-email').textContent = `${user.student_no}@student.olfu.edu.ph`;
-                }
             }
 
             // 2. Fetch Assessment History & Student Profile
@@ -840,6 +834,8 @@
             document.getElementById('target-quadrant-icon').style.color = lowest.color;
             document.getElementById('target-quadrant-sub').textContent = `${lowest.key} · ${lowest.pct}%`;
 
+            let isTargetModuleCompleted = false;
+
             // Fetch Real Modules & Compute Exact Module Progress
             try {
                 let modules = [];
@@ -887,13 +883,20 @@
                     document.getElementById('active-module-pct').textContent = `${progressPct}%`;
                     document.getElementById('module-chapters-text').textContent = `${clampedCompleted}/${maxTasks} chapters`;
                     document.getElementById('module-progress-fill').style.width = `${progressPct}%`;
+
+                    // Check if target module is 100% completed
+                    const isCompletedLocal = localProg && (localProg.moduleCompleted || localProg.completedFinal || (Array.isArray(localProg.completedChapters) && totalChapters > 0 && localProg.completedChapters.length >= totalChapters));
+                    const isCompletedServer = activeProg && (activeProg.status === 'Completed' || (totalChapters > 0 && activeProg.tasks_completed >= totalChapters));
+                    if (progressPct >= 100 || isCompletedLocal || isCompletedServer) {
+                        isTargetModuleCompleted = true;
+                    }
                 }
             } catch(e) {
                 console.error('Modules fetch error', e);
             }
 
             // 5. Card 4: Assessment Journey (3 Stages)
-            renderAssessmentJourney(history);
+            renderAssessmentJourney(history, isTargetModuleCompleted);
         }
 
         function renderLearningDistribution(pcts) {
@@ -957,12 +960,14 @@
             container.innerHTML = html;
         }
 
-        function renderAssessmentJourney(history) {
+        function renderAssessmentJourney(history, isTargetModuleCompleted) {
             const container = document.getElementById('journey-stages-list');
             if (!container) return;
 
             const stageNames = ['First Assessment', 'Second Assessment', 'Final Assessment'];
             let html = '';
+            let nextActiveStageIndex = -1;
+            const completedCount = history ? history.length : 0;
 
             for (let i = 0; i < 3; i++) {
                 const stageEntry = history && history[i];
@@ -997,9 +1002,38 @@
                         </div>
                     `;
                 } else {
-                    const isNextAvailable = (i === 0) || (history && history[i - 1]);
-                    if (isNextAvailable) {
-                        // Open stage
+                    let isUnlocked = false;
+                    let lockedReason = 'Available after milestone';
+
+                    if (i === 0) {
+                        // First assessment is open if never taken
+                        isUnlocked = true;
+                    } else if (i === 1) {
+                        // Second assessment is only open after Stage 1 AND Module is completed
+                        if (completedCount >= 1) {
+                            if (isTargetModuleCompleted) {
+                                isUnlocked = true;
+                            } else {
+                                lockedReason = 'Available after module completion';
+                            }
+                        } else {
+                            lockedReason = 'Available after First Assessment';
+                        }
+                    } else if (i === 2) {
+                        // Final assessment is only open after Stage 2 AND Module is completed
+                        if (completedCount >= 2) {
+                            if (isTargetModuleCompleted) {
+                                isUnlocked = true;
+                            } else {
+                                lockedReason = 'Available after module completion';
+                            }
+                        } else {
+                            lockedReason = 'Available after Second Assessment';
+                        }
+                    }
+
+                    if (isUnlocked) {
+                        if (nextActiveStageIndex === -1) nextActiveStageIndex = i;
                         html += `
                             <div class="journey-stage-card interactive" onclick="navigateToAssessment()">
                                 <div class="journey-stage-left">
@@ -1019,7 +1053,6 @@
                             </div>
                         `;
                     } else {
-                        // Locked future stage
                         html += `
                             <div class="journey-stage-card" style="opacity: 0.6;">
                                 <div class="journey-stage-left">
@@ -1031,7 +1064,7 @@
                                     </div>
                                     <div>
                                         <div class="journey-stage-name">${stageTitle}</div>
-                                        <div class="journey-stage-date">Available after milestone</div>
+                                        <div class="journey-stage-date">${lockedReason}</div>
                                     </div>
                                 </div>
                                 <div class="journey-stage-right">
@@ -1046,18 +1079,37 @@
             container.innerHTML = html;
 
             // Update top action button
+            const actionBtn = document.getElementById('btn-journey-action');
             const actionText = document.getElementById('journey-action-text');
-            if (actionText) {
-                if (history && history.length >= 3) {
+            if (actionBtn && actionText) {
+                if (completedCount >= 3) {
                     actionText.textContent = 'View Results';
-                } else {
+                    actionBtn.style.display = 'inline-flex';
+                    actionBtn.style.opacity = '1';
+                    actionBtn.style.pointerEvents = 'auto';
+                    actionBtn.style.cursor = 'pointer';
+                    actionBtn.onclick = () => navigateToAssessment();
+                } else if (nextActiveStageIndex !== -1) {
                     actionText.textContent = 'Take Now';
+                    actionBtn.style.display = 'inline-flex';
+                    actionBtn.style.opacity = '1';
+                    actionBtn.style.pointerEvents = 'auto';
+                    actionBtn.style.cursor = 'pointer';
+                    actionBtn.onclick = () => navigateToAssessment();
+                } else {
+                    // Next stage is locked because module is still in progress
+                    actionText.textContent = 'Locked';
+                    actionBtn.style.display = 'inline-flex';
+                    actionBtn.style.opacity = '0.4';
+                    actionBtn.style.pointerEvents = 'none';
+                    actionBtn.style.cursor = 'not-allowed';
+                    actionBtn.onclick = null;
                 }
             }
         }
 
         function navigateToModules() {
-            const targetUrl = activeModuleId ? `modules-content.html?moduleId=${activeModuleId}` : 'modules-content.html';
+            const targetUrl = 'modules-content.html';
             if (window.parent && window.parent.document) {
                 const frame = window.parent.document.getElementById('content-frame');
                 if (frame) {

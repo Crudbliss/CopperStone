@@ -3,142 +3,456 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Questionnaires</title>
+    <title>Admin Questionnaires — Assessment Questions & Contextual Help</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-base: #060f17;
-            --bg-card: #12181f;
-            --matrix-blue: #38bdf8;
-            --matrix-red: #f87171;
+            --bg-card: #0d1722;
+            --bg-card-inner: #132235;
+            --bg-card-hover: #16263a;
+
             --matrix-yellow: #d8a61a;
+            --matrix-yellow-hover: #eab308;
+            --matrix-green: #22c55e;
+            --matrix-green-light: #4ade80;
+            --matrix-blue: #06b6d4;
+            --matrix-cyan: #38bdf8;
+            --matrix-orange: #f97316;
+            --matrix-orange-light: #fb923c;
+            --matrix-purple: #c084fc;
+            --matrix-purple-dark: #a855f7;
+
             --text-main: #ffffff;
             --text-muted: #8b9eb0;
+            --text-subtle: #64748b;
             --text-gray: #a1a1aa;
+
             --border-light: rgba(255, 255, 255, 0.08);
-            --border-active: rgba(56, 189, 248, 0.5);
+            --border-active: rgba(56, 189, 248, 0.4);
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             font-family: 'Poppins', sans-serif; 
-            background-color: transparent; 
+            background-color: var(--bg-base); 
             color: var(--text-main); 
-            padding: 40px; 
+            padding: 36px 32px; 
+            min-height: 100vh;
         }
 
         .header-actions {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
-        h1 { color: var(--matrix-blue); font-size: 28px; font-weight: 700; margin-bottom: 8px;}
-        p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+        h1 { 
+            color: var(--text-main); 
+            font-size: 26px; 
+            font-weight: 800; 
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h1 span.badge-count {
+            font-size: 13px;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--matrix-cyan);
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-weight: 700;
+        }
+        p.subtitle { color: var(--text-muted); font-size: 13.5px; max-width: 780px; line-height: 1.5; }
 
         .btn {
             font-family: 'Poppins', sans-serif;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 10px 18px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13.5px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
         
         .btn-primary {
-            background: var(--matrix-blue);
-            color: #060f17;
+            background: linear-gradient(135deg, var(--matrix-yellow), #e0a31c);
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(216, 166, 26, 0.25);
         }
-        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(216, 166, 26, 0.4); }
 
         .btn-outline {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.04);
             color: var(--text-main);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
-        .btn-outline:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--matrix-blue); color: var(--matrix-blue); }
+        .btn-outline:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--matrix-cyan); color: var(--matrix-cyan); }
 
-        /* Questions List */
+        .btn-danger-outline {
+            background: rgba(248, 113, 113, 0.05);
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+        .btn-danger-outline:hover { background: rgba(248, 113, 113, 0.15); border-color: #f87171; }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stat-card .label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .stat-card .val { font-size: 20px; font-weight: 800; color: var(--text-main); }
+
+        /* Filters Bar */
+        .filters-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 240px;
+        }
+        .search-box input {
+            width: 100%;
+            background: var(--bg-base);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 10px 14px 10px 38px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 13.5px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .search-box input:focus {
+            border-color: var(--matrix-cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+        }
+        .search-box svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+        }
+
+        .filter-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-pill:hover { color: var(--text-main); border-color: rgba(255, 255, 255, 0.25); }
+        .filter-pill.active {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: var(--matrix-cyan);
+            color: var(--matrix-cyan);
+            font-weight: 700;
+        }
+
+        /* Questions Grid */
         #questionsList {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+            gap: 18px;
         }
 
         .question-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-light);
-            border-radius: 12px;
-            padding: 24px;
+            border-radius: 14px;
+            padding: 22px;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+        .question-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
 
         .question-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
+            gap: 12px;
         }
+
+        .dim-badge {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .quad-badge {
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .quad-badge.HI { background: rgba(56, 189, 248, 0.12); color: var(--matrix-cyan); border: 1px solid rgba(56, 189, 248, 0.3); }
+        .quad-badge.DI { background: rgba(74, 222, 128, 0.12); color: var(--matrix-green-light); border: 1px solid rgba(74, 222, 128, 0.3); }
+        .quad-badge.HC { background: rgba(251, 146, 60, 0.12); color: var(--matrix-orange-light); border: 1px solid rgba(251, 146, 60, 0.3); }
+        .quad-badge.DC { background: rgba(192, 132, 252, 0.12); color: var(--matrix-purple); border: 1px solid rgba(192, 132, 252, 0.3); }
 
         .question-title {
-            font-size: 15px;
+            font-size: 14.5px;
             font-weight: 600;
-            line-height: 1.4;
-            max-width: 90%;
-            color: white;
+            line-height: 1.5;
+            color: var(--text-main);
+            margin-bottom: 14px;
         }
 
-        .category-badge {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--matrix-blue);
-            font-size: 10px;
-            text-transform: uppercase;
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+        /* Contextual Help Box on Card */
+        .context-help-box {
+            background: rgba(6, 182, 212, 0.05);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
         }
-
-        .answers-list {
-            list-style: none;
-            margin-top: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .answer-item {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 12px;
+        .context-help-header {
             display: flex;
             align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--matrix-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .context-help-text {
+            font-size: 12.5px;
             color: var(--text-muted);
+            line-height: 1.45;
         }
-        
-        .answer-num {
-            color: var(--matrix-blue);
-            font-weight: bold;
-            margin-right: 12px;
+        .context-help-text.empty {
+            color: var(--text-subtle);
+            font-style: italic;
         }
 
-        /* --- MOBILE RESPONSIVENESS --- */
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-light);
+            margin-top: auto;
+        }
+        .order-num {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-subtle);
+        }
+        .btn-edit-q {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-main);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-edit-q:hover {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: var(--matrix-cyan);
+            color: var(--matrix-cyan);
+        }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal {
+            background: #0d1722;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 640px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.2s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .modal-header h3 { font-size: 18px; font-weight: 700; color: var(--text-main); }
+        .btn-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .btn-close:hover { color: #fff; }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            background: var(--bg-base);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 13.5px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--matrix-cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+        }
+        .form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .help-preview-box {
+            background: rgba(6, 182, 212, 0.06);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-top: 8px;
+        }
+        .help-preview-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--matrix-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #10b981;
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13.5px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 2000;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Mobile responsiveness */
         @media (max-width: 768px) {
-            body { padding: 20px; }
-            .header-actions { flex-direction: column; align-items: flex-start; gap: 20px; }
-            .header-actions div[style*="display: flex"] { width: 100%; }
-            .btn { width: 100%; justify-content: center; }
+            body { padding: 20px 16px; }
             #questionsList { grid-template-columns: 1fr; }
+            .header-actions { flex-direction: column; align-items: stretch; }
+            .filters-wrapper { flex-direction: column; align-items: stretch; }
         }
-
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
@@ -146,95 +460,370 @@
     
     <div class="header-actions">
         <div>
-            <h1>Elmore Framework Questionnaire</h1>
-            <p>This is the locked 28-question survey based on Richard Elmore's Leaders of Learning framework. It evaluates the Hierarchical/Distributed and Individual/Collective quadrants.</p>
+            <h1>
+                Elmore Assessment Framework
+                <span class="badge-count" id="totalQuestionsBadge">28 Questions</span>
+            </h1>
+            <p class="subtitle">
+                Manage the diagnostic questionnaire based on Richard Elmore's Leaders of Learning framework. 
+                Configure question statements and provide <strong>Contextual Help &amp; Explanations</strong> to guide students during assessment.
+            </p>
         </div>
-        <div style="display: flex; gap: 12px;">
-            <button class="btn btn-outline" onclick="window.location.href='../student/test-content.html?preview=true'" target="_blank">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-outline" onclick="window.open('../student/test-content.html?preview=true', '_blank')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 Preview Student View
+            </button>
+            <button class="btn btn-danger-outline" onclick="confirmResetDefaults()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+                Restore Defaults
             </button>
         </div>
     </div>
 
+    <!-- Quick Stats -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div>
+                <div class="label">Total Dimensions</div>
+                <div class="val" id="statDimensions">7</div>
+            </div>
+            <div style="font-size: 24px;">📚</div>
+        </div>
+        <div class="stat-card">
+            <div>
+                <div class="label">HI Questions</div>
+                <div class="val" id="statHI" style="color: var(--matrix-cyan);">7</div>
+            </div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--matrix-cyan);">HI</div>
+        </div>
+        <div class="stat-card">
+            <div>
+                <div class="label">DI Questions</div>
+                <div class="val" id="statDI" style="color: var(--matrix-green-light);">7</div>
+            </div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--matrix-green-light);">DI</div>
+        </div>
+        <div class="stat-card">
+            <div>
+                <div class="label">HC Questions</div>
+                <div class="val" id="statHC" style="color: var(--matrix-orange-light);">7</div>
+            </div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--matrix-orange-light);">HC</div>
+        </div>
+        <div class="stat-card">
+            <div>
+                <div class="label">DC Questions</div>
+                <div class="val" id="statDC" style="color: var(--matrix-purple);">7</div>
+            </div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--matrix-purple);">DC</div>
+        </div>
+    </div>
+
+    <!-- Search & Filters -->
+    <div class="filters-wrapper">
+        <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="searchInput" placeholder="Search by question text, explanation, or dimension..." oninput="filterQuestions()">
+        </div>
+        <div class="filter-pills">
+            <button class="filter-pill active" data-filter="ALL" onclick="setQuadrantFilter('ALL', this)">All Quadrants</button>
+            <button class="filter-pill" data-filter="HI" onclick="setQuadrantFilter('HI', this)">HI (Hierarchical Ind.)</button>
+            <button class="filter-pill" data-filter="DI" onclick="setQuadrantFilter('DI', this)">DI (Distributed Ind.)</button>
+            <button class="filter-pill" data-filter="HC" onclick="setQuadrantFilter('HC', this)">HC (Hierarchical Col.)</button>
+            <button class="filter-pill" data-filter="DC" onclick="setQuadrantFilter('DC', this)">DC (Distributed Col.)</button>
+        </div>
+    </div>
+
+    <!-- Questions Container -->
     <div id="questionsList">
-        <!-- Questions will be rendered here dynamically -->
+        <!-- Rendered via JS -->
+    </div>
+
+    <!-- Edit Question & Contextual Help Modal -->
+    <div id="editModal" class="modal-backdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Assessment Question</h3>
+                <button class="btn-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editForm" onsubmit="handleSaveQuestion(event)">
+                <input type="hidden" id="edit_id">
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px;">
+                    <div class="form-group">
+                        <label>Dimension / Evaluation Category</label>
+                        <input type="text" id="edit_dimension" required placeholder="e.g. How does learning occur?">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Quadrant</label>
+                        <select id="edit_quadrant" required>
+                            <option value="HI">HI — Hierarchical Individual</option>
+                            <option value="DI">DI — Distributed Individual</option>
+                            <option value="HC">HC — Hierarchical Collective</option>
+                            <option value="DC">DC — Distributed Collective</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Question Statement (Survey Text)</label>
+                    <textarea id="edit_text" required placeholder="Enter the exact questionnaire prompt..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        💡 Contextual Help / Student Explanation
+                        <span style="font-weight: 400; color: var(--text-subtle); margin-left: 4px;">(Ex: "In this question, this means...")</span>
+                    </label>
+                    <textarea id="edit_help" placeholder="Write a clear, friendly explanation for students to understand what this question means..." oninput="updateLiveHelpPreview()"></textarea>
+                    <div class="help-preview-box">
+                        <div class="help-preview-title">
+                            <span>💡 Student Live Preview</span>
+                        </div>
+                        <div id="editHelpPreview" style="font-size: 12.5px; color: var(--text-main); line-height: 1.45;">
+                            No contextual explanation entered yet.
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 14px; border-top: 1px solid var(--border-light);">
+                    <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span>✓</span> <span id="toastMsg">Changes saved successfully!</span>
     </div>
 
     <script>
-        const elmoreQuestions = [
-            // PURPOSE
-            { q: "HI", text: "Education should prepare students to fit into existing social and economic structures.", cat: "Purpose" },
-            { q: "HI", text: "The primary goal of learning is to acquire certified knowledge and skills.", cat: "Purpose" },
-            { q: "DI", text: "Education should empower individuals to pursue their own unique interests and passions.", cat: "Purpose" },
-            { q: "DI", text: "The primary goal of learning is self-actualization and personal growth.", cat: "Purpose" },
-            // HOW
-            { q: "HI", text: "Learning happens best when there is a clear, structured curriculum.", cat: "How" },
-            { q: "HI", text: "Teachers are the primary source of knowledge and authority in the classroom.", cat: "How" },
-            { q: "DI", text: "Learning happens best when students explore topics they choose themselves.", cat: "How" },
-            { q: "DI", text: "Teachers should act as facilitators rather than directors of learning.", cat: "How" },
-            // WHAT
-            { q: "HI", text: "There is a core set of knowledge that every student must learn.", cat: "What" },
-            { q: "HI", text: "Standardized tests are a good way to measure what is worth learning.", cat: "What" },
-            { q: "DI", text: "What is worth learning changes depending on the individual's goals.", cat: "What" },
-            { q: "DI", text: "Practical, hands-on skills are more valuable than theoretical knowledge.", cat: "What" },
-            // WHERE
-            { q: "HI", text: "The traditional classroom is the most effective environment for learning.", cat: "Where" },
-            { q: "HI", text: "Learning environments should be highly organized and free from distractions.", cat: "Where" },
-            { q: "DI", text: "Learning can happen anywhere, not just within the walls of a school.", cat: "Where" },
-            { q: "DI", text: "Online and informal spaces are often more effective for learning than classrooms.", cat: "Where" },
-            // PURPOSE (Collective)
-            { q: "HC", text: "Education should prepare citizens to contribute to the greater good of society.", cat: "Purpose" },
-            { q: "HC", text: "The primary goal of learning is to maintain social harmony and civic responsibility.", cat: "Purpose" },
-            { q: "DC", text: "Education should focus on solving global challenges through collaborative innovation.", cat: "Purpose" },
-            { q: "DC", text: "The primary goal of learning is to build networks and communities of practice.", cat: "Purpose" },
-            // HOW (Collective)
-            { q: "HC", text: "Learning happens best when students work together on teacher-assigned group projects.", cat: "How" },
-            { q: "HC", text: "Group cohesion and following shared rules are critical for effective learning.", cat: "How" },
-            { q: "DC", text: "Learning happens best when diverse groups self-organize to tackle shared problems.", cat: "How" },
-            { q: "DC", text: "Knowledge is co-created through interaction with peers rather than delivered by an expert.", cat: "How" },
-            // WHAT (Collective)
-            { q: "HC", text: "Students should learn the shared values and traditions of their community.", cat: "What" },
-            { q: "HC", text: "Civic education and social studies are essential for everyone.", cat: "What" },
-            { q: "DC", text: "Students should learn how to adapt and innovate within complex systems.", cat: "What" },
-            { q: "DC", text: "The ability to collaborate across different cultures and disciplines is the most critical skill.", cat: "What" }
-        ];
+        let allQuestions = [];
+        let currentQuadrantFilter = 'ALL';
 
-        const questionsList = document.getElementById('questionsList');
+        const quadrantNames = {
+            'HI': 'Hierarchical Individual',
+            'DI': 'Distributed Individual',
+            'HC': 'Hierarchical Collective',
+            'DC': 'Distributed Collective'
+        };
+
+        async function loadQuestions() {
+            try {
+                const res = await fetch('/api/assessment-questions');
+                if (!res.ok) throw new Error("Failed to load");
+                allQuestions = await res.json();
+                updateStats();
+                renderQuestions();
+            } catch(err) {
+                console.error("Error loading assessment questions:", err);
+                document.getElementById('questionsList').innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-muted);">
+                        Failed to load assessment questions from server.
+                    </div>
+                `;
+            }
+        }
+
+        function updateStats() {
+            const hiCount = allQuestions.filter(q => q.quadrant === 'HI').length;
+            const diCount = allQuestions.filter(q => q.quadrant === 'DI').length;
+            const hcCount = allQuestions.filter(q => q.quadrant === 'HC').length;
+            const dcCount = allQuestions.filter(q => q.quadrant === 'DC').length;
+            
+            const dims = new Set(allQuestions.map(q => q.dimension_title)).size;
+
+            document.getElementById('totalQuestionsBadge').textContent = `${allQuestions.length} Questions`;
+            document.getElementById('statDimensions').textContent = dims;
+            document.getElementById('statHI').textContent = hiCount;
+            document.getElementById('statDI').textContent = diCount;
+            document.getElementById('statHC').textContent = hcCount;
+            document.getElementById('statDC').textContent = dcCount;
+        }
+
+        function setQuadrantFilter(filter, el) {
+            currentQuadrantFilter = filter;
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            renderQuestions();
+        }
+
+        function filterQuestions() {
+            renderQuestions();
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
         function renderQuestions() {
+            const listEl = document.getElementById('questionsList');
+            const search = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+
+            const filtered = allQuestions.filter(q => {
+                const matchQuad = currentQuadrantFilter === 'ALL' || q.quadrant === currentQuadrantFilter;
+                const matchSearch = !search || 
+                    (q.question_text && q.question_text.toLowerCase().includes(search)) ||
+                    (q.contextual_help && q.contextual_help.toLowerCase().includes(search)) ||
+                    (q.dimension_title && q.dimension_title.toLowerCase().includes(search)) ||
+                    (q.quadrant && q.quadrant.toLowerCase().includes(search));
+                return matchQuad && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 60px 20px; text-align: center; color: var(--text-muted); background: var(--bg-card); border-radius: 14px; border: 1px dashed var(--border-light);">
+                        <div style="font-size: 32px; margin-bottom: 10px;">🔍</div>
+                        <h4 style="color: var(--text-main); font-size: 16px; margin-bottom: 4px;">No matching questions found</h4>
+                        <p style="font-size: 13px;">Try adjusting your search keywords or quadrant filter.</p>
+                    </div>
+                `;
+                return;
+            }
+
             let html = '';
-            elmoreQuestions.forEach((q, index) => {
-                let quadName = "";
-                if(q.q === "HI") quadName = "Hierarchical Individual";
-                if(q.q === "HC") quadName = "Hierarchical Collective";
-                if(q.q === "DI") quadName = "Distributed Individual";
-                if(q.q === "DC") quadName = "Distributed Collective";
-                
+            filtered.forEach((q, idx) => {
+                const quadClass = q.quadrant || 'HI';
+                const quadFull = quadrantNames[q.quadrant] || q.quadrant;
+                const helpText = q.contextual_help && q.contextual_help.trim() !== '' 
+                    ? escapeHtml(q.contextual_help)
+                    : '<span class="empty">No contextual help added yet. Click edit to provide an explanation for students.</span>';
+
                 html += `
                     <div class="question-card">
-                        <div class="question-header">
-                            <div class="category-badge">${q.cat} • Question ${index + 1}</div>
-                        </div>
-                        <div class="question-title">"${q.text}"</div>
-                        
-                        <div style="margin-top: 16px; font-size: 11px; color: var(--text-gray);">
-                            Maps to: <strong style="color:var(--matrix-blue);">${quadName}</strong>
+                        <div>
+                            <div class="question-header">
+                                <span class="dim-badge">${escapeHtml(q.dimension_title || 'General Dimension')}</span>
+                                <span class="quad-badge ${quadClass}">${q.quadrant} • ${quadFull}</span>
+                            </div>
+                            
+                            <div class="question-title">"${escapeHtml(q.question_text)}"</div>
+
+                            <div class="context-help-box">
+                                <div class="context-help-header">
+                                    <span>💡</span> Contextual Help / Student Explanation
+                                </div>
+                                <div class="context-help-text">${helpText}</div>
+                            </div>
                         </div>
 
-                        <ul class="answers-list">
-                            <li class="answer-item"><span class="answer-num">1</span> Disagree</li>
-                            <li class="answer-item"><span class="answer-num">2</span> Somewhat Agree</li>
-                            <li class="answer-item"><span class="answer-num">3</span> Agree</li>
-                            <li class="answer-item"><span class="answer-num">4</span> Strongly Agree</li>
-                        </ul>
+                        <div class="card-actions">
+                            <span class="order-num">Item #${q.question_order || (idx + 1)}</span>
+                            <button class="btn-edit-q" onclick="openEditModal(${q.id})">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                Edit Statement &amp; Help
+                            </button>
+                        </div>
                     </div>
                 `;
             });
-            questionsList.innerHTML = html;
+
+            listEl.innerHTML = html;
         }
 
-        renderQuestions();
+        // Modal Logic
+        const editModal = document.getElementById('editModal');
+        editModal.addEventListener('click', (e) => {
+            if (e.target === editModal) closeEditModal();
+        });
+
+        function openEditModal(id) {
+            const q = allQuestions.find(item => item.id === id);
+            if (!q) return;
+
+            document.getElementById('edit_id').value = q.id;
+            document.getElementById('edit_dimension').value = q.dimension_title || '';
+            document.getElementById('edit_quadrant').value = q.quadrant || 'HI';
+            document.getElementById('edit_text').value = q.question_text || '';
+            document.getElementById('edit_help').value = q.contextual_help || '';
+            
+            updateLiveHelpPreview();
+            editModal.style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            editModal.style.display = 'none';
+        }
+
+        function updateLiveHelpPreview() {
+            const val = document.getElementById('edit_help').value.trim();
+            const previewEl = document.getElementById('editHelpPreview');
+            if (val) {
+                previewEl.textContent = val;
+                previewEl.style.fontStyle = 'normal';
+                previewEl.style.color = 'var(--text-main)';
+            } else {
+                previewEl.textContent = "No contextual explanation entered yet. (Students will not see a help prompt unless text is provided).";
+                previewEl.style.fontStyle = 'italic';
+                previewEl.style.color = 'var(--text-muted)';
+            }
+        }
+
+        async function handleSaveQuestion(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit_id').value;
+            const dimension_title = document.getElementById('edit_dimension').value.trim();
+            const quadrant = document.getElementById('edit_quadrant').value;
+            const question_text = document.getElementById('edit_text').value.trim();
+            const contextual_help = document.getElementById('edit_help').value.trim();
+
+            try {
+                const res = await fetch(`/api/assessment-questions/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dimension_title, quadrant, question_text, contextual_help })
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    showToast("Question & Contextual Help updated successfully!");
+                    closeEditModal();
+                    await loadQuestions();
+                } else {
+                    alert(result.error || "Failed to update question.");
+                }
+            } catch(err) {
+                alert("Server error while saving question.");
+            }
+        }
+
+        async function confirmResetDefaults() {
+            if (!confirm("Are you sure you want to reset all 28 assessment questions and their contextual help explanations back to factory defaults? Any custom edits will be replaced.")) {
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/assessment-questions/reset-defaults', { method: 'POST' });
+                if (res.ok) {
+                    showToast("Assessment questions successfully restored to defaults.");
+                    await loadQuestions();
+                } else {
+                    alert("Failed to reset questions.");
+                }
+            } catch(err) {
+                alert("Server error while resetting questions.");
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', loadQuestions);
     </script>
 </body>
 </html>

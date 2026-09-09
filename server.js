@@ -212,7 +212,246 @@ db.serialize(() => {
         FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE,
         FOREIGN KEY(module_id) REFERENCES modules(id) ON DELETE CASCADE
     )`);
+
+    // 16. Assessment Questions (Elmore 28 Questionnaire with Contextual Help)
+    db.run(`CREATE TABLE IF NOT EXISTS assessment_questions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        question_order INTEGER NOT NULL,
+        dimension_title TEXT NOT NULL,
+        quadrant TEXT NOT NULL,
+        question_text TEXT NOT NULL,
+        contextual_help TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, () => {
+        db.get("SELECT COUNT(*) as count FROM assessment_questions", (err, row) => {
+            if (!err && (!row || row.count === 0)) {
+                seedDefaultAssessmentQuestions();
+            }
+        });
+    });
 });
+
+const defaultAssessmentQuestions = [
+    // 1. How does learning occur?
+    {
+        question_order: 1,
+        dimension_title: "How does learning occur?",
+        quadrant: "DC",
+        question_text: "Learning occurs when individuals engage in activities that have meaning to them and contribute to their own as well as a communal knowledge base.",
+        contextual_help: "In this question, this means learning happens through collaborative, meaningful projects where your work contributes to a shared knowledge base for everyone."
+    },
+    {
+        question_order: 2,
+        dimension_title: "How does learning occur?",
+        quadrant: "HI",
+        question_text: "Learning occurs when experts provide scaffolding and sequencing to build knowledge and skill.",
+        contextual_help: "In this question, this means learning is best achieved through structured, step-by-step guidance provided by a teacher, syllabus, or subject expert."
+    },
+    {
+        question_order: 3,
+        dimension_title: "How does learning occur?",
+        quadrant: "DI",
+        question_text: "Learning occurs when individuals have to make sense of competing and diverse sources of knowledge, skill and expertise.",
+        contextual_help: "In this question, this means you learn most effectively when researching diverse resources independently and forming your own conclusions."
+    },
+    {
+        question_order: 4,
+        dimension_title: "How does learning occur?",
+        quadrant: "HC",
+        question_text: "Learning occurs through socialization by participating in a community with strong, clear values and norms.",
+        contextual_help: "In this question, this means learning happens by absorbing shared standards, traditions, and collective discipline within an organized class or school."
+    },
+    // 2. What is the definition of learning?
+    {
+        question_order: 5,
+        dimension_title: "What is the definition of learning?",
+        quadrant: "DC",
+        question_text: "Learning is a collective activity requiring cooperation among people with diverse knowledge and skills.",
+        contextual_help: "In this question, this means learning is defined as an open team effort where people with different skills solve problems together."
+    },
+    {
+        question_order: 6,
+        dimension_title: "What is the definition of learning?",
+        quadrant: "DI",
+        question_text: "Learning is an innate biological imperative that is driven by individual interests.",
+        contextual_help: "In this question, this means learning is a natural personal drive that works best when fueled by your own curiosity and personal passions."
+    },
+    {
+        question_order: 7,
+        dimension_title: "What is the definition of learning?",
+        quadrant: "HC",
+        question_text: "Learning is a social activity guided by experts who create learning opportunities.",
+        contextual_help: "In this question, this means learning is structured group education directed by teachers who design lessons and activities for the class."
+    },
+    {
+        question_order: 8,
+        dimension_title: "What is the definition of learning?",
+        quadrant: "HI",
+        question_text: "Learning is the transfer of knowledge and skill from an expert to a novice.",
+        contextual_help: "In this question, this means learning is the direct transfer of curriculum facts, techniques, and syllabus concepts from instructor to student."
+    },
+    // 3. What constitutes successful learning?
+    {
+        question_order: 9,
+        dimension_title: "What constitutes successful learning?",
+        quadrant: "DI",
+        question_text: "Successful learning can only be defined by the individual learner.",
+        contextual_help: "In this question, this means success is measured by your own personal milestones and self-satisfaction rather than external grades."
+    },
+    {
+        question_order: 10,
+        dimension_title: "What constitutes successful learning?",
+        quadrant: "DC",
+        question_text: "Successful learning means an exchange of ideas among learners in a community.",
+        contextual_help: "In this question, this means learning is successful when peers openly debate, share insights, and co-create solutions together."
+    },
+    {
+        question_order: 11,
+        dimension_title: "What constitutes successful learning?",
+        quadrant: "HI",
+        question_text: "Successful learning is expressed via certification or recognition from an institution or expert.",
+        contextual_help: "In this question, this means success is proven by passing grades, official certificates, degrees, and academic credentials."
+    },
+    {
+        question_order: 12,
+        dimension_title: "What constitutes successful learning?",
+        quadrant: "HC",
+        question_text: "Successful learning is expressed via recognition by and positive participation in a community.",
+        contextual_help: "In this question, this means success is reflected in being a reliable teammate, contributing to group harmony, and earning peer respect."
+    },
+    // 4. What is the purpose of learning?
+    {
+        question_order: 13,
+        dimension_title: "What is the purpose of learning?",
+        quadrant: "HI",
+        question_text: "The purpose of learning is to gain access to knowledge that is valued in society.",
+        contextual_help: "In this question, this means education exists to help you acquire standard academic and industry skills that society rewards."
+    },
+    {
+        question_order: 14,
+        dimension_title: "What is the purpose of learning?",
+        quadrant: "DC",
+        question_text: "The purpose of learning is to know how to participate in a community with others of diverse, competing, and broadly distributed viewpoints.",
+        contextual_help: "In this question, this means education prepares you to engage with diverse perspectives and collaborate across different viewpoints."
+    },
+    {
+        question_order: 15,
+        dimension_title: "What is the purpose of learning?",
+        quadrant: "DI",
+        question_text: "The purpose of learning is to live up to one's unique individual potential.",
+        contextual_help: "In this question, this means the main goal of learning is personal growth, self-actualization, and developing your unique talents."
+    },
+    {
+        question_order: 16,
+        dimension_title: "What is the purpose of learning?",
+        quadrant: "HC",
+        question_text: "The purpose of learning is to socialize citizens for participation in democracy.",
+        contextual_help: "In this question, this means the primary purpose of education is building civic character, social responsibility, and community values."
+    },
+    // 5. What is worth learning?
+    {
+        question_order: 17,
+        dimension_title: "What is worth learning?",
+        quadrant: "DC",
+        question_text: "What is worth learning is determined by communities that are formed around mutual interest.",
+        contextual_help: "In this question, this means what matters most is determined by active peer communities working on shared real-world interests."
+    },
+    {
+        question_order: 18,
+        dimension_title: "What is worth learning?",
+        quadrant: "DI",
+        question_text: "What is worth learning can only be determined by the individual for her/himself.",
+        contextual_help: "In this question, this means each student should decide what topics or skills are meaningful according to their own ambitions."
+    },
+    {
+        question_order: 19,
+        dimension_title: "What is worth learning?",
+        quadrant: "HC",
+        question_text: "What is worth learning are the knowledge and skills necessary to be an effective participant in a democratic society.",
+        contextual_help: "In this question, this means valuable learning centers on civic duty, social responsibility, and shared community benefits."
+    },
+    {
+        question_order: 20,
+        dimension_title: "What is worth learning?",
+        quadrant: "HI",
+        question_text: "What is worth learning is measured by clear standards and assessments.",
+        contextual_help: "In this question, this means essential knowledge consists of established curriculum benchmarks, rubrics, and formal tests."
+    },
+    // 6. How do people learn best?
+    {
+        question_order: 21,
+        dimension_title: "How do people learn best?",
+        quadrant: "DC",
+        question_text: "People learn best when motivated by pursuing shared interests, values, and preferences with others.",
+        contextual_help: "In this question, this means you learn best in collaborative study groups, project teams, and mutual interest circles."
+    },
+    {
+        question_order: 22,
+        dimension_title: "How do people learn best?",
+        quadrant: "DI",
+        question_text: "People learn best when they make individual choices about what they learn.",
+        contextual_help: "In this question, this means you learn best when you have freedom to choose your own study paths, topics, and pacing."
+    },
+    {
+        question_order: 23,
+        dimension_title: "How do people learn best?",
+        quadrant: "HI",
+        question_text: "People learn best in educational institutions that provide them with competent teachers.",
+        contextual_help: "In this question, this means you learn best in an organized classroom environment led by experienced instructors."
+    },
+    {
+        question_order: 24,
+        dimension_title: "How do people learn best?",
+        quadrant: "HC",
+        question_text: "People learn best when they participate in a strong community with shared values about what to learn and how to learn.",
+        contextual_help: "In this question, this means you learn best in a close-knit cohort or community that shares united learning goals and values."
+    },
+    // 7. What are individuals responsible for in learning?
+    {
+        question_order: 25,
+        dimension_title: "What are individuals responsible for in learning?",
+        quadrant: "HI",
+        question_text: "Individuals are responsible for acquiring the knowledge and skills that teachers and schools teach them.",
+        contextual_help: "In this question, this means as a student, your duty is to study assigned lessons, follow directions, and master the course syllabus."
+    },
+    {
+        question_order: 26,
+        dimension_title: "What are individuals responsible for in learning?",
+        quadrant: "DI",
+        question_text: "Individuals are responsible for initiating and choosing what and how they learn.",
+        contextual_help: "In this question, this means taking personal ownership of your education, finding learning resources, and directing your own growth."
+    },
+    {
+        question_order: 27,
+        dimension_title: "What are individuals responsible for in learning?",
+        quadrant: "DC",
+        question_text: "Individuals are responsible for joining networks or communities in order to learn what they want.",
+        contextual_help: "In this question, this means taking the initiative to join peer networks, seek feedback, and contribute to collaborative study groups."
+    },
+    {
+        question_order: 28,
+        dimension_title: "What are individuals responsible for in learning?",
+        quadrant: "HC",
+        question_text: "Individuals are responsible for playing an active role in supporting the learning and participation of others in their community.",
+        contextual_help: "In this question, this means your responsibility includes helping peers, contributing to group tasks, and supporting team success."
+    }
+];
+
+function seedDefaultAssessmentQuestions(callback) {
+    db.serialize(() => {
+        db.run(`DELETE FROM assessment_questions`, () => {
+            const stmt = db.prepare(`INSERT INTO assessment_questions (question_order, dimension_title, quadrant, question_text, contextual_help) VALUES (?, ?, ?, ?, ?)`);
+            defaultAssessmentQuestions.forEach(q => {
+                stmt.run([q.question_order, q.dimension_title, q.quadrant, q.question_text, q.contextual_help]);
+            });
+            stmt.finalize(() => {
+                console.log("Seeded 28 default assessment questions with contextual help.");
+                if (callback) callback();
+            });
+        });
+    });
+}
 
 // --- API ENDPOINTS ---
 
@@ -1089,6 +1328,74 @@ app.get('/api/ai/download', (req, res) => {
         res.header('Content-Type', 'text/csv');
         res.attachment('current_model_dataset.csv');
         return res.send(csv);
+    });
+});
+
+// ==========================================
+// ASSESSMENT QUESTIONS & CONTEXTUAL HELP API
+// ==========================================
+
+// GET /api/assessment-questions - Fetch all 28 survey questions with contextual help
+app.get('/api/assessment-questions', (req, res) => {
+    db.all(`SELECT * FROM assessment_questions ORDER BY question_order ASC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        // If empty for any reason, reseed and return defaults
+        if (!rows || rows.length === 0) {
+            seedDefaultAssessmentQuestions(() => {
+                db.all(`SELECT * FROM assessment_questions ORDER BY question_order ASC`, [], (err2, rows2) => {
+                    if (err2) return res.status(500).json({ error: err2.message });
+                    res.json(rows2 || defaultAssessmentQuestions);
+                });
+            });
+        } else {
+            res.json(rows);
+        }
+    });
+});
+
+// GET /api/assessment-questions/:id - Get a single question
+app.get('/api/assessment-questions/:id', (req, res) => {
+    db.get(`SELECT * FROM assessment_questions WHERE id = ?`, [req.params.id], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!row) return res.status(404).json({ error: 'Question not found' });
+        res.json(row);
+    });
+});
+
+// PUT /api/assessment-questions/:id - Update question statement and contextual help
+app.put('/api/assessment-questions/:id', (req, res) => {
+    const { id } = req.params;
+    const { question_text, contextual_help, dimension_title, quadrant } = req.body || {};
+
+    if (!question_text || question_text.trim() === '') {
+        return res.status(400).json({ error: 'Question text is required' });
+    }
+
+    const sql = `UPDATE assessment_questions SET 
+        question_text = ?, 
+        contextual_help = ?, 
+        dimension_title = COALESCE(?, dimension_title), 
+        quadrant = COALESCE(?, quadrant),
+        updated_at = CURRENT_TIMESTAMP 
+        WHERE id = ?`;
+
+    db.run(sql, [
+        question_text.trim(),
+        contextual_help !== undefined ? contextual_help.trim() : '',
+        dimension_title ? dimension_title.trim() : null,
+        quadrant ? quadrant.trim() : null,
+        id
+    ], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        if (this.changes === 0) return res.status(404).json({ error: 'Question not found' });
+        res.json({ success: true, message: 'Question updated successfully' });
+    });
+});
+
+// POST /api/assessment-questions/reset-defaults - Restore original default questions & explanations
+app.post('/api/assessment-questions/reset-defaults', (req, res) => {
+    seedDefaultAssessmentQuestions(() => {
+        res.json({ success: true, message: 'Assessment questions reset to defaults' });
     });
 });
 
