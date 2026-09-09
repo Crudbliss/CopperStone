@@ -765,6 +765,47 @@
             border: none;
         }
 
+        /* Image Content Block */
+        .content-block-image-wrap {
+            margin: 12px 0;
+            border-radius: 14px;
+            background: rgba(13, 21, 32, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .image-frame {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        .lesson-image {
+            max-width: 100%;
+            max-height: 480px;
+            object-fit: contain;
+            border-radius: 8px;
+            cursor: zoom-in;
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .lesson-image:hover {
+            transform: scale(1.01);
+            filter: brightness(1.05);
+        }
+
+        .lesson-image-caption {
+            font-size: 12.5px;
+            color: #94a3b8;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-style: italic;
+            text-align: center;
+        }
+
         .pdf-viewer-frame {
             width: 100%;
             height: 520px;
@@ -1843,6 +1884,11 @@
 
             return `
                 <div class="module-card-horizontal" onclick="launchModuleReader(${m.id})">
+                    ${m.image_url ? `
+                        <div style="width: 100%; height: 110px; overflow: hidden; border-radius: 12px 12px 0 0; margin: -20px -20px 16px -20px; width: calc(100% + 40px); border-bottom: 1px solid rgba(255,255,255,0.08); background: #0b141d;">
+                            <img src="${escapeHtml(m.image_url)}" alt="Cover" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                    ` : ''}
                     <div class="card-header-row">
                         <div class="card-left-group">
                             <div class="module-index-badge badge-${config.colorName}">
@@ -2162,6 +2208,17 @@
                             const paragraphs = block.content.split(/\n\s*\n/).filter(p => p.trim() !== '');
                             const formattedHtml = paragraphs.map(p => `<p>${escapeHtml(p).replace(/\n/g, '<br>')}</p>`).join('');
                             html += `<div class="article-body-text">${formattedHtml}</div>`;
+                        }
+                    } else if (block.type === 'image') {
+                        if (block.url && block.url.trim()) {
+                            html += `
+                                <div class="content-block-image-wrap">
+                                    <div class="image-frame">
+                                        <img src="${escapeHtml(block.url)}" alt="${escapeHtml(block.caption || block.title || 'Lesson diagram')}" class="lesson-image" onclick="window.open('${escapeHtml(block.url)}', '_blank')" title="Click to view full image in new tab">
+                                    </div>
+                                    ${(block.caption || block.title) ? `<div class="lesson-image-caption">${escapeHtml(block.caption || block.title)}</div>` : ''}
+                                </div>
+                            `;
                         }
                     } else if (block.type === 'video') {
                         if (block.url && block.url.trim()) {

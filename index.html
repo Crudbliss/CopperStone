@@ -287,13 +287,27 @@
         .hero-title {
             font-size: 96px;
             font-weight: 900;
-            letter-spacing: -3px;
+            letter-spacing: -2px;
             margin-bottom: 16px;
             line-height: 1;
+            color: #ffffff;
+            text-transform: uppercase;
         }
 
-        .hero-title span {
-            color: var(--matrix-yellow);
+        .hero-title .matrix-t {
+            color: #52965c;
+        }
+
+        .hero-title .matrix-r {
+            color: #7f66b5;
+        }
+
+        .hero-title .matrix-i {
+            color: #e5a919;
+        }
+
+        .hero-title .matrix-x {
+            color: #e06d1c;
         }
 
         .hero-subtitle {
@@ -309,12 +323,60 @@
             color: var(--text-gray);
             line-height: 1.6;
             max-width: 600px;
-            margin-bottom: 40px;
+            margin-bottom: 36px;
         }
 
         .hero-description span {
             color: var(--matrix-yellow);
             font-weight: 600;
+        }
+
+        .hero-auth-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+
+        .btn-hero-login {
+            background: #e5a919;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 34px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(229, 169, 25, 0.45);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-hero-login:hover {
+            background: #f0b424;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(229, 169, 25, 0.6);
+        }
+
+        .btn-hero-signup {
+            background: rgba(255, 255, 255, 0.04);
+            color: #ffffff;
+            border: 1.5px solid rgba(255, 255, 255, 0.22);
+            border-radius: 12px;
+            padding: 12px 34px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-hero-signup:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.45);
+            transform: translateY(-2px);
         }
 
         .role-buttons {
@@ -1119,6 +1181,19 @@
                 font-size: 15px;
             }
 
+            .hero-auth-buttons {
+                width: 100%;
+                max-width: 320px;
+                gap: 12px;
+            }
+
+            .btn-hero-login,
+            .btn-hero-signup {
+                flex: 1;
+                padding: 12px 18px;
+                font-size: 14px;
+            }
+
             .quadrant-tags {
                 display: flex;
                 flex-wrap: wrap;
@@ -1597,7 +1672,7 @@
                     • BSIT · Our Lady of Fatima University — Quezon City
                 </div>
 
-                <h1 class="hero-title">MAT<span>R</span>IX</h1>
+                <h1 class="hero-title">MA<span class="matrix-t">T</span><span class="matrix-r">R</span><span class="matrix-i">I</span><span class="matrix-x">X</span></h1>
 
                 <div class="hero-subtitle">
                     A QUADRANT-BASED EVALUATION AND TARGETED MODULE DELIVERY SYSTEM
@@ -1608,12 +1683,10 @@
                     <span>personalized modules</span> built for how you actually learn.
                 </p>
 
-                <button class="btn-large btn-student" onclick="openLoginModal('student')">
-                    <svg width="24px" height="24px" fill="currentColor">
-                        <use href="#icon-student"></use>
-                    </svg>
-                    I'm a Student
-                </button>
+                <div class="hero-auth-buttons">
+                    <button class="btn-hero-login" onclick="openLoginModal('student')">Log In</button>
+                    <button class="btn-hero-signup" onclick="openRegisterModal()">Sign Up</button>
+                </div>
             </div>
 
             <div class="quadrant-tags">

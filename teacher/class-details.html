@@ -385,6 +385,25 @@
         .stream-badge.intervention { background: rgba(248, 113, 113, 0.12); color: #f87171; }
         .stream-badge.mastery { background: rgba(74, 222, 128, 0.12); color: #4ade80; }
 
+        .btn-archive-module {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+            border-radius: 6px;
+            padding: 4px 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .btn-archive-module:hover {
+            background: rgba(248, 113, 113, 0.15);
+            border-color: rgba(248, 113, 113, 0.4);
+            color: #f87171;
+            transform: translateY(-1px);
+        }
+
         .module-card-desc {
             font-size: 13px;
             color: var(--text-muted);
@@ -634,6 +653,11 @@
         </symbol>
         <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+        </symbol>
+        <symbol id="icon-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="21 8 21 21 3 21 3 8"></polyline>
+            <rect x="1" y="3" width="22" height="5"></rect>
+            <line x1="10" y1="12" x2="14" y2="12"></line>
         </symbol>
     </svg>
 
@@ -1220,7 +1244,12 @@
                     card.innerHTML = `
                         <div class="module-card-header">
                             <div class="module-card-title">${mod.title}</div>
-                            <span class="stream-badge ${streamClass}">${mod.stream_type || 'N/A'}</span>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="stream-badge ${streamClass}">${mod.stream_type || 'N/A'}</span>
+                                <button class="btn-archive-module" title="Archive Module" onclick="archiveModule(${mod.id}, event)">
+                                    <svg width="14" height="14"><use href="#icon-archive"></use></svg>
+                                </button>
+                            </div>
                         </div>
                         <div class="module-card-desc">${mod.description || 'No description provided.'}</div>
                         <div class="module-card-meta">
@@ -1297,6 +1326,21 @@
             }
             btn.textContent = 'Create Module';
         });
+
+        async function archiveModule(id, e) {
+            if (e) e.stopPropagation();
+            if (!confirm("Are you sure you want to archive this module? It will be hidden from students and this view.")) return;
+            try {
+                const res = await fetch(`/api/modules/${id}/archive`, { method: 'PUT' });
+                if (res.ok) {
+                    loadModules();
+                } else {
+                    alert("Failed to archive module.");
+                }
+            } catch (err) {
+                alert("Error connecting to server.");
+            }
+        }
 
         // --- GRADEBOOK / SUBMISSIONS LOGIC ---
         const gradeModal = document.getElementById('gradeModal');

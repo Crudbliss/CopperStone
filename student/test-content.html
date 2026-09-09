@@ -899,16 +899,20 @@
                 const resultScreen = document.getElementById('result-screen');
                 resultScreen.style.display = 'flex';
                 document.getElementById('final-mode').textContent = mode || 'See your profile for details';
-                // Render fuzzy graph with equal weights since we don't have the raw fuzzy data
-                const fakeFuzzy = { 'Hierarchical Individual': 0, 'Hierarchical Collective': 0, 'Distributed Individual': 0, 'Distributed Collective': 0 };
-                if (mode && fakeFuzzy.hasOwnProperty(mode)) fakeFuzzy[mode] = 1;
                 
                 const xStr = urlParams.get('x');
                 const yStr = urlParams.get('y');
-                const finalX = xStr !== null ? parseFloat(xStr) : undefined;
-                const finalY = yStr !== null ? parseFloat(yStr) : undefined;
+                let finalX = xStr !== null && !isNaN(parseFloat(xStr)) ? parseFloat(xStr) : undefined;
+                let finalY = yStr !== null && !isNaN(parseFloat(yStr)) ? parseFloat(yStr) : undefined;
                 
-                renderFuzzyGraph(mode, fakeFuzzy, finalX, finalY);
+                if (finalX === undefined || finalY === undefined) {
+                    if (mode === 'Hierarchical Individual') { finalX = -3; finalY = 3; }
+                    else if (mode === 'Distributed Individual') { finalX = 3; finalY = 3; }
+                    else if (mode === 'Hierarchical Collective') { finalX = -3; finalY = -3; }
+                    else { finalX = 3; finalY = -3; }
+                }
+
+                renderFuzzyGraph(mode, null, finalX, finalY);
 
                 // Modify the existing return button to act as a back button
                 const returnBtn = document.getElementById('return-btn');
@@ -1084,16 +1088,21 @@
             document.getElementById('quadrant-card-container').style.display = 'block';
 
             let pHI = 0, pDI = 0, pHC = 0, pDC = 0;
+            let totalFuzzy = 0;
 
             if (fuzzyDict && typeof fuzzyDict === 'object' && Object.keys(fuzzyDict).length > 0) {
                 pHI = Math.round(fuzzyDict['Hierarchical Individual'] || 0);
                 pDI = Math.round(fuzzyDict['Distributed Individual'] || 0);
                 pHC = Math.round(fuzzyDict['Hierarchical Collective'] || 0);
                 pDC = Math.round(fuzzyDict['Distributed Collective'] || 0);
-            } else {
+                totalFuzzy = pHI + pDI + pHC + pDC;
+            }
+
+            if (totalFuzzy < 10) {
                 // Calculate exact percentages from coords using Cartesian model
-                let px = parseFloat(finalX || 0);
-                let py = parseFloat(finalY || 0);
+                let px = parseFloat(finalX !== undefined ? finalX : (mode === 'Hierarchical Individual' ? -3 : (mode === 'Distributed Individual' ? 3 : (mode === 'Hierarchical Collective' ? -3 : 3))));
+                let py = parseFloat(finalY !== undefined ? finalY : (mode === 'Hierarchical Individual' ? 3 : (mode === 'Distributed Individual' ? 3 : (mode === 'Hierarchical Collective' ? -3 : -3))));
+                
                 let normX = (px + 5) / 10;
                 let normY = (py + 5) / 10;
                 

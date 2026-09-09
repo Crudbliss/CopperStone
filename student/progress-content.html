@@ -93,6 +93,7 @@
             border-radius: 16px;
             padding: 24px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         /* --- TOP GRID (Strategy Roadmap & Learning Cycle) --- */
@@ -141,6 +142,7 @@
             justify-content: center;
             color: var(--matrix-purple);
             flex-shrink: 0;
+            transition: transform 0.2s ease;
         }
 
         .weakest-title {
@@ -176,6 +178,13 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .metric-box:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.12);
         }
 
         .metric-value {
@@ -201,11 +210,25 @@
             line-height: 1.55;
         }
 
-        /* Recommended Next Step Card */
+        /* Recommended Next Step Card (Interactive Link) */
         .next-step-card {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .next-step-card:hover {
+            border-color: rgba(192, 132, 252, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(192, 132, 252, 0.12);
+        }
+
+        .next-step-tag-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .next-step-tag {
@@ -214,6 +237,20 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--matrix-purple);
+        }
+
+        .next-step-btn-pill {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--matrix-yellow);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.2s ease;
+        }
+
+        .next-step-card:hover .next-step-btn-pill {
+            transform: translateX(3px);
         }
 
         .next-step-title {
@@ -278,13 +315,21 @@
         .cycle-step-list {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 10px;
         }
 
         .cycle-step-item {
             display: flex;
             align-items: flex-start;
             gap: 14px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .cycle-step-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateX(3px);
         }
 
         .step-icon-badge {
@@ -298,6 +343,11 @@
             font-weight: 700;
             flex-shrink: 0;
             margin-top: 1px;
+            transition: transform 0.2s ease;
+        }
+
+        .cycle-step-item:hover .step-icon-badge {
+            transform: scale(1.1);
         }
 
         .step-icon-badge.green-done {
@@ -310,6 +360,7 @@
             background: rgba(216, 166, 26, 0.12);
             border: 1px solid rgba(216, 166, 26, 0.5);
             color: var(--matrix-yellow);
+            box-shadow: 0 0 10px rgba(216, 166, 26, 0.25);
         }
 
         .step-icon-badge.gray-pending {
@@ -357,6 +408,12 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .migration-insight-banner:hover {
+            background: rgba(34, 197, 94, 0.06);
+            border-color: rgba(34, 197, 94, 0.35);
         }
 
         .insight-arrow-icon {
@@ -439,19 +496,24 @@
             display: block;
         }
 
-        /* Tooltip Card */
-        .migration-tooltip-card {
+        /* Universal Tooltip Cards */
+        .custom-chart-tooltip {
             position: absolute;
             background: #0b141d;
-            border: 1px solid rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             border-radius: 12px;
             padding: 14px 18px;
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8);
             pointer-events: none;
             z-index: 50;
-            min-width: 255px;
-            transition: opacity 0.15s ease, transform 0.15s ease;
+            min-width: 250px;
             backdrop-filter: blur(8px);
+            animation: fadeInTooltip 0.15s ease-out;
+        }
+
+        @keyframes fadeInTooltip {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .tooltip-stage-title {
@@ -469,13 +531,15 @@
             line-height: 1.65;
             display: flex;
             align-items: center;
-            gap: 4px;
+            justify-content: space-between;
+            gap: 8px;
         }
 
         .tooltip-row.text-purple { color: #c084fc; }
         .tooltip-row.text-orange { color: #f97316; }
         .tooltip-row.text-cyan { color: #06b6d4; }
         .tooltip-row.text-green { color: #22c55e; }
+        .tooltip-row.text-gold { color: #d8a61a; }
 
         .chart-legend-row {
             display: flex;
@@ -493,6 +557,12 @@
             font-size: 12px;
             font-weight: 600;
             color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .legend-item:hover {
+            color: #ffffff;
         }
 
         .legend-dot {
@@ -517,12 +587,58 @@
             display: flex;
             flex-direction: column;
             gap: 14px;
+            position: relative;
         }
 
         .chart-box-small {
             position: relative;
             width: 100%;
             height: 240px;
+        }
+
+        /* Interactive SVG bar styling */
+        .bar-group-interactive {
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .bar-group-interactive:hover {
+            opacity: 1;
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.25));
+        }
+
+        .bar-rect-interactive {
+            transition: filter 0.2s ease, opacity 0.2s ease;
+            cursor: pointer;
+        }
+
+        .bar-rect-interactive:hover {
+            filter: brightness(1.25);
+        }
+
+        /* Interactive line points with rock-solid zero-jitter hover */
+        .trend-point-group {
+            cursor: pointer;
+        }
+
+        .trend-point-group .trend-circle {
+            transition: r 0.2s cubic-bezier(0.4, 0, 0.2, 1), stroke-width 0.2s ease, filter 0.2s ease;
+            pointer-events: none;
+        }
+
+        .trend-point-group:hover .trend-circle {
+            r: 8.5;
+            stroke-width: 3.5;
+            filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.9));
+        }
+
+        .trend-point-group text {
+            pointer-events: none;
+            transition: font-weight 0.2s ease;
+        }
+
+        .trend-point-group:hover text {
+            font-weight: 800;
         }
 
         /* --- RESPONSIVE ADJUSTMENTS --- */
@@ -578,14 +694,14 @@
                                     <circle cx="12" cy="12" r="2"></circle>
                                 </svg>
                             </div>
-                            <h2 class="weakest-title" id="weakest-quadrant-title">Weakest Area: Distributed Collective</h2>
+                            <h2 class="weakest-title" id="weakest-quadrant-title">Loading Strategy Profile...</h2>
                         </div>
                         <span class="status-badge-needs-imp">Needs Improvement</span>
                     </div>
 
                     <div class="metrics-grid">
                         <div class="metric-box">
-                            <span class="metric-value" id="val-your-score">48%</span>
+                            <span class="metric-value" id="val-your-score">--%</span>
                             <span class="metric-label">Your Score</span>
                         </div>
                         <div class="metric-box">
@@ -593,28 +709,31 @@
                             <span class="metric-label">Threshold</span>
                         </div>
                         <div class="metric-box">
-                            <span class="metric-value gap" id="val-gap-to-close">22%</span>
+                            <span class="metric-value gap" id="val-gap-to-close">--%</span>
                             <span class="metric-label">Gap to Close</span>
                         </div>
                     </div>
 
                     <p class="weakest-desc-text" id="weakest-instructions-text">
-                        Complete learning activities for Distributed Collective to reach the 70% threshold. 22 more points to go.
+                        Analyzing your learning activities to reach the 70% proficiency threshold...
                     </p>
                 </div>
 
-                <!-- Recommended Next Step Card -->
-                <div class="glass-card next-step-card" id="recommended-step-card">
-                    <span class="next-step-tag" id="rec-strategy-tag">Recommended Next Step</span>
-                    <h3 class="next-step-title" id="rec-strategy-title">Collaborative Learning & Peer Engagement</h3>
+                <!-- Recommended Next Step Card (Clickable to open Module) -->
+                <div class="glass-card next-step-card" id="recommended-step-card" onclick="navigateToModule()" title="Click to view module in My Modules">
+                    <div class="next-step-tag-row">
+                        <span class="next-step-tag" id="rec-strategy-tag">Recommended Next Step</span>
+                        <span class="next-step-btn-pill">Open Module &rarr;</span>
+                    </div>
+                    <h3 class="next-step-title" id="rec-strategy-title">Loading Recommended Strategy...</h3>
                     <p class="next-step-desc" id="rec-strategy-desc">
-                        Develop your Distributed Collective skills through peer-driven inquiry, co-creation, and shared leadership activities.
+                        Fetching personalized learning activities and recommended curriculum for your profile.
                     </p>
                     <div class="next-step-progress-row">
                         <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" id="rec-progress-fill" style="width: 50%;"></div>
+                            <div class="progress-bar-fill" id="rec-progress-fill" style="width: 0%;"></div>
                         </div>
-                        <span class="progress-count-label" id="rec-progress-label">2/4</span>
+                        <span class="progress-count-label" id="rec-progress-label">0/0</span>
                     </div>
                 </div>
 
@@ -725,7 +844,7 @@
                 <div class="insight-text-wrap">
                     <span class="insight-tag">Migration Insight</span>
                     <p class="insight-sentence">
-                        Your <strong class="quadrant-highlight" id="insight-quadrant-name">Distributed Collective</strong> <strong class="growth-highlight" id="insight-improvement-text">improved by 14%</strong> from 1st to Final &mdash; showing strengthened engagement with this mode.
+                        Your <strong class="quadrant-highlight" id="insight-quadrant-name">Distributed Collective</strong> <strong class="growth-highlight" id="insight-improvement-text">currently at 1st Stage (Stage 2 &amp; Final Pending)</strong> &mdash; complete your active modules to unlock stage reassessment.
                     </p>
                 </div>
             </div>
@@ -775,21 +894,31 @@
 
                         <!-- Stacked Stream/Area Layers (Normalized 0 to 180 height) -->
                         <!-- Top Layer: HI (Green) -->
-                        <path d="M 60 20 L 470 20 L 880 20 L 880 56 L 470 60 L 60 54 Z" fill="url(#grad-hi)" />
+                        <path id="area-layer-hi" d="M 60 20 L 470 20 L 880 20 L 880 56 L 470 60 L 60 54 Z" fill="url(#grad-hi)" />
 
                         <!-- Middle-High Layer: DI (Cyan) -->
-                        <path d="M 60 54 L 470 60 L 880 56 L 880 98 L 470 102 L 60 104 Z" fill="url(#grad-di)" />
+                        <path id="area-layer-di" d="M 60 54 L 470 60 L 880 56 L 880 98 L 470 102 L 60 104 Z" fill="url(#grad-di)" />
 
                         <!-- Middle-Low Layer: HC (Orange) -->
-                        <path d="M 60 104 L 470 102 L 880 98 L 880 144 L 470 142 L 60 146 Z" fill="url(#grad-hc)" />
+                        <path id="area-layer-hc" d="M 60 104 L 470 102 L 880 98 L 880 144 L 470 142 L 60 146 Z" fill="url(#grad-hc)" />
 
                         <!-- Bottom Layer: DC (Purple) -->
-                        <path d="M 60 146 L 470 142 L 880 144 L 880 180 L 470 180 L 60 180 Z" fill="url(#grad-dc)" />
+                        <path id="area-layer-dc" d="M 60 146 L 470 142 L 880 144 L 880 180 L 470 180 L 60 180 Z" fill="url(#grad-dc)" />
 
                         <!-- Division lines between layers for crisp presentation -->
-                        <path d="M 60 54 L 470 60 L 880 56" fill="none" stroke="#22c55e" stroke-width="1.5" />
-                        <path d="M 60 104 L 470 102 L 880 98" fill="none" stroke="#06b6d4" stroke-width="1.5" />
-                        <path d="M 60 146 L 470 142 L 880 144" fill="none" stroke="#f97316" stroke-width="1.5" />
+                        <path id="area-div-1" d="M 60 54 L 470 60 L 880 56" fill="none" stroke="#22c55e" stroke-width="1.5" />
+                        <path id="area-div-2" d="M 60 104 L 470 102 L 880 98" fill="none" stroke="#06b6d4" stroke-width="1.5" />
+                        <path id="area-div-3" d="M 60 146 L 470 142 L 880 144" fill="none" stroke="#f97316" stroke-width="1.5" />
+
+                        <!-- Semi-transparent overlay for pending stages (Default: Active for Stage 2 & Final) -->
+                        <g id="area-pending-overlay" style="display: block;">
+                            <rect id="area-pending-rect" x="260" y="20" width="620" height="160" fill="rgba(6, 15, 23, 0.88)" rx="10" stroke="rgba(255,255,255,0.12)" stroke-dasharray="6 4" />
+                            <g id="area-pending-badge" transform="translate(570, 95)">
+                                <rect x="-135" y="-18" width="270" height="36" rx="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" />
+                                <circle cx="-110" cy="0" r="4" fill="#fb923c" />
+                                <text id="area-pending-text" x="6" y="5" fill="#cbd5e1" font-size="12" font-weight="600" font-family="Poppins" text-anchor="middle">2nd &amp; Final Assessment Pending</text>
+                            </g>
+                        </g>
 
                         <!-- Dynamic Tooltip Overlay Elements (Vertical line & 4 circular markers) -->
                         <g id="tooltip-svg-overlay" style="display: none; pointer-events: none;">
@@ -803,7 +932,7 @@
                     </svg>
 
                     <!-- Floating Tooltip Box -->
-                    <div class="migration-tooltip-card" id="migration-tooltip" style="display: none;">
+                    <div class="custom-chart-tooltip" id="migration-tooltip" style="display: none;">
                         <div class="tooltip-stage-title" id="tooltip-stage-title">First Assessment</div>
                         <div class="tooltip-row text-purple">
                             <span>D. Collective</span>
@@ -826,9 +955,9 @@
 
                 <!-- X-Axis Labels -->
                 <div style="display: flex; justify-content: space-between; padding: 0 10px 0 60px; font-size: 11.5px; color: #64748b; font-weight: 500;">
-                    <span style="cursor: pointer;" onmouseenter="showStageTooltip(0)" onmouseleave="hideStageTooltip()">First Assessment</span>
-                    <span style="cursor: pointer;" onmouseenter="showStageTooltip(1)" onmouseleave="hideStageTooltip()">Second Assessment</span>
-                    <span style="cursor: pointer;" onmouseenter="showStageTooltip(2)" onmouseleave="hideStageTooltip()">Final Assessment</span>
+                    <span id="area-label-s1" style="cursor: pointer;" onmouseenter="showStageTooltip(0)" onmouseleave="hideStageTooltip()">First Assessment</span>
+                    <span id="area-label-s2" style="cursor: pointer; color: #475569;" onmouseenter="showStageTooltip(1)" onmouseleave="hideStageTooltip()">Second Assessment (Pending)</span>
+                    <span id="area-label-s3" style="cursor: pointer; color: #475569;" onmouseenter="showStageTooltip(2)" onmouseleave="hideStageTooltip()">Final Assessment (Pending)</span>
                 </div>
 
                 <!-- Legend -->
@@ -844,13 +973,13 @@
             <div class="bottom-charts-grid">
 
                 <!-- Left Card: QUADRANT PROGRESSION (Grouped Bar Chart) -->
-                <div class="glass-card bottom-chart-card">
+                <div class="glass-card bottom-chart-card" id="bar-chart-card">
                     <div>
                         <span class="card-sub-header-tag">Quadrant Progression</span>
                         <h3 class="chart-main-title">All 4 Quadrants Across Assessment Stages</h3>
                     </div>
 
-                    <div class="chart-box-small">
+                    <div class="chart-box-small" id="bar-chart-box">
                         <svg class="svg-chart-container" viewBox="0 0 460 210">
                             <!-- Y-Axis Grid Lines & Labels -->
                             <line x1="45" y1="20" x2="440" y2="20" stroke="rgba(255,255,255,0.05)" />
@@ -868,41 +997,56 @@
                             <line x1="45" y1="180" x2="440" y2="180" stroke="rgba(255,255,255,0.1)" />
                             <text x="38" y="184" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">0%</text>
 
-                            <!-- STAGE 1: 1st Assessment (Grouped Bars) -->
-                            <!-- HI (Green) -->
-                            <rect x="75" y="44" width="12" height="136" rx="3" fill="#22c55e" opacity="0.9" />
-                            <!-- DI (Cyan) -->
-                            <rect x="91" y="90" width="12" height="90" rx="3" fill="#06b6d4" opacity="0.9" />
-                            <!-- HC (Orange) -->
-                            <rect x="107" y="62" width="12" height="118" rx="3" fill="#f97316" opacity="0.9" />
-                            <!-- DC (Purple) -->
-                            <rect x="123" y="104" width="12" height="76" rx="3" fill="#c084fc" opacity="0.9" />
+                            <!-- STAGE 1: 1st Assessment (Grouped Bars - Active) -->
+                            <g class="bar-group-interactive" id="bar-group-s1" onmouseenter="showBarTooltip(0, event)" onmouseleave="hideBarTooltip()">
+                                <!-- HI (Green) -->
+                                <rect id="bar-s1-hi" class="bar-rect-interactive" x="75" y="44" width="12" height="136" rx="3" fill="#22c55e" opacity="0.9" />
+                                <!-- DI (Cyan) -->
+                                <rect id="bar-s1-di" class="bar-rect-interactive" x="91" y="90" width="12" height="90" rx="3" fill="#06b6d4" opacity="0.9" />
+                                <!-- HC (Orange) -->
+                                <rect id="bar-s1-hc" class="bar-rect-interactive" x="107" y="62" width="12" height="118" rx="3" fill="#f97316" opacity="0.9" />
+                                <!-- DC (Purple) -->
+                                <rect id="bar-s1-dc" class="bar-rect-interactive" x="123" y="104" width="12" height="76" rx="3" fill="#c084fc" opacity="0.9" />
+                            </g>
 
-                            <!-- STAGE 2: 2nd Assessment (Grouped Bars) -->
-                            <!-- HI (Green) -->
-                            <rect x="195" y="55" width="12" height="125" rx="3" fill="#22c55e" opacity="0.9" />
-                            <!-- DI (Cyan) -->
-                            <rect x="211" y="80" width="12" height="100" rx="3" fill="#06b6d4" opacity="0.9" />
-                            <!-- HC (Orange) -->
-                            <rect x="227" y="70" width="12" height="110" rx="3" fill="#f97316" opacity="0.9" />
-                            <!-- DC (Purple) -->
-                            <rect x="243" y="92" width="12" height="88" rx="3" fill="#c084fc" opacity="0.9" />
+                            <!-- STAGE 2: 2nd Assessment (Grouped Bars - Greyed Out Pending by Default) -->
+                            <g class="bar-group-interactive" id="bar-group-s2" onmouseenter="showBarTooltip(1, event)" onmouseleave="hideBarTooltip()">
+                                <!-- HI (Pending) -->
+                                <rect id="bar-s2-hi" class="bar-rect-interactive" x="195" y="158" width="12" height="22" rx="3" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <!-- DI (Pending) -->
+                                <rect id="bar-s2-di" class="bar-rect-interactive" x="211" y="158" width="12" height="22" rx="3" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <!-- HC (Pending) -->
+                                <rect id="bar-s2-hc" class="bar-rect-interactive" x="227" y="158" width="12" height="22" rx="3" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <!-- DC (Pending) -->
+                                <rect id="bar-s2-dc" class="bar-rect-interactive" x="243" y="158" width="12" height="22" rx="3" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                            </g>
 
-                            <!-- STAGE 3: Final Assess. (Grouped Bars) -->
-                            <!-- HI (Green) -->
-                            <rect x="315" y="65" width="12" height="115" rx="3" fill="#22c55e" opacity="0.9" />
-                            <!-- DI (Cyan) -->
-                            <rect x="331" y="74" width="12" height="106" rx="3" fill="#06b6d4" opacity="0.9" />
-                            <!-- HC (Orange) -->
-                            <rect x="347" y="68" width="12" height="112" rx="3" fill="#f97316" opacity="0.9" />
-                            <!-- DC (Purple) -->
-                            <rect x="363" y="82" width="12" height="98" rx="3" fill="#c084fc" opacity="0.9" />
+                            <!-- STAGE 3: Final Assess. (Grouped Bars - Greyed Out Pending by Default) -->
+                            <g class="bar-group-interactive" id="bar-group-s3" onmouseenter="showBarTooltip(2, event)" onmouseleave="hideBarTooltip()">
+                                <!-- HI (Pending) -->
+                                <rect id="bar-s3-hi" class="bar-rect-interactive" x="315" y="158" width="12" height="22" rx="3" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <!-- DI (Pending) -->
+                                <rect id="bar-s3-di" class="bar-rect-interactive" x="331" y="158" width="12" height="22" rx="3" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <!-- HC (Pending) -->
+                                <rect id="bar-s3-hc" class="bar-rect-interactive" x="347" y="158" width="12" height="22" rx="3" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <!-- DC (Pending) -->
+                                <rect id="bar-s3-dc" class="bar-rect-interactive" x="363" y="158" width="12" height="22" rx="3" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                            </g>
 
                             <!-- X Axis Stage Labels -->
-                            <text x="105" y="198" fill="#64748b" font-size="10.5" font-family="Poppins" text-anchor="middle">1st Assessment</text>
-                            <text x="225" y="198" fill="#64748b" font-size="10.5" font-family="Poppins" text-anchor="middle">2nd Assessment</text>
-                            <text x="345" y="198" fill="#64748b" font-size="10.5" font-family="Poppins" text-anchor="middle">Final Assess.</text>
+                            <text id="bar-label-s1" x="105" y="198" fill="#64748b" font-size="10.5" font-family="Poppins" text-anchor="middle" style="cursor: pointer;" onmouseenter="showBarTooltip(0, event)" onmouseleave="hideBarTooltip()">1st Assessment</text>
+                            <text id="bar-label-s2" x="225" y="198" fill="#475569" font-size="10.5" font-family="Poppins" text-anchor="middle" style="cursor: pointer;" onmouseenter="showBarTooltip(1, event)" onmouseleave="hideBarTooltip()">2nd Assess. (Pending)</text>
+                            <text id="bar-label-s3" x="345" y="198" fill="#475569" font-size="10.5" font-family="Poppins" text-anchor="middle" style="cursor: pointer;" onmouseenter="showBarTooltip(2, event)" onmouseleave="hideBarTooltip()">Final Assess. (Pending)</text>
                         </svg>
+
+                        <!-- Bar Chart Floating Tooltip -->
+                        <div class="custom-chart-tooltip" id="bar-chart-tooltip" style="display: none; min-width: 220px;">
+                            <div class="tooltip-stage-title" id="bar-tooltip-title">1st Assessment</div>
+                            <div class="tooltip-row text-green"><span>H. Individual</span><span id="bar-val-hi">85%</span></div>
+                            <div class="tooltip-row text-cyan"><span>D. Individual</span><span id="bar-val-di">56%</span></div>
+                            <div class="tooltip-row text-orange"><span>H. Collective</span><span id="bar-val-hc">74%</span></div>
+                            <div class="tooltip-row text-purple"><span>D. Collective</span><span id="bar-val-dc">48%</span></div>
+                        </div>
                     </div>
 
                     <!-- Legend -->
@@ -914,14 +1058,14 @@
                     </div>
                 </div>
 
-                <!-- Right Card: WEAKEST QUADRANT TREND (Line Chart) -->
-                <div class="glass-card bottom-chart-card">
+                <!-- Right Card: WEAKEST QUADRANT TREND (Line Chart with 3 Assessment Stages) -->
+                <div class="glass-card bottom-chart-card" id="trend-chart-card">
                     <div>
                         <span class="card-sub-header-tag">Weakest Quadrant Trend</span>
                         <h3 class="chart-main-title" id="trend-quadrant-title">Distributed Collective Score Progression</h3>
                     </div>
 
-                    <div class="chart-box-small">
+                    <div class="chart-box-small" id="trend-chart-box">
                         <svg class="svg-chart-container" viewBox="0 0 460 210">
                             <!-- Target Line (Dashed Yellow Line at 80%) -->
                             <line x1="45" y1="52" x2="440" y2="52" stroke="#d8a61a" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.85" />
@@ -941,34 +1085,46 @@
                             <text x="38" y="144" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">25%</text>
 
                             <line x1="45" y1="180" x2="440" y2="180" stroke="rgba(255,255,255,0.1)" />
-                            <text x="38" y="180" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">0%</text>
-                            <text x="38" y="190" fill="#64748b" font-size="8.5" font-family="Poppins" text-anchor="end">Baseline</text>
+                            <text x="38" y="184" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="end">0%</text>
 
-                            <!-- Smooth Purple Trend Curve -->
-                            <path d="M 68 122 C 105 125, 140 92, 175 92 C 210 92, 245 106, 282 106 C 320 106, 360 70, 395 70" 
-                                  fill="none" stroke="#c084fc" stroke-width="3" stroke-linecap="round" />
+                            <!-- Connecting Trend Paths (Solid for completed, Dashed for pending) -->
+                            <path id="trend-line-solid" d="M 90 120 L 240 100" fill="none" stroke="#c084fc" stroke-width="3" stroke-linecap="round" style="display: none;" />
+                            <path id="trend-line-dashed" d="M 90 120 L 240 100 L 390 70" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="4 4" stroke-linecap="round" />
 
-                            <!-- Point 1: Baseline (42%) -->
-                            <circle cx="68" cy="122" r="6" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
-                            <text x="68" y="112" fill="#c084fc" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">42%</text>
+                            <!-- Point 1: 1st Assess. (X=90, Active) -->
+                            <g class="trend-point-group" id="trend-point-g-1" onmouseenter="showTrendTooltip(0, event)" onmouseleave="hideTrendTooltip()">
+                                <circle id="trend-hit-1" cx="90" cy="120" r="18" fill="transparent" />
+                                <circle id="trend-circle-1" class="trend-circle" cx="90" cy="120" r="6" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
+                                <text id="trend-text-1" x="90" y="108" fill="#c084fc" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">55%</text>
+                            </g>
 
-                            <!-- Point 2: 1st Assess. (55%) -->
-                            <circle cx="175" cy="92" r="6" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
-                            <text x="175" y="82" fill="#c084fc" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">55%</text>
+                            <!-- Point 2: 2nd Assess. (X=240, Pending by default) -->
+                            <g class="trend-point-group" id="trend-point-g-2" onmouseenter="showTrendTooltip(1, event)" onmouseleave="hideTrendTooltip()">
+                                <circle id="trend-hit-2" cx="240" cy="100" r="18" fill="transparent" />
+                                <circle id="trend-circle-2" class="trend-circle" cx="240" cy="100" r="6" fill="#111c26" stroke="#475569" stroke-width="2" opacity="0.55" />
+                                <text id="trend-text-2" x="240" y="88" fill="#64748b" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
+                            </g>
 
-                            <!-- Point 3: 2nd Assess. (48%) -->
-                            <circle cx="282" cy="106" r="6" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
-                            <text x="282" y="96" fill="#c084fc" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">48%</text>
+                            <!-- Point 3: Final Assess. (X=390, Pending by default) -->
+                            <g class="trend-point-group" id="trend-point-g-3" onmouseenter="showTrendTooltip(2, event)" onmouseleave="hideTrendTooltip()">
+                                <circle id="trend-hit-3" cx="390" cy="70" r="18" fill="transparent" />
+                                <circle id="trend-circle-3" class="trend-circle" cx="390" cy="70" r="6" fill="#111c26" stroke="#475569" stroke-width="2" opacity="0.55" />
+                                <text id="trend-text-3" x="390" y="58" fill="#64748b" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
+                            </g>
 
-                            <!-- Point 4: Final Proj. (69%) -->
-                            <circle cx="395" cy="70" r="6" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
-                            <text x="395" y="60" fill="#c084fc" font-size="11" font-weight="700" font-family="Poppins" text-anchor="middle">69%</text>
-
-                            <!-- X Axis Labels -->
-                            <text x="175" y="198" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="middle">1st Assess.</text>
-                            <text x="282" y="198" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="middle">2nd Assess.</text>
-                            <text x="395" y="198" fill="#64748b" font-size="10" font-family="Poppins" text-anchor="middle">Final (Proj.)</text>
+                            <!-- X Axis Labels (3 Stages) -->
+                            <text id="trend-label-1" x="90" y="198" fill="#64748b" font-size="10.5" font-family="Poppins" text-anchor="middle">1st Assess.</text>
+                            <text id="trend-label-2" x="240" y="198" fill="#475569" font-size="10.5" font-family="Poppins" text-anchor="middle">2nd Assess. (Pending)</text>
+                            <text id="trend-label-3" x="390" y="198" fill="#475569" font-size="10.5" font-family="Poppins" text-anchor="middle">Final Assess. (Pending)</text>
                         </svg>
+
+                        <!-- Trend Floating Tooltip -->
+                        <div class="custom-chart-tooltip" id="trend-chart-tooltip" style="display: none; min-width: 210px;">
+                            <div class="tooltip-stage-title" id="trend-tooltip-title">1st Assessment Stage</div>
+                            <div class="tooltip-row text-purple"><span>Score</span><span id="trend-val-score">55%</span></div>
+                            <div class="tooltip-row text-gold"><span>Target Gap</span><span id="trend-val-gap">-25%</span></div>
+                            <div class="tooltip-row" style="color: #94a3b8; font-size: 11.5px; margin-top: 4px;"><span id="trend-val-status">Completed</span></div>
+                        </div>
                     </div>
                 </div>
 
@@ -980,6 +1136,7 @@
 
     <!-- SCRIPT FOR DYNAMIC DATA POPULATION & HOVER TOOLTIPS -->
     <script>
+        // ================= 1. AREA CHART DATA & HOVER =================
         const stageMigrationData = [
             {
                 title: 'First Assessment',
@@ -999,10 +1156,10 @@
                 pctX: 52.2,
                 markers: { hi: 20, di: 60, hc: 102, dc: 142 },
                 values: {
-                    dc: '22% of distribution',
-                    hc: '26% of distribution',
-                    di: '23% of distribution',
-                    hi: '29% of distribution'
+                    dc: 'Pending 2nd Assessment',
+                    hc: 'Pending 2nd Assessment',
+                    di: 'Pending 2nd Assessment',
+                    hi: 'Pending 2nd Assessment'
                 }
             },
             {
@@ -1011,10 +1168,10 @@
                 pctX: 97.7,
                 markers: { hi: 20, di: 56, hc: 98, dc: 144 },
                 values: {
-                    dc: '23% of distribution',
-                    hc: '26% of distribution',
-                    di: '24% of distribution',
-                    hi: '27% of distribution'
+                    dc: 'Pending Final Assessment',
+                    hc: 'Pending Final Assessment',
+                    di: 'Pending Final Assessment',
+                    hi: 'Pending Final Assessment'
                 }
             }
         ];
@@ -1031,7 +1188,6 @@
             const mDc = document.getElementById('overlay-marker-dc');
             const tooltip = document.getElementById('migration-tooltip');
 
-            // Set SVG markers
             if (overlay && vLine && mHi && mDi && mHc && mDc) {
                 vLine.setAttribute('x1', data.svgX);
                 vLine.setAttribute('x2', data.svgX);
@@ -1051,7 +1207,6 @@
                 overlay.style.display = 'block';
             }
 
-            // Set Tooltip Card content
             const titleEl = document.getElementById('tooltip-stage-title');
             const dcEl = document.getElementById('tooltip-dc-val');
             const hcEl = document.getElementById('tooltip-hc-val');
@@ -1067,19 +1222,15 @@
             if (tooltip) {
                 tooltip.style.display = 'block';
 
-                // Position tooltip box nicely relative to the chart wrapper
                 if (stageIndex === 2) {
-                    // Right edge (Final Assessment): place tooltip to the left of the line
                     tooltip.style.left = 'auto';
                     tooltip.style.right = '40px';
                     tooltip.style.top = '15px';
                 } else if (stageIndex === 1) {
-                    // Middle (Second Assessment): place tooltip just right of center
                     tooltip.style.left = 'calc(52.2% + 18px)';
                     tooltip.style.right = 'auto';
                     tooltip.style.top = '15px';
                 } else {
-                    // Left (First Assessment): place tooltip right of the line
                     tooltip.style.left = 'calc(6.67% + 22px)';
                     tooltip.style.right = 'auto';
                     tooltip.style.top = '15px';
@@ -1094,7 +1245,113 @@
             if (tooltip) tooltip.style.display = 'none';
         }
 
-        // Set up interactive mouse movement tracking on the area chart
+        // ================= 2. GROUPED BAR CHART HOVER =================
+        const barStageData = [
+            {
+                title: '1st Assessment Diagnostic',
+                scores: { hi: '85%', di: '56%', hc: '74%', dc: '48%' },
+                leftPct: '12%'
+            },
+            {
+                title: '2nd Assessment Evaluation (Pending)',
+                scores: { hi: 'Pending', di: 'Pending', hc: 'Pending', dc: 'Pending' },
+                leftPct: '35%'
+            },
+            {
+                title: 'Final Assessment Milestone (Pending)',
+                scores: { hi: 'Pending', di: 'Pending', hc: 'Pending', dc: 'Pending' },
+                leftPct: '48%'
+            }
+        ];
+
+        function showBarTooltip(idx, event) {
+            const item = barStageData[idx];
+            if (!item) return;
+
+            const tooltip = document.getElementById('bar-chart-tooltip');
+            if (!tooltip) return;
+
+            document.getElementById('bar-tooltip-title').textContent = item.title;
+            document.getElementById('bar-val-hi').textContent = item.scores.hi;
+            document.getElementById('bar-val-di').textContent = item.scores.di;
+            document.getElementById('bar-val-hc').textContent = item.scores.hc;
+            document.getElementById('bar-val-dc').textContent = item.scores.dc;
+
+            tooltip.style.left = item.leftPct;
+            tooltip.style.top = '20px';
+            tooltip.style.display = 'block';
+        }
+
+        function hideBarTooltip() {
+            const tooltip = document.getElementById('bar-chart-tooltip');
+            if (tooltip) tooltip.style.display = 'none';
+        }
+
+        // ================= 3. TREND LINE CHART HOVER =================
+        const trendPointData = [
+            {
+                title: '1st Assessment Stage',
+                score: '55%',
+                gap: '-25% to 80% target',
+                status: 'Initial assessment',
+                leftPct: '8%'
+            },
+            {
+                title: '2nd Assessment Stage (Pending)',
+                score: '--%',
+                gap: 'Pending reassessment',
+                status: 'Awaiting module completion',
+                leftPct: '36%'
+            },
+            {
+                title: 'Final Assessment Milestone (Pending)',
+                score: '--%',
+                gap: 'Targeting 80% mastery',
+                status: 'Pending final evaluation',
+                leftPct: '52%'
+            }
+        ];
+
+        function showTrendTooltip(idx, event) {
+            const item = trendPointData[idx];
+            if (!item) return;
+
+            const tooltip = document.getElementById('trend-chart-tooltip');
+            if (!tooltip) return;
+
+            document.getElementById('trend-tooltip-title').textContent = item.title;
+            document.getElementById('trend-val-score').textContent = item.score;
+            document.getElementById('trend-val-gap').textContent = item.gap;
+            document.getElementById('trend-val-status').textContent = item.status;
+
+            tooltip.style.left = item.leftPct;
+            tooltip.style.top = '25px';
+            tooltip.style.display = 'block';
+        }
+
+        function hideTrendTooltip() {
+            const tooltip = document.getElementById('trend-chart-tooltip');
+            if (tooltip) tooltip.style.display = 'none';
+        }
+
+        // ================= 4. NAVIGATION HANDLER =================
+        function navigateToModule() {
+            if (window.parent && window.parent.document) {
+                const frame = window.parent.document.getElementById('content-frame');
+                if (frame) {
+                    frame.src = 'modules-content.html';
+                }
+                const sidebarLinks = window.parent.document.querySelectorAll('.sidebar-link');
+                if (sidebarLinks && sidebarLinks.length > 1) {
+                    sidebarLinks.forEach(link => link.classList.remove('active'));
+                    sidebarLinks[1].classList.add('active'); // My Modules is index 1
+                }
+            } else {
+                window.location.href = 'modules-content.html';
+            }
+        }
+
+        // Area chart mouse move listener
         document.addEventListener('DOMContentLoaded', () => {
             const chartWrapper = document.getElementById('area-chart-wrapper');
             if (chartWrapper) {
@@ -1105,11 +1362,11 @@
 
                     let closestIdx = 0;
                     if (pct < 0.3) {
-                        closestIdx = 0; // First Assessment
+                        closestIdx = 0;
                     } else if (pct < 0.75) {
-                        closestIdx = 1; // Second Assessment
+                        closestIdx = 1;
                     } else {
-                        closestIdx = 2; // Final Assessment
+                        closestIdx = 2;
                     }
 
                     showStageTooltip(closestIdx);
@@ -1130,6 +1387,7 @@
             }
         });
 
+        // Dynamic Student Profile loading & Migration Analytics
         const strategyProfiles = {
             'Distributed Collective': {
                 code: 'DC',
@@ -1173,6 +1431,9 @@
             let normX = (x + 5) / 10;
             let normY = (y + 5) / 10;
 
+            normX = Math.max(0, Math.min(1, normX));
+            normY = Math.max(0, Math.min(1, normY));
+
             let HI = (1 - normX) * normY;
             let DI = normX * normY;
             let HC = (1 - normX) * (1 - normY);
@@ -1199,15 +1460,25 @@
                 if (userStr) user = JSON.parse(userStr);
             } catch (e) {}
 
-            if (!user || !user.id) return;
+            // Fallback to student id 1 (Alberstein) if currentUser is not yet set
+            const studentId = (user && user.id) ? user.id : 1;
 
             try {
-                const res = await fetch(`/api/students/${user.id}`);
-                if (!res.ok) return;
-                const student = await res.json();
+                const [studentRes, historyRes, modulesRes, progRes] = await Promise.all([
+                    fetch(`/api/students/${studentId}`),
+                    fetch(`/api/students/${studentId}/history`),
+                    fetch(`/api/modules?role=student`),
+                    fetch(`/api/progress/${studentId}`)
+                ]);
 
-                let x = student.coord_x ?? 0;
-                let y = student.coord_y ?? 0;
+                if (!studentRes.ok) return;
+                const student = await studentRes.json();
+                const history = historyRes.ok ? await historyRes.json() : [];
+                const modules = modulesRes.ok ? await modulesRes.json() : [];
+                const progressRows = progRes.ok ? await progRes.json() : [];
+
+                let x = student.coord_x ?? student.x_coord ?? -0.1;
+                let y = student.coord_y ?? student.y_coord ?? -0.68;
                 let p = getPercentages(x, y);
 
                 const quadrantMap = [
@@ -1241,7 +1512,7 @@
                     instrEl.textContent = `Complete learning activities for ${weakName} to reach the ${threshold}% threshold. ${gap} more points to go.`;
                 }
 
-                // Update Recommended Step
+                // Update Recommended Step Header & Titles
                 const stepTag = document.getElementById('rec-strategy-tag');
                 if (stepTag) stepTag.style.color = profile.color;
 
@@ -1258,6 +1529,36 @@
                     stepBadge.style.backgroundColor = profile.bgGrad;
                 }
 
+                // Update Dynamic Chapter Progress for Weakest Quadrant Module
+                const targetMod = modules.find(m => m.quadrant_category === weakName) || modules[0];
+                if (targetMod) {
+                    const totalChapters = (targetMod.chapters ? targetMod.chapters.length : 0) || (targetMod.chapter_count || 4);
+                    let completedCount = 0;
+
+                    let localProg = null;
+                    try {
+                        const lpStr = localStorage.getItem(`student_mod_prog_v2_${studentId}_${targetMod.id}`) || 
+                                      localStorage.getItem(`student_mod_prog_${studentId}_${targetMod.id}`);
+                        if (lpStr) localProg = JSON.parse(lpStr);
+                    } catch(e) {}
+
+                    if (localProg && Array.isArray(localProg.completedChapters)) {
+                        completedCount = localProg.completedChapters.length;
+                    } else {
+                        const dbProg = progressRows.find(p => p.module_id === targetMod.id);
+                        if (dbProg) completedCount = dbProg.tasks_completed || 0;
+                    }
+
+                    const maxTasks = totalChapters > 0 ? totalChapters : 4;
+                    const clampedCompleted = Math.min(completedCount, maxTasks);
+                    const progressPct = maxTasks > 0 ? Math.round((clampedCompleted / maxTasks) * 100) : 0;
+
+                    const fillEl = document.getElementById('rec-progress-fill');
+                    const labelEl = document.getElementById('rec-progress-label');
+                    if (fillEl) fillEl.style.width = `${progressPct}%`;
+                    if (labelEl) labelEl.textContent = `${clampedCompleted}/${maxTasks}`;
+                }
+
                 // Update Learning Cycle text
                 const cycleWeakest = document.getElementById('cycle-step-weakest-text');
                 if (cycleWeakest) cycleWeakest.textContent = `Your weakest quadrant: ${weakName} at ${score}%.`;
@@ -1265,15 +1566,338 @@
                 const cycleRec = document.getElementById('cycle-step-rec-text');
                 if (cycleRec) cycleRec.textContent = `Complete the recommended learning activities for ${weakName}.`;
 
-                // Update Insight callout
+                // Update Migration Insight Banner
                 const insightQuad = document.getElementById('insight-quadrant-name');
                 if (insightQuad) {
                     insightQuad.textContent = weakName;
                     insightQuad.style.color = profile.color;
                 }
 
+                // Compute Assessment Stage Completion
+                const completedHistory = Array.isArray(history) ? history : [];
+                const hasInitialCoord = student && (student.coord_x != null || student.x_coord != null || (student.learning_mode && student.learning_mode !== 'Unknown'));
+                let completedStagesCount = completedHistory.length;
+                if (completedStagesCount === 0 && hasInitialCoord) {
+                    completedStagesCount = 1;
+                }
+
+                const isS1Active = completedStagesCount >= 1;
+                const isS2Active = completedStagesCount >= 2;
+                const isS3Active = completedStagesCount >= 3;
+
+                // Stage 1 Coordinates & Percentages
+                const s1 = completedHistory[0] || { x_coord: x, y_coord: y };
+                const stage1Pcts = isS1Active ? getPercentages(s1.x_coord ?? x, s1.y_coord ?? y) : { HI: 25, DI: 25, HC: 25, DC: 25 };
+
+                // Stage 2 Coordinates & Percentages
+                const s2 = completedHistory[1] || (isS1Active ? s1 : { x_coord: x, y_coord: y });
+                const stage2Pcts = isS2Active ? getPercentages(s2.x_coord ?? x, s2.y_coord ?? y) : stage1Pcts;
+
+                // Stage 3 Coordinates & Percentages
+                const s3 = completedHistory[2] || s2;
+                const stage3Pcts = isS3Active ? getPercentages(s3.x_coord ?? x, s3.y_coord ?? y) : stage2Pcts;
+
+                const weakKey = profile.code;
+                const s1WeakScore = isS1Active ? (stage1Pcts[weakKey] || score) : 0;
+                const s2WeakScore = isS2Active ? (stage2Pcts[weakKey] || 0) : 0;
+                const s3WeakScore = isS3Active ? (stage3Pcts[weakKey] || 0) : 0;
+
                 const trendTitle = document.getElementById('trend-quadrant-title');
                 if (trendTitle) trendTitle.textContent = `${weakName} Score Progression`;
+
+                const impText = document.getElementById('insight-improvement-text');
+                if (impText) {
+                    if (completedStagesCount >= 3) {
+                        const totalGain = Math.max(0, s3WeakScore - s1WeakScore);
+                        impText.textContent = `improved by ${totalGain}% from 1st to Final`;
+                    } else if (completedStagesCount === 2) {
+                        const gain = Math.max(0, s2WeakScore - s1WeakScore);
+                        impText.textContent = `improved by ${gain}% in Stage 2 (Final Pending)`;
+                    } else if (completedStagesCount === 1) {
+                        impText.textContent = `currently at ${s1WeakScore}% (Stage 2 & Final Pending)`;
+                    } else {
+                        impText.textContent = 'pending initial assessment';
+                    }
+                }
+
+                // Update Tooltip Datasets dynamically
+                stageMigrationData[0].values = {
+                    dc: isS1Active ? `${stage1Pcts.DC}% of distribution` : 'Pending',
+                    hc: isS1Active ? `${stage1Pcts.HC}% of distribution` : 'Pending',
+                    di: isS1Active ? `${stage1Pcts.DI}% of distribution` : 'Pending',
+                    hi: isS1Active ? `${stage1Pcts.HI}% of distribution` : 'Pending'
+                };
+
+                stageMigrationData[1].values = {
+                    dc: isS2Active ? `${stage2Pcts.DC}% of distribution` : 'Pending 2nd Assessment',
+                    hc: isS2Active ? `${stage2Pcts.HC}% of distribution` : 'Pending 2nd Assessment',
+                    di: isS2Active ? `${stage2Pcts.DI}% of distribution` : 'Pending 2nd Assessment',
+                    hi: isS2Active ? `${stage2Pcts.HI}% of distribution` : 'Pending 2nd Assessment'
+                };
+
+                stageMigrationData[2].values = {
+                    dc: isS3Active ? `${stage3Pcts.DC}% of distribution` : 'Pending Final Assessment',
+                    hc: isS3Active ? `${stage3Pcts.HC}% of distribution` : 'Pending Final Assessment',
+                    di: isS3Active ? `${stage3Pcts.DI}% of distribution` : 'Pending Final Assessment',
+                    hi: isS3Active ? `${stage3Pcts.HI}% of distribution` : 'Pending Final Assessment'
+                };
+
+                barStageData[0].title = isS1Active ? '1st Assessment Diagnostic' : '1st Assessment (Pending)';
+                barStageData[0].scores = {
+                    hi: isS1Active ? `${stage1Pcts.HI}%` : '--',
+                    di: isS1Active ? `${stage1Pcts.DI}%` : '--',
+                    hc: isS1Active ? `${stage1Pcts.HC}%` : '--',
+                    dc: isS1Active ? `${stage1Pcts.DC}%` : '--'
+                };
+
+                barStageData[1].title = isS2Active ? '2nd Assessment Evaluation' : '2nd Assessment (Pending)';
+                barStageData[1].scores = {
+                    hi: isS2Active ? `${stage2Pcts.HI}%` : 'Pending',
+                    di: isS2Active ? `${stage2Pcts.DI}%` : 'Pending',
+                    hc: isS2Active ? `${stage2Pcts.HC}%` : 'Pending',
+                    dc: isS2Active ? `${stage2Pcts.DC}%` : 'Pending'
+                };
+
+                barStageData[2].title = isS3Active ? 'Final Assessment Milestone' : 'Final Assessment (Pending)';
+                barStageData[2].scores = {
+                    hi: isS3Active ? `${stage3Pcts.HI}%` : 'Pending',
+                    di: isS3Active ? `${stage3Pcts.DI}%` : 'Pending',
+                    hc: isS3Active ? `${stage3Pcts.HC}%` : 'Pending',
+                    dc: isS3Active ? `${stage3Pcts.DC}%` : 'Pending'
+                };
+
+                // Trend Tooltip data
+                trendPointData[0].score = isS1Active ? `${s1WeakScore}%` : 'Not taken';
+                trendPointData[0].gap = isS1Active ? `${s1WeakScore - 80}% to 80% target` : 'Pending';
+                trendPointData[0].status = isS1Active ? '1st Assessment evaluation' : 'Not started';
+
+                trendPointData[1].score = isS2Active ? `${s2WeakScore}%` : '-- (Pending)';
+                trendPointData[1].gap = isS2Active ? `${s2WeakScore - s1WeakScore >= 0 ? '+' : ''}${s2WeakScore - s1WeakScore}% stage gain` : 'Pending 2nd Assessment';
+                trendPointData[1].status = isS2Active ? '2nd Assessment evaluation' : 'Awaiting module completion';
+
+                trendPointData[2].score = isS3Active ? `${s3WeakScore}%` : '-- (Pending)';
+                trendPointData[2].gap = isS3Active ? (s3WeakScore >= 80 ? '80% Target achieved' : `${80 - s3WeakScore}% to target`) : 'Pending Final Assessment';
+                trendPointData[2].status = isS3Active ? 'Final Evaluation milestone' : 'Target milestone';
+
+                // ================= RENDER SVG CHARTS =================
+                // 1. Render Area Chart Stacked Layers
+                const calcStackedY = (pcts) => {
+                    const y0 = 20;
+                    const y1 = +(20 + (pcts.HI || 0) * 1.6).toFixed(1);
+                    const y2 = +(y1 + (pcts.DI || 0) * 1.6).toFixed(1);
+                    const y3 = +(y2 + (pcts.HC || 0) * 1.6).toFixed(1);
+                    const y4 = 180;
+                    return { y0, y1, y2, y3, y4 };
+                };
+
+                const s1Y = calcStackedY(stage1Pcts);
+                const s2Y = calcStackedY(stage2Pcts);
+                const s3Y = calcStackedY(stage3Pcts);
+
+                // Update marker overlay points in stageMigrationData
+                stageMigrationData[0].markers = { hi: s1Y.y0, di: s1Y.y1, hc: s1Y.y2, dc: s1Y.y3 };
+                stageMigrationData[1].markers = { hi: s2Y.y0, di: s2Y.y1, hc: s2Y.y2, dc: s2Y.y3 };
+                stageMigrationData[2].markers = { hi: s3Y.y0, di: s3Y.y1, hc: s3Y.y2, dc: s3Y.y3 };
+
+                // HI Area Layer
+                const layerHi = document.getElementById('area-layer-hi');
+                if (layerHi) layerHi.setAttribute('d', `M 60 ${s1Y.y0} L 470 ${s2Y.y0} L 880 ${s3Y.y0} L 880 ${s3Y.y1} L 470 ${s2Y.y1} L 60 ${s1Y.y1} Z`);
+
+                // DI Area Layer
+                const layerDi = document.getElementById('area-layer-di');
+                if (layerDi) layerDi.setAttribute('d', `M 60 ${s1Y.y1} L 470 ${s2Y.y1} L 880 ${s3Y.y1} L 880 ${s3Y.y2} L 470 ${s2Y.y2} L 60 ${s1Y.y2} Z`);
+
+                // HC Area Layer
+                const layerHc = document.getElementById('area-layer-hc');
+                if (layerHc) layerHc.setAttribute('d', `M 60 ${s1Y.y2} L 470 ${s2Y.y2} L 880 ${s3Y.y2} L 880 ${s3Y.y3} L 470 ${s2Y.y3} L 60 ${s1Y.y3} Z`);
+
+                // DC Area Layer
+                const layerDc = document.getElementById('area-layer-dc');
+                if (layerDc) layerDc.setAttribute('d', `M 60 ${s1Y.y3} L 470 ${s2Y.y3} L 880 ${s3Y.y3} L 880 180 L 470 180 L 60 180 Z`);
+
+                // Divider Lines
+                const div1 = document.getElementById('area-div-1');
+                if (div1) div1.setAttribute('d', `M 60 ${s1Y.y1} L 470 ${s2Y.y1} L 880 ${s3Y.y1}`);
+
+                const div2 = document.getElementById('area-div-2');
+                if (div2) div2.setAttribute('d', `M 60 ${s1Y.y2} L 470 ${s2Y.y2} L 880 ${s3Y.y2}`);
+
+                const div3 = document.getElementById('area-div-3');
+                if (div3) div3.setAttribute('d', `M 60 ${s1Y.y3} L 470 ${s2Y.y3} L 880 ${s3Y.y3}`);
+
+                // Area Pending Overlay
+                const areaOverlay = document.getElementById('area-pending-overlay');
+                const areaRect = document.getElementById('area-pending-rect');
+                const areaBadge = document.getElementById('area-pending-badge');
+                const areaText = document.getElementById('area-pending-text');
+                const s2lbl = document.getElementById('area-label-s2');
+                const s3lbl = document.getElementById('area-label-s3');
+
+                if (areaOverlay) {
+                    if (completedStagesCount < 2) {
+                        areaOverlay.style.display = 'block';
+                        if (areaRect) { areaRect.setAttribute('x', '260'); areaRect.setAttribute('width', '620'); }
+                        if (areaBadge) areaBadge.setAttribute('transform', 'translate(570, 95)');
+                        if (areaText) areaText.textContent = '2nd & Final Assessment Pending';
+                        if (s2lbl) { s2lbl.textContent = 'Second Assessment (Pending)'; s2lbl.style.color = '#475569'; }
+                        if (s3lbl) { s3lbl.textContent = 'Final Assessment (Pending)'; s3lbl.style.color = '#475569'; }
+                    } else if (completedStagesCount === 2) {
+                        areaOverlay.style.display = 'block';
+                        if (areaRect) { areaRect.setAttribute('x', '660'); areaRect.setAttribute('width', '220'); }
+                        if (areaBadge) areaBadge.setAttribute('transform', 'translate(770, 95)');
+                        if (areaText) areaText.textContent = 'Final Pending';
+                        if (s2lbl) { s2lbl.textContent = 'Second Assessment'; s2lbl.style.color = '#64748b'; }
+                        if (s3lbl) { s3lbl.textContent = 'Final Assessment (Pending)'; s3lbl.style.color = '#475569'; }
+                    } else {
+                        areaOverlay.style.display = 'none';
+                        if (s2lbl) { s2lbl.textContent = 'Second Assessment'; s2lbl.style.color = '#64748b'; }
+                        if (s3lbl) { s3lbl.textContent = 'Final Assessment'; s3lbl.style.color = '#64748b'; }
+                    }
+                }
+
+                // 2. Render Grouped Bar Chart (With Greyed-out Pending Support)
+                const setBar = (id, pct, isActive, defaultColor) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    if (isActive) {
+                        const h = Math.max(4, Math.round((pct || 0) * 1.6));
+                        const y = 180 - h;
+                        el.setAttribute('y', y);
+                        el.setAttribute('height', h);
+                        el.setAttribute('fill', defaultColor);
+                        el.setAttribute('stroke', 'none');
+                        el.setAttribute('opacity', '0.9');
+                    } else {
+                        el.setAttribute('y', 158);
+                        el.setAttribute('height', 22);
+                        el.setAttribute('fill', 'rgba(255, 255, 255, 0.05)');
+                        el.setAttribute('stroke', 'rgba(255, 255, 255, 0.12)');
+                        el.setAttribute('stroke-dasharray', '2 2');
+                        el.setAttribute('opacity', '0.45');
+                    }
+                };
+
+                // Stage 1 Bars
+                setBar('bar-s1-hi', stage1Pcts.HI, isS1Active, '#22c55e');
+                setBar('bar-s1-di', stage1Pcts.DI, isS1Active, '#06b6d4');
+                setBar('bar-s1-hc', stage1Pcts.HC, isS1Active, '#f97316');
+                setBar('bar-s1-dc', stage1Pcts.DC, isS1Active, '#c084fc');
+
+                // Stage 2 Bars
+                setBar('bar-s2-hi', stage2Pcts.HI, isS2Active, '#22c55e');
+                setBar('bar-s2-di', stage2Pcts.DI, isS2Active, '#06b6d4');
+                setBar('bar-s2-hc', stage2Pcts.HC, isS2Active, '#f97316');
+                setBar('bar-s2-dc', stage2Pcts.DC, isS2Active, '#c084fc');
+                const bLbl2 = document.getElementById('bar-label-s2');
+                if (bLbl2) {
+                    bLbl2.textContent = isS2Active ? '2nd Assessment' : '2nd Assess. (Pending)';
+                    bLbl2.setAttribute('fill', isS2Active ? '#64748b' : '#475569');
+                }
+
+                // Stage 3 Bars
+                setBar('bar-s3-hi', stage3Pcts.HI, isS3Active, '#22c55e');
+                setBar('bar-s3-di', stage3Pcts.DI, isS3Active, '#06b6d4');
+                setBar('bar-s3-hc', stage3Pcts.HC, isS3Active, '#f97316');
+                setBar('bar-s3-dc', stage3Pcts.DC, isS3Active, '#c084fc');
+                const bLbl3 = document.getElementById('bar-label-s3');
+                if (bLbl3) {
+                    bLbl3.textContent = isS3Active ? 'Final Assess.' : 'Final Assess. (Pending)';
+                    bLbl3.setAttribute('fill', isS3Active ? '#64748b' : '#475569');
+                }
+
+                // 3. Render Weakest Quadrant Trend Line & Points (3 Stages) with Perfect Alignment
+                const y1 = isS1Active ? +(180 - s1WeakScore * 1.6).toFixed(1) : 150;
+                const y2 = isS2Active ? +(180 - s2WeakScore * 1.6).toFixed(1) : (isS1Active ? Math.max(30, y1 - 20) : 100);
+                const y3 = isS3Active ? +(180 - s3WeakScore * 1.6).toFixed(1) : (isS2Active ? Math.max(30, y2 - 25) : 70);
+
+                const solidPath = document.getElementById('trend-line-solid');
+                const dashedPath = document.getElementById('trend-line-dashed');
+
+                if (completedStagesCount >= 3) {
+                    if (solidPath) {
+                        solidPath.style.display = 'block';
+                        solidPath.setAttribute('d', `M 90 ${y1} C 165 ${y1}, 165 ${y2}, 240 ${y2} C 315 ${y2}, 315 ${y3}, 390 ${y3}`);
+                        solidPath.setAttribute('stroke', profile.color);
+                    }
+                    if (dashedPath) dashedPath.style.display = 'none';
+                } else if (completedStagesCount === 2) {
+                    if (solidPath) {
+                        solidPath.style.display = 'block';
+                        solidPath.setAttribute('d', `M 90 ${y1} C 165 ${y1}, 165 ${y2}, 240 ${y2}`);
+                        solidPath.setAttribute('stroke', profile.color);
+                    }
+                    if (dashedPath) {
+                        dashedPath.style.display = 'block';
+                        dashedPath.setAttribute('d', `M 240 ${y2} L 390 ${y3}`);
+                        dashedPath.setAttribute('stroke', '#475569');
+                    }
+                } else if (completedStagesCount === 1) {
+                    if (solidPath) solidPath.style.display = 'none';
+                    if (dashedPath) {
+                        dashedPath.style.display = 'block';
+                        dashedPath.setAttribute('d', `M 90 ${y1} L 240 ${y2} L 390 ${y3}`);
+                        dashedPath.setAttribute('stroke', '#475569');
+                    }
+                } else {
+                    if (solidPath) solidPath.style.display = 'none';
+                    if (dashedPath) {
+                        dashedPath.style.display = 'block';
+                        dashedPath.setAttribute('d', `M 90 150 L 240 100 L 390 70`);
+                        dashedPath.setAttribute('stroke', '#475569');
+                    }
+                }
+
+                // Update Circles, Texts, and Hit Targets for 3 Points
+                const setTrendPoint = (circleId, textId, hitId, cx, cy, isActive, val) => {
+                    const cEl = document.getElementById(circleId);
+                    const tEl = document.getElementById(textId);
+                    const hEl = document.getElementById(hitId);
+                    if (hEl) {
+                        hEl.setAttribute('cx', cx);
+                        hEl.setAttribute('cy', cy);
+                    }
+                    if (cEl) {
+                        cEl.setAttribute('cx', cx);
+                        cEl.setAttribute('cy', cy);
+                        if (isActive) {
+                            cEl.setAttribute('stroke', profile.color);
+                            cEl.setAttribute('fill', '#0d1722');
+                            cEl.setAttribute('stroke-width', '2.5');
+                            cEl.setAttribute('opacity', '1');
+                        } else {
+                            cEl.setAttribute('stroke', '#475569');
+                            cEl.setAttribute('fill', '#111c26');
+                            cEl.setAttribute('stroke-width', '2');
+                            cEl.setAttribute('opacity', '0.55');
+                        }
+                    }
+                    if (tEl) {
+                        tEl.setAttribute('x', cx);
+                        tEl.setAttribute('y', Math.max(16, cy - 12));
+                        if (isActive) {
+                            tEl.textContent = `${val}%`;
+                            tEl.setAttribute('fill', profile.color);
+                        } else {
+                            tEl.textContent = '--';
+                            tEl.setAttribute('fill', '#64748b');
+                        }
+                    }
+                };
+
+                setTrendPoint('trend-circle-1', 'trend-text-1', 'trend-hit-1', 90, y1, isS1Active, s1WeakScore);
+                setTrendPoint('trend-circle-2', 'trend-text-2', 'trend-hit-2', 240, y2, isS2Active, s2WeakScore);
+                setTrendPoint('trend-circle-3', 'trend-text-3', 'trend-hit-3', 390, y3, isS3Active, s3WeakScore);
+
+                const tLbl2 = document.getElementById('trend-label-2');
+                if (tLbl2) {
+                    tLbl2.textContent = isS2Active ? '2nd Assess.' : '2nd Assess. (Pending)';
+                    tLbl2.setAttribute('fill', isS2Active ? '#64748b' : '#475569');
+                }
+                const tLbl3 = document.getElementById('trend-label-3');
+                if (tLbl3) {
+                    tLbl3.textContent = isS3Active ? 'Final Assess.' : 'Final Assess. (Pending)';
+                    tLbl3.setAttribute('fill', isS3Active ? '#64748b' : '#475569');
+                }
 
             } catch (err) {
                 console.error('Error loading student strategy data:', err);

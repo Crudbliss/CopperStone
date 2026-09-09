@@ -132,6 +132,7 @@ db.serialize(() => {
         db.run(`ALTER TABLE modules ADD COLUMN estimated_time TEXT DEFAULT '30 min'`, (err) => {});
         db.run(`ALTER TABLE modules ADD COLUMN is_published INTEGER DEFAULT 1`, (err) => {});
         db.run(`ALTER TABLE modules ADD COLUMN is_archived INTEGER DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE modules ADD COLUMN image_url TEXT`, (err) => {});
     });
 
     // 12b. Module Chapters (Chapters inside a module)
@@ -147,6 +148,7 @@ db.serialize(() => {
         examples TEXT,
         estimated_time TEXT DEFAULT '15 min',
         content_blocks_json TEXT,
+        image_url TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(module_id) REFERENCES modules(id) ON DELETE CASCADE
     )`);
@@ -154,6 +156,7 @@ db.serialize(() => {
     db.run(`ALTER TABLE module_chapters ADD COLUMN examples TEXT`, (err) => {});
     db.run(`ALTER TABLE module_chapters ADD COLUMN estimated_time TEXT DEFAULT '15 min'`, (err) => {});
     db.run(`ALTER TABLE module_chapters ADD COLUMN content_blocks_json TEXT`, (err) => {});
+    db.run(`ALTER TABLE module_chapters ADD COLUMN image_url TEXT`, (err) => {});
 
     // 12c. Module Questions (Quiz & Activities: True/False, Multiple Choice, Matching)
     db.run(`CREATE TABLE IF NOT EXISTS module_questions (
@@ -1212,15 +1215,28 @@ app.get('/api/modules/:id', (req, res) => {
     });
 });
 
-// POST /api/modules - Create a new module
-app.post('/api/modules', (req, res) => {
-    const { title, description, quadrant_category, difficulty, topic, estimated_time, is_published, is_archived } = req.body || {};
+// POST /api/modules - Create a new module (supports JSON & multipart/form-data for image/PDF)
+app.post('/api/modules', uploadModule.fields([{ name: 'pdf_file', maxCount: 1 }, { name: 'image_file', maxCount: 1 }, { name: 'file', maxCount: 1 }]), (req, res) => {
+    const { title, description, quadrant_category, difficulty, topic, estimated_time, is_published, is_archived, lesson_content, target_year_level, stream_type, passing_score } = req.body || {};
+    let image_url = req.body ? req.body.image_url : null;
+    let pdf_url = req.body ? req.body.pdf_url : null;
+
+    if (req.files) {
+        if (req.files.image_file && req.files.image_file[0]) {
+            image_url = '/public/uploads/modules/' + req.files.image_file[0].filename;
+        } else if (req.files.file && req.files.file[0] && req.files.file[0].mimetype.startsWith('image/')) {
+            image_url = '/public/uploads/modules/' + req.files.file[0].filename;
+        }
+        if (req.files.pdf_file && req.files.pdf_file[0]) {
+            pdf_url = '/public/uploads/modules/' + req.files.pdf_file[0].filename;
+        }
+    }
     
     if (!title || title.trim() === '') {
         return res.status(400).json({ error: 'Module title is required' });
     }
 
-    const sql = `INSERT INTO modules (title, description, quadrant_category, difficulty, topic, estimated_time, is_published, is_archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO modules (title, description, quadrant_category, difficulty, topic, estimated_time, is_published, is_archived, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     db.run(sql, [
         title.trim(), 
         description || '', 
@@ -1229,23 +1245,73 @@ app.post('/api/modules', (req, res) => {
         topic || 'General', 
         estimated_time || '30 min',
         is_published !== undefined ? is_published : 1,
-        is_archived !== undefined ? is_archived : 0
+        is_archived !== undefined ? is_archived : 0,
+        image_url || null
     ], function(err) {
         if (err) return res.status(500).json({ error: err.message });
-        res.status(201).json({ success: true, module_id: this.lastID, message: 'Module created successfully' });
+        const moduleId = this.lastID;
+
+        // If created by a teacher with initial lesson content, image, or PDF attachment, auto-create Chapter 1
+        if (lesson_content || image_url || pdf_url) {
+            const initialBlocks = [];
+            if (image_url) {
+                initialBlocks.push({
+                    type: 'image',
+                    url: image_url,
+                    caption: `${title.trim()} — Lesson Illustration`
+                });
+            }
+            if (lesson_content && lesson_content.trim()) {
+                initialBlocks.push({
+                    type: 'text',
+                    content: lesson_content.trim()
+                });
+            }
+            if (pdf_url) {
+                initialBlocks.push({
+                    type: 'pdf',
+                    url: pdf_url,
+                    title: 'Reference Material (PDF)'
+                });
+            }
+
+            const chapterSql = `INSERT INTO module_chapters (module_id, chapter_order, title, text_content, pdf_url, image_url, content_blocks_json, estimated_time) VALUES (?, 1, ?, ?, ?, ?, ?, ?)`;
+            db.run(chapterSql, [
+                moduleId,
+                `Chapter 1: Overview & Core Concepts`,
+                lesson_content || '',
+                pdf_url || '',
+                image_url || '',
+                JSON.stringify(initialBlocks),
+                '30 min'
+            ], (chErr) => {
+                res.status(201).json({ success: true, module_id: moduleId, image_url: image_url, message: 'Module and initial chapter created successfully' });
+            });
+        } else {
+            res.status(201).json({ success: true, module_id: moduleId, image_url: image_url, message: 'Module created successfully' });
+        }
     });
 });
 
 // PUT /api/modules/:id - Update an existing module
-app.put('/api/modules/:id', (req, res) => {
+app.put('/api/modules/:id', uploadModule.fields([{ name: 'pdf_file', maxCount: 1 }, { name: 'image_file', maxCount: 1 }, { name: 'file', maxCount: 1 }]), (req, res) => {
     const moduleId = req.params.id;
     const { title, description, quadrant_category, difficulty, topic, estimated_time, is_published, is_archived } = req.body || {};
+    let image_url = req.body ? req.body.image_url : undefined;
+
+    if (req.files) {
+        if (req.files.image_file && req.files.image_file[0]) {
+            image_url = '/public/uploads/modules/' + req.files.image_file[0].filename;
+        } else if (req.files.file && req.files.file[0] && req.files.file[0].mimetype.startsWith('image/')) {
+            image_url = '/public/uploads/modules/' + req.files.file[0].filename;
+        }
+    }
 
     if (!title || title.trim() === '') {
         return res.status(400).json({ error: 'Module title is required' });
     }
 
-    const sql = `UPDATE modules SET title = ?, description = ?, quadrant_category = ?, difficulty = ?, topic = ?, estimated_time = ?, is_published = COALESCE(?, is_published, 1), is_archived = COALESCE(?, is_archived, 0) WHERE id = ?`;
+    const sql = `UPDATE modules SET title = ?, description = ?, quadrant_category = ?, difficulty = ?, topic = ?, estimated_time = ?, is_published = COALESCE(?, is_published, 1), is_archived = COALESCE(?, is_archived, 0), image_url = COALESCE(?, image_url) WHERE id = ?`;
     db.run(sql, [
         title.trim(), 
         description || '', 
@@ -1255,10 +1321,11 @@ app.put('/api/modules/:id', (req, res) => {
         estimated_time || '30 min',
         is_published,
         is_archived,
+        image_url !== undefined ? image_url : null,
         moduleId
     ], function(err) {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ success: true, message: 'Module updated successfully' });
+        res.json({ success: true, image_url: image_url, message: 'Module updated successfully' });
     });
 });
 
@@ -1556,13 +1623,24 @@ app.post('/api/modules/:id/submit-quiz', (req, res) => {
     });
 });
 
+// POST /api/upload/image - Upload image file for a module or chapter block
+app.post('/api/upload/image', uploadModule.single('image_file'), (req, res) => {
+    const file = req.file || (req.files && req.files.image_file && req.files.image_file[0]);
+    if (!file) {
+        return res.status(400).json({ error: 'No image file uploaded' });
+    }
+    const fileUrl = '/public/uploads/modules/' + file.filename;
+    res.json({ success: true, file_url: fileUrl, original_name: file.originalname });
+});
+
 // POST /api/upload/pdf - Upload PDF file for a module or chapter
 app.post('/api/upload/pdf', uploadModule.single('pdf_file'), (req, res) => {
-    if (!req.file) {
+    const file = req.file || (req.files && req.files.pdf_file && req.files.pdf_file[0]);
+    if (!file) {
         return res.status(400).json({ error: 'No PDF file uploaded' });
     }
-    const fileUrl = '/public/uploads/modules/' + req.file.filename;
-    res.json({ success: true, file_url: fileUrl, original_name: req.file.originalname });
+    const fileUrl = '/public/uploads/modules/' + file.filename;
+    res.json({ success: true, file_url: fileUrl, original_name: file.originalname });
 });
 
 // --- SUBMISSIONS ---
