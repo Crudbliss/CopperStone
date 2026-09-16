@@ -593,100 +593,233 @@
             .fuzzy-bar-header { font-size: 12.5px; }
         }
 
-        /* --- CONTEXTUAL HELP ACCORDION --- */
-        .contextual-help-container {
-            margin-bottom: 20px;
-            border-radius: 12px;
-            background: rgba(56, 189, 248, 0.05);
-            border: 1px solid rgba(56, 189, 248, 0.22);
-            overflow: hidden;
-            transition: all 0.25s ease;
+        /* --- 7 DIMENSIONS STEPPER STYLES --- */
+        .dimension-stepper-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
         }
 
-        .contextual-help-container.expanded {
-            background: rgba(56, 189, 248, 0.08);
-            border-color: rgba(56, 189, 248, 0.45);
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-        }
-
-        .btn-help-toggle {
-            width: 100%;
-            background: transparent;
-            border: none;
-            padding: 11px 16px;
+        .dimension-stepper-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            color: var(--matrix-blue);
-            font-family: inherit;
-            font-size: 13.5px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: left;
-            user-select: none;
-            transition: all 0.2s;
-        }
-
-        .btn-help-toggle:hover {
-            color: #7dd3fc;
-            background: rgba(56, 189, 248, 0.08);
-        }
-
-        .help-toggle-left {
-            display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .help-bulb-icon {
-            font-size: 16px;
-            line-height: 1;
-        }
-
-        .help-arrow {
+            margin-bottom: 12px;
             font-size: 11px;
-            transition: transform 0.25s ease;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .stepper-dim-count {
+            color: var(--matrix-blue);
+            font-weight: 700;
+            font-size: 11.5px;
+        }
+
+        .dimension-stepper-pills {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .dim-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 8px 4px;
+            font-family: inherit;
+            color: var(--text-muted);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            user-select: none;
+        }
+
+        .dim-pill:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+        }
+
+        .dim-pill.active {
+            background: rgba(56, 189, 248, 0.12);
+            border-color: var(--matrix-blue);
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+        }
+
+        .dim-pill.completed {
+            background: rgba(74, 222, 128, 0.08);
+            border-color: rgba(74, 222, 128, 0.35);
+            color: #4ade80;
+        }
+
+        .dim-pill .dim-num {
+            font-size: 9px;
+            font-weight: 800;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        .dim-pill .dim-name {
+            font-size: 10.5px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .dim-pill.active .dim-num {
+            color: var(--matrix-blue);
+            opacity: 1;
+        }
+
+        .dim-pill.completed .dim-num {
+            color: var(--matrix-green);
+            opacity: 1;
+        }
+
+        /* Dimension Badge Card inside Question */
+        .dimension-badge-card {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(14, 46, 65, 0.3) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.22);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 4px;
+        }
+
+        .dimension-badge-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .dim-badge-pill {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--matrix-blue);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dim-subcounter {
+            font-size: 12px;
+            font-weight: 600;
             color: var(--text-muted);
         }
 
-        .contextual-help-container.expanded .help-arrow {
-            transform: rotate(180deg);
-            color: var(--matrix-blue);
+        .dimension-theme-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.4;
         }
 
-        .contextual-help-body {
-            display: none;
-            padding: 0 16px 14px 16px;
-            animation: fadeInHelp 0.2s ease;
+        /* In-dimension 4-step indicator */
+        .in-dim-progress-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 6px;
         }
 
-        .contextual-help-container.expanded .contextual-help-body {
-            display: block;
+        .in-dim-steps {
+            display: flex;
+            gap: 6px;
+            align-items: center;
         }
 
-        @keyframes fadeInHelp {
-            from { opacity: 0; transform: translateY(-4px); }
+        .in-dim-step-dot {
+            width: 28px;
+            height: 7px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .in-dim-step-dot.active {
+            background: var(--matrix-blue);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+            width: 36px;
+        }
+
+        .in-dim-step-dot.answered {
+            background: var(--matrix-green);
+        }
+
+        .in-dim-step-dot.answered.active {
+            background: var(--matrix-green);
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+
+        .overall-badge {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* Milestone Transition Banner */
+        .milestone-toast {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.12) 0%, rgba(6, 15, 23, 0.95) 100%);
+            border: 1px solid rgba(74, 222, 128, 0.35);
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            animation: fadeInToast 0.3s ease;
+        }
+
+        @keyframes fadeInToast {
+            from { opacity: 0; transform: translateY(-8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .contextual-help-inner {
-            background: rgba(6, 15, 23, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            padding: 12px 14px;
+        .milestone-toast-text {
             font-size: 13px;
-            line-height: 1.55;
-            color: #e2e8f0;
+            color: #ffffff;
+            font-weight: 600;
         }
 
-        .help-tag-pill {
-            display: inline-block;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: var(--matrix-blue);
-            margin-bottom: 6px;
+        .milestone-toast-text span {
+            color: var(--matrix-green);
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .dimension-stepper-pills {
+                display: flex;
+                overflow-x: auto;
+                padding-bottom: 4px;
+            }
+            .dim-pill {
+                min-width: 78px;
+                flex: 0 0 auto;
+            }
         }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
@@ -706,11 +839,20 @@
             </div>
         </div>
 
+        <!-- 7-DIMENSIONS STEPPER BAR -->
+        <div class="dimension-stepper-wrapper">
+            <div class="dimension-stepper-header">
+                <span>🧠 Learning Dimensions (Parts 1–7)</span>
+                <span class="stepper-dim-count" id="stepper-dim-count">Part 1 of 7</span>
+            </div>
+            <div class="dimension-stepper-pills" id="dimension-stepper">
+                <!-- 7 Pills injected here -->
+            </div>
+        </div>
+
         <div class="progress-wrapper">
             <div class="progress-info">
-                <span>Question <span class="current" id="progress-current"
-                        style="color:var(--text-main); font-weight:700;">1</span> of <span
-                        id="progress-total">28</span></span>
+                <span>Overall Assessment Progress</span>
                 <span id="progress-pct">0% complete</span>
             </div>
             <div class="progress-track">
@@ -718,12 +860,10 @@
             </div>
         </div>
 
+        <div id="milestone-toast-container"></div>
+
         <div id="questions-container">
             <!-- Single question injected here -->
-        </div>
-
-        <div class="pagination-dots" id="dots-container">
-            <!-- Dots injected here -->
         </div>
 
     </div>
@@ -949,9 +1089,20 @@
             }
         ];
 
+        const DIMENSION_CONFIG = [
+            { num: 1, shortTitle: "Occurrence", title: "How does learning occur?", startIdx: 0, endIdx: 3, icon: "⚡" },
+            { num: 2, shortTitle: "Definition", title: "What is the definition of learning?", startIdx: 4, endIdx: 7, icon: "📖" },
+            { num: 3, shortTitle: "Success", title: "What constitutes successful learning?", startIdx: 8, endIdx: 11, icon: "🎯" },
+            { num: 4, shortTitle: "Purpose", title: "What is the purpose of learning?", startIdx: 12, endIdx: 15, icon: "🧭" },
+            { num: 5, shortTitle: "Relevance", title: "What is worth learning?", startIdx: 16, endIdx: 19, icon: "💎" },
+            { num: 6, shortTitle: "Methods", title: "How do people learn best?", startIdx: 20, endIdx: 23, icon: "💡" },
+            { num: 7, shortTitle: "Responsibility", title: "What are individuals responsible for in learning?", startIdx: 24, endIdx: 27, icon: "🤝" }
+        ];
+
         let answers = {};
         let shuffledQuestions = [];
         let currentQuestionIndex = 0;
+        let lastCompletedDimension = -1;
 
         function escapeHtml(str) {
             if (!str) return '';
@@ -970,53 +1121,73 @@
             }
         }
 
+        function getDimensionForIndex(index) {
+            const dimIdx = Math.floor(index / 4);
+            return DIMENSION_CONFIG[Math.min(dimIdx, DIMENSION_CONFIG.length - 1)];
+        }
+
+        function goToDimension(dimNum) {
+            const targetDim = DIMENSION_CONFIG.find(d => d.num === dimNum);
+            if (targetDim) {
+                showQuestion(targetDim.startIdx);
+            }
+        }
+
+        function renderDimensionStepper() {
+            const container = document.getElementById('dimension-stepper');
+            if (!container) return;
+
+            const currentDim = getDimensionForIndex(currentQuestionIndex);
+            const stepperCountEl = document.getElementById('stepper-dim-count');
+            if (stepperCountEl) {
+                stepperCountEl.textContent = `Part ${currentDim.num} of 7: ${currentDim.shortTitle}`;
+            }
+
+            container.innerHTML = DIMENSION_CONFIG.map(dim => {
+                // Check how many questions in this dimension are answered
+                let dimAnswered = 0;
+                for (let i = dim.startIdx; i <= dim.endIdx; i++) {
+                    const qItem = shuffledQuestions[i];
+                    if (qItem && answers[qItem.i] !== undefined) {
+                        dimAnswered++;
+                    }
+                }
+
+                const isCompleted = dimAnswered === 4;
+                const isActive = (currentDim.num === dim.num);
+
+                let statusClass = '';
+                if (isActive) statusClass = 'active';
+                else if (isCompleted) statusClass = 'completed';
+
+                const iconOrCheck = isCompleted ? '✓ ' : '';
+
+                return `
+                    <div class="dim-pill ${statusClass}" onclick="goToDimension(${dim.num})" title="${escapeHtml(dim.title)} (${dimAnswered}/4 answered)">
+                        <span class="dim-num">${iconOrCheck}Part ${dim.num}</span>
+                        <span class="dim-name">${escapeHtml(dim.shortTitle)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
         function updateProgress() {
             const answeredCount = Object.keys(answers).length;
             const total = surveyQuestions.length || 28;
             const pct = Math.round((answeredCount / total) * 100);
 
-            const currEl = document.getElementById('progress-current');
-            const totalEl = document.getElementById('progress-total');
             const pctEl = document.getElementById('progress-pct');
             const fillEl = document.getElementById('progress-fill');
 
-            if (currEl) currEl.textContent = currentQuestionIndex + 1;
-            if (totalEl) totalEl.textContent = total;
-            if (pctEl) pctEl.textContent = `${pct}% complete`;
+            if (pctEl) pctEl.textContent = `${pct}% complete (${answeredCount}/${total})`;
             if (fillEl) fillEl.style.width = `${pct}%`;
 
-            // Update dots
-            const dots = document.querySelectorAll('.dot');
-            dots.forEach((dot, idx) => {
-                const qItem = shuffledQuestions[idx];
-                const isAnswered = qItem && answers[qItem.i] !== undefined;
-                dot.className = 'dot';
-                if (isAnswered) dot.classList.add('answered');
-                if (idx === currentQuestionIndex) dot.classList.add('active');
-            });
-        }
-
-        function renderDots() {
-            const container = document.getElementById('dots-container');
-            if (!container) return;
-            container.innerHTML = '';
-            for (let i = 0; i < shuffledQuestions.length; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'dot' + (i === 0 ? ' active' : '');
-                dot.title = `Question ${i + 1}`;
-                dot.style.cursor = 'pointer';
-                dot.onclick = () => {
-                    currentQuestionIndex = i;
-                    showQuestion(currentQuestionIndex);
-                };
-                container.appendChild(dot);
-            }
+            renderDimensionStepper();
         }
 
         function renderQuestions() {
             shuffledQuestions = surveyQuestions.map((val, i) => ({ val, i }));
             currentQuestionIndex = 0;
-            renderDots();
             updateProgress();
             showQuestion(0);
         }
@@ -1030,9 +1201,36 @@
 
         function nextQuestion() {
             if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                const prevDim = getDimensionForIndex(currentQuestionIndex);
                 currentQuestionIndex++;
+                const newDim = getDimensionForIndex(currentQuestionIndex);
+
+                // Show milestone toast when graduating to next dimension
+                if (newDim.num > prevDim.num) {
+                    showMilestoneToast(prevDim, newDim);
+                }
+
                 showQuestion(currentQuestionIndex);
             }
+        }
+
+        function showMilestoneToast(prevDim, nextDim) {
+            const container = document.getElementById('milestone-toast-container');
+            if (!container) return;
+
+            container.innerHTML = `
+                <div class="milestone-toast">
+                    <div class="milestone-toast-text">
+                        🎉 <span>Part ${prevDim.num} (${prevDim.shortTitle}) Complete!</span> &nbsp;•&nbsp; Starting Part ${nextDim.num}: "${escapeHtml(nextDim.title)}"
+                    </div>
+                    <button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:16px;">✕</button>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const toast = container.querySelector('.milestone-toast');
+                if (toast) toast.remove();
+            }, 4000);
         }
 
         function showQuestion(index) {
@@ -1046,6 +1244,23 @@
             const isLast = (index === total - 1);
             const currentAnswer = answers[item.i];
             const hasAnsweredAll = Object.keys(answers).length >= total;
+
+            const currentDim = getDimensionForIndex(index);
+            const inDimIndex = (index % 4) + 1; // 1 to 4
+
+            // Generate 4-step dots for this dimension
+            const stepDotsHtml = [0, 1, 2, 3].map(stepOffset => {
+                const globalIdx = currentDim.startIdx + stepOffset;
+                const qObj = shuffledQuestions[globalIdx];
+                const isStepAnswered = qObj && answers[qObj.i] !== undefined;
+                const isStepActive = (globalIdx === index);
+
+                let dotClass = 'in-dim-step-dot';
+                if (isStepAnswered) dotClass += ' answered';
+                if (isStepActive) dotClass += ' active';
+
+                return `<div class="${dotClass}" title="Question ${stepOffset + 1} of 4 in Part ${currentDim.num}" onclick="showQuestion(${globalIdx})"></div>`;
+            }).join('');
 
             const helpHtml = item.val.contextual_help ? `
                 <div class="contextual-help-container" id="help-box-${index}">
@@ -1067,7 +1282,24 @@
 
             container.innerHTML = `
                 <div class="question-card">
-                    <div class="dimension-label">${escapeHtml(item.val.title || 'Learning Dimension')}</div>
+                    <!-- DIMENSION BADGE CARD -->
+                    <div class="dimension-badge-card">
+                        <div class="dimension-badge-top">
+                            <span class="dim-badge-pill">PART ${currentDim.num} OF 7 · ${escapeHtml(currentDim.shortTitle).toUpperCase()}</span>
+                            <span class="dim-subcounter">Question ${inDimIndex} of 4 in this part</span>
+                        </div>
+                        <h2 class="dimension-theme-title">${escapeHtml(currentDim.title)}</h2>
+                    </div>
+
+                    <!-- IN-DIMENSION STEP INDICATORS -->
+                    <div class="in-dim-progress-row">
+                        <div class="in-dim-steps">
+                            ${stepDotsHtml}
+                        </div>
+                        <span class="overall-badge">Overall: Question ${qNum} of ${total}</span>
+                    </div>
+
+                    <!-- QUESTION STATEMENT -->
                     <div class="question-title">${qNum}. ${escapeHtml(item.val.text)}</div>
                     
                     ${helpHtml}
