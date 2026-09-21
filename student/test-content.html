@@ -821,6 +821,102 @@
                 flex: 0 0 auto;
             }
         }
+
+        /* --- CONTEXTUAL HELP ACCORDION --- */
+        .contextual-help-container {
+            margin: 12px 0 16px 0;
+            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.04);
+            border: 1px solid rgba(56, 189, 248, 0.18);
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .contextual-help-container.expanded {
+            background: rgba(56, 189, 248, 0.08);
+            border-color: rgba(56, 189, 248, 0.45);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn-help-toggle {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--matrix-blue);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .btn-help-toggle:hover {
+            color: #7dd3fc;
+            background: rgba(56, 189, 248, 0.06);
+        }
+
+        .help-toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .help-bulb-icon {
+            font-size: 15px;
+            line-height: 1;
+        }
+
+        .help-arrow {
+            font-size: 10px;
+            transition: transform 0.25s ease;
+            color: var(--text-muted);
+        }
+
+        .contextual-help-container.expanded .help-arrow {
+            transform: rotate(180deg);
+            color: var(--matrix-blue);
+        }
+
+        .contextual-help-body {
+            display: none;
+            padding: 0 14px 14px 14px;
+            animation: fadeInHelp 0.2s ease;
+        }
+
+        .contextual-help-container.expanded .contextual-help-body {
+            display: block;
+        }
+
+        @keyframes fadeInHelp {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .contextual-help-inner {
+            background: rgba(6, 15, 23, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 13px;
+            line-height: 1.55;
+            color: #e2e8f0;
+        }
+
+        .help-tag-pill {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--matrix-blue);
+            margin-bottom: 4px;
+        }
     </style>
     <link rel="icon" type="image/x-icon" href="../images/matrix_logo.ico">
 </head>
@@ -835,14 +931,25 @@
                 MATRIX
             </div>
             <div class="pre-assessment-pill" id="session-pill">
-                <span>🧠</span> PRE-ASSESSMENT
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                PRE-ASSESSMENT
             </div>
         </div>
 
         <!-- 7-DIMENSIONS STEPPER BAR -->
         <div class="dimension-stepper-wrapper">
             <div class="dimension-stepper-header">
-                <span>🧠 Learning Dimensions (Parts 1–7)</span>
+                <span style="display: flex; align-items: center; gap: 6px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                    Learning Dimensions (Parts 1–7)
+                </span>
                 <span class="stepper-dim-count" id="stepper-dim-count">Part 1 of 7</span>
             </div>
             <div class="dimension-stepper-pills" id="dimension-stepper">
@@ -875,7 +982,12 @@
     </div>
 
     <div id="result-screen">
-        <div class="result-icon">🎯</div>
+        <div class="result-icon" style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+            <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="var(--matrix-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+            </svg>
+        </div>
         <h3>Assessment Complete!</h3>
         <p style="color: var(--text-muted); margin-top: 8px;">Your Learning Mode is:</p>
         <div class="result-mode" id="final-mode" style="margin-bottom: 24px;">Loading...</div>
@@ -1090,13 +1202,13 @@
         ];
 
         const DIMENSION_CONFIG = [
-            { num: 1, shortTitle: "Occurrence", title: "How does learning occur?", startIdx: 0, endIdx: 3, icon: "⚡" },
-            { num: 2, shortTitle: "Definition", title: "What is the definition of learning?", startIdx: 4, endIdx: 7, icon: "📖" },
-            { num: 3, shortTitle: "Success", title: "What constitutes successful learning?", startIdx: 8, endIdx: 11, icon: "🎯" },
-            { num: 4, shortTitle: "Purpose", title: "What is the purpose of learning?", startIdx: 12, endIdx: 15, icon: "🧭" },
-            { num: 5, shortTitle: "Relevance", title: "What is worth learning?", startIdx: 16, endIdx: 19, icon: "💎" },
-            { num: 6, shortTitle: "Methods", title: "How do people learn best?", startIdx: 20, endIdx: 23, icon: "💡" },
-            { num: 7, shortTitle: "Responsibility", title: "What are individuals responsible for in learning?", startIdx: 24, endIdx: 27, icon: "🤝" }
+            { num: 1, shortTitle: "Occurrence", title: "How does learning occur?", startIdx: 0, endIdx: 3 },
+            { num: 2, shortTitle: "Definition", title: "What is the definition of learning?", startIdx: 4, endIdx: 7 },
+            { num: 3, shortTitle: "Success", title: "What constitutes successful learning?", startIdx: 8, endIdx: 11 },
+            { num: 4, shortTitle: "Purpose", title: "What is the purpose of learning?", startIdx: 12, endIdx: 15 },
+            { num: 5, shortTitle: "Relevance", title: "What is worth learning?", startIdx: 16, endIdx: 19 },
+            { num: 6, shortTitle: "Methods", title: "How do people learn best?", startIdx: 20, endIdx: 23 },
+            { num: 7, shortTitle: "Responsibility", title: "What are individuals responsible for in learning?", startIdx: 24, endIdx: 27 }
         ];
 
         let answers = {};
@@ -1220,8 +1332,11 @@
 
             container.innerHTML = `
                 <div class="milestone-toast">
-                    <div class="milestone-toast-text">
-                        🎉 <span>Part ${prevDim.num} (${prevDim.shortTitle}) Complete!</span> &nbsp;•&nbsp; Starting Part ${nextDim.num}: "${escapeHtml(nextDim.title)}"
+                    <div class="milestone-toast-text" style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Part ${prevDim.num} (${prevDim.shortTitle}) Complete!</span> &nbsp;•&nbsp; Starting Part ${nextDim.num}: "${escapeHtml(nextDim.title)}"
                     </div>
                     <button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:16px;">✕</button>
                 </div>
@@ -1262,19 +1377,24 @@
                 return `<div class="${dotClass}" title="Question ${stepOffset + 1} of 4 in Part ${currentDim.num}" onclick="showQuestion(${globalIdx})"></div>`;
             }).join('');
 
+            let cleanHelpText = (item.val.contextual_help || '').replace(/^In this question, this means:\s*/i, '');
             const helpHtml = item.val.contextual_help ? `
                 <div class="contextual-help-container" id="help-box-${index}">
                     <button type="button" class="btn-help-toggle" onclick="toggleQuestionHelp(${index})">
                         <span class="help-toggle-left">
-                            <span class="help-bulb-icon">💡</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
                             <span>Need help understanding this question?</span>
                         </span>
                         <span class="help-arrow">▼</span>
                     </button>
                     <div class="contextual-help-body">
                         <div class="contextual-help-inner">
-                            <span class="help-tag-pill">💡 In this question, this means:</span><br>
-                            ${escapeHtml(item.val.contextual_help)}
+                            <span class="help-tag-pill">Context &amp; Meaning:</span><br>
+                            ${escapeHtml(cleanHelpText)}
                         </div>
                     </div>
                 </div>
@@ -1391,7 +1511,13 @@
 
             if (isPreview) {
                 const sessionPill = document.getElementById('session-pill');
-                if (sessionPill) sessionPill.innerHTML = `<span>⚙️</span> ADMIN PREVIEW`;
+                if (sessionPill) sessionPill.innerHTML = `
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    ADMIN PREVIEW
+                `;
                 renderQuestions();
                 return;
             }
@@ -1472,7 +1598,13 @@
 
                 const sessionPill = document.getElementById('session-pill');
                 if (sessionPill) {
-                    sessionPill.innerHTML = `<span>🎯</span> ${activeSession.course_subj_name} - ${activeSession.quarter_name}`;
+                    sessionPill.innerHTML = `
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 14 14"></polyline>
+                        </svg>
+                        ${activeSession.course_subj_name} - ${activeSession.quarter_name}
+                    `;
                 }
 
                 renderQuestions();
@@ -1629,10 +1761,10 @@
 
             // Construct array for sorting
             const breakdown = [
-                { name: 'Distributed Collective', pct: pDC, icon: '🧠', color: '#c084fc' }, // purple
-                { name: 'Distributed Individual', pct: pDI, icon: '💻', color: '#38bdf8' }, // blue/teal
-                { name: 'Hierarchical Collective', pct: pHC, icon: '🤝', color: '#fb923c' }, // orange
-                { name: 'Hierarchical Individual', pct: pHI, icon: '📚', color: '#4ade80' }  // green
+                { name: 'Distributed Collective', pct: pDC, code: 'DC', color: '#c084fc' }, // purple
+                { name: 'Distributed Individual', pct: pDI, code: 'DI', color: '#38bdf8' }, // blue/teal
+                { name: 'Hierarchical Collective', pct: pHC, code: 'HC', color: '#fb923c' }, // orange
+                { name: 'Hierarchical Individual', pct: pHI, code: 'HI', color: '#4ade80' }  // green
             ];
 
             // Sort by percentage descending
@@ -1656,8 +1788,8 @@
                 row.className = 'fuzzy-bar-row';
                 row.innerHTML = `
                     <div class="fuzzy-bar-header" style="color: ${item.color};">
-                        <span>${item.icon} ${item.name}</span>
-                        <span style="color: white;">${item.pct}%</span>
+                        <span><strong style="font-size: 11px; padding: 2px 6px; background: rgba(255,255,255,0.06); border-radius: 4px; margin-right: 6px;">${item.code}</strong> ${item.name}</span>
+                        <span style="color: white; font-weight: 700;">${item.pct}%</span>
                     </div>
                     <div class="fuzzy-bar-track">
                         <div class="fuzzy-bar-fill" style="width: 0%; background-color: ${item.color};"></div>

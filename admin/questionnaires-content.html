@@ -488,7 +488,12 @@
                 <div class="label">Total Dimensions</div>
                 <div class="val" id="statDimensions">7</div>
             </div>
-            <div style="font-size: 24px;">📚</div>
+            <div style="display: flex; align-items: center; justify-content: center; color: var(--matrix-cyan);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+            </div>
         </div>
         <div class="stat-card">
             <div>
@@ -572,14 +577,23 @@
                 </div>
 
                 <div class="form-group">
-                    <label>
-                        💡 Contextual Help / Student Explanation
+                    <label style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--matrix-cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span>Contextual Help / Student Explanation</span>
                         <span style="font-weight: 400; color: var(--text-subtle); margin-left: 4px;">(Ex: "In this question, this means...")</span>
                     </label>
                     <textarea id="edit_help" placeholder="Write a clear, friendly explanation for students to understand what this question means..." oninput="updateLiveHelpPreview()"></textarea>
                     <div class="help-preview-box">
-                        <div class="help-preview-title">
-                            <span>💡 Student Live Preview</span>
+                        <div class="help-preview-title" style="display: flex; align-items: center; gap: 6px;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <span>Student Live Preview</span>
                         </div>
                         <div id="editHelpPreview" style="font-size: 12.5px; color: var(--text-main); line-height: 1.45;">
                             No contextual explanation entered yet.
@@ -682,7 +696,12 @@
             if (filtered.length === 0) {
                 listEl.innerHTML = `
                     <div style="grid-column: 1 / -1; padding: 60px 20px; text-align: center; color: var(--text-muted); background: var(--bg-card); border-radius: 14px; border: 1px dashed var(--border-light);">
-                        <div style="font-size: 32px; margin-bottom: 10px;">🔍</div>
+                        <div style="margin-bottom: 10px; display: flex; justify-content: center; color: var(--text-muted);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </div>
                         <h4 style="color: var(--text-main); font-size: 16px; margin-bottom: 4px;">No matching questions found</h4>
                         <p style="font-size: 13px;">Try adjusting your search keywords or quadrant filter.</p>
                     </div>
@@ -709,8 +728,13 @@
                             <div class="question-title">"${escapeHtml(q.question_text)}"</div>
 
                             <div class="context-help-box">
-                                <div class="context-help-header">
-                                    <span>💡</span> Contextual Help / Student Explanation
+                                <div class="context-help-header" style="display: flex; align-items: center; gap: 6px;">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                    </svg>
+                                    <span>Contextual Help / Student Explanation</span>
                                 </div>
                                 <div class="context-help-text">${helpText}</div>
                             </div>
