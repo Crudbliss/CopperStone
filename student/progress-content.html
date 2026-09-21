@@ -814,8 +814,8 @@
                             <span class="metric-label">Your Score</span>
                         </div>
                         <div class="metric-box">
-                            <span class="metric-value" id="val-threshold">70%</span>
-                            <span class="metric-label">Threshold</span>
+                            <span class="metric-value" id="val-threshold" style="color: var(--matrix-yellow);">80%</span>
+                            <span class="metric-label">Target Benchmark</span>
                         </div>
                         <div class="metric-box">
                             <span class="metric-value gap" id="val-gap-to-close">--%</span>
@@ -824,7 +824,7 @@
                     </div>
 
                     <p class="weakest-desc-text" id="weakest-instructions-text">
-                        Analyzing your learning activities to reach the 70% proficiency threshold...
+                        Analyzing your learning activities to reach the 80% mastery target benchmark...
                     </p>
                 </div>
 
@@ -1905,11 +1905,24 @@
                 let y = student.coord_y ?? student.y_coord ?? -0.68;
                 let p = getPercentages(x, y);
 
+                // Dual-Model Architecture: Use Model 2 Independent Quadrant Mastery (0%-100%)
+                const hasDirectMastery = (student.hi_mastery != null && student.hi_mastery > 0) || 
+                                         (student.di_mastery != null && student.di_mastery > 0) || 
+                                         (student.hc_mastery != null && student.hc_mastery > 0) || 
+                                         (student.dc_mastery != null && student.dc_mastery > 0);
+
+                const currentMastery = hasDirectMastery ? {
+                    HI: Math.round(student.hi_mastery || 0),
+                    DI: Math.round(student.di_mastery || 0),
+                    HC: Math.round(student.hc_mastery || 0),
+                    DC: Math.round(student.dc_mastery || 0)
+                } : p;
+
                 const quadrantMap = [
-                    { name: 'Hierarchical Individual', code: 'HI', score: p.HI },
-                    { name: 'Distributed Individual', code: 'DI', score: p.DI },
-                    { name: 'Hierarchical Collective', code: 'HC', score: p.HC },
-                    { name: 'Distributed Collective', code: 'DC', score: p.DC }
+                    { name: 'Hierarchical Individual', code: 'HI', score: currentMastery.HI },
+                    { name: 'Distributed Individual', code: 'DI', score: currentMastery.DI },
+                    { name: 'Hierarchical Collective', code: 'HC', score: currentMastery.HC },
+                    { name: 'Distributed Collective', code: 'DC', score: currentMastery.DC }
                 ];
 
                 quadrantMap.sort((a, b) => a.score - b.score);
@@ -1917,7 +1930,7 @@
                 const weakName = weakest.name;
                 const profile = strategyProfiles[weakName] || strategyProfiles['Distributed Collective'];
 
-                const threshold = 70;
+                const threshold = 80; // 80% Target Benchmark
                 const score = weakest.score || 48;
                 const gap = Math.max(0, threshold - score);
 
@@ -1933,7 +1946,7 @@
 
                 const instrEl = document.getElementById('weakest-instructions-text');
                 if (instrEl) {
-                    instrEl.textContent = `Complete learning activities for ${weakName} to reach the ${threshold}% threshold. ${gap} more points to go.`;
+                    instrEl.textContent = `Complete learning activities for ${weakName} to reach the ${threshold}% mastery target benchmark. ${gap}% more to reach mastery.`;
                 }
 
                 // Update Recommended Step Header & Titles
@@ -1988,13 +2001,29 @@
                 if (cycleWeakest) cycleWeakest.textContent = `Your weakest quadrant: ${weakName} at ${score}%.`;
 
                 const cycleRec = document.getElementById('cycle-step-rec-text');
-                if (cycleRec) cycleRec.textContent = `Complete the recommended learning activities for ${weakName}.`;
+                if (cycleRec) cycleRec.textContent = `Complete the recommended learning activities for ${weakName} to achieve ≥80% mastery.`;
 
                 // Update Migration Insight Banner
                 const insightQuad = document.getElementById('insight-quadrant-name');
                 if (insightQuad) {
                     insightQuad.textContent = weakName;
                     insightQuad.style.color = profile.color;
+                }
+
+                // Helper to resolve stage mastery (Model 2 preferred, fallback to Model 1)
+                function resolveStageMastery(stageRow, fallbackPcts) {
+                    if (stageRow && (stageRow.hi_mastery > 0 || stageRow.di_mastery > 0 || stageRow.hc_mastery > 0 || stageRow.dc_mastery > 0)) {
+                        return {
+                            HI: Math.round(stageRow.hi_mastery || 0),
+                            DI: Math.round(stageRow.di_mastery || 0),
+                            HC: Math.round(stageRow.hc_mastery || 0),
+                            DC: Math.round(stageRow.dc_mastery || 0)
+                        };
+                    }
+                    if (stageRow && (stageRow.x_coord != null || stageRow.coord_x != null)) {
+                        return getPercentages(stageRow.x_coord ?? stageRow.coord_x, stageRow.y_coord ?? stageRow.coord_y);
+                    }
+                    return fallbackPcts;
                 }
 
                 // Compute Assessment Stage Completion
@@ -2009,17 +2038,17 @@
                 const isS2Active = completedStagesCount >= 2;
                 const isS3Active = completedStagesCount >= 3;
 
-                // Stage 1 Coordinates & Percentages
-                const s1 = completedHistory[0] || { x_coord: x, y_coord: y };
-                const stage1Pcts = isS1Active ? getPercentages(s1.x_coord ?? x, s1.y_coord ?? y) : { HI: 25, DI: 25, HC: 25, DC: 25 };
+                // Stage 1 Coordinates & Independent Mastery
+                const s1 = completedHistory[0] || student;
+                const stage1Pcts = isS1Active ? resolveStageMastery(s1, currentMastery) : { HI: 25, DI: 25, HC: 25, DC: 25 };
 
-                // Stage 2 Coordinates & Percentages
-                const s2 = completedHistory[1] || (isS1Active ? s1 : { x_coord: x, y_coord: y });
-                const stage2Pcts = isS2Active ? getPercentages(s2.x_coord ?? x, s2.y_coord ?? y) : stage1Pcts;
+                // Stage 2 Coordinates & Independent Mastery
+                const s2 = completedHistory[1];
+                const stage2Pcts = isS2Active ? resolveStageMastery(s2, stage1Pcts) : stage1Pcts;
 
-                // Stage 3 Coordinates & Percentages
-                const s3 = completedHistory[2] || s2;
-                const stage3Pcts = isS3Active ? getPercentages(s3.x_coord ?? x, s3.y_coord ?? y) : stage2Pcts;
+                // Stage 3 Coordinates & Independent Mastery
+                const s3 = completedHistory[2];
+                const stage3Pcts = isS3Active ? resolveStageMastery(s3, stage2Pcts) : stage2Pcts;
 
                 // Ranked Quadrants at Stage 1
                 const s1Ranks = getRankedQuadrantsFromPcts(stage1Pcts);

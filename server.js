@@ -61,12 +61,20 @@ db.serialize(() => {
         x_coord REAL DEFAULT 0,
         y_coord REAL DEFAULT 0,
         learning_mode TEXT,
+        hi_mastery REAL DEFAULT 0,
+        di_mastery REAL DEFAULT 0,
+        hc_mastery REAL DEFAULT 0,
+        dc_mastery REAL DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`, (err) => {
         db.run(`ALTER TABLE students ADD COLUMN x_coord REAL DEFAULT 0`, (err) => {});
         db.run(`ALTER TABLE students ADD COLUMN y_coord REAL DEFAULT 0`, (err) => {});
         db.run(`ALTER TABLE students ADD COLUMN learning_mode TEXT`, (err) => {});
         db.run(`ALTER TABLE students ADD COLUMN weakest_learning_mode TEXT`, (err) => {});
+        db.run(`ALTER TABLE students ADD COLUMN hi_mastery REAL DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE students ADD COLUMN di_mastery REAL DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE students ADD COLUMN hc_mastery REAL DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE students ADD COLUMN dc_mastery REAL DEFAULT 0`, (err) => {});
     });
 
     // 2. Assessment History (Tracks student changes over time)
@@ -77,9 +85,65 @@ db.serialize(() => {
         x_coord REAL,
         y_coord REAL,
         learning_mode TEXT,
+        hi_mastery REAL DEFAULT 0,
+        di_mastery REAL DEFAULT 0,
+        hc_mastery REAL DEFAULT 0,
+        dc_mastery REAL DEFAULT 0,
+        answers_json TEXT,
         taken_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE
-    )`);
+    )`, (err) => {
+        db.run(`ALTER TABLE assessment_history ADD COLUMN hi_mastery REAL DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE assessment_history ADD COLUMN di_mastery REAL DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE assessment_history ADD COLUMN hc_mastery REAL DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE assessment_history ADD COLUMN dc_mastery REAL DEFAULT 0`, (err) => {});
+        db.run(`ALTER TABLE assessment_history ADD COLUMN answers_json TEXT`, (err) => {});
+
+        // Automatic Legacy Migration: Populate baseline mastery for existing student/history records if 0
+        setTimeout(() => {
+            db.all(`SELECT id, x_coord, y_coord, learning_mode FROM students WHERE learning_mode IS NOT NULL AND learning_mode != '' AND (hi_mastery = 0 OR hi_mastery IS NULL)`, [], (err, rows) => {
+                if (!err && rows && rows.length > 0) {
+                    rows.forEach(r => {
+                        let normX = Math.max(0, Math.min(1, ((r.x_coord || 0) + 5) / 10));
+                        let normY = Math.max(0, Math.min(1, ((r.y_coord || 0) + 5) / 10));
+                        let HI = (1 - normX) * normY;
+                        let DI = normX * normY;
+                        let HC = (1 - normX) * (1 - normY);
+                        let DC = normX * (1 - normY);
+                        let total = (HI + DI + HC + DC) || 1;
+                        
+                        let hi = Math.round((HI / total) * 100);
+                        let di = Math.round((DI / total) * 100);
+                        let hc = Math.round((HC / total) * 100);
+                        let dc = Math.round((DC / total) * 100);
+
+                        db.run(`UPDATE students SET hi_mastery = ?, di_mastery = ?, hc_mastery = ?, dc_mastery = ? WHERE id = ?`, [hi, di, hc, dc, r.id]);
+                    });
+                }
+            });
+
+            db.all(`SELECT id, x_coord, y_coord FROM assessment_history WHERE (hi_mastery = 0 OR hi_mastery IS NULL)`, [], (err, rows) => {
+                if (!err && rows && rows.length > 0) {
+                    rows.forEach(r => {
+                        let normX = Math.max(0, Math.min(1, ((r.x_coord || 0) + 5) / 10));
+                        let normY = Math.max(0, Math.min(1, ((r.y_coord || 0) + 5) / 10));
+                        let HI = (1 - normX) * normY;
+                        let DI = normX * normY;
+                        let HC = (1 - normX) * (1 - normY);
+                        let DC = normX * (1 - normY);
+                        let total = (HI + DI + HC + DC) || 1;
+                        
+                        let hi = Math.round((HI / total) * 100);
+                        let di = Math.round((DI / total) * 100);
+                        let hc = Math.round((HC / total) * 100);
+                        let dc = Math.round((DC / total) * 100);
+
+                        db.run(`UPDATE assessment_history SET hi_mastery = ?, di_mastery = ?, hc_mastery = ?, dc_mastery = ? WHERE id = ?`, [hi, di, hc, dc, r.id]);
+                    });
+                }
+            });
+        }, 300);
+    });
 
     // 10. AI Settings
     db.run(`CREATE TABLE IF NOT EXISTS ai_settings (
@@ -580,7 +644,7 @@ app.put('/api/teachers/:id/learning_mode', (req, res) => {
 
 // GET /api/students/:id - Get a specific student's full profile
 app.get('/api/students/:id', (req, res) => {
-    db.get(`SELECT id, student_no, first_name, last_name, mi, email, program, year_level, section, x_coord, y_coord, learning_mode FROM students WHERE id = ?`, [req.params.id], (err, student) => {
+    db.get(`SELECT id, student_no, first_name, last_name, mi, email, program, year_level, section, x_coord, y_coord, learning_mode, weakest_learning_mode, hi_mastery, di_mastery, hc_mastery, dc_mastery FROM students WHERE id = ?`, [req.params.id], (err, student) => {
         if (err) return res.status(500).json({ error: err.message });
         if (!student) return res.status(404).json({ error: 'Student not found' });
         res.json(student);
@@ -884,7 +948,8 @@ app.get('/api/students/:id/active-sessions', (req, res) => {
 // GET /api/students/:id/history - Get assessment history
 app.get('/api/students/:id/history', (req, res) => {
     const sql = `
-        SELECT h.id, h.student_id, h.session_id, h.x_coord, h.y_coord, h.learning_mode, h.taken_at
+        SELECT h.id, h.student_id, h.session_id, h.x_coord, h.y_coord, h.learning_mode, 
+               h.hi_mastery, h.di_mastery, h.hc_mastery, h.dc_mastery, h.taken_at
         FROM assessment_history h
         WHERE h.student_id = ?
         ORDER BY h.taken_at ASC, h.id ASC
@@ -904,7 +969,7 @@ app.get('/api/students/:id/history', (req, res) => {
         }
         
         // Fallback to student baseline if they have taken initial assessment
-        db.get('SELECT id, learning_mode, x_coord, y_coord FROM students WHERE id = ?', [req.params.id], (err2, student) => {
+        db.get('SELECT id, learning_mode, x_coord, y_coord, hi_mastery, di_mastery, hc_mastery, dc_mastery FROM students WHERE id = ?', [req.params.id], (err2, student) => {
             if (err2 || !student || !student.learning_mode || student.learning_mode === 'Unknown' || student.learning_mode === 'null' || student.learning_mode === '') {
                 return res.json([]);
             }
@@ -1005,7 +1070,40 @@ function calculateFKNN(answersArray, trainingData, settings) {
     return { dominantMode, memberships: normalized };
 }
 
-// POST /api/assessments/submit-fknn - Submit academic scores and calculate using FKNN
+// Dual-Model Architecture: Model 2 Independent Quadrant Mastery Calculation (0%–100%)
+function calculateIndependentMastery(answersArray) {
+    // 28 questions mapped exactly to their 4 quadrants (7 questions each)
+    const quadIndices = {
+        'Hierarchical Individual': [1, 7, 10, 12, 19, 22, 24],
+        'Distributed Individual': [2, 5, 8, 14, 17, 21, 25],
+        'Hierarchical Collective': [3, 6, 11, 15, 18, 23, 27],
+        'Distributed Collective': [0, 4, 9, 13, 16, 20, 26]
+    };
+
+    let mastery = {
+        'Hierarchical Individual': 0,
+        'Distributed Individual': 0,
+        'Hierarchical Collective': 0,
+        'Distributed Collective': 0
+    };
+
+    for (let quad in quadIndices) {
+        let sum = 0;
+        const indices = quadIndices[quad];
+        indices.forEach(idx => {
+            const val = Number(answersArray[idx]);
+            // Likert 1-5 (1=Strongly Disagree, 2=Disagree, 4=Agree, 5=Strongly Agree)
+            sum += (val > 0 ? val : 1);
+        });
+        // 7 questions * 5 max points = 35 max possible points
+        let pct = Math.round((sum / 35) * 100);
+        mastery[quad] = Math.max(0, Math.min(100, pct));
+    }
+
+    return mastery;
+}
+
+// POST /api/assessments/submit-fknn - Dual-Model Architecture: Submit academic scores and calculate FKNN Profile + Independent Mastery
 app.post('/api/assessments/submit-fknn', (req, res) => {
     const { student_id, session_id, answersArray } = req.body;
     
@@ -1022,7 +1120,11 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
             if (err) return res.status(500).json({ error: err.message });
             if (trainingData.length === 0) return res.status(500).json({ error: "No training data found." });
 
+            // Model 1: Fuzzy K-NN Relative Profile (100% Share)
             const { dominantMode, memberships } = calculateFKNN(answersArray, trainingData, settings);
+
+            // Model 2: Independent Quadrant Mastery (0%–100% without zero-sum drops)
+            const mastery = calculateIndependentMastery(answersArray);
 
             let totalWeight = 0;
             for (let m in memberships) { totalWeight += memberships[m]; }
@@ -1069,21 +1171,34 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
             };
             const weakestMode = oppositeModes[dominantMode] || 'Unknown';
 
+            const hi_m = mastery['Hierarchical Individual'] || 0;
+            const di_m = mastery['Distributed Individual'] || 0;
+            const hc_m = mastery['Hierarchical Collective'] || 0;
+            const dc_m = mastery['Distributed Collective'] || 0;
+            const answersJson = JSON.stringify(answersArray);
+
             db.serialize(() => {
-                db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode) VALUES (?, ?, ?, ?, ?)`,
-                    [student_id, session_id || 0, finalX, finalY, dominantMode],
+                db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode, hi_mastery, di_mastery, hc_mastery, dc_mastery, answers_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [student_id, session_id || 0, finalX, finalY, dominantMode, hi_m, di_m, hc_m, dc_m, answersJson],
                     function(histErr) {
                         if (histErr) console.error("Error inserting assessment history:", histErr);
                     }
                 );
 
-                db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ?, weakest_learning_mode = ? WHERE id = ?`, 
-                    [finalX, finalY, dominantMode, weakestMode, student_id], 
+                db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ?, weakest_learning_mode = ?, hi_mastery = ?, di_mastery = ?, hc_mastery = ?, dc_mastery = ? WHERE id = ?`, 
+                    [finalX, finalY, dominantMode, weakestMode, hi_m, di_m, hc_m, dc_m, student_id], 
                     function(updateErr) {
-                        if (updateErr) console.error("Error updating student coords", updateErr);
+                        if (updateErr) console.error("Error updating student coords & mastery", updateErr);
                         res.json({
                             success: true,
-                            result: { x: finalX, y: finalY, mode: dominantMode, fuzzy: memberships }
+                            result: {
+                                x: finalX,
+                                y: finalY,
+                                mode: dominantMode,
+                                fuzzy: memberships,
+                                profile: memberships,
+                                mastery: mastery
+                            }
                         });
                     }
                 );
@@ -1150,7 +1265,7 @@ app.post('/api/assessments/submit', (req, res) => {
     });
 });
 
-// POST /api/ai/simulate - Admin endpoint to test FKNN math without saving to DB
+// POST /api/ai/simulate - Admin endpoint to test FKNN math & Independent Mastery without saving to DB
 app.post('/api/ai/simulate', (req, res) => {
     const { answersArray } = req.body;
     
@@ -1166,10 +1281,16 @@ app.post('/api/ai/simulate', (req, res) => {
             if (trainingData.length === 0) return res.status(500).json({ error: "No training data found." });
 
             const { dominantMode, memberships } = calculateFKNN(answersArray, trainingData, settings);
+            const mastery = calculateIndependentMastery(answersArray);
 
             res.json({
                 success: true,
-                result: { mode: dominantMode, fuzzy: memberships }
+                result: {
+                    mode: dominantMode,
+                    fuzzy: memberships,
+                    profile: memberships,
+                    mastery: mastery
+                }
             });
         });
     });

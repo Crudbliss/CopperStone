@@ -993,13 +993,28 @@
         <div class="result-mode" id="final-mode" style="margin-bottom: 24px;">Loading...</div>
 
         <div class="quadrant-card" id="quadrant-card-container"
-            style="display: none; width: 100%; max-width: 480px; margin-bottom: 24px; padding: 24px;">
-            <div
-                style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 24px; text-align: left; text-transform: uppercase;">
-                FUZZY K-NN PROFILE BREAKDOWN
+            style="display: none; width: 100%; max-width: 520px; margin-bottom: 24px; padding: 24px; text-align: left;">
+            
+            <!-- MODEL 1: RELATIVE PROFILE (100% SHARE) -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;">
+                    1. LEARNING MODE PROFILE (RELATIVE SHARE)
+                </span>
+                <span style="font-size: 10.5px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 6px;">Total 100%</span>
             </div>
-            <div id="fuzzy-bars-container">
-                <!-- Bars injected here -->
+            <div id="fuzzy-bars-container" style="margin-bottom: 22px;">
+                <!-- Profile Bars injected here -->
+            </div>
+
+            <!-- MODEL 2: INDEPENDENT MASTERY (0%-100%) -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 18px;">
+                <span style="font-size: 11px; font-weight: 800; color: var(--matrix-green); letter-spacing: 1px; text-transform: uppercase;">
+                    2. QUADRANT MASTERY (80% BENCHMARK)
+                </span>
+                <span style="font-size: 10.5px; color: var(--matrix-yellow); font-weight: 700; background: rgba(216, 166, 26, 0.1); border: 1px solid rgba(216,166,26,0.3); padding: 2px 8px; border-radius: 6px;">Target: ≥ 80%</span>
+            </div>
+            <div id="mastery-bars-container">
+                <!-- Independent Mastery Bars injected here -->
             </div>
         </div>
 
@@ -1642,7 +1657,7 @@
                             const resultScreen = document.getElementById('result-screen');
                             resultScreen.style.display = 'flex';
                             document.getElementById('final-mode').textContent = data.result.mode;
-                            renderFuzzyGraph(data.result.mode, data.result.fuzzy);
+                            renderDualModelResults(data.result.mode, data.result.fuzzy, data.result.mastery);
                         } else {
                             alert('Simulation Error: ' + data.error);
                             document.getElementById('test-container').style.display = 'flex';
@@ -1682,15 +1697,19 @@
                             profile.x_coord = data.result.x;
                             profile.y_coord = data.result.y;
                             profile.learning_mode = data.result.mode;
+                            if (data.result.mastery) {
+                                profile.hi_mastery = data.result.mastery['Hierarchical Individual'];
+                                profile.di_mastery = data.result.mastery['Distributed Individual'];
+                                profile.hc_mastery = data.result.mastery['Hierarchical Collective'];
+                                profile.dc_mastery = data.result.mastery['Distributed Collective'];
+                            }
                             localStorage.setItem('studentProfile', JSON.stringify(profile));
                         }
-
-                        // Post message removed, handled by returnFromTest instead
 
                         const resultScreen = document.getElementById('result-screen');
                         resultScreen.style.display = 'flex';
                         document.getElementById('final-mode').textContent = data.result.mode;
-                        renderFuzzyGraph(data.result.mode, data.result.fuzzy, data.result.x, data.result.y);
+                        renderDualModelResults(data.result.mode, data.result.fuzzy, data.result.mastery, data.result.x, data.result.y);
                     } else {
                         alert('Error submitting assessment: ' + (data.error || 'Unknown error'));
                         console.error("Backend returned:", data);
@@ -1705,8 +1724,8 @@
             }
         }
 
-        // Function to render the 4-quadrant graph and description
-        function renderFuzzyGraph(mode, fuzzyDict, finalX, finalY) {
+        // Dual-Model Architecture Result Renderer
+        function renderDualModelResults(mode, fuzzyDict, masteryDict, finalX, finalY) {
             // Set Description
             const descEl = document.getElementById('mode-description');
             if (mode === 'Hierarchical Individual') {
@@ -1723,6 +1742,7 @@
 
             document.getElementById('quadrant-card-container').style.display = 'block';
 
+            // ================= 1. MODEL 1: RELATIVE PROFILE =================
             let pHI = 0, pDI = 0, pHC = 0, pDC = 0;
             let totalFuzzy = 0;
 
@@ -1735,23 +1755,18 @@
             }
 
             if (totalFuzzy < 10) {
-                // Calculate exact percentages from coords using Cartesian model
                 let px = parseFloat(finalX !== undefined ? finalX : (mode === 'Hierarchical Individual' ? -3 : (mode === 'Distributed Individual' ? 3 : (mode === 'Hierarchical Collective' ? -3 : 3))));
                 let py = parseFloat(finalY !== undefined ? finalY : (mode === 'Hierarchical Individual' ? 3 : (mode === 'Distributed Individual' ? 3 : (mode === 'Hierarchical Collective' ? -3 : -3))));
                 
-                let normX = (px + 5) / 10;
-                let normY = (py + 5) / 10;
-                
-                normX = Math.max(0, Math.min(1, normX));
-                normY = Math.max(0, Math.min(1, normY));
+                let normX = Math.max(0, Math.min(1, (px + 5) / 10));
+                let normY = Math.max(0, Math.min(1, (py + 5) / 10));
 
                 let HI = (1 - normX) * normY;
                 let DI = normX * normY;
                 let HC = (1 - normX) * (1 - normY);
                 let DC = normX * (1 - normY);
                 
-                let total = HI + DI + HC + DC;
-                if (total === 0) total = 1;
+                let total = (HI + DI + HC + DC) || 1;
 
                 pHI = Math.round((HI / total) * 100);
                 pDI = Math.round((DI / total) * 100);
@@ -1759,18 +1774,15 @@
                 pDC = Math.round((DC / total) * 100);
             }
 
-            // Construct array for sorting
             const breakdown = [
-                { name: 'Distributed Collective', pct: pDC, code: 'DC', color: '#c084fc' }, // purple
-                { name: 'Distributed Individual', pct: pDI, code: 'DI', color: '#38bdf8' }, // blue/teal
-                { name: 'Hierarchical Collective', pct: pHC, code: 'HC', color: '#fb923c' }, // orange
-                { name: 'Hierarchical Individual', pct: pHI, code: 'HI', color: '#4ade80' }  // green
+                { name: 'Distributed Collective', pct: pDC, code: 'DC', color: '#c084fc' },
+                { name: 'Distributed Individual', pct: pDI, code: 'DI', color: '#38bdf8' },
+                { name: 'Hierarchical Collective', pct: pHC, code: 'HC', color: '#fb923c' },
+                { name: 'Hierarchical Individual', pct: pHI, code: 'HI', color: '#4ade80' }
             ];
 
-            // Sort by percentage descending
             breakdown.sort((a, b) => b.pct - a.pct);
 
-            // Strict consistency guarantee: Dominant mode is always top ranked (#1)
             const domIdx = breakdown.findIndex(b => b.name === mode);
             if (domIdx > 0) {
                 if (breakdown[domIdx].pct <= breakdown[0].pct) {
@@ -1787,9 +1799,9 @@
                 const row = document.createElement('div');
                 row.className = 'fuzzy-bar-row';
                 row.innerHTML = `
-                    <div class="fuzzy-bar-header" style="color: ${item.color};">
+                    <div class="fuzzy-bar-header" style="color: ${item.color}; margin-bottom: 5px;">
                         <span><strong style="font-size: 11px; padding: 2px 6px; background: rgba(255,255,255,0.06); border-radius: 4px; margin-right: 6px;">${item.code}</strong> ${item.name}</span>
-                        <span style="color: white; font-weight: 700;">${item.pct}%</span>
+                        <span style="color: white; font-weight: 700;">${item.pct}% share</span>
                     </div>
                     <div class="fuzzy-bar-track">
                         <div class="fuzzy-bar-fill" style="width: 0%; background-color: ${item.color};"></div>
@@ -1797,11 +1809,56 @@
                 `;
                 container.appendChild(row);
 
-                // Animate
                 setTimeout(() => {
                     row.querySelector('.fuzzy-bar-fill').style.width = item.pct + '%';
                 }, 100);
             });
+
+            // ================= 2. MODEL 2: INDEPENDENT MASTERY =================
+            const masteryContainer = document.getElementById('mastery-bars-container');
+            if (masteryContainer) {
+                masteryContainer.innerHTML = '';
+
+                const masteryList = [
+                    { name: 'Hierarchical Individual', code: 'HI', color: '#4ade80', score: (masteryDict && masteryDict['Hierarchical Individual'] !== undefined) ? masteryDict['Hierarchical Individual'] : pHI },
+                    { name: 'Distributed Individual', code: 'DI', color: '#38bdf8', score: (masteryDict && masteryDict['Distributed Individual'] !== undefined) ? masteryDict['Distributed Individual'] : pDI },
+                    { name: 'Hierarchical Collective', code: 'HC', color: '#fb923c', score: (masteryDict && masteryDict['Hierarchical Collective'] !== undefined) ? masteryDict['Hierarchical Collective'] : pHC },
+                    { name: 'Distributed Collective', code: 'DC', color: '#c084fc', score: (masteryDict && masteryDict['Distributed Collective'] !== undefined) ? masteryDict['Distributed Collective'] : pDC }
+                ];
+
+                masteryList.forEach(item => {
+                    const isMastered = item.score >= 80;
+                    const statusPill = isMastered 
+                        ? `<span style="font-size: 10px; font-weight: 700; color: #4ade80; background: rgba(74, 222, 128, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(74, 222, 128, 0.3);">✓ Mastered</span>`
+                        : `<span style="font-size: 10px; font-weight: 700; color: #fb923c; background: rgba(251, 146, 60, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(251, 146, 60, 0.3);">${80 - item.score}% to 80% Target</span>`;
+
+                    const row = document.createElement('div');
+                    row.className = 'fuzzy-bar-row';
+                    row.style.marginBottom = '14px';
+                    row.innerHTML = `
+                        <div class="fuzzy-bar-header" style="color: ${item.color}; margin-bottom: 5px;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <strong style="font-size: 11px; padding: 2px 6px; background: rgba(255,255,255,0.06); border-radius: 4px;">${item.code}</strong>
+                                <span>${item.name}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                ${statusPill}
+                                <span style="color: white; font-weight: 700;">${item.score}%</span>
+                            </div>
+                        </div>
+                        <div class="fuzzy-bar-track" style="position: relative; height: 9px;">
+                            <div style="position: absolute; left: 80%; top: -2px; bottom: -2px; width: 2px; background: #d8a61a; z-index: 3;" title="80% Target Benchmark"></div>
+                            <div class="fuzzy-bar-fill mastery-fill" style="width: 0%; background: ${item.color}; position: relative; z-index: 1;"></div>
+                        </div>
+                    `;
+                    masteryContainer.appendChild(row);
+
+                    setTimeout(() => {
+                        const fill = row.querySelector('.mastery-fill');
+                        if (fill) fill.style.width = item.score + '%';
+                    }, 150);
+                });
+            }
         }
 
         function returnFromTest() {
