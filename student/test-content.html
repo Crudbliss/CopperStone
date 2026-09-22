@@ -960,9 +960,9 @@
         <div class="progress-wrapper">
             <div class="progress-info">
                 <span>Overall Assessment Progress</span>
-                <span id="progress-pct">0% complete</span>
+                <span id="progress-pct" aria-live="polite">0% complete</span>
             </div>
-            <div class="progress-track">
+            <div class="progress-track" role="progressbar" id="progress-bar-track" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Assessment completion progress">
                 <div class="progress-fill" id="progress-fill" style="background-color: var(--matrix-blue);"></div>
             </div>
         </div>
@@ -1243,8 +1243,10 @@
 
         function toggleQuestionHelp(idx) {
             const el = document.getElementById(`help-box-${idx}`);
+            const btn = document.getElementById(`help-toggle-${idx}`);
             if (el) {
-                el.classList.toggle('expanded');
+                const isExpanded = el.classList.toggle('expanded');
+                if (btn) btn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
             }
         }
 
@@ -1271,7 +1273,6 @@
             }
 
             container.innerHTML = DIMENSION_CONFIG.map(dim => {
-                // Check how many questions in this dimension are answered
                 let dimAnswered = 0;
                 for (let i = dim.startIdx; i <= dim.endIdx; i++) {
                     const qItem = shuffledQuestions[i];
@@ -1290,7 +1291,7 @@
                 const iconOrCheck = isCompleted ? '✓ ' : '';
 
                 return `
-                    <div class="dim-pill ${statusClass}" onclick="goToDimension(${dim.num})" title="${escapeHtml(dim.title)} (${dimAnswered}/4 answered)">
+                    <div class="dim-pill ${statusClass}" role="tab" aria-selected="${isActive}" tabindex="0" onclick="goToDimension(${dim.num})" onkeydown="if(event.key==='Enter'||event.key===' '){goToDimension(${dim.num});}" title="${escapeHtml(dim.title)} (${dimAnswered}/4 answered)">
                         <span class="dim-num">${iconOrCheck}Part ${dim.num}</span>
                         <span class="dim-name">${escapeHtml(dim.shortTitle)}</span>
                     </div>
@@ -1305,9 +1306,11 @@
 
             const pctEl = document.getElementById('progress-pct');
             const fillEl = document.getElementById('progress-fill');
+            const trackEl = document.getElementById('progress-bar-track');
 
             if (pctEl) pctEl.textContent = `${pct}% complete (${answeredCount}/${total})`;
             if (fillEl) fillEl.style.width = `${pct}%`;
+            if (trackEl) trackEl.setAttribute('aria-valuenow', pct);
 
             renderDimensionStepper();
         }
@@ -1395,18 +1398,18 @@
             let cleanHelpText = (item.val.contextual_help || '').replace(/^In this question, this means:\s*/i, '');
             const helpHtml = item.val.contextual_help ? `
                 <div class="contextual-help-container" id="help-box-${index}">
-                    <button type="button" class="btn-help-toggle" onclick="toggleQuestionHelp(${index})">
+                    <button type="button" class="btn-help-toggle" id="help-toggle-${index}" aria-expanded="false" aria-controls="help-body-${index}" onclick="toggleQuestionHelp(${index})">
                         <span class="help-toggle-left">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <line x1="12" y1="16" x2="12" y2="12"></line>
                                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
                             </svg>
                             <span>Need help understanding this question?</span>
                         </span>
-                        <span class="help-arrow">▼</span>
+                        <span class="help-arrow" aria-hidden="true">▼</span>
                     </button>
-                    <div class="contextual-help-body">
+                    <div class="contextual-help-body" id="help-body-${index}" role="region" aria-labelledby="help-toggle-${index}">
                         <div class="contextual-help-inner">
                             <span class="help-tag-pill">Context &amp; Meaning:</span><br>
                             ${escapeHtml(cleanHelpText)}
@@ -1428,31 +1431,31 @@
 
                     <!-- IN-DIMENSION STEP INDICATORS -->
                     <div class="in-dim-progress-row">
-                        <div class="in-dim-steps">
+                        <div class="in-dim-steps" role="tablist" aria-label="Dimension questions">
                             ${stepDotsHtml}
                         </div>
                         <span class="overall-badge">Overall: Question ${qNum} of ${total}</span>
                     </div>
 
                     <!-- QUESTION STATEMENT -->
-                    <div class="question-title">${qNum}. ${escapeHtml(item.val.text)}</div>
+                    <div class="question-title" id="question-text-${index}">${qNum}. ${escapeHtml(item.val.text)}</div>
                     
                     ${helpHtml}
 
-                    <div class="answers-grid stacked">
-                        <div class="answer-option ${currentAnswer === 1 ? 'selected' : ''}" data-val="1" onclick="selectAnswerOption(${item.i}, 1, this)">
+                    <div class="answers-grid stacked" role="radiogroup" aria-labelledby="question-text-${index}">
+                        <div class="answer-option ${currentAnswer === 1 ? 'selected' : ''}" role="radio" aria-checked="${currentAnswer === 1}" tabindex="0" data-val="1" onclick="selectAnswerOption(${item.i}, 1, this)" onkeydown="if(event.key==='Enter'||event.key===' '){selectAnswerOption(${item.i},1,this);}">
                             <div class="radio-circle"></div>
                             <div class="answer-text">Strongly Disagree</div>
                         </div>
-                        <div class="answer-option ${currentAnswer === 2 ? 'selected' : ''}" data-val="2" onclick="selectAnswerOption(${item.i}, 2, this)">
+                        <div class="answer-option ${currentAnswer === 2 ? 'selected' : ''}" role="radio" aria-checked="${currentAnswer === 2}" tabindex="0" data-val="2" onclick="selectAnswerOption(${item.i}, 2, this)" onkeydown="if(event.key==='Enter'||event.key===' '){selectAnswerOption(${item.i},2,this);}">
                             <div class="radio-circle"></div>
                             <div class="answer-text">Disagree</div>
                         </div>
-                        <div class="answer-option ${currentAnswer === 4 ? 'selected' : ''}" data-val="4" onclick="selectAnswerOption(${item.i}, 4, this)">
+                        <div class="answer-option ${currentAnswer === 4 ? 'selected' : ''}" role="radio" aria-checked="${currentAnswer === 4}" tabindex="0" data-val="4" onclick="selectAnswerOption(${item.i}, 4, this)" onkeydown="if(event.key==='Enter'||event.key===' '){selectAnswerOption(${item.i},4,this);}">
                             <div class="radio-circle"></div>
                             <div class="answer-text">Agree</div>
                         </div>
-                        <div class="answer-option ${currentAnswer === 5 ? 'selected' : ''}" data-val="5" onclick="selectAnswerOption(${item.i}, 5, this)">
+                        <div class="answer-option ${currentAnswer === 5 ? 'selected' : ''}" role="radio" aria-checked="${currentAnswer === 5}" tabindex="0" data-val="5" onclick="selectAnswerOption(${item.i}, 5, this)" onkeydown="if(event.key==='Enter'||event.key===' '){selectAnswerOption(${item.i},5,this);}">
                             <div class="radio-circle"></div>
                             <div class="answer-text">Strongly Agree</div>
                         </div>

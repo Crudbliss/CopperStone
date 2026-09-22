@@ -1,9 +1,13 @@
+require('dotenv').config();
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 
 // Ensure upload directory exists
 const uploadDir = path.join(__dirname, 'public', 'uploads', 'modules');
@@ -23,20 +27,61 @@ const moduleStorage = multer.diskStorage({
 });
 const uploadModule = multer({ storage: moduleStorage });
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ISO/IEC 25010 Performance: Gzip/Brotli response compression
+app.use(compression());
+
+// ISO/IEC 25010 Security: HTTP security headers
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false
+}));
+
+// ISO/IEC 25010 Security: Rate limiting
+const globalLimiter = rateLimit({
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10),
+    max: parseInt(process.env.RATE_LIMIT_MAX || '1000', 10),
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests from this IP, please try again later.' }
+});
+app.use('/api/', globalLimiter);
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: parseInt(process.env.AUTH_RATE_LIMIT_MAX || '30', 10),
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many authentication attempts. Please try again after 15 minutes.' }
+});
+app.use('/api/login', authLimiter);
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-// Serve all files in the current directory as static web files
-app.use(express.static(__dirname));
 
-// Initialize SQLite Database in the same directory
-const dbPath = path.join(__dirname, 'database.sqlite');
+// ISO/IEC 25010 Performance: Static asset caching
+app.use(express.static(__dirname, {
+    maxAge: process.env.NODE_ENV === 'production' ? '1d' : '0',
+    etag: true
+}));
+
+// ISO/IEC 25010 Reliability: Health Check Endpoint
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: Math.floor(process.uptime()),
+        environment: process.env.NODE_ENV || 'development'
+    });
+});
+
+// Initialize SQLite Database
+const dbPath = path.resolve(__dirname, process.env.DB_PATH || 'database.sqlite');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) console.error('Database opening error: ', err);
-    else console.log('Connected to SQLite database.');
+    else console.log('Connected to SQLite database at ' + dbPath);
 });
 
 // Create tables if they don't exist
@@ -294,6 +339,13 @@ db.serialize(() => {
             }
         });
     });
+
+    // Database Performance Indexes (ISO/IEC 25010 Performance Efficiency)
+    db.run(`CREATE INDEX IF NOT EXISTS idx_assessment_hist_student ON assessment_history(student_id);`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_student_mod_prog ON student_module_progress(student_id, module_id);`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_submissions_student ON submissions(student_id, module_id);`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_module_chapters ON module_chapters(module_id);`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_module_questions ON module_questions(module_id, chapter_id);`);
 });
 
 const defaultAssessmentQuestions = [
