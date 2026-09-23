@@ -482,28 +482,47 @@
             z-index: 100;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             text-align: center;
-            padding: 20px;
+            padding: 24px 16px 36px 16px;
+            overflow-y: auto;
+        }
+
+        .dual-model-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        .dual-model-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 768px) {
+            .dual-model-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
         }
 
         .result-icon {
-            font-size: 64px;
-            margin-bottom: 24px;
-        }
-
-        .result-mode {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--matrix-green);
+            font-size: 48px;
             margin-bottom: 12px;
         }
 
+        .result-mode {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--matrix-green);
+            margin-bottom: 8px;
+        }
+
         .result-sub {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text-muted);
-            margin-bottom: 32px;
-            max-width: 400px;
+            margin-bottom: 20px;
+            max-width: 500px;
         }
 
         /* Loading Screen overlay */
@@ -982,49 +1001,53 @@
     </div>
 
     <div id="result-screen">
-        <div class="result-icon" style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
-            <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="var(--matrix-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="result-icon" style="display: flex; justify-content: center; align-items: center; margin-bottom: 10px;">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--matrix-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
             </svg>
         </div>
-        <h3>Assessment Complete!</h3>
-        <p style="color: var(--text-muted); margin-top: 8px;">Your Learning Mode is:</p>
-        <div class="result-mode" id="final-mode" style="margin-bottom: 24px;">Loading...</div>
+        <h3 style="font-size: 22px; margin-bottom: 2px;">Assessment Complete!</h3>
+        <p style="color: var(--text-muted); font-size: 13.5px; margin-top: 4px; margin-bottom: 4px;">Your Learning Mode is:</p>
+        <div class="result-mode" id="final-mode" style="font-size: 26px; margin-bottom: 16px;">Loading...</div>
 
+        <!-- 2-COLUMN SIDE-BY-SIDE DUAL-MODEL CONTAINER -->
         <div class="quadrant-card" id="quadrant-card-container"
-            style="display: none; width: 100%; max-width: 520px; margin-bottom: 24px; padding: 24px; text-align: left;">
-            
-            <!-- MODEL 1: RELATIVE PROFILE (100% SHARE) -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;">
-                    1. LEARNING MODE PROFILE (RELATIVE SHARE)
-                </span>
-                <span style="font-size: 10.5px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 6px;">Total 100%</span>
-            </div>
-            <div id="fuzzy-bars-container" style="margin-bottom: 22px;">
-                <!-- Profile Bars injected here -->
-            </div>
+            style="display: none; width: 100%; max-width: 960px; margin: 0 auto 16px auto; padding: 20px 24px; text-align: left;">
+            <div class="dual-model-grid">
+                <!-- MODEL 1: RELATIVE PROFILE (100% SHARE) -->
+                <div class="dual-model-col">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;">
+                            1. LEARNING MODE PROFILE (RELATIVE SHARE)
+                        </span>
+                        <span style="font-size: 10px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 2px 7px; border-radius: 6px;">Total 100%</span>
+                    </div>
+                    <div id="fuzzy-bars-container">
+                        <!-- Profile Bars injected here -->
+                    </div>
+                </div>
 
-            <!-- MODEL 2: INDEPENDENT MASTERY (0%-100%) -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 18px;">
-                <span style="font-size: 11px; font-weight: 800; color: var(--matrix-green); letter-spacing: 1px; text-transform: uppercase;">
-                    2. QUADRANT MASTERY (80% BENCHMARK)
-                </span>
-                <span style="font-size: 10.5px; color: var(--matrix-yellow); font-weight: 700; background: rgba(216, 166, 26, 0.1); border: 1px solid rgba(216,166,26,0.3); padding: 2px 8px; border-radius: 6px;">Target: ≥ 80%</span>
-            </div>
-            <div id="mastery-bars-container">
-                <!-- Independent Mastery Bars injected here -->
+                <!-- MODEL 2: INDEPENDENT MASTERY (0%-100%) -->
+                <div class="dual-model-col">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 11px; font-weight: 800; color: var(--matrix-green); letter-spacing: 1px; text-transform: uppercase;">
+                            2. QUADRANT MASTERY (80% BENCHMARK)
+                        </span>
+                        <span style="font-size: 10px; color: var(--matrix-yellow); font-weight: 700; background: rgba(216, 166, 26, 0.1); border: 1px solid rgba(216,166,26,0.3); padding: 2px 7px; border-radius: 6px;">Target: ≥ 80%</span>
+                    </div>
+                    <div id="mastery-bars-container">
+                        <!-- Independent Mastery Bars injected here -->
+                    </div>
+                </div>
             </div>
         </div>
 
         <p id="mode-description"
-            style="max-width: 480px; font-size: 14px; margin: 0 auto 24px; color: var(--text-gray); line-height: 1.6;">
+            style="max-width: 720px; font-size: 13.5px; margin: 0 auto 18px; color: var(--text-muted); line-height: 1.55;">
         </p>
 
-
-
-        <button id="return-btn" class="btn-submit" onclick="returnFromTest()">Return to Dashboard</button>
+        <button id="return-btn" class="btn-submit" style="padding: 12px 36px; font-size: 15px; border-radius: 10px; margin-bottom: 16px;" onclick="returnFromTest()">Return to Dashboard</button>
     </div>
 
     <script>
@@ -1674,20 +1697,27 @@
 
             const userStr = localStorage.getItem('currentUser');
             if (!userStr) { alert("You are not logged in!"); return; }
-            const user = JSON.parse(userStr);
+            let user = {};
+            try { user = JSON.parse(userStr); } catch (e) {}
+            const studentId = user.id || user.student_id || 1;
 
             try {
                 document.getElementById('test-container').style.display = 'none';
                 document.getElementById('loading-screen').style.display = 'flex';
 
-                const payload = { student_id: user.id, answersArray: answersArray };
-                if (activeSession) payload.session_id = activeSession.session_id;
+                const payload = { student_id: studentId, answersArray: answersArray };
+                if (activeSession && activeSession.session_id) payload.session_id = activeSession.session_id;
 
                 const res = await fetch('/api/assessments/submit-fknn', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({ error: 'Server error: ' + res.status }));
+                    throw new Error(errData.error || ('HTTP ' + res.status));
+                }
 
                 const data = await res.json();
 
@@ -1721,7 +1751,7 @@
                 }, 1500);
             } catch (err) {
                 console.error("Submit error", err);
-                alert("Network error occurred.");
+                alert("Assessment Error: " + (err.message || "Network error occurred."));
                 document.getElementById('loading-screen').style.display = 'none';
                 document.getElementById('test-container').style.display = 'flex';
             }

@@ -3046,8 +3046,18 @@
                     errorMsg.style.display = 'block';
                     return;
                 }
+                if (/\d/.test(firstName)) {
+                    errorMsg.textContent = 'First name cannot contain numbers.';
+                    errorMsg.style.display = 'block';
+                    return;
+                }
                 if (!lastName || lastName.length < 2) {
                     errorMsg.textContent = 'Please enter a valid last name.';
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+                if (/\d/.test(lastName)) {
+                    errorMsg.textContent = 'Last name cannot contain numbers.';
                     errorMsg.style.display = 'block';
                     return;
                 }

@@ -120,6 +120,36 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
             assert.strictEqual(xPoweredBy, null, 'X-Powered-By header should be obscured by Helmet');
             assert.ok(res.headers.get('x-content-type-options'), 'X-Content-Type-Options header must be present');
         });
+
+        it('should reject registration requests with integers/numbers in first or last name', async () => {
+            const res1 = await fetch(`${BASE_URL}/api/students/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    first_name: 'John123',
+                    last_name: 'Doe',
+                    email: 'john123@test.com',
+                    password: 'Password123!'
+                })
+            });
+            assert.strictEqual(res1.status, 400, 'Numeric first name should return HTTP 400');
+            const data1 = await res1.json();
+            assert.ok(data1.error.includes('numbers'), 'Error message should mention numbers');
+
+            const res2 = await fetch(`${BASE_URL}/api/students/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    first_name: 'John',
+                    last_name: 'Doe99',
+                    email: 'johndoe99@test.com',
+                    password: 'Password123!'
+                })
+            });
+            assert.strictEqual(res2.status, 400, 'Numeric last name should return HTTP 400');
+            const data2 = await res2.json();
+            assert.ok(data2.error.includes('numbers'), 'Error message should mention numbers');
+        });
     });
 
     // 4. Data Retrieval & History Consistency

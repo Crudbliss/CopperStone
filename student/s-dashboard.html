@@ -1059,6 +1059,27 @@
             }
         };
 
+        // Helper: Format notification relative or absolute date
+        function formatNotifDate(dateInput) {
+            if (!dateInput) return 'Recent';
+            const d = new Date(dateInput);
+            if (isNaN(d.getTime())) return String(dateInput);
+            
+            const now = new Date();
+            const diffMs = now.getTime() - d.getTime();
+            const diffMins = Math.floor(diffMs / (60 * 1000));
+            const diffHours = Math.floor(diffMs / (60 * 60 * 1000));
+            const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24 && d.getDate() === now.getDate()) return `${diffHours}h ago`;
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays}d ago`;
+            
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
         // Load & Render Dynamic Notifications
         async function loadNotifications() {
             const userStr = localStorage.getItem('currentUser');
@@ -1067,6 +1088,7 @@
             const readKey = 'notif_read_ids_' + user.id;
             let readIds = [];
             try { readIds = JSON.parse(localStorage.getItem(readKey) || '[]'); } catch(e) {}
+            const markAllTs = parseInt(localStorage.getItem('notif_mark_all_timestamp_' + user.id) || '0', 10);
 
             const todoListEl = document.getElementById('notif-todo-list');
             const actListEl = document.getElementById('notif-activity-list');
@@ -1076,16 +1098,25 @@
             let activityItems = [];
 
             try {
-                // Fetch modules to generate progress-based notifications
+                // Fetch modules, history, and announcements in parallel
+                const [mRes, hRes, aRes] = await Promise.all([
+                    fetch('/api/modules').catch(() => null),
+                    fetch('/api/students/' + user.id + '/history').catch(() => null),
+                    fetch('/api/announcements?target_audience=Student').catch(() => null)
+                ]);
+
                 let modules = [];
-                try {
-                    const mRes = await fetch('/api/modules');
-                    if (mRes.ok) modules = await mRes.json();
-                } catch(e) {}
+                if (mRes && mRes.ok) modules = await mRes.json();
+
+                let history = [];
+                if (hRes && hRes.ok) history = await hRes.json();
+
+                let announcements = [];
+                if (aRes && aRes.ok) announcements = await aRes.json();
 
                 // 1. Pending Assessment Session (Urgent To-Do)
                 const studentProfile = JSON.parse(localStorage.getItem('studentProfile') || '{}');
-                const hasAssessed = !!(studentProfile && studentProfile.learning_mode);
+                const hasAssessed = !!(studentProfile && studentProfile.learning_mode) || (history && history.length > 0);
 
                 let isFirstModDone = false;
                 let firstModCompAt = localStorage.getItem(`student_first_mod_completed_${user.id}`);
@@ -1113,7 +1144,7 @@
                 if (isFirstModDone && firstModCompAt) {
                     const compMs = new Date(firstModCompAt).getTime();
                     const unlockMs = compMs + ONE_WEEK;
-                    unlockDateText = new Date(unlockMs).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    unlockDateText = formatNotifDate(unlockMs);
                     if (Date.now() >= unlockMs) isReassessReady = true;
                 }
 
@@ -1124,7 +1155,7 @@
                             isUrgent: true,
                             bullet: 'yellow',
                             text: 'Action Required: Post-Module Reassessment 1 is now open. Take it to measure your quadrant migration.',
-                            action: "openIframeUrl('qa-content.html', 1)"
+                            action: "openIframeUrl('qa-content.html', 1, 'act_post_module_reassess')"
                         });
                     } else if (isFirstModDone) {
                         todoItems.push({
@@ -1132,7 +1163,7 @@
                             isUrgent: false,
                             bullet: 'gray',
                             text: `Scheduled: Post-Module Reassessment 1 unlocks on ${unlockDateText} (1 week after Module 1).`,
-                            action: "openIframeUrl('qa-content.html', 1)"
+                            action: "openIframeUrl('qa-content.html', 1, 'act_post_module_scheduled')"
                         });
                     } else {
                         todoItems.push({
@@ -1140,9 +1171,17 @@
                             isUrgent: false,
                             bullet: 'yellow',
                             text: 'To-Do: Complete Module 1 to begin your 1-week post-module reassessment schedule.',
-                            action: "openIframeUrl('modules-content.html', 2)"
+                            action: "openIframeUrl('modules-content.html', 2, 'act_complete_mod1_first')"
                         });
                     }
+                } else {
+                    todoItems.push({
+                        id: 'act_initial_assessment',
+                        isUrgent: true,
+                        bullet: 'yellow',
+                        text: 'Action Required: Complete your Initial Diagnostic Assessment to discover your learning mode quadrant.',
+                        action: "openIframeUrl('test-content.html', 1, 'act_initial_assessment')"
+                    });
                 }
 
                 // 2. Module progress-based To-Dos & Completed Activities
@@ -1163,29 +1202,32 @@
                         activityItems.push({
                             title: `${m.title} Completed`,
                             subtitle: `100% Mastery Achieved · ${m.quadrant_category || 'Distributed Collective'} Mode`,
-                            date: 'Aug 24, 2026'
+                            date: formatNotifDate(prog.completedAt || new Date()),
+                            rawTime: prog.completedAt ? new Date(prog.completedAt).getTime() : Date.now()
                         });
                     } else {
                         // Remaining chapters to-do
                         const remaining = Math.max(0, chCount - compChapters);
                         if (remaining > 0) {
+                            const itemId = `mod_${m.id}_rem_ch`;
                             todoItems.push({
-                                id: `mod_${m.id}_rem_ch`,
+                                id: itemId,
                                 isUrgent: false,
                                 bullet: 'gray',
                                 text: `${remaining} chapter${remaining > 1 ? 's' : ''} remaining in ${m.title} — Dominant Modality`,
-                                action: `openIframeUrl('modules-content.html?moduleId=${m.id}', 2)`
+                                action: `openIframeUrl('modules-content.html?moduleId=${m.id}', 2, '${itemId}')`
                             });
                         }
 
                         // Pending Knowledge Check
                         if (chCount > compKCs) {
+                            const itemId = `mod_${m.id}_pend_kc`;
                             todoItems.push({
-                                id: `mod_${m.id}_pend_kc`,
+                                id: itemId,
                                 isUrgent: false,
                                 bullet: 'gray',
                                 text: `Pending: Knowledge Check ${compKCs + 1} not yet submitted`,
-                                action: `openIframeUrl('modules-content.html?moduleId=${m.id}', 2)`
+                                action: `openIframeUrl('modules-content.html?moduleId=${m.id}', 2, '${itemId}')`
                             });
                         }
                     }
@@ -1196,34 +1238,53 @@
                             activityItems.push({
                                 title: `Knowledge Check ${kcIdx + 1} Passed`,
                                 subtitle: `${m.title} · Chapter ${kcIdx + 1}`,
-                                date: 'Aug 23, 2026'
+                                date: formatNotifDate(prog.completedAt || new Date()),
+                                rawTime: prog.completedAt ? new Date(prog.completedAt).getTime() : Date.now()
                             });
                         });
                     }
                 });
 
-                // 3. Fallback Activity Log entries for rich profile timeline
-                if (hasAssessed) {
-                    activityItems.push({
-                        title: 'Q2 Reassessment Completed',
-                        subtitle: `Outcome: ${studentProfile.learning_mode || 'Hierarchical Individual'}`,
-                        date: 'Apr 10, 2026'
+                // 3. Real Assessment History in Activity Log
+                if (history && history.length > 0) {
+                    history.forEach(h => {
+                        activityItems.push({
+                            title: `${h.session_name || 'Assessment'} Completed`,
+                            subtitle: `Outcome: ${h.learning_mode}`,
+                            date: formatNotifDate(h.taken_at),
+                            rawTime: new Date(h.taken_at).getTime()
+                        });
                     });
+                } else if (hasAssessed) {
                     activityItems.push({
-                        title: 'Module 2 unlocked',
-                        subtitle: 'Based on your Q2 assessment results',
-                        date: 'Apr 10, 2026'
-                    });
-                    activityItems.push({
-                        title: 'Q1 Initial Assessment Completed',
+                        title: 'Diagnostic Assessment Completed',
                         subtitle: `Outcome: ${studentProfile.learning_mode || 'Hierarchical Individual'}`,
-                        date: 'Jan 15, 2026'
+                        date: formatNotifDate(new Date()),
+                        rawTime: Date.now()
                     });
                 }
+
+                // 4. Announcements in Activity Log
+                if (announcements && announcements.length > 0) {
+                    announcements.forEach(a => {
+                        activityItems.push({
+                            title: a.title,
+                            subtitle: a.message_body,
+                            date: formatNotifDate(a.created_at),
+                            rawTime: new Date(a.created_at).getTime()
+                        });
+                    });
+                }
+
+                // Sort Activity items by newest first
+                activityItems.sort((a, b) => (b.rawTime || 0) - (a.rawTime || 0));
 
             } catch (err) {
                 console.error("Error generating notifications", err);
             }
+
+            // Save all generated IDs for mark-all-read persistence
+            window._generatedTodoIds = todoItems.map(item => item.id);
 
             // Render To-Do List
             if (todoItems.length === 0) {
@@ -1236,7 +1297,7 @@
                 `;
             } else {
                 todoListEl.innerHTML = todoItems.map(item => {
-                    const isRead = readIds.includes(item.id);
+                    const isRead = readIds.includes(item.id) || (markAllTs > 0);
                     const cardClass = `notif-todo-card ${item.isUrgent ? 'urgent' : ''}`;
                     const opacityStyle = isRead ? 'opacity: 0.65;' : '';
                     return `
@@ -1269,7 +1330,8 @@
             }
 
             // Update badge dot for unread items
-            const unreadCount = todoItems.filter(t => !readIds.includes(t.id)).length;
+            const isAllRead = localStorage.getItem('notif_all_read_' + user.id) === 'true';
+            const unreadCount = isAllRead ? 0 : todoItems.filter(t => !readIds.includes(t.id)).length;
             if (unreadCount > 0) {
                 badgeEl.style.display = 'block';
             } else {
@@ -1284,18 +1346,39 @@
             const user = JSON.parse(userStr);
             const readKey = 'notif_read_ids_' + user.id;
 
-            const todoCards = document.querySelectorAll('.notif-todo-card');
-            const allIds = ['act_midterm_reassess', 'mod_1_rem_ch', 'mod_1_pend_kc', 'mod_2_rem_ch', 'mod_2_pend_kc'];
+            let readIds = [];
+            try { readIds = JSON.parse(localStorage.getItem(readKey) || '[]'); } catch(e) {}
+
+            const currentIds = window._generatedTodoIds || [];
+            const allIds = Array.from(new Set([...readIds, ...currentIds, 'act_post_module_reassess', 'act_post_module_scheduled', 'act_complete_mod1_first', 'act_initial_assessment']));
             localStorage.setItem(readKey, JSON.stringify(allIds));
-            
+            localStorage.setItem('notif_all_read_' + user.id, 'true');
+            localStorage.setItem('notif_mark_all_timestamp_' + user.id, Date.now().toString());
+
             const badgeEl = document.getElementById('bell-badge-count');
             if (badgeEl) badgeEl.style.display = 'none';
 
+            const todoCards = document.querySelectorAll('.notif-todo-card');
             todoCards.forEach(c => c.style.opacity = '0.65');
         };
 
         // Helper to navigate iframe and update active sidebar link
-        window.openIframeUrl = function(url, sidebarIdx) {
+        window.openIframeUrl = function(url, sidebarIdx, itemId) {
+            if (itemId) {
+                const userStr = localStorage.getItem('currentUser');
+                if (userStr) {
+                    try {
+                        const user = JSON.parse(userStr);
+                        const readKey = 'notif_read_ids_' + user.id;
+                        let readIds = JSON.parse(localStorage.getItem(readKey) || '[]');
+                        if (!readIds.includes(itemId)) {
+                            readIds.push(itemId);
+                            localStorage.setItem(readKey, JSON.stringify(readIds));
+                        }
+                    } catch(e) {}
+                }
+            }
+
             document.getElementById('content-frame').src = url;
             const notifDropdown = document.getElementById('notification-dropdown');
             if (notifDropdown) notifDropdown.style.display = 'none';
@@ -1305,6 +1388,9 @@
                 sidebarLinks.forEach(l => l.classList.remove('active'));
                 if (sidebarLinks[sidebarIdx]) sidebarLinks[sidebarIdx].classList.add('active');
             }
+
+            // Refresh notification counts
+            setTimeout(loadNotifications, 300);
         };
 
         // Listen for the mandatory initial assessment completion from the iframe

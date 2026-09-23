@@ -99,22 +99,31 @@
         /* --- TOP GRID (Strategy Roadmap & Learning Cycle) --- */
         .top-grid {
             display: grid;
-            grid-template-columns: 1.15fr 0.85fr;
+            grid-template-columns: 1.16fr 0.84fr;
             gap: 20px;
             align-items: stretch;
+        }
+
+        @media (max-width: 992px) {
+            .top-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .left-column {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         /* Weakest Area Card */
         .weakest-area-card {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 22px 24px;
         }
 
         .card-header-row {
@@ -146,7 +155,7 @@
         }
 
         .weakest-title {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
             color: #ffffff;
         }
@@ -166,18 +175,18 @@
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
+            gap: 12px;
         }
 
         .metric-box {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            padding: 16px 12px;
+            padding: 12px 10px;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
             transition: all 0.2s ease;
         }
 
@@ -188,7 +197,7 @@
         }
 
         .metric-value {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 800;
             color: #ffffff;
             line-height: 1.1;
@@ -199,22 +208,26 @@
         }
 
         .metric-label {
-            font-size: 11.5px;
+            font-size: 11px;
             color: var(--text-muted);
             font-weight: 500;
         }
 
         .weakest-desc-text {
-            font-size: 13px;
+            font-size: 12.5px;
             color: #94a3b8;
-            line-height: 1.55;
+            line-height: 1.5;
+            margin: 0;
         }
 
         /* Recommended Next Step Card (Interactive Link) */
         .next-step-card {
+            flex: 1;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             gap: 12px;
+            padding: 20px 24px;
             cursor: pointer;
             position: relative;
         }
@@ -222,7 +235,7 @@
         .next-step-card:hover {
             border-color: rgba(192, 132, 252, 0.35);
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(192, 132, 252, 0.12);
+            box-shadow: 0 10px 28px rgba(192, 132, 252, 0.12);
         }
 
         .next-step-tag-row {
@@ -240,36 +253,43 @@
         }
 
         .next-step-btn-pill {
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 700;
             color: var(--matrix-yellow);
+            background: rgba(216, 166, 26, 0.1);
+            border: 1px solid rgba(216, 166, 26, 0.25);
+            padding: 3px 10px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             gap: 4px;
-            transition: transform 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         .next-step-card:hover .next-step-btn-pill {
-            transform: translateX(3px);
+            background: rgba(216, 166, 26, 0.2);
+            transform: translateX(2px);
         }
 
         .next-step-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: #ffffff;
+            margin: 0;
         }
 
         .next-step-desc {
-            font-size: 13px;
+            font-size: 12.5px;
             color: #94a3b8;
-            line-height: 1.5;
+            line-height: 1.45;
+            margin: 0;
         }
 
         .next-step-progress-row {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-top: 6px;
+            gap: 12px;
+            margin-top: 4px;
         }
 
         .progress-bar-bg {
@@ -285,12 +305,12 @@
             height: 100%;
             background: linear-gradient(90deg, #a855f7, #c084fc);
             border-radius: 9999px;
-            width: 50%;
+            width: 0%;
             transition: width 0.3s ease;
         }
 
         .progress-count-label {
-            font-size: 12.5px;
+            font-size: 11.5px;
             font-weight: 600;
             color: var(--text-muted);
             white-space: nowrap;
@@ -300,72 +320,100 @@
         .learning-cycle-card {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            justify-content: space-between;
+            padding: 22px 24px;
+        }
+
+        .learning-cycle-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
         }
 
         .learning-cycle-title {
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.2px;
             color: #64748b;
-            margin-bottom: 2px;
         }
 
         .cycle-step-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
+            position: relative;
         }
 
         .cycle-step-item {
             display: flex;
             align-items: flex-start;
-            gap: 14px;
-            padding: 8px 10px;
+            gap: 12px;
+            padding: 10px 12px;
             border-radius: 10px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            position: relative;
+            z-index: 1;
             transition: all 0.2s ease;
         }
 
+        /* Continuous connecting stem between badges: item 1 -> 2 -> 3 -> 4 only */
+        .cycle-step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 33px;
+            bottom: -11px;
+            left: 22px;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.12);
+            z-index: 0;
+        }
+
+        .cycle-step-item.active {
+            background: rgba(216, 166, 26, 0.07);
+            border-color: rgba(216, 166, 26, 0.25);
+        }
+
         .cycle-step-item:hover {
-            background: rgba(255, 255, 255, 0.03);
-            transform: translateX(3px);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .cycle-step-item.active:hover {
+            background: rgba(216, 166, 26, 0.12);
         }
 
         .step-icon-badge {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
             flex-shrink: 0;
             margin-top: 1px;
-            transition: transform 0.2s ease;
-        }
-
-        .cycle-step-item:hover .step-icon-badge {
-            transform: scale(1.1);
+            z-index: 2;
         }
 
         .step-icon-badge.green-done {
-            background: rgba(34, 197, 94, 0.12);
-            border: 1px solid rgba(34, 197, 94, 0.4);
+            background: #0d1e15;
+            border: 1.5px solid #22c55e;
             color: #4ade80;
         }
 
         .step-icon-badge.yellow-active {
-            background: rgba(216, 166, 26, 0.12);
-            border: 1px solid rgba(216, 166, 26, 0.5);
+            background: #1f1b0a;
+            border: 1.5px solid var(--matrix-yellow);
             color: var(--matrix-yellow);
-            box-shadow: 0 0 10px rgba(216, 166, 26, 0.25);
+            box-shadow: 0 0 10px rgba(216, 166, 26, 0.35);
         }
 
         .step-icon-badge.gray-pending {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: #0d1722;
+            border: 1.5px solid rgba(255, 255, 255, 0.16);
             color: #64748b;
         }
 
@@ -373,12 +421,14 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
+            flex: 1;
         }
 
         .step-heading {
-            font-size: 13.5px;
+            font-size: 12.5px;
             font-weight: 700;
             color: #ffffff;
+            margin: 0;
         }
 
         .step-heading.muted {
@@ -386,8 +436,55 @@
         }
 
         .step-detail {
-            font-size: 12px;
+            font-size: 11px;
             color: #8b9eb0;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .step-icon-badge.green-done {
+            background: rgba(34, 197, 94, 0.14);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #4ade80;
+        }
+
+        .step-icon-badge.yellow-active {
+            background: rgba(216, 166, 26, 0.15);
+            border: 1px solid rgba(216, 166, 26, 0.5);
+            color: var(--matrix-yellow);
+            box-shadow: 0 0 8px rgba(216, 166, 26, 0.25);
+        }
+
+        .step-icon-badge.gray-pending {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #64748b;
+        }
+
+        .step-text-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .step-heading {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .step-heading.muted {
+            color: #94a3b8;
+        }
+
+        .step-detail {
+            font-size: 11.5px;
+            color: #8b9eb0;
+            line-height: 1.4;
+            margin: 0;
+        }
             line-height: 1.45;
         }
 
@@ -824,7 +921,7 @@
                     </div>
 
                     <p class="weakest-desc-text" id="weakest-instructions-text">
-                        Analyzing your learning activities to reach the 80% mastery target benchmark...
+                        Close the gap in this priority quadrant through targeted module activities to achieve benchmark mastery.
                     </p>
                 </div>
 
@@ -842,7 +939,7 @@
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill" id="rec-progress-fill" style="width: 0%;"></div>
                         </div>
-                        <span class="progress-count-label" id="rec-progress-label">0/0</span>
+                        <span class="progress-count-label" id="rec-progress-label">0/0 Chapters</span>
                     </div>
                 </div>
 
@@ -850,91 +947,70 @@
 
             <!-- RIGHT COLUMN: LEARNING CYCLE -->
             <div class="glass-card learning-cycle-card">
-                <span class="learning-cycle-title">Learning Cycle</span>
+                <div class="learning-cycle-header">
+                    <span class="learning-cycle-title">Learning Cycle</span>
+                    <span id="cycle-current-phase-pill" style="font-size: 10.5px; font-weight: 700; color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); border: 1px solid rgba(216, 166, 26, 0.25); padding: 2px 8px; border-radius: 9999px;">Current: Phase 3</span>
+                </div>
 
-                <div class="cycle-step-list">
+                <div class="cycle-step-list" id="cycle-step-list-container">
                     
-                    <!-- Step 1 -->
+                    <!-- Phase 1 -->
                     <div class="cycle-step-item">
                         <div class="step-icon-badge green-done">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
                         </div>
                         <div class="step-text-content">
-                            <h4 class="step-heading">Assess</h4>
-                            <p class="step-detail">Complete your stage assessment questionnaire.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h4 class="step-heading">1. Diagnostic Assessment</h4>
+                                <span style="font-size: 10px; font-weight: 700; color: var(--matrix-green);">Completed</span>
+                            </div>
+                            <p class="step-detail">28-item survey evaluated & quadrant profile calculated.</p>
                         </div>
                     </div>
 
-                    <!-- Step 2 -->
+                    <!-- Phase 2 -->
                     <div class="cycle-step-item">
                         <div class="step-icon-badge green-done">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
                         </div>
                         <div class="step-text-content">
-                            <h4 class="step-heading">Calculate Scores</h4>
-                            <p class="step-detail">System calculates your score for each of the four quadrants.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h4 class="step-heading">2. Focus Area Identified</h4>
+                                <span style="font-size: 10px; font-weight: 700; color: #fb923c;">Target Set</span>
+                            </div>
+                            <p class="step-detail" id="cycle-step-weakest-text">Targeted Distributed Collective at 37%.</p>
                         </div>
                     </div>
 
-                    <!-- Step 3 -->
-                    <div class="cycle-step-item">
-                        <div class="step-icon-badge green-done">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="20 6 9 17 4 12"></polyline>
+                    <!-- Phase 3 -->
+                    <div class="cycle-step-item active">
+                        <div class="step-icon-badge yellow-active">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                             </svg>
                         </div>
                         <div class="step-text-content">
-                            <h4 class="step-heading">Identify Weakest</h4>
-                            <p class="step-detail" id="cycle-step-weakest-text">Your weakest quadrant: Distributed Collective at 48%.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h4 class="step-heading" style="color: var(--matrix-yellow);">3. Modular Learning & Practice</h4>
+                                <span style="font-size: 10px; font-weight: 700; color: var(--matrix-yellow);">In Progress</span>
+                            </div>
+                            <p class="step-detail" id="cycle-step-rec-text">Complete recommended curriculum & chapter knowledge checks.</p>
                         </div>
                     </div>
 
-                    <!-- Step 4 -->
+                    <!-- Phase 4 -->
                     <div class="cycle-step-item">
-                        <div class="step-icon-badge yellow-active">4</div>
+                        <div class="step-icon-badge gray-pending">4</div>
                         <div class="step-text-content">
-                            <h4 class="step-heading">Recommend Strategy</h4>
-                            <p class="step-detail" id="cycle-step-rec-text">Complete the recommended learning activities for Distributed Collective.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 5 -->
-                    <div class="cycle-step-item">
-                        <div class="step-icon-badge yellow-active">5</div>
-                        <div class="step-text-content">
-                            <h4 class="step-heading">Learn</h4>
-                            <p class="step-detail">Work through your recommended modules and chapters.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 6 -->
-                    <div class="cycle-step-item">
-                        <div class="step-icon-badge yellow-active">6</div>
-                        <div class="step-text-content">
-                            <h4 class="step-heading">Knowledge Checks</h4>
-                            <p class="step-detail">Complete in-chapter knowledge checks and checkpoints.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 7 -->
-                    <div class="cycle-step-item">
-                        <div class="step-icon-badge gray-pending">7</div>
-                        <div class="step-text-content">
-                            <h4 class="step-heading muted">Reassess</h4>
-                            <p class="step-detail">Take your next assessment to measure improvement across stages.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 8 -->
-                    <div class="cycle-step-item">
-                        <div class="step-icon-badge gray-pending">8</div>
-                        <div class="step-text-content">
-                            <h4 class="step-heading muted">Track Migration</h4>
-                            <p class="step-detail">Review your migration analytics to see how your profile evolves.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h4 class="step-heading muted">4. Reassessment & Growth</h4>
+                                <span style="font-size: 10px; font-weight: 600; color: #64748b;">Target: &ge;80%</span>
+                            </div>
+                            <p class="step-detail">Take stage reassessment to measure migration toward the benchmark.</p>
                         </div>
                     </div>
 
@@ -1936,7 +2012,7 @@
 
                 // Update Weakest Area Card
                 const weakestTitleEl = document.getElementById('weakest-quadrant-title');
-                if (weakestTitleEl) weakestTitleEl.textContent = `Weakest Area: ${weakName}`;
+                if (weakestTitleEl) weakestTitleEl.textContent = `Focus Area: ${weakName}`;
 
                 const yourScoreEl = document.getElementById('val-your-score');
                 if (yourScoreEl) yourScoreEl.textContent = `${score}%`;
@@ -1946,7 +2022,7 @@
 
                 const instrEl = document.getElementById('weakest-instructions-text');
                 if (instrEl) {
-                    instrEl.textContent = `Complete learning activities for ${weakName} to reach the ${threshold}% mastery target benchmark. ${gap}% more to reach mastery.`;
+                    instrEl.textContent = `Close the ${gap}% gap in ${weakName} through targeted module activities to achieve the ${threshold}% mastery benchmark.`;
                 }
 
                 // Update Recommended Step Header & Titles
@@ -1993,15 +2069,11 @@
                     const fillEl = document.getElementById('rec-progress-fill');
                     const labelEl = document.getElementById('rec-progress-label');
                     if (fillEl) fillEl.style.width = `${progressPct}%`;
-                    if (labelEl) labelEl.textContent = `${clampedCompleted}/${maxTasks}`;
+                    if (labelEl) labelEl.textContent = `${clampedCompleted}/${maxTasks} Chapters`;
+
+                    // Store module task progress in scope
+                    window._currentModuleTasks = { clampedCompleted, maxTasks };
                 }
-
-                // Update Learning Cycle text
-                const cycleWeakest = document.getElementById('cycle-step-weakest-text');
-                if (cycleWeakest) cycleWeakest.textContent = `Your weakest quadrant: ${weakName} at ${score}%.`;
-
-                const cycleRec = document.getElementById('cycle-step-rec-text');
-                if (cycleRec) cycleRec.textContent = `Complete the recommended learning activities for ${weakName} to achieve ≥80% mastery.`;
 
                 // Update Migration Insight Banner
                 const insightQuad = document.getElementById('insight-quadrant-name');
@@ -2037,6 +2109,19 @@
                 const isS1Active = completedStagesCount >= 1;
                 const isS2Active = completedStagesCount >= 2;
                 const isS3Active = completedStagesCount >= 3;
+
+                // Render Learning Cycle dynamically based on student progress & assessment status
+                const modProgress = window._currentModuleTasks || { clampedCompleted: 0, maxTasks: 4 };
+                renderLearningCycleUI({
+                    isS1Active,
+                    isS2Active,
+                    isS3Active,
+                    completedStagesCount,
+                    weakName,
+                    score,
+                    clampedCompleted: modProgress.clampedCompleted,
+                    maxTasks: modProgress.maxTasks
+                });
 
                 // Stage 1 Coordinates & Independent Mastery
                 const s1 = completedHistory[0] || student;
@@ -2808,6 +2893,158 @@
                 tLbl3.textContent = isS3Active ? 'Final Assessment' : 'Final Assessment (Pending)';
                 tLbl3.style.color = isS3Active ? '#64748b' : '#475569';
             }
+        }
+
+        // ================= DYNAMIC LEARNING CYCLE RENDERER =================
+        function renderLearningCycleUI({ isS1Active, isS2Active, isS3Active, completedStagesCount, weakName, score, clampedCompleted, maxTasks }) {
+            const listContainer = document.getElementById('cycle-step-list-container');
+            const phasePill = document.getElementById('cycle-current-phase-pill');
+            if (!listContainer) return;
+
+            const isPhase1Done = isS1Active;
+            const isPhase2Done = isS1Active;
+            const isPhase3Done = isPhase1Done && maxTasks > 0 && clampedCompleted >= maxTasks;
+            const isPhase4Active = isPhase3Done && !isS2Active;
+
+            // Header current phase pill
+            let currentPhaseText = "Current: Phase 1 (Assess)";
+            let pillColor = "var(--matrix-yellow)";
+            let pillBg = "rgba(216, 166, 26, 0.1)";
+            let pillBorder = "rgba(216, 166, 26, 0.25)";
+
+            if (isS3Active || (isS2Active && score >= 80)) {
+                currentPhaseText = "Benchmark Achieved 🎉";
+                pillColor = "var(--matrix-green)";
+                pillBg = "rgba(34, 197, 94, 0.1)";
+                pillBorder = "rgba(34, 197, 94, 0.3)";
+            } else if (isS2Active) {
+                currentPhaseText = "Current: Stage 2 Evaluated";
+            } else if (isPhase4Active) {
+                currentPhaseText = "Current: Phase 4 (Reassess)";
+            } else if (isPhase1Done) {
+                currentPhaseText = "Current: Phase 3 (Learn)";
+            }
+
+            if (phasePill) {
+                phasePill.textContent = currentPhaseText;
+                phasePill.style.color = pillColor;
+                phasePill.style.background = pillBg;
+                phasePill.style.borderColor = pillBorder;
+            }
+
+            // Step 1: Diagnostic Assessment
+            const s1Status = isPhase1Done ? 'Completed' : 'In Progress';
+            const s1StatusColor = isPhase1Done ? 'var(--matrix-green)' : 'var(--matrix-yellow)';
+            const s1BadgeClass = isPhase1Done ? 'green-done' : 'yellow-active';
+            const s1BadgeHtml = isPhase1Done 
+                ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+                : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+            const s1ActiveItem = !isPhase1Done ? 'active' : '';
+
+            // Step 2: Focus Area Identified
+            const s2Status = isPhase1Done ? 'Target Set' : 'Pending';
+            const s2StatusColor = isPhase1Done ? '#fb923c' : '#64748b';
+            const s2BadgeClass = isPhase1Done ? 'green-done' : 'gray-pending';
+            const s2BadgeHtml = isPhase1Done 
+                ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+                : `2`;
+            const s2Desc = isPhase1Done ? `Targeted ${weakName} (${score}%) for skill growth.` : `Will be identified upon diagnostic completion.`;
+
+            // Step 3: Modular Learning & Practice
+            let s3Status = 'Pending';
+            let s3StatusColor = '#64748b';
+            let s3BadgeClass = 'gray-pending';
+            let s3BadgeHtml = '3';
+            let s3ActiveItem = '';
+            let s3Desc = `Complete ${weakName} modules & interactive knowledge checks.`;
+
+            if (isPhase3Done) {
+                s3Status = 'Completed';
+                s3StatusColor = 'var(--matrix-green)';
+                s3BadgeClass = 'green-done';
+                s3BadgeHtml = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                s3Desc = `All ${maxTasks} chapters in ${weakName} completed! Ready for reassessment.`;
+            } else if (isPhase1Done) {
+                s3Status = 'In Progress';
+                s3StatusColor = 'var(--matrix-yellow)';
+                s3BadgeClass = 'yellow-active';
+                s3BadgeHtml = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+                s3ActiveItem = 'active';
+                s3Desc = `In Progress: ${clampedCompleted}/${maxTasks} Chapters completed for ${weakName}.`;
+            }
+
+            // Step 4: Reassessment & Growth
+            let s4Status = 'Target: ≥80%';
+            let s4StatusColor = '#64748b';
+            let s4BadgeClass = 'gray-pending';
+            let s4BadgeHtml = '4';
+            let s4ActiveItem = '';
+            let s4Desc = `Take stage reassessment to measure migration toward the benchmark.`;
+
+            if (isS2Active) {
+                s4Status = score >= 80 ? 'Mastered' : 'Evaluated';
+                s4StatusColor = score >= 80 ? 'var(--matrix-green)' : 'var(--matrix-yellow)';
+                s4BadgeClass = score >= 80 ? 'green-done' : 'yellow-active';
+                s4BadgeHtml = score >= 80
+                    ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+                    : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+                s4Desc = score >= 80 
+                    ? `Target achieved! Reassessment score reached ≥80% mastery.`
+                    : `Stage 2 evaluated at ${score}%. Continue modules to reach 80%.`;
+            } else if (isPhase4Active) {
+                s4Status = 'Ready to Take';
+                s4StatusColor = 'var(--matrix-yellow)';
+                s4BadgeClass = 'yellow-active';
+                s4BadgeHtml = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+                s4ActiveItem = 'active';
+                s4Desc = `Modules completed! Take stage reassessment to measure your growth.`;
+            }
+
+            listContainer.innerHTML = `
+                <div class="cycle-step-item ${s1ActiveItem}">
+                    <div class="step-icon-badge ${s1BadgeClass}">${s1BadgeHtml}</div>
+                    <div class="step-text-content">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 class="step-heading" ${!isPhase1Done ? 'style="color: var(--matrix-yellow);"' : ''}>1. Diagnostic Assessment</h4>
+                            <span style="font-size: 10px; font-weight: 700; color: ${s1StatusColor};">${s1Status}</span>
+                        </div>
+                        <p class="step-detail">28-item survey evaluated & quadrant profile calculated.</p>
+                    </div>
+                </div>
+
+                <div class="cycle-step-item">
+                    <div class="step-icon-badge ${s2BadgeClass}">${s2BadgeHtml}</div>
+                    <div class="step-text-content">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 class="step-heading ${!isPhase1Done ? 'muted' : ''}">2. Focus Area Identified</h4>
+                            <span style="font-size: 10px; font-weight: 700; color: ${s2StatusColor};">${s2Status}</span>
+                        </div>
+                        <p class="step-detail">${s2Desc}</p>
+                    </div>
+                </div>
+
+                <div class="cycle-step-item ${s3ActiveItem}">
+                    <div class="step-icon-badge ${s3BadgeClass}">${s3BadgeHtml}</div>
+                    <div class="step-text-content">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 class="step-heading ${!isPhase1Done ? 'muted' : ''}" ${s3ActiveItem ? 'style="color: var(--matrix-yellow);"' : ''}>3. Modular Learning & Practice</h4>
+                            <span style="font-size: 10px; font-weight: 700; color: ${s3StatusColor};">${s3Status}</span>
+                        </div>
+                        <p class="step-detail">${s3Desc}</p>
+                    </div>
+                </div>
+
+                <div class="cycle-step-item ${s4ActiveItem}">
+                    <div class="step-icon-badge ${s4BadgeClass}">${s4BadgeHtml}</div>
+                    <div class="step-text-content">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 class="step-heading ${!isPhase4Active && !isS2Active ? 'muted' : ''}" ${s4ActiveItem ? 'style="color: var(--matrix-yellow);"' : ''}>4. Reassessment & Growth</h4>
+                            <span style="font-size: 10px; font-weight: 700; color: ${s4StatusColor};">${s4Status}</span>
+                        </div>
+                        <p class="step-detail">${s4Desc}</p>
+                    </div>
+                </div>
+            `;
         }
     </script>
 

@@ -327,7 +327,7 @@
             box-shadow: 0 4px 14px color-mix(in srgb, var(--target-color, #a855f7) 25%, transparent);
         }
 
-        /* --- CARD 3: LEARNING MODE DISTRIBUTION --- */
+        /* --- CARD 3: QUADRANT MASTERY & DISTRIBUTION --- */
         .eyebrow-muted {
             color: var(--text-muted);
             font-size: 11px;
@@ -335,6 +335,40 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             margin-bottom: 22px;
+        }
+
+        .dist-toggle-group {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 3px;
+            gap: 3px;
+        }
+
+        .dist-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            font-family: inherit;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dist-toggle-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .dist-toggle-btn.active {
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--matrix-green);
+            font-weight: 700;
+            border: 1px solid rgba(74, 222, 128, 0.3);
         }
 
         .dist-rows-container {
@@ -735,12 +769,18 @@
             </div>
         </section>
 
-        <!-- ================= CARD 3: BOTTOM LEFT (LEARNING MODE DISTRIBUTION) ================= -->
+        <!-- ================= CARD 3: BOTTOM LEFT (QUADRANT MASTERY & DISTRIBUTION) ================= -->
         <section class="dash-card">
-            <div class="eyebrow-muted">LEARNING MODE DISTRIBUTION</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div class="eyebrow-muted" id="dist-card-title" style="margin-bottom: 0;">QUADRANT MASTERY</div>
+                <div class="dist-toggle-group">
+                    <button class="dist-toggle-btn active" id="btn-view-mastery" onclick="setDistViewMode('mastery')">Mastery</button>
+                    <button class="dist-toggle-btn" id="btn-view-distribution" onclick="setDistViewMode('distribution')">Distribution</button>
+                </div>
+            </div>
 
             <div class="dist-rows-container" id="dist-container">
-                <!-- Dynamically populated via renderLearningDistribution -->
+                <!-- Dynamically populated via renderDistCard -->
             </div>
         </section>
 
@@ -884,9 +924,24 @@
                 document.getElementById('dominant-mode-code').style.background = `color-mix(in srgb, ${modeInfo.color} 15%, transparent)`;
             }
 
-            // 3. Card 3: Dynamic Learning Mode Distribution Percentages & Badges
+            // 3. Card 3: Dynamic Learning Mode Mastery & Distribution (Default: Mastery first)
             const pcts = getPercentages(latestCoords.x, latestCoords.y);
-            renderLearningDistribution(pcts);
+            const latestHistory = (history && history.length > 0) ? history[history.length - 1] : {};
+
+            const hi_m = latestHistory.hi_mastery !== undefined && latestHistory.hi_mastery !== null ? latestHistory.hi_mastery : (user && user.hi_mastery !== undefined && user.hi_mastery !== null ? user.hi_mastery : pcts.HI);
+            const di_m = latestHistory.di_mastery !== undefined && latestHistory.di_mastery !== null ? latestHistory.di_mastery : (user && user.di_mastery !== undefined && user.di_mastery !== null ? user.di_mastery : pcts.DI);
+            const hc_m = latestHistory.hc_mastery !== undefined && latestHistory.hc_mastery !== null ? latestHistory.hc_mastery : (user && user.hc_mastery !== undefined && user.hc_mastery !== null ? user.hc_mastery : pcts.HC);
+            const dc_m = latestHistory.dc_mastery !== undefined && latestHistory.dc_mastery !== null ? latestHistory.dc_mastery : (user && user.dc_mastery !== undefined && user.dc_mastery !== null ? user.dc_mastery : pcts.DC);
+
+            cachedMastery = {
+                HI: Math.round(Number(hi_m) || 0),
+                DI: Math.round(Number(di_m) || 0),
+                HC: Math.round(Number(hc_m) || 0),
+                DC: Math.round(Number(dc_m) || 0)
+            };
+            cachedPcts = pcts;
+
+            renderDistCard();
 
             // 4. Card 2: Active Learning Roadmap (Target Quadrant & Module Progress)
             const modesList = [
@@ -989,65 +1044,131 @@
             renderAssessmentJourney(history, isTargetModuleCompleted);
         }
 
-        function renderLearningDistribution(pcts) {
-            const modes = [
-                { key: 'HI', name: 'Hierarchical Individual', short: 'H. Individual', pct: pcts.HI, iconSvg: svgIcons.HI, colorClass: 'green' },
-                { key: 'HC', name: 'Hierarchical Collective', short: 'H. Collective', pct: pcts.HC, iconSvg: svgIcons.HC, colorClass: 'orange' },
-                { key: 'DI', name: 'Distributed Individual', short: 'D. Individual', pct: pcts.DI, iconSvg: svgIcons.DI, colorClass: 'blue' },
-                { key: 'DC', name: 'Distributed Collective', short: 'D. Collective', pct: pcts.DC, iconSvg: svgIcons.DC, colorClass: 'purple' }
-            ];
+        let currentDistView = 'mastery';
+        let cachedPcts = null;
+        let cachedMastery = null;
 
-            let highest = modes[0];
-            let lowest = modes[0];
-            modes.forEach(m => {
-                if (m.pct > highest.pct) highest = m;
-                if (m.pct < lowest.pct) lowest = m;
-            });
+        function setDistViewMode(mode) {
+            currentDistView = mode;
+            const btnMastery = document.getElementById('btn-view-mastery');
+            const btnDist = document.getElementById('btn-view-distribution');
+            const cardTitle = document.getElementById('dist-card-title');
 
-            const container = document.getElementById('dist-container');
-            if (!container) return;
-
-            let html = '';
-            modes.forEach(m => {
-                const isHighest = m.key === highest.key;
-                const isLowest = m.key === lowest.key;
-
-                let badgeHtml = '';
-                if (isHighest) {
-                    badgeHtml = `<span class="dist-tag-strength">Strengths &uarr;</span>`;
-                } else if (isLowest) {
-                    badgeHtml = `<span class="dist-tag-intervention">Intervention &darr;</span>`;
+            if (btnMastery && btnDist) {
+                if (mode === 'mastery') {
+                    btnMastery.classList.add('active');
+                    btnDist.classList.remove('active');
+                    if (cardTitle) cardTitle.textContent = 'QUADRANT MASTERY';
                 } else {
-                    badgeHtml = `<span class="dist-code-muted">${m.key}</span>`;
+                    btnDist.classList.add('active');
+                    btnMastery.classList.remove('active');
+                    if (cardTitle) cardTitle.textContent = 'LEARNING MODE DISTRIBUTION';
                 }
+            }
+            renderDistCard();
+        }
 
-                const pctClass = isHighest ? 'green' : (isLowest ? 'purple' : '');
+        function renderDistCard() {
+            const container = document.getElementById('dist-container');
+            if (!container || !cachedPcts) return;
 
-                html += `
-                    <div class="dist-row">
-                        <div class="dist-row-top">
-                            <div class="dist-label-left">
-                                <span style="display: flex; align-items: center; color: var(--matrix-${m.colorClass});">${m.iconSvg}</span>
-                                <span>${m.key === 'HC' || m.key === 'DI' ? m.short : m.name}</span>
-                                ${badgeHtml}
+            if (currentDistView === 'mastery') {
+                const mastery = cachedMastery || cachedPcts;
+                const modes = [
+                    { key: 'HI', name: 'Hierarchical Individual', short: 'H. Individual', score: mastery.HI, iconSvg: svgIcons.HI, colorClass: 'green' },
+                    { key: 'HC', name: 'Hierarchical Collective', short: 'H. Collective', score: mastery.HC, iconSvg: svgIcons.HC, colorClass: 'orange' },
+                    { key: 'DI', name: 'Distributed Individual', short: 'D. Individual', score: mastery.DI, iconSvg: svgIcons.DI, colorClass: 'blue' },
+                    { key: 'DC', name: 'Distributed Collective', short: 'D. Collective', score: mastery.DC, iconSvg: svgIcons.DC, colorClass: 'purple' }
+                ];
+
+                let html = '';
+                modes.forEach(m => {
+                    const isMastered = m.score >= 80;
+                    const targetDiff = 80 - m.score;
+                    let badgeHtml = isMastered
+                        ? `<span class="dist-tag-strength" style="background: rgba(74, 222, 128, 0.12); color: var(--matrix-green); border: 1px solid rgba(74, 222, 128, 0.3);">✓ Mastered</span>`
+                        : `<span class="dist-tag-intervention" style="background: rgba(216, 166, 26, 0.12); color: var(--matrix-yellow); border: 1px solid rgba(216, 166, 26, 0.3);">${targetDiff}% to 80% Target</span>`;
+
+                    html += `
+                        <div class="dist-row">
+                            <div class="dist-row-top">
+                                <div class="dist-label-left">
+                                    <span style="display: flex; align-items: center; color: var(--matrix-${m.colorClass});">${m.iconSvg}</span>
+                                    <span>${m.key === 'HC' || m.key === 'DI' ? m.short : m.name}</span>
+                                    ${badgeHtml}
+                                </div>
+                                <span class="dist-val-pct" style="color: ${isMastered ? 'var(--matrix-green)' : '#ffffff'}; font-weight: 800;">${m.score}%</span>
                             </div>
-                            <span class="dist-val-pct ${pctClass}">${m.pct}%</span>
+                            <div class="dist-track" style="margin-top: 8px; position: relative; overflow: visible;">
+                                <div style="position: absolute; left: 80%; top: -2px; bottom: -2px; width: 2px; background: var(--matrix-yellow); z-index: 2; border-radius: 1px;" title="80% Target Benchmark"></div>
+                                <div class="dist-fill ${m.colorClass}" style="width: ${Math.min(100, m.score)}%;"></div>
+                            </div>
                         </div>
-                        ${(isHighest || isLowest) ? `<div class="dist-sub-code">${m.key}</div>` : ''}
-                        <div class="dist-track" style="${!(isHighest || isLowest) ? 'margin-top: 8px;' : ''}">
-                            <div class="dist-fill ${m.colorClass}" style="width: ${m.pct}%;"></div>
+                    `;
+                });
+
+                html += `<div class="dist-footnote" id="dist-footnote-text">Target Benchmark: 80% &middot; Advance your mastery through modules & knowledge checks</div>`;
+                container.innerHTML = html;
+
+            } else {
+                // Relative Share Distribution View
+                const pcts = cachedPcts;
+                const modes = [
+                    { key: 'HI', name: 'Hierarchical Individual', short: 'H. Individual', pct: pcts.HI, iconSvg: svgIcons.HI, colorClass: 'green' },
+                    { key: 'HC', name: 'Hierarchical Collective', short: 'H. Collective', pct: pcts.HC, iconSvg: svgIcons.HC, colorClass: 'orange' },
+                    { key: 'DI', name: 'Distributed Individual', short: 'D. Individual', pct: pcts.DI, iconSvg: svgIcons.DI, colorClass: 'blue' },
+                    { key: 'DC', name: 'Distributed Collective', short: 'D. Collective', pct: pcts.DC, iconSvg: svgIcons.DC, colorClass: 'purple' }
+                ];
+
+                let highest = modes[0];
+                let lowest = modes[0];
+                modes.forEach(m => {
+                    if (m.pct > highest.pct) highest = m;
+                    if (m.pct < lowest.pct) lowest = m;
+                });
+
+                let html = '';
+                modes.forEach(m => {
+                    const isHighest = m.key === highest.key;
+                    const isLowest = m.key === lowest.key;
+
+                    let badgeHtml = '';
+                    if (isHighest) {
+                        badgeHtml = `<span class="dist-tag-strength">Strengths &uarr;</span>`;
+                    } else if (isLowest) {
+                        badgeHtml = `<span class="dist-tag-intervention">Intervention &darr;</span>`;
+                    } else {
+                        badgeHtml = `<span class="dist-code-muted">${m.key}</span>`;
+                    }
+
+                    const pctClass = isHighest ? 'green' : (isLowest ? 'purple' : '');
+
+                    html += `
+                        <div class="dist-row">
+                            <div class="dist-row-top">
+                                <div class="dist-label-left">
+                                    <span style="display: flex; align-items: center; color: var(--matrix-${m.colorClass});">${m.iconSvg}</span>
+                                    <span>${m.key === 'HC' || m.key === 'DI' ? m.short : m.name}</span>
+                                    ${badgeHtml}
+                                </div>
+                                <span class="dist-val-pct ${pctClass}">${m.pct}% share</span>
+                            </div>
+                            ${(isHighest || isLowest) ? `<div class="dist-sub-code">${m.key}</div>` : ''}
+                            <div class="dist-track" style="${!(isHighest || isLowest) ? 'margin-top: 8px;' : ''}">
+                                <div class="dist-fill ${m.colorClass}" style="width: ${m.pct}%;"></div>
+                            </div>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
 
-            const diff = 70 - lowest.pct;
-            const noteText = diff > 0
-                ? `${diff}% below the 70% threshold &middot; focus on ${lowest.short}`
-                : `All quadrants balanced above standard proficiency threshold`;
+                const diff = 70 - lowest.pct;
+                const noteText = diff > 0
+                    ? `${diff}% below the 70% threshold &middot; focus on ${lowest.short}`
+                    : `All quadrants balanced above standard proficiency threshold`;
 
-            html += `<div class="dist-footnote" id="dist-footnote-text">${noteText}</div>`;
-            container.innerHTML = html;
+                html += `<div class="dist-footnote" id="dist-footnote-text">${noteText}</div>`;
+                container.innerHTML = html;
+            }
         }
 
         function renderAssessmentJourney(history, isTargetModuleCompleted) {

@@ -585,6 +585,14 @@ app.post('/api/students/register', async (req, res) => {
     first_name = first_name.trim();
     last_name = last_name.trim();
 
+    // Disallow numbers/integers in first and last name
+    if (/\d/.test(first_name)) {
+        return res.status(400).json({ error: 'First name cannot contain numbers.' });
+    }
+    if (/\d/.test(last_name)) {
+        return res.status(400).json({ error: 'Last name cannot contain numbers.' });
+    }
+
     // Format and validate optional Middle Initial (M.I.)
     if (mi && mi.trim() !== '') {
         mi = mi.trim().toUpperCase();
@@ -645,6 +653,14 @@ app.post('/api/teachers/register', async (req, res) => {
     email = email.trim().toLowerCase();
     first_name = first_name.trim();
     last_name = last_name.trim();
+
+    // Disallow numbers/integers in first and last name
+    if (/\d/.test(first_name)) {
+        return res.status(400).json({ error: 'First name cannot contain numbers.' });
+    }
+    if (/\d/.test(last_name)) {
+        return res.status(400).json({ error: 'Last name cannot contain numbers.' });
+    }
 
     try {
         // Hash the password securely
@@ -1140,15 +1156,16 @@ function calculateIndependentMastery(answersArray) {
     };
 
     for (let quad in quadIndices) {
-        let sum = 0;
+        let sumAboveBaseline = 0;
         const indices = quadIndices[quad];
         indices.forEach(idx => {
-            const val = Number(answersArray[idx]);
-            // Likert 1-5 (1=Strongly Disagree, 2=Disagree, 4=Agree, 5=Strongly Agree)
-            sum += (val > 0 ? val : 1);
+            const val = Number(answersArray[idx]) || 1;
+            // Likert 1-5 scale: 1 (Strongly Disagree) = 0 baseline points, 5 (Strongly Agree) = 4 points
+            const pointsAboveMin = Math.max(0, Math.min(4, val - 1));
+            sumAboveBaseline += pointsAboveMin;
         });
-        // 7 questions * 5 max points = 35 max possible points
-        let pct = Math.round((sum / 35) * 100);
+        // 7 questions * 4 max points above baseline = 28 max possible points
+        let pct = Math.round((sumAboveBaseline / 28) * 100);
         mastery[quad] = Math.max(0, Math.min(100, pct));
     }
 
@@ -1157,106 +1174,118 @@ function calculateIndependentMastery(answersArray) {
 
 // POST /api/assessments/submit-fknn - Dual-Model Architecture: Submit academic scores and calculate FKNN Profile + Independent Mastery
 app.post('/api/assessments/submit-fknn', (req, res) => {
-    const { student_id, session_id, answersArray } = req.body;
-    
-    if (!student_id || !answersArray || answersArray.length !== 28) {
-        return res.status(400).json({ error: 'Missing student_id or incomplete answersArray (requires 28 elements)' });
-    }
+    try {
+        const { student_id, session_id, answersArray } = req.body;
+        
+        if (!student_id || !answersArray || !Array.isArray(answersArray) || answersArray.length !== 28) {
+            return res.status(400).json({ error: 'Missing student_id or incomplete answersArray (requires 28 elements)' });
+        }
 
-    db.all(`SELECT * FROM ai_settings`, [], (err, settingsRows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        let settings = {};
-        settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
+        const cleanAnswers = answersArray.map(a => Number(a) || 0);
 
-        db.all(`SELECT * FROM ai_training_data`, [], (err, trainingData) => {
+        db.all(`SELECT * FROM ai_settings`, [], (err, settingsRows) => {
             if (err) return res.status(500).json({ error: err.message });
-            if (trainingData.length === 0) return res.status(500).json({ error: "No training data found." });
+            let settings = {};
+            if (settingsRows) settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
 
-            // Model 1: Fuzzy K-NN Relative Profile (100% Share)
-            const { dominantMode, memberships } = calculateFKNN(answersArray, trainingData, settings);
+            db.all(`SELECT * FROM ai_training_data`, [], (err, trainingData) => {
+                if (err) return res.status(500).json({ error: err.message });
+                if (!trainingData || trainingData.length === 0) return res.status(500).json({ error: "No training data found." });
 
-            // Model 2: Independent Quadrant Mastery (0%–100% without zero-sum drops)
-            const mastery = calculateIndependentMastery(answersArray);
+                try {
+                    // Model 1: Fuzzy K-NN Relative Profile (100% Share)
+                    const { dominantMode, memberships } = calculateFKNN(cleanAnswers, trainingData, settings);
 
-            let totalWeight = 0;
-            for (let m in memberships) { totalWeight += memberships[m]; }
-            
-            let finalX = 0; let finalY = 0;
-            if (totalWeight > 0) {
-                const hWeight = (memberships['Hierarchical Individual'] || 0) + (memberships['Hierarchical Collective'] || 0);
-                const dWeight = (memberships['Distributed Individual'] || 0) + (memberships['Distributed Collective'] || 0);
-                let rawX = ((dWeight - hWeight) / totalWeight) * 5;
+                    // Model 2: Independent Quadrant Mastery (0%–100% without zero-sum drops)
+                    const mastery = calculateIndependentMastery(cleanAnswers);
 
-                const cWeight = (memberships['Hierarchical Collective'] || 0) + (memberships['Distributed Collective'] || 0);
-                const iWeight = (memberships['Hierarchical Individual'] || 0) + (memberships['Distributed Individual'] || 0);
-                let rawY = ((iWeight - cWeight) / totalWeight) * 5;
+                    let totalWeight = 0;
+                    for (let m in memberships) { totalWeight += memberships[m]; }
+                    
+                    let finalX = 0; let finalY = 0;
+                    if (totalWeight > 0) {
+                        const hWeight = (memberships['Hierarchical Individual'] || 0) + (memberships['Hierarchical Collective'] || 0);
+                        const dWeight = (memberships['Distributed Individual'] || 0) + (memberships['Distributed Collective'] || 0);
+                        let rawX = ((dWeight - hWeight) / totalWeight) * 5;
 
-                // Ensure quadrant consistency with dominantMode
-                if (dominantMode === 'Hierarchical Individual') {
-                    finalX = -Math.max(1.0, Math.abs(rawX));
-                    finalY = Math.max(1.0, Math.abs(rawY));
-                } else if (dominantMode === 'Distributed Individual') {
-                    finalX = Math.max(1.0, Math.abs(rawX));
-                    finalY = Math.max(1.0, Math.abs(rawY));
-                } else if (dominantMode === 'Hierarchical Collective') {
-                    finalX = -Math.max(1.0, Math.abs(rawX));
-                    finalY = -Math.max(1.0, Math.abs(rawY));
-                } else if (dominantMode === 'Distributed Collective') {
-                    finalX = Math.max(1.0, Math.abs(rawX));
-                    finalY = -Math.max(1.0, Math.abs(rawY));
-                }
-                
-                finalX = Math.round(finalX * 100) / 100;
-                finalY = Math.round(finalY * 100) / 100;
-            } else {
-                if (dominantMode === 'Hierarchical Individual') { finalX = -3; finalY = 3; }
-                else if (dominantMode === 'Distributed Individual') { finalX = 3; finalY = 3; }
-                else if (dominantMode === 'Hierarchical Collective') { finalX = -3; finalY = -3; }
-                else { finalX = 3; finalY = -3; }
-            }
+                        const cWeight = (memberships['Hierarchical Collective'] || 0) + (memberships['Distributed Collective'] || 0);
+                        const iWeight = (memberships['Hierarchical Individual'] || 0) + (memberships['Distributed Individual'] || 0);
+                        let rawY = ((iWeight - cWeight) / totalWeight) * 5;
 
-            const oppositeModes = {
-                'Hierarchical Individual': 'Distributed Collective',
-                'Distributed Collective': 'Hierarchical Individual',
-                'Hierarchical Collective': 'Distributed Individual',
-                'Distributed Individual': 'Hierarchical Collective'
-            };
-            const weakestMode = oppositeModes[dominantMode] || 'Unknown';
-
-            const hi_m = mastery['Hierarchical Individual'] || 0;
-            const di_m = mastery['Distributed Individual'] || 0;
-            const hc_m = mastery['Hierarchical Collective'] || 0;
-            const dc_m = mastery['Distributed Collective'] || 0;
-            const answersJson = JSON.stringify(answersArray);
-
-            db.serialize(() => {
-                db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode, hi_mastery, di_mastery, hc_mastery, dc_mastery, answers_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                    [student_id, session_id || 0, finalX, finalY, dominantMode, hi_m, di_m, hc_m, dc_m, answersJson],
-                    function(histErr) {
-                        if (histErr) console.error("Error inserting assessment history:", histErr);
+                        // Ensure quadrant consistency with dominantMode
+                        if (dominantMode === 'Hierarchical Individual') {
+                            finalX = -Math.max(1.0, Math.abs(rawX));
+                            finalY = Math.max(1.0, Math.abs(rawY));
+                        } else if (dominantMode === 'Distributed Individual') {
+                            finalX = Math.max(1.0, Math.abs(rawX));
+                            finalY = Math.max(1.0, Math.abs(rawY));
+                        } else if (dominantMode === 'Hierarchical Collective') {
+                            finalX = -Math.max(1.0, Math.abs(rawX));
+                            finalY = -Math.max(1.0, Math.abs(rawY));
+                        } else if (dominantMode === 'Distributed Collective') {
+                            finalX = Math.max(1.0, Math.abs(rawX));
+                            finalY = -Math.max(1.0, Math.abs(rawY));
+                        }
+                        
+                        finalX = Math.round(finalX * 100) / 100;
+                        finalY = Math.round(finalY * 100) / 100;
+                    } else {
+                        if (dominantMode === 'Hierarchical Individual') { finalX = -3; finalY = 3; }
+                        else if (dominantMode === 'Distributed Individual') { finalX = 3; finalY = 3; }
+                        else if (dominantMode === 'Hierarchical Collective') { finalX = -3; finalY = -3; }
+                        else { finalX = 3; finalY = -3; }
                     }
-                );
 
-                db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ?, weakest_learning_mode = ?, hi_mastery = ?, di_mastery = ?, hc_mastery = ?, dc_mastery = ? WHERE id = ?`, 
-                    [finalX, finalY, dominantMode, weakestMode, hi_m, di_m, hc_m, dc_m, student_id], 
-                    function(updateErr) {
-                        if (updateErr) console.error("Error updating student coords & mastery", updateErr);
-                        res.json({
-                            success: true,
-                            result: {
-                                x: finalX,
-                                y: finalY,
-                                mode: dominantMode,
-                                fuzzy: memberships,
-                                profile: memberships,
-                                mastery: mastery
+                    const oppositeModes = {
+                        'Hierarchical Individual': 'Distributed Collective',
+                        'Distributed Collective': 'Hierarchical Individual',
+                        'Hierarchical Collective': 'Distributed Individual',
+                        'Distributed Individual': 'Hierarchical Collective'
+                    };
+                    const weakestMode = oppositeModes[dominantMode] || 'Unknown';
+
+                    const hi_m = mastery['Hierarchical Individual'] || 0;
+                    const di_m = mastery['Distributed Individual'] || 0;
+                    const hc_m = mastery['Hierarchical Collective'] || 0;
+                    const dc_m = mastery['Distributed Collective'] || 0;
+                    const answersJson = JSON.stringify(cleanAnswers);
+
+                    db.serialize(() => {
+                        db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode, hi_mastery, di_mastery, hc_mastery, dc_mastery, answers_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                            [student_id, session_id || 0, finalX, finalY, dominantMode, hi_m, di_m, hc_m, dc_m, answersJson],
+                            function(histErr) {
+                                if (histErr) console.error("Error inserting assessment history:", histErr);
                             }
-                        });
-                    }
-                );
+                        );
+
+                        db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ?, weakest_learning_mode = ?, hi_mastery = ?, di_mastery = ?, hc_mastery = ?, dc_mastery = ? WHERE id = ?`, 
+                            [finalX, finalY, dominantMode, weakestMode, hi_m, di_m, hc_m, dc_m, student_id], 
+                            function(updateErr) {
+                                if (updateErr) console.error("Error updating student coords & mastery", updateErr);
+                                res.json({
+                                    success: true,
+                                    result: {
+                                        x: finalX,
+                                        y: finalY,
+                                        mode: dominantMode,
+                                        fuzzy: memberships,
+                                        profile: memberships,
+                                        mastery: mastery
+                                    }
+                                });
+                            }
+                        );
+                    });
+                } catch (calcErr) {
+                    console.error("Calculation error in submit-fknn:", calcErr);
+                    return res.status(500).json({ error: "Calculation error: " + calcErr.message });
+                }
             });
         });
-    });
+    } catch (e) {
+        console.error("Endpoint error in submit-fknn:", e);
+        return res.status(500).json({ error: e.message });
+    }
 });
 
 
