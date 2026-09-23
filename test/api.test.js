@@ -150,6 +150,53 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
             const data2 = await res2.json();
             assert.ok(data2.error.includes('numbers'), 'Error message should mention numbers');
         });
+
+        it('should send 6-digit OTP code and complete student registration', async () => {
+            const testEmail = `otp_test_${Date.now()}@student.olfu.edu.ph`;
+
+            // Step 1: Request OTP code
+            const otpRes = await fetch(`${BASE_URL}/api/auth/send-registration-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-test-suite': 'true' },
+                body: JSON.stringify({ email: testEmail })
+            });
+            assert.strictEqual(otpRes.status, 200, 'OTP request should succeed');
+            const otpData = await otpRes.json();
+            assert.strictEqual(otpData.success, true);
+            assert.ok(otpData.dev_code, 'Dev code should be provided in test environment');
+            assert.strictEqual(otpData.dev_code.length, 6, 'Code must be 6 digits');
+
+            // Step 2: Attempt registration with invalid OTP (should fail)
+            const failRes = await fetch(`${BASE_URL}/api/students/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    first_name: 'OtpTest',
+                    last_name: 'Student',
+                    email: testEmail,
+                    password: 'Password123!',
+                    otp: '000000'
+                })
+            });
+            assert.strictEqual(failRes.status, 400, 'Incorrect OTP must be rejected');
+
+            // Step 3: Register with valid OTP (should succeed)
+            const successRes = await fetch(`${BASE_URL}/api/students/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    first_name: 'OtpTest',
+                    last_name: 'Student',
+                    email: testEmail,
+                    password: 'Password123!',
+                    otp: otpData.dev_code
+                })
+            });
+            assert.strictEqual(successRes.status, 201, 'Valid OTP registration should succeed');
+            const successData = await successRes.json();
+            assert.strictEqual(successData.success, true);
+            assert.ok(successData.student_id, 'Student ID should be returned');
+        });
     });
 
     // 4. Data Retrieval & History Consistency
