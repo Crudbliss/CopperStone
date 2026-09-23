@@ -2649,7 +2649,7 @@
 
     <!-- Forgot Password Modal -->
     <div class="modal-overlay" id="forgotPasswordModal">
-        <div class="modal-content student-theme" id="forgotPasswordModalContent" style="max-width: 400px;">
+        <div class="modal-content student-theme" id="forgotPasswordModalContent" style="max-width: 440px;">
             <button class="modal-close" onclick="closeForgotPasswordModal()" title="Close">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -2661,26 +2661,76 @@
                 style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; width: 100%;">
                 <div style="display: flex; align-items: center; gap: 16px;">
                     <div>
-                        <h3 class="modal-title" style="margin-bottom: 0;">Reset Password</h3>
-                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Enter your email to receive a
-                            reset link</p>
+                        <h3 class="modal-title" style="margin-bottom: 0;" id="forgotModalTitle">Reset Password</h3>
+                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;" id="forgotModalSubtitle">
+                            Enter your registered email to receive a verification code
+                        </p>
                     </div>
                 </div>
             </div>
 
-            <form class="modal-form" autocomplete="off"
-                onsubmit="event.preventDefault(); alert('Password reset link sent to ' + document.getElementById('forgotEmail').value); closeForgotPasswordModal();">
+            <!-- Step 1: Request Code -->
+            <form id="forgotStep1Form" class="modal-form" autocomplete="off" onsubmit="handleSendForgotOtp(event)">
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" id="forgotEmail" placeholder="student@student.olfu.edu.ph" autocomplete="off"
                         style="text-transform: lowercase;" oninput="this.value = this.value.toLowerCase()" required>
                 </div>
 
-                <button type="submit" class="btn-submit">Send Reset Link</button>
+                <div id="forgotStep1Error" style="color: #ef4444; font-size: 13px; margin-bottom: 16px; text-align: center; display: none; font-weight: 500;"></div>
+
+                <button type="submit" id="btnForgotSend" class="btn-submit">Send Verification Code</button>
 
                 <div style="text-align: center; margin-top: 16px; font-size: 14px; color: var(--text-muted);">
-                    Remembered it? <a href="#" onclick="openLoginModal(currentRole)"
+                    Remembered your password? <a href="#" onclick="openLoginModal(currentRole)"
                         style="color: var(--matrix-yellow); text-decoration: underline; font-weight: 600;">Sign in</a>
+                </div>
+            </form>
+
+            <!-- Step 2: Enter Code & Set New Password -->
+            <form id="forgotStep2Form" class="modal-form" autocomplete="off" style="display: none;" onsubmit="handleResetPasswordSubmit(event)">
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label style="margin-bottom: 0; font-size: 13px;">6-Digit Code <span style="color: #ef4444;">*</span></label>
+                        <a href="#" onclick="handleResendForgotOtp(event)" id="btnForgotResend" style="color: var(--matrix-yellow); font-size: 12px; text-decoration: underline;">Resend code</a>
+                    </div>
+                    <input type="text" id="forgotOtp" placeholder="Enter 6-digit code" maxlength="6" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}"
+                        style="letter-spacing: 4px; font-size: 15px; font-weight: 600; text-align: center;" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label style="font-size: 13px;">New Password <span style="color: #ef4444;">*</span></label>
+                    <div class="password-wrapper">
+                        <input type="password" id="forgotNewPassword" placeholder="••••••••" autocomplete="new-password" required>
+                        <button type="button" class="btn-eye" aria-label="Toggle password visibility"
+                            onclick="togglePasswordVisibility('forgotNewPassword', 'eyeIconForgotNew')">
+                            <svg width="20" height="20" id="eyeIconForgotNew">
+                                <use href="#icon-eye"></use>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="font-size: 13px;">Confirm New Password <span style="color: #ef4444;">*</span></label>
+                    <div class="password-wrapper">
+                        <input type="password" id="forgotConfirmPassword" placeholder="••••••••" autocomplete="new-password" required>
+                        <button type="button" class="btn-eye" aria-label="Toggle confirm password visibility"
+                            onclick="togglePasswordVisibility('forgotConfirmPassword', 'eyeIconForgotConfirm')">
+                            <svg width="20" height="20" id="eyeIconForgotConfirm">
+                                <use href="#icon-eye"></use>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="forgotStep2Error" style="color: #ef4444; font-size: 13px; margin-bottom: 16px; text-align: center; display: none; font-weight: 500;"></div>
+                <div id="forgotStep2Success" style="color: #4ade80; font-size: 13px; margin-bottom: 16px; text-align: center; display: none; font-weight: 600;"></div>
+
+                <button type="submit" id="btnForgotSubmit" class="btn-submit">Reset Password</button>
+
+                <div style="text-align: center; margin-top: 16px; font-size: 14px; color: var(--text-muted);">
+                    <a href="#" onclick="resetForgotModalToStep1()" style="color: var(--text-gray); text-decoration: underline; font-size: 13px;">Change email address</a>
                 </div>
             </form>
         </div>
@@ -2951,14 +3001,224 @@
             document.getElementById('registerModal').classList.remove('active');
         }
 
+        let forgotResendCooldown = null;
+
+        function resetForgotModalToStep1() {
+            const step1 = document.getElementById('forgotStep1Form');
+            const step2 = document.getElementById('forgotStep2Form');
+            if (step1) step1.style.display = 'block';
+            if (step2) step2.style.display = 'none';
+            const err1 = document.getElementById('forgotStep1Error');
+            if (err1) err1.style.display = 'none';
+            const err2 = document.getElementById('forgotStep2Error');
+            if (err2) err2.style.display = 'none';
+            const succ2 = document.getElementById('forgotStep2Success');
+            if (succ2) succ2.style.display = 'none';
+            const title = document.getElementById('forgotModalTitle');
+            if (title) title.textContent = 'Reset Password';
+            const subtitle = document.getElementById('forgotModalSubtitle');
+            if (subtitle) subtitle.textContent = 'Enter your registered email to receive a verification code';
+            const btnSend = document.getElementById('btnForgotSend');
+            if (btnSend) {
+                btnSend.disabled = false;
+                btnSend.textContent = 'Send Verification Code';
+            }
+            const btnSubmit = document.getElementById('btnForgotSubmit');
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                btnSubmit.style.display = 'block';
+                btnSubmit.textContent = 'Reset Password';
+            }
+        }
+
         function openForgotPasswordModal() {
             closeLoginModal();
             closeRegisterModal();
+            resetForgotModalToStep1();
+            const emailInput = document.getElementById('forgotEmail');
+            if (emailInput) emailInput.value = '';
             document.getElementById('forgotPasswordModal').classList.add('active');
         }
 
         function closeForgotPasswordModal() {
             document.getElementById('forgotPasswordModal').classList.remove('active');
+            if (forgotResendCooldown) clearInterval(forgotResendCooldown);
+        }
+
+        async function handleSendForgotOtp(event) {
+            if (event) event.preventDefault();
+            const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+            const errEl = document.getElementById('forgotStep1Error');
+            const btnSend = document.getElementById('btnForgotSend');
+
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                errEl.textContent = 'Please enter a valid email address.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            errEl.style.display = 'none';
+            btnSend.disabled = true;
+            btnSend.textContent = 'Sending Code...';
+
+            try {
+                const res = await fetch('/api/auth/send-reset-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+
+                if (!res.ok || !data.success) {
+                    errEl.textContent = data.error || 'Failed to send reset code.';
+                    errEl.style.display = 'block';
+                    btnSend.disabled = false;
+                    btnSend.textContent = 'Send Verification Code';
+                    return;
+                }
+
+                // Switch to Step 2
+                document.getElementById('forgotStep1Form').style.display = 'none';
+                document.getElementById('forgotStep2Form').style.display = 'block';
+                document.getElementById('forgotModalTitle').textContent = 'Enter Code & New Password';
+                document.getElementById('forgotModalSubtitle').textContent = `Verification code sent to ${email}`;
+                
+                const otpInput = document.getElementById('forgotOtp');
+                if (otpInput) {
+                    otpInput.value = '';
+                    otpInput.focus();
+                }
+                document.getElementById('forgotNewPassword').value = '';
+                document.getElementById('forgotConfirmPassword').value = '';
+
+                // Start 60s resend cooldown
+                startForgotResendCooldown();
+            } catch (err) {
+                errEl.textContent = 'Server error. Please check your connection.';
+                errEl.style.display = 'block';
+                btnSend.disabled = false;
+                btnSend.textContent = 'Send Verification Code';
+            }
+        }
+
+        function startForgotResendCooldown() {
+            const btnResend = document.getElementById('btnForgotResend');
+            if (!btnResend) return;
+            let count = 60;
+            btnResend.style.pointerEvents = 'none';
+            btnResend.style.opacity = '0.6';
+            btnResend.textContent = `Resend in ${count}s`;
+
+            if (forgotResendCooldown) clearInterval(forgotResendCooldown);
+            forgotResendCooldown = setInterval(() => {
+                count--;
+                if (count <= 0) {
+                    clearInterval(forgotResendCooldown);
+                    btnResend.style.pointerEvents = 'auto';
+                    btnResend.style.opacity = '1';
+                    btnResend.textContent = 'Resend code';
+                } else {
+                    btnResend.textContent = `Resend in ${count}s`;
+                }
+            }, 1000);
+        }
+
+        async function handleResendForgotOtp(event) {
+            if (event) event.preventDefault();
+            const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+            const errEl = document.getElementById('forgotStep2Error');
+            errEl.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/auth/send-reset-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    startForgotResendCooldown();
+                } else {
+                    errEl.textContent = data.error || 'Failed to resend code.';
+                    errEl.style.display = 'block';
+                }
+            } catch (err) {
+                errEl.textContent = 'Failed to connect to server.';
+                errEl.style.display = 'block';
+            }
+        }
+
+        async function handleResetPasswordSubmit(event) {
+            if (event) event.preventDefault();
+            const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+            const otp = document.getElementById('forgotOtp').value.trim();
+            const newPassword = document.getElementById('forgotNewPassword').value;
+            const confirmPassword = document.getElementById('forgotConfirmPassword').value;
+            const errEl = document.getElementById('forgotStep2Error');
+            const successEl = document.getElementById('forgotStep2Success');
+            const btnSubmit = document.getElementById('btnForgotSubmit');
+
+            errEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            if (!otp || otp.length !== 6) {
+                errEl.textContent = 'Please enter the 6-digit verification code.';
+                errEl.style.display = 'block';
+                document.getElementById('forgotOtp').focus();
+                return;
+            }
+
+            const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+            if (!pwRegex.test(newPassword)) {
+                errEl.textContent = 'Password must be at least 8 characters and contain uppercase, lowercase, a number, and a special character.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                errEl.textContent = 'Passwords do not match.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'Resetting Password...';
+
+            try {
+                const res = await fetch('/api/auth/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp, new_password: newPassword })
+                });
+                const data = await res.json();
+
+                if (!res.ok || !data.success) {
+                    errEl.textContent = data.error || 'Failed to reset password.';
+                    errEl.style.display = 'block';
+                    btnSubmit.disabled = false;
+                    btnSubmit.textContent = 'Reset Password';
+                    return;
+                }
+
+                successEl.textContent = 'Password reset successful! Redirecting to sign in...';
+                successEl.style.display = 'block';
+                btnSubmit.style.display = 'none';
+
+                setTimeout(() => {
+                    closeForgotPasswordModal();
+                    openLoginModal(currentRole);
+                    const loginEmail = document.getElementById('modalEmail');
+                    if (loginEmail) loginEmail.value = email;
+                    const loginPwd = document.getElementById('modalPassword');
+                    if (loginPwd) loginPwd.focus();
+                }, 1500);
+
+            } catch (err) {
+                errEl.textContent = 'Server error during password reset.';
+                errEl.style.display = 'block';
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = 'Reset Password';
+            }
         }
 
         function switchToLogin() {

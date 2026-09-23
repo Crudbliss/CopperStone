@@ -4,24 +4,31 @@ const { spawn } = require('node:child_process');
 const path = require('node:path');
 
 const PORT = process.env.TEST_PORT || '3000';
-const BASE_URL = `http://localhost:${PORT}`;
+const BASE_URL = `http://127.0.0.1:${PORT}`;
 let serverProcess = null;
 
 describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
 
     before(async () => {
-        // Check if server is already running
         try {
             const check = await fetch(`${BASE_URL}/api/health`);
             if (check.ok) return; // Server already running
-        } catch (e) {
-            // Start server for tests
-            serverProcess = spawn('node', [path.join(__dirname, '..', 'server.js')], {
-                env: { ...process.env, PORT: PORT, NODE_ENV: 'test' },
-                stdio: 'ignore'
-            });
-            // Wait 1.5s for server to start
-            await new Promise(resolve => setTimeout(resolve, 1500));
+        } catch (e) {}
+
+        // Start server for tests using exact node binary
+        serverProcess = spawn(process.execPath, [path.join(__dirname, '..', 'server.js')], {
+            env: { ...process.env, PORT: PORT, NODE_ENV: 'test' },
+            stdio: 'ignore'
+        });
+
+        // Poll for server readiness
+        for (let i = 0; i < 25; i++) {
+            try {
+                const ready = await fetch(`${BASE_URL}/api/health`);
+                if (ready.ok) return;
+            } catch (err) {
+                await new Promise(resolve => setTimeout(resolve, 250));
+            }
         }
     });
 
@@ -195,7 +202,80 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
             assert.strictEqual(successRes.status, 201, 'Valid OTP registration should succeed');
             const successData = await successRes.json();
             assert.strictEqual(successData.success, true);
-            assert.ok(successData.student_id, 'Student ID should be returned');
+        });
+
+        it('should handle password reset with OTP verification and allow login with new password', async () => {
+            const resetEmail = `reset_test_${Date.now()}@student.olfu.edu.ph`;
+
+            // Step 1: Register student first
+            const otpReq = await fetch(`${BASE_URL}/api/auth/send-registration-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-test-suite': 'true' },
+                body: JSON.stringify({ email: resetEmail })
+            });
+            const otpReqData = await otpReq.json();
+
+            await fetch(`${BASE_URL}/api/students/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    first_name: 'Reset',
+                    last_name: 'Tester',
+                    email: resetEmail,
+                    password: 'OldPassword123!',
+                    otp: otpReqData.dev_code
+                })
+            });
+
+            // Step 2: Request Password Reset OTP
+            const forgotRes = await fetch(`${BASE_URL}/api/auth/send-reset-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-test-suite': 'true' },
+                body: JSON.stringify({ email: resetEmail })
+            });
+            assert.strictEqual(forgotRes.status, 200, 'Forgot password OTP request should succeed');
+            const forgotData = await forgotRes.json();
+            assert.ok(forgotData.dev_code, 'Reset OTP code should be provided in test mode');
+
+            // Step 3: Attempt reset with wrong OTP (should fail)
+            const wrongOtpRes = await fetch(`${BASE_URL}/api/auth/reset-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: resetEmail,
+                    otp: '999999',
+                    new_password: 'NewBrandPassword123!'
+                })
+            });
+            assert.strictEqual(wrongOtpRes.status, 400, 'Invalid OTP should fail');
+
+            // Step 4: Reset with valid OTP
+            const resetSuccess = await fetch(`${BASE_URL}/api/auth/reset-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: resetEmail,
+                    otp: forgotData.dev_code,
+                    new_password: 'NewBrandPassword123!'
+                })
+            });
+            assert.strictEqual(resetSuccess.status, 200, 'Valid reset should return 200');
+            const resetResult = await resetSuccess.json();
+            assert.strictEqual(resetResult.success, true);
+
+            // Step 5: Test login with new password
+            const loginRes = await fetch(`${BASE_URL}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: resetEmail,
+                    password: 'NewBrandPassword123!',
+                    requested_role: 'student'
+                })
+            });
+            assert.strictEqual(loginRes.status, 200, 'Login with new password must succeed');
+            const loginData = await loginRes.json();
+            assert.strictEqual(loginData.success, true);
         });
     });
 

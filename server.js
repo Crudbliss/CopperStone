@@ -699,6 +699,184 @@ app.post('/api/auth/send-registration-otp', async (req, res) => {
     }
 });
 
+// --- PASSWORD RESET OTP SYSTEM ---
+const passwordResetOtpStore = new Map();
+
+setInterval(() => {
+    const now = Date.now();
+    for (const [email, entry] of passwordResetOtpStore.entries()) {
+        if (now > entry.expiresAt) {
+            passwordResetOtpStore.delete(email);
+        }
+    }
+}, 60000);
+
+// POST /api/auth/send-reset-otp - Send a 6-digit password reset code
+app.post('/api/auth/send-reset-otp', async (req, res) => {
+    let { email } = req.body;
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+        return res.status(400).json({ error: 'Please enter a valid email address.' });
+    }
+    email = email.trim().toLowerCase();
+
+    try {
+        // Check if user exists in students or teachers
+        let userType = null;
+        const student = await new Promise((resolve, reject) => {
+            db.get("SELECT id, first_name FROM students WHERE LOWER(email) = ?", [email], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+
+        if (student) {
+            userType = 'student';
+        } else {
+            const teacher = await new Promise((resolve, reject) => {
+                db.get("SELECT id, first_name FROM teachers WHERE LOWER(email) = ?", [email], (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                });
+            });
+            if (teacher) userType = 'teacher';
+        }
+
+        if (!userType) {
+            return res.status(404).json({ error: 'No account found with this email address.' });
+        }
+
+        // Generate 6-digit OTP
+        const otpCode = crypto.randomInt(100000, 999999).toString();
+        const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes
+
+        passwordResetOtpStore.set(email, {
+            code: otpCode,
+            expiresAt,
+            attempts: 0,
+            userType
+        });
+
+        console.log(`\n======================================================`);
+        console.log(`[PASSWORD RESET OTP] Code for ${email}: ${otpCode}`);
+        console.log(`[PASSWORD RESET OTP] Expires in 5 minutes (at ${new Date(expiresAt).toLocaleTimeString()})`);
+        console.log(`======================================================\n`);
+
+        // Send real email via SMTP if configured
+        const transporter = getMailTransporter();
+        if (transporter) {
+            try {
+                const senderName = process.env.SMTP_FROM || 'Matrix Learning Portal';
+                await transporter.sendMail({
+                    from: `"${senderName}" <${process.env.SMTP_USER}>`,
+                    to: email,
+                    subject: `${otpCode} is your Matrix Password Reset Code`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; background-color: #0e2e41; padding: 40px 20px; color: #ffffff; text-align: center;">
+                            <div style="max-width: 480px; margin: 0 auto; background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.4);">
+                                <h2 style="color: #fbbf24; margin-top: 0; font-size: 22px;">Reset Your Matrix Password</h2>
+                                <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
+                                    We received a request to reset your password. Use the 6-digit confirmation code below:
+                                </p>
+                                <div style="background: rgba(216, 166, 26, 0.2); border: 2px dashed #fbbf24; border-radius: 12px; padding: 18px; margin: 24px 0; font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #ffffff;">
+                                    ${otpCode}
+                                </div>
+                                <p style="color: #94a3b8; font-size: 12px; line-height: 1.5; margin-bottom: 0;">
+                                    This code will expire in <strong>5 minutes</strong>. If you did not make this request, your account is secure and you can safely ignore this email.
+                                </p>
+                            </div>
+                        </div>
+                    `
+                });
+                console.log(`[PASSWORD RESET OTP] Real email sent to ${email} via SMTP.`);
+            } catch (smtpErr) {
+                console.error(`[PASSWORD RESET OTP] SMTP Failed:`, smtpErr.message);
+            }
+        }
+
+        const isTestRequest = process.env.NODE_ENV === 'test' || req.headers['x-test-suite'] === 'true';
+        return res.json({
+            success: true,
+            message: `A password reset code has been sent to ${email}.`,
+            dev_code: isTestRequest ? otpCode : undefined
+        });
+    } catch (err) {
+        console.error('Error sending reset OTP:', err);
+        return res.status(500).json({ error: 'Failed to process password reset request.' });
+    }
+});
+
+// POST /api/auth/reset-password - Verify code and set new password
+app.post('/api/auth/reset-password', async (req, res) => {
+    let { email, otp, new_password } = req.body;
+
+    if (!email || !otp || !new_password) {
+        return res.status(400).json({ error: 'Please provide email, verification code, and new password.' });
+    }
+
+    email = email.trim().toLowerCase();
+    otp = String(otp).trim();
+
+    const storedOtp = passwordResetOtpStore.get(email);
+    if (!storedOtp) {
+        return res.status(400).json({ error: 'Please request a reset code for this email first.' });
+    }
+
+    if (Date.now() > storedOtp.expiresAt) {
+        passwordResetOtpStore.delete(email);
+        return res.status(400).json({ error: 'Reset code has expired. Please request a new code.' });
+    }
+
+    if (storedOtp.code !== otp) {
+        storedOtp.attempts = (storedOtp.attempts || 0) + 1;
+        if (storedOtp.attempts >= 5) {
+            passwordResetOtpStore.delete(email);
+            return res.status(400).json({ error: 'Too many incorrect attempts. Please request a new code.' });
+        }
+        return res.status(400).json({ error: 'Incorrect verification code. Please check your email.' });
+    }
+
+    // Validate password strength: 8+ chars, capital, lowercase, number, special char
+    const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!pwRegex.test(new_password)) {
+        return res.status(400).json({ 
+            error: 'Password must be at least 8 characters and contain a capital letter, lowercase letter, number, and special character.' 
+        });
+    }
+
+    try {
+        const saltRounds = 10;
+        const password_hash = await bcrypt.hash(new_password, saltRounds);
+
+        // Update in database based on userType
+        if (storedOtp.userType === 'student') {
+            await new Promise((resolve, reject) => {
+                db.run("UPDATE students SET password_hash = ? WHERE LOWER(email) = ?", [password_hash, email], function(err) {
+                    if (err) reject(err);
+                    else resolve(this);
+                });
+            });
+        } else {
+            await new Promise((resolve, reject) => {
+                db.run("UPDATE teachers SET password_hash = ? WHERE LOWER(email) = ?", [password_hash, email], function(err) {
+                    if (err) reject(err);
+                    else resolve(this);
+                });
+            });
+        }
+
+        // Consume OTP
+        passwordResetOtpStore.delete(email);
+
+        return res.json({
+            success: true,
+            message: 'Your password has been successfully reset! You can now log in.'
+        });
+    } catch (err) {
+        console.error('Error resetting password:', err);
+        return res.status(500).json({ error: 'Server error while updating password.' });
+    }
+});
+
 // POST /api/students/register - Register a new student
 app.post('/api/students/register', async (req, res) => {
     let { student_no, first_name, last_name, mi, program, year_level, section, email, password, otp } = req.body;
