@@ -320,7 +320,8 @@
         .learning-cycle-card {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
+            gap: 12px;
             padding: 22px 24px;
         }
 
@@ -328,7 +329,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 14px;
+            margin-bottom: 2px;
         }
 
         .learning-cycle-title {
@@ -342,7 +343,7 @@
         .cycle-step-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 32px;
             position: relative;
         }
 
@@ -355,20 +356,7 @@
             background: rgba(255, 255, 255, 0.015);
             border: 1px solid rgba(255, 255, 255, 0.04);
             position: relative;
-            z-index: 1;
             transition: all 0.2s ease;
-        }
-
-        /* Continuous connecting stem between badges: item 1 -> 2 -> 3 -> 4 only */
-        .cycle-step-item:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            top: 33px;
-            bottom: -11px;
-            left: 22px;
-            width: 2px;
-            background: rgba(255, 255, 255, 0.12);
-            z-index: 0;
         }
 
         .cycle-step-item.active {
@@ -384,6 +372,30 @@
             background: rgba(216, 166, 26, 0.12);
         }
 
+        /* Badge Column: perfectly centers badge and connecting stem line */
+        .step-badge-col {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 24px;
+            flex-shrink: 0;
+            align-self: stretch;
+        }
+
+        /* Continuous connecting stem: dead-centered directly under the badge */
+        .cycle-step-item:not(:last-child) .step-badge-col::after {
+            content: '';
+            position: absolute;
+            top: 24px;
+            bottom: -44px; /* Bridges through the 32px gap + 10px padding to touch the next badge */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            background: rgba(255, 255, 255, 0.14);
+            z-index: 1;
+        }
+
         .step-icon-badge {
             width: 22px;
             height: 22px;
@@ -395,6 +407,7 @@
             font-weight: 700;
             flex-shrink: 0;
             margin-top: 1px;
+            position: relative;
             z-index: 2;
         }
 
@@ -440,52 +453,6 @@
             color: #8b9eb0;
             line-height: 1.4;
             margin: 0;
-        }
-
-        .step-icon-badge.green-done {
-            background: rgba(34, 197, 94, 0.14);
-            border: 1px solid rgba(34, 197, 94, 0.4);
-            color: #4ade80;
-        }
-
-        .step-icon-badge.yellow-active {
-            background: rgba(216, 166, 26, 0.15);
-            border: 1px solid rgba(216, 166, 26, 0.5);
-            color: var(--matrix-yellow);
-            box-shadow: 0 0 8px rgba(216, 166, 26, 0.25);
-        }
-
-        .step-icon-badge.gray-pending {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #64748b;
-        }
-
-        .step-text-content {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex: 1;
-        }
-
-        .step-heading {
-            font-size: 13px;
-            font-weight: 700;
-            color: #ffffff;
-            margin: 0;
-        }
-
-        .step-heading.muted {
-            color: #94a3b8;
-        }
-
-        .step-detail {
-            font-size: 11.5px;
-            color: #8b9eb0;
-            line-height: 1.4;
-            margin: 0;
-        }
-            line-height: 1.45;
         }
 
         /* --- MIGRATION ANALYTICS SECTION --- */
@@ -704,8 +671,15 @@
         }
 
         @keyframes fadeInView {
-            from { opacity: 0; transform: translateY(3px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(3px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .chart-wrapper {
@@ -738,8 +712,15 @@
         }
 
         @keyframes fadeInTooltip {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .tooltip-stage-title {
@@ -761,11 +742,25 @@
             gap: 8px;
         }
 
-        .tooltip-row.text-purple { color: #c084fc; }
-        .tooltip-row.text-orange { color: #f97316; }
-        .tooltip-row.text-cyan { color: #06b6d4; }
-        .tooltip-row.text-green { color: #22c55e; }
-        .tooltip-row.text-gold { color: #d8a61a; }
+        .tooltip-row.text-purple {
+            color: #c084fc;
+        }
+
+        .tooltip-row.text-orange {
+            color: #f97316;
+        }
+
+        .tooltip-row.text-cyan {
+            color: #06b6d4;
+        }
+
+        .tooltip-row.text-green {
+            color: #22c55e;
+        }
+
+        .tooltip-row.text-gold {
+            color: #d8a61a;
+        }
 
         .chart-legend-row {
             display: flex;
@@ -797,10 +792,25 @@
             border-radius: 50%;
         }
 
-        .dot-dc { background: #c084fc; box-shadow: 0 0 8px rgba(192, 132, 252, 0.6); }
-        .dot-hc { background: #f97316; box-shadow: 0 0 8px rgba(249, 115, 22, 0.6); }
-        .dot-di { background: #06b6d4; box-shadow: 0 0 8px rgba(6, 182, 212, 0.6); }
-        .dot-hi { background: #22c55e; box-shadow: 0 0 8px rgba(34, 197, 94, 0.6); }
+        .dot-dc {
+            background: #c084fc;
+            box-shadow: 0 0 8px rgba(192, 132, 252, 0.6);
+        }
+
+        .dot-hc {
+            background: #f97316;
+            box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+        }
+
+        .dot-di {
+            background: #06b6d4;
+            box-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+        }
+
+        .dot-hi {
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+        }
 
         /* Interactive SVG bar styling */
         .bar-group-interactive {
@@ -852,6 +862,7 @@
             .top-grid {
                 grid-template-columns: 1fr;
             }
+
             .bottom-charts-grid {
                 grid-template-columns: 1fr;
             }
@@ -861,9 +872,11 @@
             body {
                 padding: 20px 16px;
             }
+
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
+
             .chart-legend-row {
                 gap: 12px;
             }
@@ -894,7 +907,8 @@
                     <div class="card-header-row">
                         <div class="weakest-title-wrap">
                             <div class="icon-circle-badge" id="weakest-icon-badge">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <circle cx="12" cy="12" r="6"></circle>
                                     <circle cx="12" cy="12" r="2"></circle>
@@ -911,7 +925,8 @@
                             <span class="metric-label">Your Score</span>
                         </div>
                         <div class="metric-box">
-                            <span class="metric-value" id="val-threshold" style="color: var(--matrix-yellow);">80%</span>
+                            <span class="metric-value" id="val-threshold"
+                                style="color: var(--matrix-yellow);">80%</span>
                             <span class="metric-label">Target Benchmark</span>
                         </div>
                         <div class="metric-box">
@@ -921,12 +936,14 @@
                     </div>
 
                     <p class="weakest-desc-text" id="weakest-instructions-text">
-                        Close the gap in this priority quadrant through targeted module activities to achieve benchmark mastery.
+                        Close the gap in this priority quadrant through targeted module activities to achieve benchmark
+                        mastery.
                     </p>
                 </div>
 
                 <!-- Recommended Next Step Card (Clickable to open Module) -->
-                <div class="glass-card next-step-card" id="recommended-step-card" onclick="navigateToModule()" title="Click to view module in My Modules">
+                <div class="glass-card next-step-card" id="recommended-step-card" onclick="navigateToModule()"
+                    title="Click to view module in My Modules">
                     <div class="next-step-tag-row">
                         <span class="next-step-tag" id="rec-strategy-tag">Recommended Next Step</span>
                         <span class="next-step-btn-pill">Open Module &rarr;</span>
@@ -949,22 +966,28 @@
             <div class="glass-card learning-cycle-card">
                 <div class="learning-cycle-header">
                     <span class="learning-cycle-title">Learning Cycle</span>
-                    <span id="cycle-current-phase-pill" style="font-size: 10.5px; font-weight: 700; color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); border: 1px solid rgba(216, 166, 26, 0.25); padding: 2px 8px; border-radius: 9999px;">Current: Phase 3</span>
+                    <span id="cycle-current-phase-pill"
+                        style="font-size: 10.5px; font-weight: 700; color: var(--matrix-yellow); background: rgba(216, 166, 26, 0.1); border: 1px solid rgba(216, 166, 26, 0.25); padding: 2px 8px; border-radius: 9999px;">Current:
+                        Phase 3</span>
                 </div>
 
                 <div class="cycle-step-list" id="cycle-step-list-container">
-                    
+
                     <!-- Phase 1 -->
                     <div class="cycle-step-item">
-                        <div class="step-icon-badge green-done">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
+                        <div class="step-badge-col">
+                            <div class="step-icon-badge green-done">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
                         </div>
                         <div class="step-text-content">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <h4 class="step-heading">1. Diagnostic Assessment</h4>
-                                <span style="font-size: 10px; font-weight: 700; color: var(--matrix-green);">Completed</span>
+                                <span
+                                    style="font-size: 10px; font-weight: 700; color: var(--matrix-green);">Completed</span>
                             </div>
                             <p class="step-detail">28-item survey evaluated & quadrant profile calculated.</p>
                         </div>
@@ -972,45 +995,58 @@
 
                     <!-- Phase 2 -->
                     <div class="cycle-step-item">
-                        <div class="step-icon-badge green-done">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
+                        <div class="step-badge-col">
+                            <div class="step-icon-badge green-done">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
                         </div>
                         <div class="step-text-content">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <h4 class="step-heading">2. Focus Area Identified</h4>
                                 <span style="font-size: 10px; font-weight: 700; color: #fb923c;">Target Set</span>
                             </div>
-                            <p class="step-detail" id="cycle-step-weakest-text">Targeted Distributed Collective at 37%.</p>
+                            <p class="step-detail" id="cycle-step-weakest-text">Targeted Distributed Collective at 37%.
+                            </p>
                         </div>
                     </div>
 
                     <!-- Phase 3 -->
                     <div class="cycle-step-item active">
-                        <div class="step-icon-badge yellow-active">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                            </svg>
+                        <div class="step-badge-col">
+                            <div class="step-icon-badge yellow-active">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                                </svg>
+                            </div>
                         </div>
                         <div class="step-text-content">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h4 class="step-heading" style="color: var(--matrix-yellow);">3. Modular Learning & Practice</h4>
-                                <span style="font-size: 10px; font-weight: 700; color: var(--matrix-yellow);">In Progress</span>
+                                <h4 class="step-heading" style="color: var(--matrix-yellow);">3. Modular Learning &
+                                    Practice</h4>
+                                <span style="font-size: 10px; font-weight: 700; color: var(--matrix-yellow);">In
+                                    Progress</span>
                             </div>
-                            <p class="step-detail" id="cycle-step-rec-text">Complete recommended curriculum & chapter knowledge checks.</p>
+                            <p class="step-detail" id="cycle-step-rec-text">Complete recommended curriculum & chapter
+                                knowledge checks.</p>
                         </div>
                     </div>
 
                     <!-- Phase 4 -->
                     <div class="cycle-step-item">
-                        <div class="step-icon-badge gray-pending">4</div>
+                        <div class="step-badge-col">
+                            <div class="step-icon-badge gray-pending">4</div>
+                        </div>
                         <div class="step-text-content">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <h4 class="step-heading muted">4. Reassessment & Growth</h4>
                                 <span style="font-size: 10px; font-weight: 600; color: #64748b;">Target: &ge;80%</span>
                             </div>
-                            <p class="step-detail">Take stage reassessment to measure migration toward the benchmark.</p>
+                            <p class="step-detail">Take stage reassessment to measure migration toward the benchmark.
+                            </p>
                         </div>
                     </div>
 
@@ -1029,7 +1065,10 @@
                 <div class="insight-text-wrap">
                     <span class="insight-tag">Migration Insight</span>
                     <p class="insight-sentence">
-                        Your <strong class="quadrant-highlight" id="insight-quadrant-name">Distributed Collective</strong> <strong class="growth-highlight" id="insight-improvement-text">currently at 1st Stage (Stage 2 &amp; Final Pending)</strong> &mdash; complete your active modules to unlock stage reassessment.
+                        Your <strong class="quadrant-highlight" id="insight-quadrant-name">Distributed
+                            Collective</strong> <strong class="growth-highlight" id="insight-improvement-text">currently
+                            at 1st Stage (Stage 2 &amp; Final Pending)</strong> &mdash; complete your active modules to
+                        unlock stage reassessment.
                     </p>
                 </div>
             </div>
@@ -1039,18 +1078,23 @@
                 <div class="chart-header-row">
                     <div>
                         <span class="card-sub-header-tag" id="chart-sub-tag">Personal Learning Mode Migration</span>
-                        <h3 class="chart-main-title" id="chart-main-title">Quadrant score trends across assessment stages</h3>
+                        <h3 class="chart-main-title" id="chart-main-title">Quadrant score trends across assessment
+                            stages</h3>
                     </div>
                     <div class="chart-view-toggle">
-                        <button type="button" class="toggle-view-btn active" id="btn-view-migration" onclick="switchMainChartView('migration')">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <button type="button" class="toggle-view-btn active" id="btn-view-migration"
+                            onclick="switchMainChartView('migration')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                                 <polyline points="16 7 22 7 22 13"></polyline>
                             </svg>
                             <span>Migration (Lines)</span>
                         </button>
-                        <button type="button" class="toggle-view-btn" id="btn-view-progression" onclick="switchMainChartView('progression')">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <button type="button" class="toggle-view-btn" id="btn-view-progression"
+                            onclick="switchMainChartView('progression')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="18" y1="20" x2="18" y2="10"></line>
                                 <line x1="12" y1="20" x2="12" y2="4"></line>
                                 <line x1="6" y1="20" x2="6" y2="14"></line>
@@ -1063,20 +1107,25 @@
                 <!-- VIEW 1: OVERLAPPING LINE TRAJECTORY CHART -->
                 <div id="view-migration-chart" class="chart-view-panel">
                     <div class="chart-wrapper" id="area-chart-wrapper">
-                        <svg class="svg-chart-container" id="area-chart-svg" viewBox="0 0 900 240" preserveAspectRatio="none">
+                        <svg class="svg-chart-container" id="area-chart-svg" viewBox="0 0 900 240"
+                            preserveAspectRatio="none">
                             <defs>
                                 <!-- Glow filters -->
                                 <filter id="line-glow-hi" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#22c55e" flood-opacity="0.45" />
+                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#22c55e"
+                                        flood-opacity="0.45" />
                                 </filter>
                                 <filter id="line-glow-di" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#06b6d4" flood-opacity="0.45" />
+                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#06b6d4"
+                                        flood-opacity="0.45" />
                                 </filter>
                                 <filter id="line-glow-hc" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#f97316" flood-opacity="0.45" />
+                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#f97316"
+                                        flood-opacity="0.45" />
                                 </filter>
                                 <filter id="line-glow-dc" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#c084fc" flood-opacity="0.45" />
+                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#c084fc"
+                                        flood-opacity="0.45" />
                                 </filter>
 
                                 <!-- Gradient area underglows -->
@@ -1106,16 +1155,24 @@
                             <line x1="60" y1="200" x2="880" y2="200" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
 
                             <!-- Y-Axis Labels -->
-                            <text x="50" y="24" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">100%</text>
-                            <text x="50" y="69" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">75%</text>
-                            <text x="50" y="114" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">50%</text>
-                            <text x="50" y="159" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">25%</text>
-                            <text x="50" y="204" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">0%</text>
+                            <text x="50" y="24" fill="#64748b" font-size="11" font-family="Poppins"
+                                text-anchor="end">100%</text>
+                            <text x="50" y="69" fill="#64748b" font-size="11" font-family="Poppins"
+                                text-anchor="end">75%</text>
+                            <text x="50" y="114" fill="#64748b" font-size="11" font-family="Poppins"
+                                text-anchor="end">50%</text>
+                            <text x="50" y="159" fill="#64748b" font-size="11" font-family="Poppins"
+                                text-anchor="end">25%</text>
+                            <text x="50" y="204" fill="#64748b" font-size="11" font-family="Poppins"
+                                text-anchor="end">0%</text>
 
                             <!-- Vertical Stage Guide Lines -->
-                            <line x1="120" y1="20" x2="120" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 3" />
-                            <line x1="470" y1="20" x2="470" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 3" />
-                            <line x1="820" y1="20" x2="820" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 3" />
+                            <line x1="120" y1="20" x2="120" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"
+                                stroke-dasharray="3 3" />
+                            <line x1="470" y1="20" x2="470" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"
+                                stroke-dasharray="3 3" />
+                            <line x1="820" y1="20" x2="820" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"
+                                stroke-dasharray="3 3" />
 
                             <!-- Soft Area Under-glows -->
                             <path id="area-fill-hi" d="" fill="url(#grad-under-hi)" opacity="0.8" />
@@ -1124,47 +1181,73 @@
                             <path id="area-fill-dc" d="" fill="url(#grad-under-dc)" opacity="0.8" />
 
                             <!-- Overlapping Stroke Curves -->
-                            <path id="line-path-hi" d="" fill="none" stroke="#22c55e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#line-glow-hi)" />
-                            <path id="line-path-di" d="" fill="none" stroke="#06b6d4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#line-glow-di)" />
-                            <path id="line-path-hc" d="" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#line-glow-hc)" />
-                            <path id="line-path-dc" d="" fill="none" stroke="#c084fc" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#line-glow-dc)" />
+                            <path id="line-path-hi" d="" fill="none" stroke="#22c55e" stroke-width="3.5"
+                                stroke-linecap="round" stroke-linejoin="round" filter="url(#line-glow-hi)" />
+                            <path id="line-path-di" d="" fill="none" stroke="#06b6d4" stroke-width="3.5"
+                                stroke-linecap="round" stroke-linejoin="round" filter="url(#line-glow-di)" />
+                            <path id="line-path-hc" d="" fill="none" stroke="#f97316" stroke-width="3.5"
+                                stroke-linecap="round" stroke-linejoin="round" filter="url(#line-glow-hc)" />
+                            <path id="line-path-dc" d="" fill="none" stroke="#c084fc" stroke-width="3.5"
+                                stroke-linecap="round" stroke-linejoin="round" filter="url(#line-glow-dc)" />
 
                             <!-- Stage Point Nodes -->
                             <!-- Stage 1 Dots -->
-                            <circle id="point-s1-hi" cx="120" cy="200" r="7.5" fill="#060f17" stroke="#22c55e" stroke-width="3.5" />
-                            <circle id="point-s1-di" cx="120" cy="200" r="7.5" fill="#060f17" stroke="#06b6d4" stroke-width="3.5" />
-                            <circle id="point-s1-hc" cx="120" cy="200" r="7.5" fill="#060f17" stroke="#f97316" stroke-width="3.5" />
-                            <circle id="point-s1-dc" cx="120" cy="200" r="7.5" fill="#060f17" stroke="#c084fc" stroke-width="3.5" />
+                            <circle id="point-s1-hi" cx="120" cy="200" r="7.5" fill="#060f17" stroke="#22c55e"
+                                stroke-width="3.5" />
+                            <circle id="point-s1-di" cx="120" cy="200" r="7.5" fill="#060f17" stroke="#06b6d4"
+                                stroke-width="3.5" />
+                            <circle id="point-s1-hc" cx="120" cy="200" r="7.5" fill="#060f17" stroke="#f97316"
+                                stroke-width="3.5" />
+                            <circle id="point-s1-dc" cx="120" cy="200" r="7.5" fill="#060f17" stroke="#c084fc"
+                                stroke-width="3.5" />
 
                             <!-- Stage 2 Dots -->
-                            <circle id="point-s2-hi" cx="470" cy="200" r="7.5" fill="#060f17" stroke="#22c55e" stroke-width="3.5" />
-                            <circle id="point-s2-di" cx="470" cy="200" r="7.5" fill="#060f17" stroke="#06b6d4" stroke-width="3.5" />
-                            <circle id="point-s2-hc" cx="470" cy="200" r="7.5" fill="#060f17" stroke="#f97316" stroke-width="3.5" />
-                            <circle id="point-s2-dc" cx="470" cy="200" r="7.5" fill="#060f17" stroke="#c084fc" stroke-width="3.5" />
+                            <circle id="point-s2-hi" cx="470" cy="200" r="7.5" fill="#060f17" stroke="#22c55e"
+                                stroke-width="3.5" />
+                            <circle id="point-s2-di" cx="470" cy="200" r="7.5" fill="#060f17" stroke="#06b6d4"
+                                stroke-width="3.5" />
+                            <circle id="point-s2-hc" cx="470" cy="200" r="7.5" fill="#060f17" stroke="#f97316"
+                                stroke-width="3.5" />
+                            <circle id="point-s2-dc" cx="470" cy="200" r="7.5" fill="#060f17" stroke="#c084fc"
+                                stroke-width="3.5" />
 
                             <!-- Stage 3 Dots -->
-                            <circle id="point-s3-hi" cx="820" cy="200" r="7.5" fill="#060f17" stroke="#22c55e" stroke-width="3.5" />
-                            <circle id="point-s3-di" cx="820" cy="200" r="7.5" fill="#060f17" stroke="#06b6d4" stroke-width="3.5" />
-                            <circle id="point-s3-hc" cx="820" cy="200" r="7.5" fill="#060f17" stroke="#f97316" stroke-width="3.5" />
-                            <circle id="point-s3-dc" cx="820" cy="200" r="7.5" fill="#060f17" stroke="#c084fc" stroke-width="3.5" />
+                            <circle id="point-s3-hi" cx="820" cy="200" r="7.5" fill="#060f17" stroke="#22c55e"
+                                stroke-width="3.5" />
+                            <circle id="point-s3-di" cx="820" cy="200" r="7.5" fill="#060f17" stroke="#06b6d4"
+                                stroke-width="3.5" />
+                            <circle id="point-s3-hc" cx="820" cy="200" r="7.5" fill="#060f17" stroke="#f97316"
+                                stroke-width="3.5" />
+                            <circle id="point-s3-dc" cx="820" cy="200" r="7.5" fill="#060f17" stroke="#c084fc"
+                                stroke-width="3.5" />
 
                             <!-- Semi-transparent overlay for pending stages -->
                             <g id="area-pending-overlay" style="display: block;">
-                                <rect id="area-pending-rect" x="260" y="20" width="620" height="180" fill="rgba(6, 15, 23, 0.88)" rx="10" stroke="rgba(255,255,255,0.12)" stroke-dasharray="6 4" />
+                                <rect id="area-pending-rect" x="260" y="20" width="620" height="180"
+                                    fill="rgba(6, 15, 23, 0.88)" rx="10" stroke="rgba(255,255,255,0.12)"
+                                    stroke-dasharray="6 4" />
                                 <g id="area-pending-badge" transform="translate(570, 110)">
-                                    <rect x="-135" y="-18" width="270" height="36" rx="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" />
+                                    <rect x="-135" y="-18" width="270" height="36" rx="18" fill="rgba(255,255,255,0.06)"
+                                        stroke="rgba(255,255,255,0.12)" />
                                     <circle cx="-110" cy="0" r="4" fill="#fb923c" />
-                                    <text id="area-pending-text" x="6" y="5" fill="#cbd5e1" font-size="12" font-weight="600" font-family="Poppins" text-anchor="middle">2nd &amp; Final Assessment Pending</text>
+                                    <text id="area-pending-text" x="6" y="5" fill="#cbd5e1" font-size="12"
+                                        font-weight="600" font-family="Poppins" text-anchor="middle">2nd &amp; Final
+                                        Assessment Pending</text>
                                 </g>
                             </g>
 
                             <!-- Dynamic Tooltip Overlay Elements -->
                             <g id="tooltip-svg-overlay" style="display: none; pointer-events: none;">
-                                <line id="overlay-vertical-line" x1="120" y1="20" x2="120" y2="200" stroke="#ffffff" stroke-width="1.75" opacity="0.85" />
-                                <circle id="overlay-marker-hi" cx="120" cy="20" r="8.5" fill="#22c55e" stroke="#ffffff" stroke-width="2.5" />
-                                <circle id="overlay-marker-di" cx="120" cy="54" r="8.5" fill="#06b6d4" stroke="#ffffff" stroke-width="2.5" />
-                                <circle id="overlay-marker-hc" cx="120" cy="104" r="8.5" fill="#f97316" stroke="#ffffff" stroke-width="2.5" />
-                                <circle id="overlay-marker-dc" cx="120" cy="146" r="8.5" fill="#c084fc" stroke="#ffffff" stroke-width="2.5" />
+                                <line id="overlay-vertical-line" x1="120" y1="20" x2="120" y2="200" stroke="#ffffff"
+                                    stroke-width="1.75" opacity="0.85" />
+                                <circle id="overlay-marker-hi" cx="120" cy="20" r="8.5" fill="#22c55e" stroke="#ffffff"
+                                    stroke-width="2.5" />
+                                <circle id="overlay-marker-di" cx="120" cy="54" r="8.5" fill="#06b6d4" stroke="#ffffff"
+                                    stroke-width="2.5" />
+                                <circle id="overlay-marker-hc" cx="120" cy="104" r="8.5" fill="#f97316" stroke="#ffffff"
+                                    stroke-width="2.5" />
+                                <circle id="overlay-marker-dc" cx="120" cy="146" r="8.5" fill="#c084fc" stroke="#ffffff"
+                                    stroke-width="2.5" />
                             </g>
                         </svg>
 
@@ -1191,10 +1274,16 @@
                     </div>
 
                     <!-- X-Axis Labels -->
-                    <div style="display: flex; justify-content: space-between; padding: 0 40px 0 80px; font-size: 12px; color: #64748b; font-weight: 500;">
-                        <span id="area-label-s1" style="cursor: pointer;" onmouseenter="showStageTooltip(0)" onmouseleave="hideStageTooltip()">First Assessment</span>
-                        <span id="area-label-s2" style="cursor: pointer; color: #475569;" onmouseenter="showStageTooltip(1)" onmouseleave="hideStageTooltip()">Second Assessment (Pending)</span>
-                        <span id="area-label-s3" style="cursor: pointer; color: #475569;" onmouseenter="showStageTooltip(2)" onmouseleave="hideStageTooltip()">Final Assessment (Pending)</span>
+                    <div
+                        style="display: flex; justify-content: space-between; padding: 0 40px 0 80px; font-size: 12px; color: #64748b; font-weight: 500;">
+                        <span id="area-label-s1" style="cursor: pointer;" onmouseenter="showStageTooltip(0)"
+                            onmouseleave="hideStageTooltip()">First Assessment</span>
+                        <span id="area-label-s2" style="cursor: pointer; color: #475569;"
+                            onmouseenter="showStageTooltip(1)" onmouseleave="hideStageTooltip()">Second Assessment
+                            (Pending)</span>
+                        <span id="area-label-s3" style="cursor: pointer; color: #475569;"
+                            onmouseenter="showStageTooltip(2)" onmouseleave="hideStageTooltip()">Final Assessment
+                            (Pending)</span>
                     </div>
                 </div>
 
@@ -1209,78 +1298,124 @@
                             <line x1="60" y1="155" x2="880" y2="155" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
                             <line x1="60" y1="200" x2="880" y2="200" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
 
-                            <text x="50" y="24" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">100%</text>
-                            <text x="50" y="69" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">75%</text>
-                            <text x="50" y="114" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">50%</text>
-                            <text x="50" y="159" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">25%</text>
-                            <text x="50" y="204" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">0%</text>
+                            <text x="50" y="24" fill="#64748b" font-size="11" font-family="Poppins"
+                                text-anchor="end">100%</text>
+                            <text x="50" y="69" fill="#64748b" font-size="11" font-family="Poppins"
+                                text-anchor="end">75%</text>
+                            <text x="50" y="114" fill="#64748b" font-size="11" font-family="Poppins"
+                                text-anchor="end">50%</text>
+                            <text x="50" y="159" fill="#64748b" font-size="11" font-family="Poppins"
+                                text-anchor="end">25%</text>
+                            <text x="50" y="204" fill="#64748b" font-size="11" font-family="Poppins"
+                                text-anchor="end">0%</text>
 
                             <!-- Vertical Stage Guide Lines -->
-                            <line x1="120" y1="20" x2="120" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 3" />
-                            <line x1="470" y1="20" x2="470" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 3" />
-                            <line x1="820" y1="20" x2="820" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 3" />
+                            <line x1="120" y1="20" x2="120" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"
+                                stroke-dasharray="3 3" />
+                            <line x1="470" y1="20" x2="470" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"
+                                stroke-dasharray="3 3" />
+                            <line x1="820" y1="20" x2="820" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"
+                                stroke-dasharray="3 3" />
 
                             <!-- STAGE 1: 1st Assessment (Grouped Bars - Active) -->
-                            <g class="bar-group-interactive" id="bar-group-s1" onmouseenter="showBarTooltip(0, event)" onmouseleave="hideBarTooltip()">
+                            <g class="bar-group-interactive" id="bar-group-s1" onmouseenter="showBarTooltip(0, event)"
+                                onmouseleave="hideBarTooltip()">
                                 <!-- HI (Green) -->
-                                <rect id="bar-s1-hi" class="bar-rect-interactive" x="72" y="44" width="20" height="156" rx="5" fill="#22c55e" opacity="0.9" />
+                                <rect id="bar-s1-hi" class="bar-rect-interactive" x="72" y="44" width="20" height="156"
+                                    rx="5" fill="#22c55e" opacity="0.9" />
                                 <!-- DI (Cyan) -->
-                                <rect id="bar-s1-di" class="bar-rect-interactive" x="97" y="90" width="20" height="110" rx="5" fill="#06b6d4" opacity="0.9" />
+                                <rect id="bar-s1-di" class="bar-rect-interactive" x="97" y="90" width="20" height="110"
+                                    rx="5" fill="#06b6d4" opacity="0.9" />
                                 <!-- HC (Orange) -->
-                                <rect id="bar-s1-hc" class="bar-rect-interactive" x="122" y="62" width="20" height="138" rx="5" fill="#f97316" opacity="0.9" />
+                                <rect id="bar-s1-hc" class="bar-rect-interactive" x="122" y="62" width="20" height="138"
+                                    rx="5" fill="#f97316" opacity="0.9" />
                                 <!-- DC (Purple) -->
-                                <rect id="bar-s1-dc" class="bar-rect-interactive" x="147" y="104" width="20" height="96" rx="5" fill="#c084fc" opacity="0.9" />
+                                <rect id="bar-s1-dc" class="bar-rect-interactive" x="147" y="104" width="20" height="96"
+                                    rx="5" fill="#c084fc" opacity="0.9" />
                             </g>
 
                             <!-- STAGE 2: 2nd Assessment (Grouped Bars - Greyed Out Pending by Default) -->
-                            <g class="bar-group-interactive" id="bar-group-s2" onmouseenter="showBarTooltip(1, event)" onmouseleave="hideBarTooltip()">
+                            <g class="bar-group-interactive" id="bar-group-s2" onmouseenter="showBarTooltip(1, event)"
+                                onmouseleave="hideBarTooltip()">
                                 <!-- HI (Pending) -->
-                                <rect id="bar-s2-hi" class="bar-rect-interactive" x="422" y="174" width="20" height="26" rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <rect id="bar-s2-hi" class="bar-rect-interactive" x="422" y="174" width="20" height="26"
+                                    rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)"
+                                    stroke-dasharray="2 2" opacity="0.45" />
                                 <!-- DI (Pending) -->
-                                <rect id="bar-s2-di" class="bar-rect-interactive" x="447" y="174" width="20" height="26" rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <rect id="bar-s2-di" class="bar-rect-interactive" x="447" y="174" width="20" height="26"
+                                    rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)"
+                                    stroke-dasharray="2 2" opacity="0.45" />
                                 <!-- HC (Pending) -->
-                                <rect id="bar-s2-hc" class="bar-rect-interactive" x="472" y="174" width="20" height="26" rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <rect id="bar-s2-hc" class="bar-rect-interactive" x="472" y="174" width="20" height="26"
+                                    rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)"
+                                    stroke-dasharray="2 2" opacity="0.45" />
                                 <!-- DC (Pending) -->
-                                <rect id="bar-s2-dc" class="bar-rect-interactive" x="497" y="174" width="20" height="26" rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <rect id="bar-s2-dc" class="bar-rect-interactive" x="497" y="174" width="20" height="26"
+                                    rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)"
+                                    stroke-dasharray="2 2" opacity="0.45" />
                             </g>
 
                             <!-- STAGE 3: Final Assess. (Grouped Bars - Greyed Out Pending by Default) -->
-                            <g class="bar-group-interactive" id="bar-group-s3" onmouseenter="showBarTooltip(2, event)" onmouseleave="hideBarTooltip()">
+                            <g class="bar-group-interactive" id="bar-group-s3" onmouseenter="showBarTooltip(2, event)"
+                                onmouseleave="hideBarTooltip()">
                                 <!-- HI (Pending) -->
-                                <rect id="bar-s3-hi" class="bar-rect-interactive" x="772" y="174" width="20" height="26" rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <rect id="bar-s3-hi" class="bar-rect-interactive" x="772" y="174" width="20" height="26"
+                                    rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)"
+                                    stroke-dasharray="2 2" opacity="0.45" />
                                 <!-- DI (Pending) -->
-                                <rect id="bar-s3-di" class="bar-rect-interactive" x="797" y="174" width="20" height="26" rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <rect id="bar-s3-di" class="bar-rect-interactive" x="797" y="174" width="20" height="26"
+                                    rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)"
+                                    stroke-dasharray="2 2" opacity="0.45" />
                                 <!-- HC (Pending) -->
-                                <rect id="bar-s3-hc" class="bar-rect-interactive" x="822" y="174" width="20" height="26" rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <rect id="bar-s3-hc" class="bar-rect-interactive" x="822" y="174" width="20" height="26"
+                                    rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)"
+                                    stroke-dasharray="2 2" opacity="0.45" />
                                 <!-- DC (Pending) -->
-                                <rect id="bar-s3-dc" class="bar-rect-interactive" x="847" y="174" width="20" height="26" rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)" stroke-dasharray="2 2" opacity="0.45" />
+                                <rect id="bar-s3-dc" class="bar-rect-interactive" x="847" y="174" width="20" height="26"
+                                    rx="5" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.12)"
+                                    stroke-dasharray="2 2" opacity="0.45" />
                             </g>
                         </svg>
 
                         <!-- Bar Chart Floating Tooltip -->
-                        <div class="custom-chart-tooltip" id="bar-chart-tooltip" style="display: none; min-width: 250px;">
+                        <div class="custom-chart-tooltip" id="bar-chart-tooltip"
+                            style="display: none; min-width: 250px;">
                             <div class="tooltip-stage-title" id="bar-tooltip-title">First Assessment</div>
-                            <div class="tooltip-row text-green"><span>H. Individual (HI)</span><span id="bar-val-hi">: 85%</span></div>
-                            <div class="tooltip-row text-orange"><span>H. Collective (HC)</span><span id="bar-val-hc">: 74%</span></div>
-                            <div class="tooltip-row text-cyan"><span>D. Individual (DI)</span><span id="bar-val-di">: 56%</span></div>
-                            <div class="tooltip-row text-purple"><span>D. Collective (DC)</span><span id="bar-val-dc">: 48%</span></div>
+                            <div class="tooltip-row text-green"><span>H. Individual (HI)</span><span id="bar-val-hi">:
+                                    85%</span></div>
+                            <div class="tooltip-row text-orange"><span>H. Collective (HC)</span><span id="bar-val-hc">:
+                                    74%</span></div>
+                            <div class="tooltip-row text-cyan"><span>D. Individual (DI)</span><span id="bar-val-di">:
+                                    56%</span></div>
+                            <div class="tooltip-row text-purple"><span>D. Collective (DC)</span><span id="bar-val-dc">:
+                                    48%</span></div>
                         </div>
                     </div>
 
                     <!-- X-Axis Labels -->
-                    <div style="display: flex; justify-content: space-between; padding: 0 40px 0 80px; font-size: 12px; color: #64748b; font-weight: 500;">
-                        <span id="bar-label-s1" style="cursor: pointer;" onmouseenter="showBarTooltip(0, event)" onmouseleave="hideBarTooltip()">First Assessment</span>
-                        <span id="bar-label-s2" style="cursor: pointer; color: #475569;" onmouseenter="showBarTooltip(1, event)" onmouseleave="hideBarTooltip()">Second Assessment (Pending)</span>
-                        <span id="bar-label-s3" style="cursor: pointer; color: #475569;" onmouseenter="showBarTooltip(2, event)" onmouseleave="hideBarTooltip()">Final Assessment (Pending)</span>
+                    <div
+                        style="display: flex; justify-content: space-between; padding: 0 40px 0 80px; font-size: 12px; color: #64748b; font-weight: 500;">
+                        <span id="bar-label-s1" style="cursor: pointer;" onmouseenter="showBarTooltip(0, event)"
+                            onmouseleave="hideBarTooltip()">First Assessment</span>
+                        <span id="bar-label-s2" style="cursor: pointer; color: #475569;"
+                            onmouseenter="showBarTooltip(1, event)" onmouseleave="hideBarTooltip()">Second Assessment
+                            (Pending)</span>
+                        <span id="bar-label-s3" style="cursor: pointer; color: #475569;"
+                            onmouseenter="showBarTooltip(2, event)" onmouseleave="hideBarTooltip()">Final Assessment
+                            (Pending)</span>
                     </div>
                 </div>
 
                 <!-- Unified Legend Row -->
                 <div class="chart-legend-row">
-                    <div class="legend-item"><span class="legend-dot dot-hi"></span><span>Hierarchical Individual (HI)</span></div>
-                    <div class="legend-item"><span class="legend-dot dot-hc"></span><span>Hierarchical Collective (HC)</span></div>
-                    <div class="legend-item"><span class="legend-dot dot-di"></span><span>Distributed Individual (DI)</span></div>
-                    <div class="legend-item"><span class="legend-dot dot-dc"></span><span>Distributed Collective (DC)</span></div>
+                    <div class="legend-item"><span class="legend-dot dot-hi"></span><span>Hierarchical Individual
+                            (HI)</span></div>
+                    <div class="legend-item"><span class="legend-dot dot-hc"></span><span>Hierarchical Collective
+                            (HC)</span></div>
+                    <div class="legend-item"><span class="legend-dot dot-di"></span><span>Distributed Individual
+                            (DI)</span></div>
+                    <div class="legend-item"><span class="legend-dot dot-dc"></span><span>Distributed Collective
+                            (DC)</span></div>
                 </div>
             </div>
 
@@ -1288,31 +1423,40 @@
             <div class="glass-card area-chart-card" id="trend-chart-card" style="margin-top: 20px;">
                 <div class="chart-header-row">
                     <div>
-                        <span class="card-sub-header-tag" id="trend-sub-tag">Weakest Quadrant Ranking & Progression</span>
-                        <h3 class="chart-main-title" id="trend-quadrant-title">Distributed Individual Score Progression</h3>
+                        <span class="card-sub-header-tag" id="trend-sub-tag">Weakest Quadrant Ranking &
+                            Progression</span>
+                        <h3 class="chart-main-title" id="trend-quadrant-title">Distributed Individual Score Progression
+                        </h3>
                     </div>
                     <!-- Trend Filter Pills -->
                     <div class="trend-filter-pills">
-                        <button type="button" class="trend-pill-btn active pill-rank1" id="btn-trend-rank1" onclick="setTrendMode('rank1')">
+                        <button type="button" class="trend-pill-btn active pill-rank1" id="btn-trend-rank1"
+                            onclick="setTrendMode('rank1')">
                             <span class="legend-dot dot-di" id="pill-rank1-dot"></span>
                             <span id="pill-rank1-label">1st Lowest: DI (21%)</span>
                         </button>
-                        <button type="button" class="trend-pill-btn pill-rank2" id="btn-trend-rank2" onclick="setTrendMode('rank2')">
+                        <button type="button" class="trend-pill-btn pill-rank2" id="btn-trend-rank2"
+                            onclick="setTrendMode('rank2')">
                             <span class="legend-dot dot-dc" id="pill-rank2-dot"></span>
                             <span id="pill-rank2-label">2nd Lowest: DC (24%)</span>
                         </button>
-                        <button type="button" class="trend-pill-btn pill-rank3" id="btn-trend-rank3" onclick="setTrendMode('rank3')">
+                        <button type="button" class="trend-pill-btn pill-rank3" id="btn-trend-rank3"
+                            onclick="setTrendMode('rank3')">
                             <span class="legend-dot dot-hc" id="pill-rank3-dot"></span>
                             <span id="pill-rank3-label">3rd Lowest: HC (27%)</span>
                         </button>
-                        <button type="button" class="trend-pill-btn pill-compare" id="btn-trend-compare3" onclick="setTrendMode('compare3')">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <button type="button" class="trend-pill-btn pill-compare" id="btn-trend-compare3"
+                            onclick="setTrendMode('compare3')">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
                                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                             </svg>
                             <span>Compare 3 Lowest</span>
                         </button>
-                        <button type="button" class="trend-pill-btn pill-dynamic" id="btn-trend-dynamic" onclick="setTrendMode('dynamic')">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <button type="button" class="trend-pill-btn pill-dynamic" id="btn-trend-dynamic"
+                            onclick="setTrendMode('dynamic')">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
                                 <polyline points="17 1 21 5 17 9"></polyline>
                                 <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
                                 <polyline points="7 23 3 19 7 15"></polyline>
@@ -1326,8 +1470,10 @@
                 <div class="chart-wrapper" id="trend-chart-wrapper">
                     <svg class="svg-chart-container" viewBox="0 0 900 240" preserveAspectRatio="none">
                         <!-- Target Line (Dashed Yellow Line at 80%) -->
-                        <line x1="60" y1="56" x2="880" y2="56" stroke="#d8a61a" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.85" />
-                        <text x="870" y="48" fill="#d8a61a" font-size="11" font-weight="700" font-family="Poppins" text-anchor="end">80% Target</text>
+                        <line x1="60" y1="56" x2="880" y2="56" stroke="#d8a61a" stroke-width="1.5"
+                            stroke-dasharray="5 5" opacity="0.85" />
+                        <text x="870" y="48" fill="#d8a61a" font-size="11" font-weight="700" font-family="Poppins"
+                            text-anchor="end">80% Target</text>
 
                         <!-- Y-Axis Grid Lines & Labels -->
                         <line x1="60" y1="20" x2="880" y2="20" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
@@ -1336,91 +1482,135 @@
                         <line x1="60" y1="155" x2="880" y2="155" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
                         <line x1="60" y1="200" x2="880" y2="200" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
 
-                        <text x="50" y="24" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">100%</text>
-                        <text x="50" y="69" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">75%</text>
-                        <text x="50" y="114" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">50%</text>
-                        <text x="50" y="159" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">25%</text>
-                        <text x="50" y="204" fill="#64748b" font-size="11" font-family="Poppins" text-anchor="end">0%</text>
+                        <text x="50" y="24" fill="#64748b" font-size="11" font-family="Poppins"
+                            text-anchor="end">100%</text>
+                        <text x="50" y="69" fill="#64748b" font-size="11" font-family="Poppins"
+                            text-anchor="end">75%</text>
+                        <text x="50" y="114" fill="#64748b" font-size="11" font-family="Poppins"
+                            text-anchor="end">50%</text>
+                        <text x="50" y="159" fill="#64748b" font-size="11" font-family="Poppins"
+                            text-anchor="end">25%</text>
+                        <text x="50" y="204" fill="#64748b" font-size="11" font-family="Poppins"
+                            text-anchor="end">0%</text>
 
                         <!-- Vertical Stage Guide Lines -->
-                        <line x1="120" y1="20" x2="120" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 3" />
-                        <line x1="470" y1="20" x2="470" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 3" />
-                        <line x1="820" y1="20" x2="820" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3 3" />
+                        <line x1="120" y1="20" x2="120" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"
+                            stroke-dasharray="3 3" />
+                        <line x1="470" y1="20" x2="470" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"
+                            stroke-dasharray="3 3" />
+                        <line x1="820" y1="20" x2="820" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"
+                            stroke-dasharray="3 3" />
 
                         <!-- RANK 3 PATHS (Used in Compare3 Mode) -->
-                        <path id="trend-r3-solid" d="M 120 150 L 470 120" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;" />
-                        <path id="trend-r3-dashed" d="M 120 150 L 470 120 L 820 90" fill="none" stroke="#475569" stroke-width="1.8" stroke-dasharray="4 4" stroke-linecap="round" style="display: none;" />
+                        <path id="trend-r3-solid" d="M 120 150 L 470 120" fill="none" stroke="#f97316"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;" />
+                        <path id="trend-r3-dashed" d="M 120 150 L 470 120 L 820 90" fill="none" stroke="#475569"
+                            stroke-width="1.8" stroke-dasharray="4 4" stroke-linecap="round" style="display: none;" />
 
                         <!-- RANK 2 PATHS (Used in Compare3 Mode) -->
-                        <path id="trend-r2-solid" d="M 120 155 L 470 130" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;" />
-                        <path id="trend-r2-dashed" d="M 120 155 L 470 130 L 820 100" fill="none" stroke="#475569" stroke-width="1.8" stroke-dasharray="4 4" stroke-linecap="round" style="display: none;" />
+                        <path id="trend-r2-solid" d="M 120 155 L 470 130" fill="none" stroke="#c084fc"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;" />
+                        <path id="trend-r2-dashed" d="M 120 155 L 470 130 L 820 100" fill="none" stroke="#475569"
+                            stroke-width="1.8" stroke-dasharray="4 4" stroke-linecap="round" style="display: none;" />
 
                         <!-- RANK 1 / PRIMARY PATHS -->
-                        <path id="trend-line-solid" d="M 120 160 L 470 140" fill="none" stroke="#06b6d4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;" />
-                        <path id="trend-line-dashed" d="M 120 160 L 470 140 L 820 110" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round" />
+                        <path id="trend-line-solid" d="M 120 160 L 470 140" fill="none" stroke="#06b6d4"
+                            stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;" />
+                        <path id="trend-line-dashed" d="M 120 160 L 470 140 L 820 110" fill="none" stroke="#475569"
+                            stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round" />
 
                         <!-- RANK 3 NODES (Compare Mode) -->
                         <g id="trend-r3-nodes" style="display: none;">
-                            <g class="trend-point-group" onmouseenter="showTrendTooltip(0, event)" onmouseleave="hideTrendTooltip()">
+                            <g class="trend-point-group" onmouseenter="showTrendTooltip(0, event)"
+                                onmouseleave="hideTrendTooltip()">
                                 <circle id="trend-r3-hit-1" cx="120" cy="150" r="16" fill="transparent" />
-                                <circle id="trend-r3-circle-1" cx="120" cy="150" r="6" fill="#0d1722" stroke="#f97316" stroke-width="2.5" />
-                                <text id="trend-r3-text-1" x="120" y="140" fill="#f97316" font-size="10" font-weight="700" font-family="Poppins" text-anchor="middle">27%</text>
+                                <circle id="trend-r3-circle-1" cx="120" cy="150" r="6" fill="#0d1722" stroke="#f97316"
+                                    stroke-width="2.5" />
+                                <text id="trend-r3-text-1" x="120" y="140" fill="#f97316" font-size="10"
+                                    font-weight="700" font-family="Poppins" text-anchor="middle">27%</text>
                             </g>
-                            <g class="trend-point-group" onmouseenter="showTrendTooltip(1, event)" onmouseleave="hideTrendTooltip()">
+                            <g class="trend-point-group" onmouseenter="showTrendTooltip(1, event)"
+                                onmouseleave="hideTrendTooltip()">
                                 <circle id="trend-r3-hit-2" cx="470" cy="120" r="16" fill="transparent" />
-                                <circle id="trend-r3-circle-2" cx="470" cy="120" r="6" fill="#111c26" stroke="#475569" stroke-width="2" opacity="0.55" />
-                                <text id="trend-r3-text-2" x="470" y="110" fill="#64748b" font-size="10" font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
+                                <circle id="trend-r3-circle-2" cx="470" cy="120" r="6" fill="#111c26" stroke="#475569"
+                                    stroke-width="2" opacity="0.55" />
+                                <text id="trend-r3-text-2" x="470" y="110" fill="#64748b" font-size="10"
+                                    font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
                             </g>
-                            <g class="trend-point-group" onmouseenter="showTrendTooltip(2, event)" onmouseleave="hideTrendTooltip()">
+                            <g class="trend-point-group" onmouseenter="showTrendTooltip(2, event)"
+                                onmouseleave="hideTrendTooltip()">
                                 <circle id="trend-r3-hit-3" cx="820" cy="90" r="16" fill="transparent" />
-                                <circle id="trend-r3-circle-3" cx="820" cy="90" r="6" fill="#111c26" stroke="#475569" stroke-width="2" opacity="0.55" />
-                                <text id="trend-r3-text-3" x="820" y="80" fill="#64748b" font-size="10" font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
+                                <circle id="trend-r3-circle-3" cx="820" cy="90" r="6" fill="#111c26" stroke="#475569"
+                                    stroke-width="2" opacity="0.55" />
+                                <text id="trend-r3-text-3" x="820" y="80" fill="#64748b" font-size="10"
+                                    font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
                             </g>
                         </g>
 
                         <!-- RANK 2 NODES (Compare Mode) -->
                         <g id="trend-r2-nodes" style="display: none;">
-                            <g class="trend-point-group" onmouseenter="showTrendTooltip(0, event)" onmouseleave="hideTrendTooltip()">
+                            <g class="trend-point-group" onmouseenter="showTrendTooltip(0, event)"
+                                onmouseleave="hideTrendTooltip()">
                                 <circle id="trend-r2-hit-1" cx="120" cy="155" r="16" fill="transparent" />
-                                <circle id="trend-r2-circle-1" cx="120" cy="155" r="6" fill="#0d1722" stroke="#c084fc" stroke-width="2.5" />
-                                <text id="trend-r2-text-1" x="120" y="145" fill="#c084fc" font-size="10" font-weight="700" font-family="Poppins" text-anchor="middle">24%</text>
+                                <circle id="trend-r2-circle-1" cx="120" cy="155" r="6" fill="#0d1722" stroke="#c084fc"
+                                    stroke-width="2.5" />
+                                <text id="trend-r2-text-1" x="120" y="145" fill="#c084fc" font-size="10"
+                                    font-weight="700" font-family="Poppins" text-anchor="middle">24%</text>
                             </g>
-                            <g class="trend-point-group" onmouseenter="showTrendTooltip(1, event)" onmouseleave="hideTrendTooltip()">
+                            <g class="trend-point-group" onmouseenter="showTrendTooltip(1, event)"
+                                onmouseleave="hideTrendTooltip()">
                                 <circle id="trend-r2-hit-2" cx="470" cy="130" r="16" fill="transparent" />
-                                <circle id="trend-r2-circle-2" cx="470" cy="130" r="6" fill="#111c26" stroke="#475569" stroke-width="2" opacity="0.55" />
-                                <text id="trend-r2-text-2" x="470" y="120" fill="#64748b" font-size="10" font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
+                                <circle id="trend-r2-circle-2" cx="470" cy="130" r="6" fill="#111c26" stroke="#475569"
+                                    stroke-width="2" opacity="0.55" />
+                                <text id="trend-r2-text-2" x="470" y="120" fill="#64748b" font-size="10"
+                                    font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
                             </g>
-                            <g class="trend-point-group" onmouseenter="showTrendTooltip(2, event)" onmouseleave="hideTrendTooltip()">
+                            <g class="trend-point-group" onmouseenter="showTrendTooltip(2, event)"
+                                onmouseleave="hideTrendTooltip()">
                                 <circle id="trend-r2-hit-3" cx="820" cy="100" r="16" fill="transparent" />
-                                <circle id="trend-r2-circle-3" cx="820" cy="100" r="6" fill="#111c26" stroke="#475569" stroke-width="2" opacity="0.55" />
-                                <text id="trend-r2-text-3" x="820" y="90" fill="#64748b" font-size="10" font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
+                                <circle id="trend-r2-circle-3" cx="820" cy="100" r="6" fill="#111c26" stroke="#475569"
+                                    stroke-width="2" opacity="0.55" />
+                                <text id="trend-r2-text-3" x="820" y="90" fill="#64748b" font-size="10"
+                                    font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
                             </g>
                         </g>
 
                         <!-- RANK 1 / PRIMARY NODES -->
                         <g id="trend-r1-nodes">
                             <!-- Point 1: 1st Assess. (X=120, Active) -->
-                            <g class="trend-point-group" id="trend-point-g-1" onmouseenter="showTrendTooltip(0, event)" onmouseleave="hideTrendTooltip()">
+                            <g class="trend-point-group" id="trend-point-g-1" onmouseenter="showTrendTooltip(0, event)"
+                                onmouseleave="hideTrendTooltip()">
                                 <circle id="trend-hit-1" cx="120" cy="160" r="24" fill="transparent" />
-                                <circle id="trend-circle-1" class="trend-circle" cx="120" cy="160" r="8.5" fill="#0d1722" stroke="#06b6d4" stroke-width="3.5" />
-                                <text id="trend-text-1" x="120" y="142" fill="#06b6d4" font-size="12" font-weight="700" font-family="Poppins" text-anchor="middle">21%</text>
-                                <text id="trend-badge-1" x="120" y="180" fill="#94a3b8" font-size="10" font-weight="600" font-family="Poppins" text-anchor="middle">DI</text>
+                                <circle id="trend-circle-1" class="trend-circle" cx="120" cy="160" r="8.5"
+                                    fill="#0d1722" stroke="#06b6d4" stroke-width="3.5" />
+                                <text id="trend-text-1" x="120" y="142" fill="#06b6d4" font-size="12" font-weight="700"
+                                    font-family="Poppins" text-anchor="middle">21%</text>
+                                <text id="trend-badge-1" x="120" y="180" fill="#94a3b8" font-size="10" font-weight="600"
+                                    font-family="Poppins" text-anchor="middle">DI</text>
                             </g>
 
                             <!-- Point 2: 2nd Assess. (X=470, Pending by default) -->
-                            <g class="trend-point-group" id="trend-point-g-2" onmouseenter="showTrendTooltip(1, event)" onmouseleave="hideTrendTooltip()">
+                            <g class="trend-point-group" id="trend-point-g-2" onmouseenter="showTrendTooltip(1, event)"
+                                onmouseleave="hideTrendTooltip()">
                                 <circle id="trend-hit-2" cx="470" cy="140" r="24" fill="transparent" />
-                                <circle id="trend-circle-2" class="trend-circle" cx="470" cy="140" r="8.5" fill="#111c26" stroke="#475569" stroke-width="2.5" opacity="0.55" />
-                                <text id="trend-text-2" x="470" y="122" fill="#64748b" font-size="12" font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
-                                <text id="trend-badge-2" x="470" y="160" fill="#475569" font-size="10" font-weight="600" font-family="Poppins" text-anchor="middle">Pending</text>
+                                <circle id="trend-circle-2" class="trend-circle" cx="470" cy="140" r="8.5"
+                                    fill="#111c26" stroke="#475569" stroke-width="2.5" opacity="0.55" />
+                                <text id="trend-text-2" x="470" y="122" fill="#64748b" font-size="12" font-weight="700"
+                                    font-family="Poppins" text-anchor="middle">--</text>
+                                <text id="trend-badge-2" x="470" y="160" fill="#475569" font-size="10" font-weight="600"
+                                    font-family="Poppins" text-anchor="middle">Pending</text>
                             </g>
 
                             <!-- Point 3: Final Assess. (X=820, Pending by default) -->
-                            <g class="trend-point-group" id="trend-point-g-3" onmouseenter="showTrendTooltip(2, event)" onmouseleave="hideTrendTooltip()">
+                            <g class="trend-point-group" id="trend-point-g-3" onmouseenter="showTrendTooltip(2, event)"
+                                onmouseleave="hideTrendTooltip()">
                                 <circle id="trend-hit-3" cx="820" cy="110" r="24" fill="transparent" />
-                                <circle id="trend-circle-3" class="trend-circle" cx="820" cy="110" r="8.5" fill="#111c26" stroke="#475569" stroke-width="2.5" opacity="0.55" />
-                                <text id="trend-text-3" x="820" y="92" fill="#64748b" font-size="12" font-weight="700" font-family="Poppins" text-anchor="middle">--</text>
-                                <text id="trend-badge-3" x="820" y="130" fill="#475569" font-size="10" font-weight="600" font-family="Poppins" text-anchor="middle">Pending</text>
+                                <circle id="trend-circle-3" class="trend-circle" cx="820" cy="110" r="8.5"
+                                    fill="#111c26" stroke="#475569" stroke-width="2.5" opacity="0.55" />
+                                <text id="trend-text-3" x="820" y="92" fill="#64748b" font-size="12" font-weight="700"
+                                    font-family="Poppins" text-anchor="middle">--</text>
+                                <text id="trend-badge-3" x="820" y="130" fill="#475569" font-size="10" font-weight="600"
+                                    font-family="Poppins" text-anchor="middle">Pending</text>
                             </g>
                         </g>
                     </svg>
@@ -1428,21 +1618,30 @@
                     <!-- Trend Floating Tooltip -->
                     <div class="custom-chart-tooltip" id="trend-chart-tooltip" style="display: none; min-width: 260px;">
                         <div class="tooltip-stage-title" id="trend-tooltip-title">First Assessment Stage</div>
-                        
+
                         <!-- Single Track Tooltip View -->
                         <div id="trend-tooltip-single-content">
-                            <div class="tooltip-row text-cyan" id="trend-tooltip-quad-row"><span>Quadrant</span><span id="trend-val-quad">Distributed Individual</span></div>
-                            <div class="tooltip-row" id="trend-tooltip-score-row" style="color: #ffffff;"><span>Score</span><span id="trend-val-score">21%</span></div>
-                            <div class="tooltip-row text-gold"><span>Target Gap</span><span id="trend-val-gap">-59% to 80% target</span></div>
-                            <div class="tooltip-row" style="color: #94a3b8; font-size: 11.5px; margin-top: 4px;"><span id="trend-val-status">Initial assessment completed</span></div>
+                            <div class="tooltip-row text-cyan" id="trend-tooltip-quad-row"><span>Quadrant</span><span
+                                    id="trend-val-quad">Distributed Individual</span></div>
+                            <div class="tooltip-row" id="trend-tooltip-score-row" style="color: #ffffff;">
+                                <span>Score</span><span id="trend-val-score">21%</span>
+                            </div>
+                            <div class="tooltip-row text-gold"><span>Target Gap</span><span id="trend-val-gap">-59% to
+                                    80% target</span></div>
+                            <div class="tooltip-row" style="color: #94a3b8; font-size: 11.5px; margin-top: 4px;"><span
+                                    id="trend-val-status">Initial assessment completed</span></div>
                         </div>
 
                         <!-- 3-Lowest Comparison Tooltip View -->
                         <div id="trend-tooltip-compare-content" style="display: none;">
-                            <div class="tooltip-row text-cyan" id="comp-row-1"><span id="comp-label-1">1st (DI)</span><span id="comp-val-1">21% (-59%)</span></div>
-                            <div class="tooltip-row text-purple" id="comp-row-2"><span id="comp-label-2">2nd (DC)</span><span id="comp-val-2">24% (-56%)</span></div>
-                            <div class="tooltip-row text-orange" id="comp-row-3"><span id="comp-label-3">3rd (HC)</span><span id="comp-val-3">27% (-53%)</span></div>
-                            <div class="tooltip-row text-gold" style="font-size: 11px; margin-top: 4px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.06);">
+                            <div class="tooltip-row text-cyan" id="comp-row-1"><span id="comp-label-1">1st
+                                    (DI)</span><span id="comp-val-1">21% (-59%)</span></div>
+                            <div class="tooltip-row text-purple" id="comp-row-2"><span id="comp-label-2">2nd
+                                    (DC)</span><span id="comp-val-2">24% (-56%)</span></div>
+                            <div class="tooltip-row text-orange" id="comp-row-3"><span id="comp-label-3">3rd
+                                    (HC)</span><span id="comp-val-3">27% (-53%)</span></div>
+                            <div class="tooltip-row text-gold"
+                                style="font-size: 11px; margin-top: 4px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.06);">
                                 <span>Milestone Goal</span><span>80% Mastery</span>
                             </div>
                         </div>
@@ -1450,17 +1649,30 @@
                 </div>
 
                 <!-- X Axis Labels -->
-                <div style="display: flex; justify-content: space-between; padding: 0 40px 0 80px; font-size: 12px; color: #64748b; font-weight: 500;">
-                    <span id="trend-label-1" style="cursor: pointer;" onmouseenter="showTrendTooltip(0, event)" onmouseleave="hideTrendTooltip()">First Assessment</span>
-                    <span id="trend-label-2" style="cursor: pointer; color: #475569;" onmouseenter="showTrendTooltip(1, event)" onmouseleave="hideTrendTooltip()">Second Assessment (Pending)</span>
-                    <span id="trend-label-3" style="cursor: pointer; color: #475569;" onmouseenter="showTrendTooltip(2, event)" onmouseleave="hideTrendTooltip()">Final Assessment (Pending)</span>
+                <div
+                    style="display: flex; justify-content: space-between; padding: 0 40px 0 80px; font-size: 12px; color: #64748b; font-weight: 500;">
+                    <span id="trend-label-1" style="cursor: pointer;" onmouseenter="showTrendTooltip(0, event)"
+                        onmouseleave="hideTrendTooltip()">First Assessment</span>
+                    <span id="trend-label-2" style="cursor: pointer; color: #475569;"
+                        onmouseenter="showTrendTooltip(1, event)" onmouseleave="hideTrendTooltip()">Second Assessment
+                        (Pending)</span>
+                    <span id="trend-label-3" style="cursor: pointer; color: #475569;"
+                        onmouseenter="showTrendTooltip(2, event)" onmouseleave="hideTrendTooltip()">Final Assessment
+                        (Pending)</span>
                 </div>
 
                 <!-- Compare Mode Bottom Legend -->
-                <div class="chart-legend-row" id="trend-compare-legend" style="display: none; margin-top: 10px; padding-top: 4px;">
-                    <div class="legend-item" id="legend-item-r1" onclick="setTrendMode('rank1')"><span class="legend-dot dot-di" id="leg-dot-r1"></span><span id="leg-text-r1">1st Lowest: Distributed Individual</span></div>
-                    <div class="legend-item" id="legend-item-r2" onclick="setTrendMode('rank2')"><span class="legend-dot dot-dc" id="leg-dot-r2"></span><span id="leg-text-r2">2nd Lowest: Distributed Collective</span></div>
-                    <div class="legend-item" id="legend-item-r3" onclick="setTrendMode('rank3')"><span class="legend-dot dot-hc" id="leg-dot-r3"></span><span id="leg-text-r3">3rd Lowest: Hierarchical Collective</span></div>
+                <div class="chart-legend-row" id="trend-compare-legend"
+                    style="display: none; margin-top: 10px; padding-top: 4px;">
+                    <div class="legend-item" id="legend-item-r1" onclick="setTrendMode('rank1')"><span
+                            class="legend-dot dot-di" id="leg-dot-r1"></span><span id="leg-text-r1">1st Lowest:
+                            Distributed Individual</span></div>
+                    <div class="legend-item" id="legend-item-r2" onclick="setTrendMode('rank2')"><span
+                            class="legend-dot dot-dc" id="leg-dot-r2"></span><span id="leg-text-r2">2nd Lowest:
+                            Distributed Collective</span></div>
+                    <div class="legend-item" id="legend-item-r3" onclick="setTrendMode('rank3')"><span
+                            class="legend-dot dot-hc" id="leg-dot-r3"></span><span id="leg-text-r3">3rd Lowest:
+                            Hierarchical Collective</span></div>
                 </div>
             </div>
 
@@ -1958,7 +2170,7 @@
             try {
                 const userStr = localStorage.getItem('currentUser');
                 if (userStr) user = JSON.parse(userStr);
-            } catch (e) {}
+            } catch (e) { }
 
             // Fallback to student id 1 (Alberstein) if currentUser is not yet set
             const studentId = (user && user.id) ? user.id : 1;
@@ -1982,10 +2194,10 @@
                 let p = getPercentages(x, y);
 
                 // Dual-Model Architecture: Use Model 2 Independent Quadrant Mastery (0%-100%)
-                const hasDirectMastery = (student.hi_mastery != null && student.hi_mastery > 0) || 
-                                         (student.di_mastery != null && student.di_mastery > 0) || 
-                                         (student.hc_mastery != null && student.hc_mastery > 0) || 
-                                         (student.dc_mastery != null && student.dc_mastery > 0);
+                const hasDirectMastery = (student.hi_mastery != null && student.hi_mastery > 0) ||
+                    (student.di_mastery != null && student.di_mastery > 0) ||
+                    (student.hc_mastery != null && student.hc_mastery > 0) ||
+                    (student.dc_mastery != null && student.dc_mastery > 0);
 
                 const currentMastery = hasDirectMastery ? {
                     HI: Math.round(student.hi_mastery || 0),
@@ -2050,10 +2262,10 @@
 
                     let localProg = null;
                     try {
-                        const lpStr = localStorage.getItem(`student_mod_prog_v2_${studentId}_${targetMod.id}`) || 
-                                      localStorage.getItem(`student_mod_prog_${studentId}_${targetMod.id}`);
+                        const lpStr = localStorage.getItem(`student_mod_prog_v2_${studentId}_${targetMod.id}`) ||
+                            localStorage.getItem(`student_mod_prog_${studentId}_${targetMod.id}`);
                         if (lpStr) localProg = JSON.parse(lpStr);
-                    } catch(e) {}
+                    } catch (e) { }
 
                     if (localProg && Array.isArray(localProg.completedChapters)) {
                         completedCount = localProg.completedChapters.length;
@@ -2936,7 +3148,7 @@
             const s1Status = isPhase1Done ? 'Completed' : 'In Progress';
             const s1StatusColor = isPhase1Done ? 'var(--matrix-green)' : 'var(--matrix-yellow)';
             const s1BadgeClass = isPhase1Done ? 'green-done' : 'yellow-active';
-            const s1BadgeHtml = isPhase1Done 
+            const s1BadgeHtml = isPhase1Done
                 ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
                 : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
             const s1ActiveItem = !isPhase1Done ? 'active' : '';
@@ -2945,7 +3157,7 @@
             const s2Status = isPhase1Done ? 'Target Set' : 'Pending';
             const s2StatusColor = isPhase1Done ? '#fb923c' : '#64748b';
             const s2BadgeClass = isPhase1Done ? 'green-done' : 'gray-pending';
-            const s2BadgeHtml = isPhase1Done 
+            const s2BadgeHtml = isPhase1Done
                 ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
                 : `2`;
             const s2Desc = isPhase1Done ? `Targeted ${weakName} (${score}%) for skill growth.` : `Will be identified upon diagnostic completion.`;
@@ -2988,7 +3200,7 @@
                 s4BadgeHtml = score >= 80
                     ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
                     : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
-                s4Desc = score >= 80 
+                s4Desc = score >= 80
                     ? `Target achieved! Reassessment score reached ≥80% mastery.`
                     : `Stage 2 evaluated at ${score}%. Continue modules to reach 80%.`;
             } else if (isPhase4Active) {
@@ -3002,7 +3214,9 @@
 
             listContainer.innerHTML = `
                 <div class="cycle-step-item ${s1ActiveItem}">
-                    <div class="step-icon-badge ${s1BadgeClass}">${s1BadgeHtml}</div>
+                    <div class="step-badge-col">
+                        <div class="step-icon-badge ${s1BadgeClass}">${s1BadgeHtml}</div>
+                    </div>
                     <div class="step-text-content">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <h4 class="step-heading" ${!isPhase1Done ? 'style="color: var(--matrix-yellow);"' : ''}>1. Diagnostic Assessment</h4>
@@ -3013,7 +3227,9 @@
                 </div>
 
                 <div class="cycle-step-item">
-                    <div class="step-icon-badge ${s2BadgeClass}">${s2BadgeHtml}</div>
+                    <div class="step-badge-col">
+                        <div class="step-icon-badge ${s2BadgeClass}">${s2BadgeHtml}</div>
+                    </div>
                     <div class="step-text-content">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <h4 class="step-heading ${!isPhase1Done ? 'muted' : ''}">2. Focus Area Identified</h4>
@@ -3024,7 +3240,9 @@
                 </div>
 
                 <div class="cycle-step-item ${s3ActiveItem}">
-                    <div class="step-icon-badge ${s3BadgeClass}">${s3BadgeHtml}</div>
+                    <div class="step-badge-col">
+                        <div class="step-icon-badge ${s3BadgeClass}">${s3BadgeHtml}</div>
+                    </div>
                     <div class="step-text-content">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <h4 class="step-heading ${!isPhase1Done ? 'muted' : ''}" ${s3ActiveItem ? 'style="color: var(--matrix-yellow);"' : ''}>3. Modular Learning & Practice</h4>
@@ -3035,7 +3253,9 @@
                 </div>
 
                 <div class="cycle-step-item ${s4ActiveItem}">
-                    <div class="step-icon-badge ${s4BadgeClass}">${s4BadgeHtml}</div>
+                    <div class="step-badge-col">
+                        <div class="step-icon-badge ${s4BadgeClass}">${s4BadgeHtml}</div>
+                    </div>
                     <div class="step-text-content">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <h4 class="step-heading ${!isPhase4Active && !isS2Active ? 'muted' : ''}" ${s4ActiveItem ? 'style="color: var(--matrix-yellow);"' : ''}>4. Reassessment & Growth</h4>
