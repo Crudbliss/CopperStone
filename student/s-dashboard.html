@@ -1059,21 +1059,39 @@
             }
         };
 
+        // Helper: Parse date strings (handles SQLite UTC timestamps correctly on UTC+8 local browser)
+        function parseDateInput(dateInput) {
+            if (!dateInput) return new Date();
+            if (dateInput instanceof Date) return dateInput;
+            if (typeof dateInput === 'number') return new Date(dateInput);
+            if (typeof dateInput === 'string') {
+                const trimmed = dateInput.trim();
+                // SQLite timestamps like "2026-09-24 02:58:58" are stored in UTC without 'Z'
+                if (!trimmed.includes('Z') && !trimmed.includes('+') && !trimmed.includes('GMT')) {
+                    const utcCandidate = new Date(trimmed.replace(' ', 'T') + 'Z');
+                    if (!isNaN(utcCandidate.getTime())) return utcCandidate;
+                }
+                const d = new Date(trimmed);
+                if (!isNaN(d.getTime())) return d;
+            }
+            return new Date();
+        }
+
         // Helper: Format notification relative or absolute date
         function formatNotifDate(dateInput) {
             if (!dateInput) return 'Recent';
-            const d = new Date(dateInput);
+            const d = parseDateInput(dateInput);
             if (isNaN(d.getTime())) return String(dateInput);
             
             const now = new Date();
-            const diffMs = now.getTime() - d.getTime();
+            const diffMs = Math.max(0, now.getTime() - d.getTime());
             const diffMins = Math.floor(diffMs / (60 * 1000));
             const diffHours = Math.floor(diffMs / (60 * 60 * 1000));
             const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
 
             if (diffMins < 1) return 'Just now';
             if (diffMins < 60) return `${diffMins}m ago`;
-            if (diffHours < 24 && d.getDate() === now.getDate()) return `${diffHours}h ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
             if (diffDays === 1) return 'Yesterday';
             if (diffDays < 7) return `${diffDays}d ago`;
             
@@ -1089,6 +1107,7 @@
             let readIds = [];
             try { readIds = JSON.parse(localStorage.getItem(readKey) || '[]'); } catch(e) {}
             const markAllTs = parseInt(localStorage.getItem('notif_mark_all_timestamp_' + user.id) || '0', 10);
+            const isAllRead = localStorage.getItem('notif_all_read_' + user.id) === 'true';
 
             const todoListEl = document.getElementById('notif-todo-list');
             const actListEl = document.getElementById('notif-activity-list');
@@ -1142,7 +1161,7 @@
                 let unlockDateText = '';
 
                 if (isFirstModDone && firstModCompAt) {
-                    const compMs = new Date(firstModCompAt).getTime();
+                    const compMs = parseDateInput(firstModCompAt).getTime();
                     const unlockMs = compMs + ONE_WEEK;
                     unlockDateText = formatNotifDate(unlockMs);
                     if (Date.now() >= unlockMs) isReassessReady = true;
@@ -1200,10 +1219,11 @@
                     if (prog && (prog.moduleCompleted || prog.completedFinal)) {
                         // Completed module in Activity Log
                         activityItems.push({
+                            id: `mod_comp_${m.id}`,
                             title: `${m.title} Completed`,
                             subtitle: `100% Mastery Achieved · ${m.quadrant_category || 'Distributed Collective'} Mode`,
                             date: formatNotifDate(prog.completedAt || new Date()),
-                            rawTime: prog.completedAt ? new Date(prog.completedAt).getTime() : Date.now()
+                            rawTime: prog.completedAt ? parseDateInput(prog.completedAt).getTime() : Date.now()
                         });
                     } else {
                         // Remaining chapters to-do
@@ -1236,10 +1256,11 @@
                     if (prog && prog.completedKCs && prog.completedKCs.length > 0) {
                         prog.completedKCs.forEach(kcIdx => {
                             activityItems.push({
+                                id: `kc_${m.id}_${kcIdx}`,
                                 title: `Knowledge Check ${kcIdx + 1} Passed`,
                                 subtitle: `${m.title} · Chapter ${kcIdx + 1}`,
                                 date: formatNotifDate(prog.completedAt || new Date()),
-                                rawTime: prog.completedAt ? new Date(prog.completedAt).getTime() : Date.now()
+                                rawTime: prog.completedAt ? parseDateInput(prog.completedAt).getTime() : Date.now()
                             });
                         });
                     }
@@ -1249,14 +1270,16 @@
                 if (history && history.length > 0) {
                     history.forEach(h => {
                         activityItems.push({
+                            id: `hist_${h.id || h.taken_at}`,
                             title: `${h.session_name || 'Assessment'} Completed`,
                             subtitle: `Outcome: ${h.learning_mode}`,
                             date: formatNotifDate(h.taken_at),
-                            rawTime: new Date(h.taken_at).getTime()
+                            rawTime: parseDateInput(h.taken_at).getTime()
                         });
                     });
                 } else if (hasAssessed) {
                     activityItems.push({
+                        id: 'hist_initial_diag',
                         title: 'Diagnostic Assessment Completed',
                         subtitle: `Outcome: ${studentProfile.learning_mode || 'Hierarchical Individual'}`,
                         date: formatNotifDate(new Date()),
@@ -1268,10 +1291,11 @@
                 if (announcements && announcements.length > 0) {
                     announcements.forEach(a => {
                         activityItems.push({
+                            id: `ann_${a.id || a.created_at}`,
                             title: a.title,
                             subtitle: a.message_body,
                             date: formatNotifDate(a.created_at),
-                            rawTime: new Date(a.created_at).getTime()
+                            rawTime: parseDateInput(a.created_at).getTime()
                         });
                     });
                 }
@@ -1285,6 +1309,7 @@
 
             // Save all generated IDs for mark-all-read persistence
             window._generatedTodoIds = todoItems.map(item => item.id);
+            window._generatedActIds = activityItems.map(item => item.id);
 
             // Render To-Do List
             if (todoItems.length === 0) {
@@ -1298,18 +1323,20 @@
             } else {
                 todoListEl.innerHTML = todoItems.map(item => {
                     const isRead = readIds.includes(item.id) || (markAllTs > 0);
-                    const cardClass = `notif-todo-card ${item.isUrgent ? 'urgent' : ''}`;
+                    const cardClass = `notif-todo-card ${item.isUrgent && !isRead ? 'urgent' : ''}`;
                     const opacityStyle = isRead ? 'opacity: 0.65;' : '';
+                    const bulletHtml = isRead ? '' : `<span class="notif-bullet ${item.bullet}"></span>`;
                     return `
                         <div class="${cardClass}" style="${opacityStyle}" onclick="${item.action}">
-                            <span class="notif-bullet ${item.bullet}"></span>
-                            <div>${item.text}</div>
+                            ${bulletHtml}
+                            <div style="${isRead ? 'padding-left: 2px;' : ''}">${item.text}</div>
                         </div>
                     `;
                 }).join('');
             }
 
             // Render Activity Log
+            const isActivityAllRead = isAllRead || (markAllTs > 0);
             if (activityItems.length === 0) {
                 actListEl.innerHTML = `
                     <div style="padding: 30px 10px; text-align: center; color: var(--text-muted);">
@@ -1317,20 +1344,24 @@
                     </div>
                 `;
             } else {
-                actListEl.innerHTML = activityItems.map(act => `
-                    <div class="notif-activity-item">
-                        <span class="notif-bullet green"></span>
-                        <div>
-                            <div class="notif-act-title">${act.title}</div>
-                            <div class="notif-act-sub">${act.subtitle}</div>
-                            <div class="notif-act-time">${act.date}</div>
+                actListEl.innerHTML = activityItems.map(act => {
+                    const isActRead = isActivityAllRead || readIds.includes(act.id);
+                    const actOpacityStyle = isActRead ? 'opacity: 0.65;' : '';
+                    const actBulletHtml = isActRead ? '' : `<span class="notif-bullet green"></span>`;
+                    return `
+                        <div class="notif-activity-item" style="${actOpacityStyle}">
+                            ${actBulletHtml}
+                            <div style="${isActRead ? 'padding-left: 2px;' : ''}">
+                                <div class="notif-act-title">${act.title}</div>
+                                <div class="notif-act-sub">${act.subtitle}</div>
+                                <div class="notif-act-time">${act.date}</div>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             // Update badge dot for unread items
-            const isAllRead = localStorage.getItem('notif_all_read_' + user.id) === 'true';
             const unreadCount = isAllRead ? 0 : todoItems.filter(t => !readIds.includes(t.id)).length;
             if (unreadCount > 0) {
                 badgeEl.style.display = 'block';
@@ -1349,8 +1380,9 @@
             let readIds = [];
             try { readIds = JSON.parse(localStorage.getItem(readKey) || '[]'); } catch(e) {}
 
-            const currentIds = window._generatedTodoIds || [];
-            const allIds = Array.from(new Set([...readIds, ...currentIds, 'act_post_module_reassess', 'act_post_module_scheduled', 'act_complete_mod1_first', 'act_initial_assessment']));
+            const currentTodoIds = window._generatedTodoIds || [];
+            const currentActIds = window._generatedActIds || [];
+            const allIds = Array.from(new Set([...readIds, ...currentTodoIds, ...currentActIds, 'act_post_module_reassess', 'act_post_module_scheduled', 'act_complete_mod1_first', 'act_initial_assessment']));
             localStorage.setItem(readKey, JSON.stringify(allIds));
             localStorage.setItem('notif_all_read_' + user.id, 'true');
             localStorage.setItem('notif_mark_all_timestamp_' + user.id, Date.now().toString());
@@ -1358,8 +1390,8 @@
             const badgeEl = document.getElementById('bell-badge-count');
             if (badgeEl) badgeEl.style.display = 'none';
 
-            const todoCards = document.querySelectorAll('.notif-todo-card');
-            todoCards.forEach(c => c.style.opacity = '0.65');
+            // Re-render immediately to update both To-Do and Activity lists with faded text and hidden bullets
+            loadNotifications();
         };
 
         // Helper to navigate iframe and update active sidebar link
