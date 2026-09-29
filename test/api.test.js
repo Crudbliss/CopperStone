@@ -300,5 +300,15 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
             const history = await res.json();
             assert.ok(Array.isArray(history), 'History must be an array');
         });
+
+        it('should provide certificate metadata and verification structure', async () => {
+            const res = await fetch(`${BASE_URL}/api/students/1/certificate`);
+            assert.strictEqual(res.status, 200, 'Certificate endpoint should return 200');
+            const data = await res.json();
+            assert.ok(data.certificate, 'Certificate object must exist');
+            assert.ok(data.certificate.certificate_id, 'Certificate ID must be generated');
+            assert.ok(data.certificate.student_name, 'Student name must be present');
+            assert.ok(data.certificate.survey_url.includes('docs.google.com/forms'), 'Survey URL must match official Google Form');
+        });
     });
 });

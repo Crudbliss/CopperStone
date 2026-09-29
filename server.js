@@ -877,6 +877,115 @@ app.post('/api/auth/reset-password', async (req, res) => {
     }
 });
 
+// Helper to send completion survey & evaluation form email after 3 assessments
+const surveySentTracker = new Set();
+async function sendCycleCompletionEmail(student) {
+    if (!student || !student.email) return;
+    if (surveySentTracker.has(student.id)) return; // Prevent duplicate emails
+    surveySentTracker.add(student.id);
+
+    const transporter = getMailTransporter();
+    if (!transporter) return;
+
+    const surveyUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSdODAgsGVCucIw6-2K4GCpy0F_RXkHQB8f8UTyZZ0LVIjnEFg/viewform';
+    const senderName = process.env.SMTP_FROM || 'Matrix Learning Portal';
+    const studentName = student.first_name ? `${student.first_name} ${student.last_name || ''}`.trim() : 'Student';
+
+    try {
+        await transporter.sendMail({
+            from: `"${senderName}" <${process.env.SMTP_USER}>`,
+            to: student.email,
+            subject: '🎓 Congratulations on Completing the Matrix Learning Cycle! (Post-Study Survey & Certificate)',
+            html: `
+                <div style="font-family: Arial, sans-serif; background-color: #0e2e41; padding: 40px 20px; color: #ffffff; text-align: center;">
+                    <div style="max-width: 520px; margin: 0 auto; background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); text-align: left;">
+                        <div style="text-align: center; margin-bottom: 24px;">
+                            <span style="font-size: 40px;">🎓</span>
+                            <h2 style="color: #4ade80; margin: 8px 0 4px 0; font-size: 22px;">Cycle Completed!</h2>
+                            <p style="color: #94a3b8; font-size: 13px; margin: 0;">Our Lady of Fatima University · BSIT Capstone Study</p>
+                        </div>
+                        
+                        <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6;">
+                            Dear <strong>${studentName}</strong>,
+                        </p>
+                        <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6;">
+                            Congratulations on successfully completing all 3 assessment phases of the <strong>Matrix Adaptive Learning Model</strong>! Your learning progression, quadrant migration, and mastery scores have been fully recorded.
+                        </p>
+
+                        <div style="background: rgba(216, 166, 26, 0.1); border: 1px solid rgba(216, 166, 26, 0.35); border-radius: 12px; padding: 18px; margin: 24px 0; text-align: center;">
+                            <h3 style="color: #fbbf24; margin: 0 0 8px 0; font-size: 16px;">📋 Final Evaluation & Survey</h3>
+                            <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5; margin: 0 0 16px 0;">
+                                Please take 2 minutes to complete the official Post-Study Evaluation Form. Your valuable feedback is critical for our research validation:
+                            </p>
+                            <a href="${surveyUrl}" target="_blank" style="display: inline-block; background: #d8a61a; color: #0a1e2d; font-weight: 700; font-size: 14px; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 4px 12px rgba(216, 166, 26, 0.4);">
+                                Open Evaluation Form →
+                            </a>
+                        </div>
+
+                        <p style="color: #cbd5e1; font-size: 13px; line-height: 1.6;">
+                            🏆 <strong>Certificate of Completion:</strong> Your official Certificate of Adaptive Learning Completion is now unlocked and can be viewed and downloaded from your student dashboard.
+                        </p>
+
+                        <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 24px 0;" />
+
+                        <p style="color: #64748b; font-size: 12px; line-height: 1.5; margin: 0; text-align: center;">
+                            If the button above does not work, copy and paste this link into your browser:<br/>
+                            <a href="${surveyUrl}" style="color: #38bdf8; word-break: break-all;">${surveyUrl}</a>
+                        </p>
+                    </div>
+                </div>
+            `
+        });
+        console.log(`[EMAIL DISPATCH] Cycle completion & survey email sent to ${student.email}`);
+    } catch (e) {
+        console.error(`[EMAIL DISPATCH ERROR] Failed to send cycle completion email:`, e.message);
+    }
+}
+
+// GET /api/students/:id/certificate - Retrieve certificate metadata once all 3 assessments are done
+app.get('/api/students/:id/certificate', (req, res) => {
+    const studentId = req.params.id;
+
+    db.get(`SELECT id, student_no, first_name, last_name, mi, email, program, learning_mode, hi_mastery, di_mastery, hc_mastery, dc_mastery, created_at FROM students WHERE id = ?`, [studentId], (err, student) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!student) return res.status(404).json({ error: 'Student not found' });
+
+        db.all(`SELECT id, session_id, learning_mode, taken_at FROM assessment_history WHERE student_id = ? ORDER BY id ASC`, [studentId], (hErr, history) => {
+            if (hErr) return res.status(500).json({ error: hErr.message });
+
+            const isEligible = (history && history.length >= 3);
+            const initialMode = (history && history.length > 0) ? history[0].learning_mode : student.learning_mode;
+            const finalMode = (history && history.length > 0) ? history[history.length - 1].learning_mode : student.learning_mode;
+            const completedAt = (history && history.length >= 3) ? history[2].taken_at : new Date().toISOString();
+
+            const certCode = `MTX-OLFU-${student.id}-${Math.abs(student.student_no ? student.student_no.replace(/[^0-9]/g, '') : '2026')}`;
+
+            res.json({
+                eligible: isEligible,
+                assessments_completed: history ? history.length : 0,
+                required_assessments: 3,
+                certificate: {
+                    certificate_id: certCode,
+                    student_name: `${student.first_name} ${student.mi ? student.mi + ' ' : ''}${student.last_name}`,
+                    student_no: student.student_no,
+                    program: student.program || 'BSIT',
+                    institution: 'Our Lady of Fatima University',
+                    initial_mode: initialMode,
+                    final_mode: finalMode,
+                    completed_at: completedAt,
+                    mastery: {
+                        hi: Math.round(student.hi_mastery || 0),
+                        di: Math.round(student.di_mastery || 0),
+                        hc: Math.round(student.hc_mastery || 0),
+                        dc: Math.round(student.dc_mastery || 0)
+                    },
+                    survey_url: 'https://docs.google.com/forms/d/e/1FAIpQLSdODAgsGVCucIw6-2K4GCpy0F_RXkHQB8f8UTyZZ0LVIjnEFg/viewform'
+                }
+            });
+        });
+    });
+});
+
 // POST /api/students/register - Register a new student
 app.post('/api/students/register', async (req, res) => {
     let { student_no, first_name, last_name, mi, program, year_level, section, email, password, otp } = req.body;
@@ -1593,16 +1702,34 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
                             [finalX, finalY, dominantMode, weakestMode, hi_m, di_m, hc_m, dc_m, student_id], 
                             function(updateErr) {
                                 if (updateErr) console.error("Error updating student coords & mastery", updateErr);
-                                res.json({
-                                    success: true,
-                                    result: {
-                                        x: finalX,
-                                        y: finalY,
-                                        mode: dominantMode,
-                                        fuzzy: memberships,
-                                        profile: memberships,
-                                        mastery: mastery
+
+                                // Check if student has completed all 3 learning cycle assessments
+                                db.all(`SELECT id FROM assessment_history WHERE student_id = ?`, [student_id], (countErr, rows) => {
+                                    const totalAssessments = rows ? rows.length : 0;
+                                    const isCycleCompleted = totalAssessments >= 3;
+
+                                    if (isCycleCompleted) {
+                                        db.get(`SELECT id, first_name, last_name, email FROM students WHERE id = ?`, [student_id], (sErr, st) => {
+                                            if (st && st.email) {
+                                                sendCycleCompletionEmail(st);
+                                            }
+                                        });
                                     }
+
+                                    res.json({
+                                        success: true,
+                                        cycle_completed: isCycleCompleted,
+                                        assessments_completed: totalAssessments,
+                                        survey_url: 'https://docs.google.com/forms/d/e/1FAIpQLSdODAgsGVCucIw6-2K4GCpy0F_RXkHQB8f8UTyZZ0LVIjnEFg/viewform',
+                                        result: {
+                                            x: finalX,
+                                            y: finalY,
+                                            mode: dominantMode,
+                                            fuzzy: memberships,
+                                            profile: memberships,
+                                            mastery: mastery
+                                        }
+                                    });
                                 });
                             }
                         );
