@@ -2804,6 +2804,7 @@
 
             // Graded summary banner if graded
             if (isGraded) {
+                const isFinalStep = currentStepType === 'final';
                 if (quizGradedResults.passed) {
                     html += `
                         <div class="mastery-banner perfect" style="margin-bottom: 8px;">
@@ -2812,7 +2813,7 @@
                                 100% Perfect Mastery! (${quizGradedResults.score} / ${quizGradedResults.total})
                             </div>
                             <p style="font-size: 13.5px; color: #cbd5e1;">
-                                Outstanding job! You have perfected this Knowledge Check. You can review your answers below or proceed.
+                                ${isFinalStep ? 'Outstanding job! You have perfected the Final Module Assessment. Your mastery is recorded!' : 'Outstanding job! You have perfected this Knowledge Check. You can review your answers below or proceed.'}
                             </p>
                         </div>
                     `;
@@ -2824,7 +2825,7 @@
                                 Mastery Required (${quizGradedResults.score} / ${quizGradedResults.total} Correct &middot; ${quizGradedResults.percentage}%)
                             </div>
                             <p style="font-size: 13px; color: #cbd5e1; max-width: 540px; line-height: 1.55;">
-                                You must achieve a <strong>perfect 100% score</strong> to unlock the next chapter. Review the explanation slides below and try again!
+                                ${isFinalStep ? 'You must achieve a <strong>perfect 100% score</strong> to complete the module. Review the explanation slides below and try again!' : 'You must achieve a <strong>perfect 100% score</strong> to unlock the next chapter. Review the explanation slides below and try again!'}
                             </p>
                         </div>
                     `;
@@ -3007,10 +3008,11 @@
                             </button>
                         `;
                     } else {
+                        const retakeLabel = currentStepType === 'final' ? 'Retake Final Assessment' : 'Retake Knowledge Check';
                         html += `
                             <button class="btn-retake-kc" onclick="handleRetakeKC()">
                                 <svg width="15" height="15" style="vertical-align: middle; margin-right: 6px;"><use href="#icon-refresh"></use></svg>
-                                Retake Knowledge Check
+                                ${retakeLabel}
                             </button>
                         `;
                     }
