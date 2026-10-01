@@ -310,5 +310,58 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
             assert.ok(data.certificate.student_name, 'Student name must be present');
             assert.ok(data.certificate.survey_url.includes('docs.google.com/forms'), 'Survey URL must match official Google Form');
         });
+
+        it('should reset an individual student progress without deleting the account', async () => {
+            const testEmail = `reset_prog_${Date.now()}@student.olfu.edu.ph`;
+
+            // Register student
+            const otpReq = await fetch(`${BASE_URL}/api/auth/send-registration-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-test-suite': 'true' },
+                body: JSON.stringify({ email: testEmail })
+            });
+            const otpReqData = await otpReq.json();
+
+            const regRes = await fetch(`${BASE_URL}/api/students/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    first_name: 'TestProg',
+                    last_name: 'Student',
+                    email: testEmail,
+                    password: 'Password123!',
+                    otp: otpReqData.dev_code
+                })
+            });
+            const regData = await regRes.json();
+            const studentId = regData.student_id;
+
+            // Call reset-progress
+            const resetRes = await fetch(`${BASE_URL}/api/students/${studentId}/reset-progress`, {
+                method: 'POST'
+            });
+            assert.strictEqual(resetRes.status, 200, 'Reset progress should return 200');
+            const resetData = await resetRes.json();
+            assert.strictEqual(resetData.success, true);
+
+            // Student profile should still exist with null learning_mode and 0 coordinates
+            const checkRes = await fetch(`${BASE_URL}/api/students/${studentId}`);
+            assert.strictEqual(checkRes.status, 200);
+            const checkData = await checkRes.json();
+            assert.strictEqual(checkData.learning_mode, null);
+            assert.strictEqual(checkData.x_coord, 0);
+
+            // Now test DELETE /api/students/:id
+            const delRes = await fetch(`${BASE_URL}/api/students/${studentId}`, {
+                method: 'DELETE'
+            });
+            assert.strictEqual(delRes.status, 200, 'Delete student should return 200');
+            const delData = await delRes.json();
+            assert.strictEqual(delData.success, true);
+
+            // Verify student is gone
+            const verifyRes = await fetch(`${BASE_URL}/api/students/${studentId}`);
+            assert.strictEqual(verifyRes.status, 404, 'Deleted student must return 404');
+        });
     });
 });

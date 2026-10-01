@@ -2448,6 +2448,7 @@
         }
 
         function selectStep(type, index) {
+            window._needsQuizReshuffle = true;
             currentStepType = type;
             currentChapterIndex = index;
             currentStepId = type === 'final' ? 'final_assessment' : `${type}_${index}`;
@@ -2852,7 +2853,19 @@
         }
 
         function handleOpenCurrentKC() {
+            window._needsQuizReshuffle = true;
             selectStep('kc', currentChapterIndex);
+        }
+
+        /* --- ARRAY SHUFFLE HELPER --- */
+        function shuffleArray(arr) {
+            if (!Array.isArray(arr)) return [];
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
         }
 
         /* --- KNOWLEDGE CHECK QUIZ RENDERER (Screenshot 2) --- */
@@ -2886,6 +2899,26 @@
                     </div>
                 `;
                 return;
+            }
+
+            // Shuffle questions and options dynamically for every new attempt / retake
+            if (currentActiveQuestions !== questions || window._needsQuizReshuffle) {
+                window._needsQuizReshuffle = false;
+                
+                // For final assessment, rumble / shuffle the question order
+                if (currentStepType === 'final') {
+                    questions = shuffleArray(questions);
+                }
+
+                // For all multiple-choice and matching questions, rumble / shuffle the choices
+                questions.forEach(qItem => {
+                    if (qItem.question_type === 'multiple_choice' && Array.isArray(qItem.options)) {
+                        qItem._shuffledOptions = shuffleArray(qItem.options);
+                    } else if (qItem.question_type === 'matching' && Array.isArray(qItem.options)) {
+                        const targetOptions = qItem.options.map(p => p.match || p.right || '');
+                        qItem._shuffledTargets = shuffleArray(targetOptions);
+                    }
+                });
             }
 
             currentActiveQuestions = questions;
@@ -3020,7 +3053,8 @@
                     `;
                 });
             } else if (q.question_type === 'multiple_choice') {
-                (q.options || []).forEach((opt, optIdx) => {
+                const displayOptions = q._shuffledOptions || q.options || [];
+                displayOptions.forEach((opt, optIdx) => {
                     let optClass = 'option-choice-btn';
                     const isThisCorrect = isGraded && (String(correctAns).trim() === String(opt).trim());
                     const isThisUserSelection = savedAns === opt;
@@ -3050,7 +3084,7 @@
             } else if (q.question_type === 'matching') {
                 const pairs = Array.isArray(q.options) ? q.options : [];
                 const matchAnswers = (typeof savedAns === 'object' && savedAns !== null) ? savedAns : {};
-                const targetOptions = pairs.map(p => p.match || p.right || '');
+                const targetOptions = q._shuffledTargets || pairs.map(p => p.match || p.right || '');
 
                 pairs.forEach((pair, pairIdx) => {
                     const term = pair.term || pair.left || '';
@@ -3185,6 +3219,11 @@
         }
 
         function handleRetakeKC() {
+            window._needsQuizReshuffle = true;
+            (currentActiveQuestions || []).forEach(q => {
+                delete q._shuffledOptions;
+                delete q._shuffledTargets;
+            });
             studentQuizAnswers = {};
             quizGradedResults = null;
             currentKCQuestionIndex = 0;
@@ -3197,9 +3236,10 @@
         function handleSelectOptionByIndex(qId, optIdx) {
             const q = currentActiveQuestions.find(item => item.id === qId);
             if (!q) return;
+            const displayOptions = q._shuffledOptions || q.options || [];
             const val = q.question_type === 'true_false' 
                 ? (optIdx === 0 ? 'True' : 'False')
-                : (q.options ? q.options[optIdx] : '');
+                : (displayOptions[optIdx] || '');
             studentQuizAnswers[qId] = val;
             renderKnowledgeCheckContent();
         }

@@ -667,9 +667,11 @@ app.post('/api/auth/send-registration-otp', async (req, res) => {
         console.log(`[EMAIL OTP] Expires in 5 minutes (at ${new Date(expiresAt).toLocaleTimeString()})`);
         console.log(`======================================================\n`);
 
-        // Send real email via SMTP if configured in .env
+        const isTestRequest = process.env.NODE_ENV === 'test' || req.headers['x-test-suite'] === 'true';
+
+        // Send real email via SMTP if configured in .env (and not in test mode)
         const transporter = getMailTransporter();
-        if (transporter) {
+        if (transporter && !isTestRequest) {
             try {
                 const senderName = process.env.SMTP_FROM || 'Matrix Learning Portal';
                 await transporter.sendMail({
@@ -698,8 +700,6 @@ app.post('/api/auth/send-registration-otp', async (req, res) => {
                 console.error(`[EMAIL OTP] SMTP Dispatch Failed:`, smtpErr.message);
             }
         }
-
-        const isTestRequest = process.env.NODE_ENV === 'test' || req.headers['x-test-suite'] === 'true';
         return res.json({
             success: true,
             message: `A 6-digit verification code has been sent to ${email}.`,
@@ -773,9 +773,11 @@ app.post('/api/auth/send-reset-otp', async (req, res) => {
         console.log(`[PASSWORD RESET OTP] Expires in 5 minutes (at ${new Date(expiresAt).toLocaleTimeString()})`);
         console.log(`======================================================\n`);
 
-        // Send real email via SMTP if configured
+        const isTestRequest = process.env.NODE_ENV === 'test' || req.headers['x-test-suite'] === 'true';
+
+        // Send real email via SMTP if configured (and not in test mode)
         const transporter = getMailTransporter();
-        if (transporter) {
+        if (transporter && !isTestRequest) {
             try {
                 const senderName = process.env.SMTP_FROM || 'Matrix Learning Portal';
                 await transporter.sendMail({
@@ -805,7 +807,6 @@ app.post('/api/auth/send-reset-otp', async (req, res) => {
             }
         }
 
-        const isTestRequest = process.env.NODE_ENV === 'test' || req.headers['x-test-suite'] === 'true';
         return res.json({
             success: true,
             message: `A password reset code has been sent to ${email}.`,
@@ -1168,6 +1169,36 @@ app.get('/api/students/:id', (req, res) => {
         if (err) return res.status(500).json({ error: err.message });
         if (!student) return res.status(404).json({ error: 'Student not found' });
         res.json(student);
+    });
+});
+
+// POST /api/students/:id/reset-progress - Reset an individual student's assessment and module progress (start over)
+app.post('/api/students/:id/reset-progress', (req, res) => {
+    const studentId = req.params.id;
+    db.serialize(() => {
+        db.run(`DELETE FROM assessment_history WHERE student_id = ?`, [studentId]);
+        db.run(`DELETE FROM submissions WHERE student_id = ?`, [studentId]);
+        db.run(`DELETE FROM student_module_progress WHERE student_id = ?`, [studentId]);
+        db.run(`UPDATE students SET learning_mode = NULL, weakest_learning_mode = NULL, x_coord = 0, y_coord = 0, hi_mastery = 0, di_mastery = 0, hc_mastery = 0, dc_mastery = 0 WHERE id = ?`, [studentId], function(err) {
+            if (err) return res.status(500).json({ error: 'Failed to reset student progress: ' + err.message });
+            if (this.changes === 0) return res.status(404).json({ error: 'Student not found' });
+            res.json({ success: true, message: 'Student progress and assessment history have been successfully reset.' });
+        });
+    });
+});
+
+// DELETE /api/students/:id - Permanently delete an individual student account and all related data
+app.delete('/api/students/:id', (req, res) => {
+    const studentId = req.params.id;
+    db.serialize(() => {
+        db.run(`DELETE FROM assessment_history WHERE student_id = ?`, [studentId]);
+        db.run(`DELETE FROM submissions WHERE student_id = ?`, [studentId]);
+        db.run(`DELETE FROM student_module_progress WHERE student_id = ?`, [studentId]);
+        db.run(`DELETE FROM students WHERE id = ?`, [studentId], function(err) {
+            if (err) return res.status(500).json({ error: 'Failed to delete student account: ' + err.message });
+            if (this.changes === 0) return res.status(404).json({ error: 'Student not found' });
+            res.json({ success: true, message: 'Student account and all associated records have been permanently deleted.' });
+        });
     });
 });
 

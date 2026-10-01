@@ -70,16 +70,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What is the primary strength of a Distributed Individual learner in a BSIT program?",
+                        question_text: "What is the primary objective of a student in the Distributed Individual quadrant?",
                         question_type: "multiple_choice",
                         options: [
-                            "Waiting for direct instructor instructions for every task",
-                            "Self-directed exploration, flexible pacing, and utilizing diverse digital tools",
-                            "Only participating in large group lectures without individual study",
-                            "Memorizing answers without hands-on coding practice"
+                            "Direct knowledge transfer from a single authority",
+                            "Independent discovery and personalized skill building through diverse resources",
+                            "Synchronized cohort pacing in a traditional lecture",
+                            "Group consensus on whiteboard architecture"
                         ],
-                        correct_answer: "Self-directed exploration, flexible pacing, and utilizing diverse digital tools",
-                        explanation: "Distributed Individual learners excel in independent discovery, finding documentation, and pacing their learning flexibly."
+                        correct_answer: "Independent discovery and personalized skill building through diverse resources",
+                        explanation: "Distributed Individual learners thrive on self-directed discovery, exploring digital platforms, and personalized pacing."
+                    },
+                    {
+                        question_text: "How does a Distributed Individual learner approach study sessions?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "As a shared group responsibility divided among classmates",
+                            "As an individual responsibility, focusing intensely on personal effort to assimilate knowledge",
+                            "By waiting for teacher instructions before reading anything",
+                            "By following a mandatory group study schedule"
+                        ],
+                        correct_answer: "As an individual responsibility, focusing intensely on personal effort to assimilate knowledge",
+                        explanation: "Solo accountability and focused individual effort are core hallmarks of this learning modality."
+                    },
+                    {
+                        question_text: "Why is flexible pacing an asset when studying technical fundamentals in BSIT?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "It allows learners to absorb heavy fundamentals without being distracted by group chatter",
+                            "It eliminates the need to complete individual laboratory tasks",
+                            "It allows students to skip theoretical exams entirely",
+                            "It forces the whole class to wait until everyone finishes"
+                        ],
+                        correct_answer: "It allows learners to absorb heavy fundamentals without being distracted by group chatter",
+                        explanation: "Flexible individual pacing enables deep concentration on technical concepts like database routing or tracing logic."
+                    },
+                    {
+                        question_text: "Which step is recommended to maximize independent exploration before starting a coding project?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Organizing favorite forums and documentation bookmarks",
+                            "Deleting all browser bookmarks to avoid distractions",
+                            "Relying only on teacher handouts during lab sessions",
+                            "Asking a classmate to maintain your study schedule"
+                        ],
+                        correct_answer: "Organizing favorite forums and documentation bookmarks",
+                        explanation: "Curating a dedicated digital stack of bookmarks ensures rapid, self-directed research."
+                    },
+                    {
+                        question_text: "What does mapping out your own milestones involve?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Breaking down the semester schedule into a chronological sequence from basic to advanced",
+                            "Waiting for the class syllabus to be updated every week",
+                            "Studying advanced topics at random without prerequisites",
+                            "Letting group members set your daily study hours"
+                        ],
+                        correct_answer: "Breaking down the semester schedule into a chronological sequence from basic to advanced",
+                        explanation: "Mapping milestones helps structure independent learning logically from fundamental syntax to complex architectures."
                     }
                 ]
             },
@@ -129,16 +177,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "Why is strengthening the Hierarchical Collective mode important for a solo-oriented learner?",
+                        question_text: "When your dominant mode is Distributed Individual, which quadrant represents your least dominant area?",
                         question_type: "multiple_choice",
                         options: [
-                            "To eliminate individual coding ability entirely",
-                            "To adapt to agile team structures, centralized corporate training, and synchronized cohort deliverables",
-                            "To depend permanently on instructors for simple syntax checks",
-                            "To avoid ever having to study independently again"
+                            "Hierarchical Collective",
+                            "Hierarchical Individual",
+                            "Distributed Collective",
+                            "Autonomous Individual"
                         ],
-                        correct_answer: "To adapt to agile team structures, centralized corporate training, and synchronized cohort deliverables",
-                        explanation: "Developing Hierarchical Collective skills enables students to align with team leadership and meet shared organizational milestones."
+                        correct_answer: "Hierarchical Collective",
+                        explanation: "Hierarchical Collective (instructor-led group synchronization) is the diagonal opposite of Distributed Individual."
+                    },
+                    {
+                        question_text: "Why does relying strictly on unstructured solo study create friction in agile software development?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Solo study formats do not match the fluid reality where entire teams must align under structured leadership",
+                            "Programmers are never permitted to write code alone",
+                            "Software companies only use printed documentation",
+                            "Independent learners are unable to understand network topologies"
+                        ],
+                        correct_answer: "Solo study formats do not match the fluid reality where entire teams must align under structured leadership",
+                        explanation: "Agile tech environments require whole-team synchronization and adherence to project management leadership."
+                    },
+                    {
+                        question_text: "What should a solo learner recognize when feeling frustrated while waiting for teacher guidance?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Moving as a unified cohort builds team cohesion, which is just as important as individual speed",
+                            "Individual speed is the only metric that matters in technical projects",
+                            "Group instruction should be eliminated from the curriculum",
+                            "Instructors are not required to give group directions"
+                        ],
+                        correct_answer: "Moving as a unified cohort builds team cohesion, which is just as important as individual speed",
+                        explanation: "Synchronizing with the cohort ensures all team members develop shared competencies and cohesion."
+                    },
+                    {
+                        question_text: "When a Capstone project requires following structured leadership to configure Cisco Packet Tracer topologies, what is the most effective approach?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Relying on the team's shared goals to ensure everyone masters the ACL restrictions together",
+                            "Doing all the unstructured work alone without consulting the team",
+                            "Leaving the group to work on an independent software project",
+                            "Waiting for the instructor to complete the lab configurations"
+                        ],
+                        correct_answer: "Relying on the team's shared goals to ensure everyone masters the ACL restrictions together",
+                        explanation: "Aligning around shared milestones ensures all teammates master core networking configurations together."
+                    },
+                    {
+                        question_text: "What is the ultimate goal of strengthening the Hierarchical Collective quadrant?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Ensuring that all members of the group acquire the same core competencies simultaneously",
+                            "Forcing yourself to become an extroverted group leader",
+                            "Giving up independent research completely",
+                            "Avoiding all individual certification exams"
+                        ],
+                        correct_answer: "Ensuring that all members of the group acquire the same core competencies simultaneously",
+                        explanation: "Developing Hierarchical Collective skills enables you to function effectively in synchronized group training and team initiatives."
                     }
                 ]
             },
@@ -199,16 +295,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What is an effective practical habit for practicing Hierarchical Collective alignment during a laboratory session?",
+                        question_text: "What does the 'Group Pace' rule advise students to do during laboratory sessions?",
                         question_type: "multiple_choice",
                         options: [
-                            "Rushing ahead to the last problem while ignoring the class pacing",
-                            "Adopting the 'Group Pace' rule to move synchronously with the instructor's milestones and peer group",
-                            "Refusing to participate in class Q&A sessions",
-                            "Leaving the room before the instructor finishes explaining the rubric"
+                            "Resist the urge to jump to the final step; wait and move in sync with the instructor and classmates",
+                            "Complete all laboratory exercises at home before class starts",
+                            "Work on an entirely separate project while the instructor speaks",
+                            "Leave the lab as soon as the first task compiles"
                         ],
-                        correct_answer: "Adopting the 'Group Pace' rule to move synchronously with the instructor's milestones and peer group",
-                        explanation: "Moving in sync with the cohort and instructor during lab sessions reinforces collaborative pacing and shared milestone tracking."
+                        correct_answer: "Resist the urge to jump to the final step; wait and move in sync with the instructor and classmates",
+                        explanation: "Moving in sync with instructor pacing reinforces cohort collaboration and shared understanding."
+                    },
+                    {
+                        question_text: "How is the 'Weekly Huddle' structured to practice collaborative alignment?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Meeting with two peers for 30 minutes once a week strictly to follow a specific tutorial together",
+                            "Studying alone in silence for 45 minutes every weekend",
+                            "Spending two hours listening to a podcast on tech trends",
+                            "An informal lunch conversation without study materials"
+                        ],
+                        correct_answer: "Meeting with two peers for 30 minutes once a week strictly to follow a specific tutorial together",
+                        explanation: "A structured 30-minute tutorial huddle keeps everyone on the exact same page."
+                    },
+                    {
+                        question_text: "What is the 'Shared Goal Switch' exercise designed to practice?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Agreeing on a standard environment setup (like XAMPP and Laravel) and helping everyone connect before moving on",
+                            "Demanding that every teammate install a different operating system",
+                            "Refusing to share configuration settings with classmates",
+                            "Letting the instructor configure all software environments"
+                        ],
+                        correct_answer: "Agreeing on a standard environment setup (like XAMPP and Laravel) and helping everyone connect before moving on",
+                        explanation: "Standardizing development stacks ensures all team members can build and debug harmoniously."
+                    },
+                    {
+                        question_text: "When your GUI application fails to compile close to a deadline, how can you apply structured group alignment?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Message your class Discord server, share your screen, and check who is following the professor's exact rubric for that error",
+                            "Research obscure online forums for six hours in isolation",
+                            "Delete the GUI application and start over",
+                            "Submit broken code without explanation"
+                        ],
+                        correct_answer: "Message your class Discord server, share your screen, and check who is following the professor's exact rubric for that error",
+                        explanation: "Collaborating with cohort peers around instructor rubrics resolves compilation bugs rapidly."
+                    },
+                    {
+                        question_text: "What is emphasized regarding practicing hierarchical collective habits?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "You do not lose your solo superpowers; you are simply adding organization and consistency across a collective",
+                            "You must permanently discard your independent research skills",
+                            "You should only collaborate when threatened with failing marks",
+                            "It replaces the need to master foundational code logic"
+                        ],
+                        correct_answer: "You do not lose your solo superpowers; you are simply adding organization and consistency across a collective",
+                        explanation: "Developing collective alignment expands your adaptability without compromising your independent focus."
                     }
                 ]
             }
@@ -284,16 +428,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "Which trait characterizes a Hierarchical Individual learner best?",
+                        question_text: "What is the primary objective of a student in the Hierarchical Individual quadrant?",
                         question_type: "multiple_choice",
                         options: [
-                            "Thriving in unstructured, open-ended group chats without a clear syllabus",
-                            "Direct knowledge transfer from authoritative instructors, sequential progression, and rubric adherence",
-                            "Avoiding reading textbooks or following teacher rubrics",
-                            "Depending exclusively on peer consensus for exam grading"
+                            "Direct knowledge transfer delivered step-by-step from an expert",
+                            "Unstructured group discovery among peers",
+                            "Spontaneous coding without standard benchmarks",
+                            "Trial-and-error exploration using informal web forums"
                         ],
-                        correct_answer: "Direct knowledge transfer from authoritative instructors, sequential progression, and rubric adherence",
-                        explanation: "Hierarchical Individual learners excel under clear syllabi, direct teacher instruction, and sequential concept mastery."
+                        correct_answer: "Direct knowledge transfer delivered step-by-step from an expert",
+                        explanation: "Hierarchical Individual learning is focused on direct, authoritative knowledge transfer and structured mastery."
+                    },
+                    {
+                        question_text: "How does a Hierarchical Individual learner view academic study sessions?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "As a shared responsibility divided equally among peers",
+                            "As an individual responsibility focused on the effort invested to assimilate and report knowledge",
+                            "As an open-ended brainstorming session without individual grading",
+                            "As a group competition to see who solves bugs the fastest"
+                        ],
+                        correct_answer: "As an individual responsibility focused on the effort invested to assimilate and report knowledge",
+                        explanation: "Individual accountability and dedicated solo study effort characterize this learning quadrant."
+                    },
+                    {
+                        question_text: "Which characteristic explains why this modality is a superpower when preparing for exams?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Excelling at multi-person whiteboard debates",
+                            "Locking in and absorbing direct instructions without being easily distracted by group chatter",
+                            "Skipping basic concepts to experiment with advanced tools immediately",
+                            "Refusing to follow a linear syllabus"
+                        ],
+                        correct_answer: "Locking in and absorbing direct instructions without being easily distracted by group chatter",
+                        explanation: "Ability to absorb structured instructions and study in quiet focus produces exceptional test performance."
+                    },
+                    {
+                        question_text: "What is the specific purpose of asking for the grading rubric early, according to Set A?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "To negotiate a deadline extension with the teacher",
+                            "Having clear, definitive metrics for success right from the start to put your mind at ease",
+                            "To find loopholes that eliminate the need to write code",
+                            "To compare individual scores with classmates"
+                        ],
+                        correct_answer: "Having clear, definitive metrics for success right from the start to put your mind at ease",
+                        explanation: "Clear rubrics establish unambiguous criteria for academic excellence and project execution."
+                    },
+                    {
+                        question_text: "What study method is suggested to reinforce 'Sequential Processing'?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Breaking down the semester schedule into a chronological sequence to study topics strictly from basic to advanced",
+                            "Jumping straight into advanced frameworks before understanding core syntax",
+                            "Studying random textbook chapters based on weekly mood",
+                            "Reviewing only the final chapter before an exam"
+                        ],
+                        correct_answer: "Breaking down the semester schedule into a chronological sequence to study topics strictly from basic to advanced",
+                        explanation: "Sequential study plans ensure fundamental theories are mastered before advancing to complex topics."
                     }
                 ]
             },
@@ -343,16 +535,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What is the primary risk of relying exclusively on Hierarchical Individual habits?",
+                        question_text: "Which quadrant is identified as the absolute weakest area for a Hierarchical Individual learner?",
                         question_type: "multiple_choice",
                         options: [
-                            "Becoming too good at passing exams",
-                            "Experiencing friction when solving undocumented bugs or collaborating in agile team projects",
-                            "Failing to understand structured lectures",
-                            "Spending too much time in group study sessions"
+                            "Distributed Collective",
+                            "Hierarchical Collective",
+                            "Distributed Individual",
+                            "Centralized Individual"
                         ],
-                        correct_answer: "Experiencing friction when solving undocumented bugs or collaborating in agile team projects",
-                        explanation: "Rigid reliance on teacher-supplied answers can slow down troubleshooting when facing undocumented, open-ended team challenges."
+                        correct_answer: "Distributed Collective",
+                        explanation: "Distributed Collective (peer-to-peer collaborative problem-solving) is the diagonal opposite of Hierarchical Individual."
+                    },
+                    {
+                        question_text: "Why are traditional, strict lecture formats ineffective for real-world agile software development?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Modern software teams only read printed manuals",
+                            "Real-world software demands practical application, immediate adaptation, and dynamic teamwork when code breaks",
+                            "IT curricula forbid students from learning programming languages in classrooms",
+                            "Professors are not permitted to grade code"
+                        ],
+                        correct_answer: "Real-world software demands practical application, immediate adaptation, and dynamic teamwork when code breaks",
+                        explanation: "Agile tech environments require immediate troubleshooting and collaboration when facing undocumented errors."
+                    },
+                    {
+                        question_text: "What indicator signals that a solo-focused learner needs to pivot their approach?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Feeling stuck and frustrated while waiting for a professor's email reply regarding a bug",
+                            "Finishing an independent coding task ahead of schedule",
+                            "Receiving a perfect score on a standardized multiple-choice test",
+                            "Memorizing all commands in a terminal guide"
+                        ],
+                        correct_answer: "Feeling stuck and frustrated while waiting for a professor's email reply regarding a bug",
+                        explanation: "Waiting for a single authority to fix bugs causes unnecessary delays that peer interaction resolves."
+                    },
+                    {
+                        question_text: "In the Set A Capstone scenario with three classmates, what should a flexible student do instead of doing all the structured work alone?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Abandon the project until the professor assigns individual tasks",
+                            "Rely on the team's diverse skills and brainstorm solutions together on a whiteboard",
+                            "Report the team to the dean for lacking a textbook",
+                            "Redefine the capstone into a single-person assignment"
+                        ],
+                        correct_answer: "Rely on the team's diverse skills and brainstorm solutions together on a whiteboard",
+                        explanation: "Whiteboard brainstorming leverages collective intelligence to design solutions without textbook recipes."
+                    },
+                    {
+                        question_text: "What is the ultimate goal of adopting Distributed Collective habits?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Completely replacing solo discipline with unmoderated group calls",
+                            "Transforming into an adaptable tech professional who can troubleshoot dynamically alongside a team",
+                            "Avoiding all forms of standardized examinations",
+                            "Ensuring you never need to follow a syllabus again"
+                        ],
+                        correct_answer: "Transforming into an adaptable tech professional who can troubleshoot dynamically alongside a team",
+                        explanation: "Building collaborative habits expands your agility to troubleshoot dynamically within team settings."
                     }
                 ]
             },
@@ -413,16 +653,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What technique involves two students collaborating on code where one writes logic and the other reviews syntax?",
+                        question_text: "What does the 'Ask a Peer First' rule encourage a student to do before emailing a professor?",
                         question_type: "multiple_choice",
                         options: [
-                            "Driver / Navigator Pair Programming",
-                            "Independent Solo Cramming",
-                            "Lecture Memorization",
-                            "Relying solely on teacher answer keys"
+                            "Ask one classmate for their input first to practice relying on a peer rather than an authority figure",
+                            "Post questions publicly on social media channels",
+                            "Search for completed source code on external websites",
+                            "Delete the broken application code entirely"
                         ],
-                        correct_answer: "Driver / Navigator Pair Programming",
-                        explanation: "Pair programming with Driver and Navigator roles is a proven agile method for peer-to-peer code review and knowledge sharing."
+                        correct_answer: "Ask one classmate for their input first to practice relying on a peer rather than an authority figure",
+                        explanation: "Asking a peer first builds habits of mutual problem solving and collaborative troubleshooting."
+                    },
+                    {
+                        question_text: "How is the 'Weekly Huddle' structured in the Set A action plan?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Meeting with two peers for 30 minutes once a week strictly to troubleshoot each other's code without a teacher present",
+                            "Attending a two-hour teacher-led lecture every Monday",
+                            "Studying alone in silence for 5 hours over the weekend",
+                            "Taking turns giving graded presentations in front of the entire class"
+                        ],
+                        correct_answer: "Meeting with two peers for 30 minutes once a week strictly to troubleshoot each other's code without a teacher present",
+                        explanation: "Small weekly peer troubleshooting sessions build confidence in collaborative debugging."
+                    },
+                    {
+                        question_text: "In the 'Driver/Navigator Switch' exercise, what is the responsibility of the 'Navigator'?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Typing all the syntax directly into the editor",
+                            "Reviewing the logic and discussing problem-solving out loud while the other partner types",
+                            "Emailing the professor to ask if the solution is correct",
+                            "Writing the final project grading rubric"
+                        ],
+                        correct_answer: "Reviewing the logic and discussing problem-solving out loud while the other partner types",
+                        explanation: "The Navigator reviews architecture, spots errors, and guides the problem-solving strategy verbally."
+                    },
+                    {
+                        question_text: "In the Chapter 3 scenario, how did the student solve their 11:30 PM GUI application error when the professor was asleep?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "By messaging the class Discord server, sharing their screen, and debugging logic in real-time with a classmate",
+                            "By deleting the GUI components and submitting a console project",
+                            "By waiting until Monday morning to ask the instructor in person",
+                            "By taking an incomplete mark on the assignment"
+                        ],
+                        correct_answer: "By messaging the class Discord server, sharing their screen, and debugging logic in real-time with a classmate",
+                        explanation: "Screen-sharing on Discord enabled real-time peer debugging when direct instruction was unavailable."
+                    },
+                    {
+                        question_text: "What is emphasized about incorporating these collaborative habits?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "You must become the most extroverted person in the room overnight",
+                            "You start small with structured micro-interactions that build teamwork without losing your solo-studying superpowers",
+                            "Collaborative habits permanently replace your ability to memorize syntax",
+                            "You should only collaborate if an instructor awards extra credit"
+                        ],
+                        correct_answer: "You start small with structured micro-interactions that build teamwork without losing your solo-studying superpowers",
+                        explanation: "Starting with small micro-interactions builds team agility while retaining solo strengths."
                     }
                 ]
             }
@@ -498,16 +786,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What defines the Distributed Collective learning modality?",
+                        question_text: "What is the primary objective of a learner situated within the Distributed Collective quadrant?",
                         question_type: "multiple_choice",
                         options: [
-                            "Strictly studying alone without interacting with classmates",
-                            "Peer-to-peer collaboration, shared problem solving, and generating knowledge through interaction",
-                            "Waiting for teacher answers before trying any code",
-                            "Memorizing lecture slides without discussion"
+                            "Memorizing theoretical formulas through isolated repetition",
+                            "Shared discovery and peer-to-peer collaborative learning among equals",
+                            "Following an instructor's top-down syllabus sequentially",
+                            "Competing individually on standardized certification benchmarks"
                         ],
-                        correct_answer: "Peer-to-peer collaboration, shared problem solving, and generating knowledge through interaction",
-                        explanation: "Distributed Collective learning thrives on collaborative discovery, networking intelligence, and peer-to-peer coding."
+                        correct_answer: "Shared discovery and peer-to-peer collaborative learning among equals",
+                        explanation: "Distributed Collective learners thrive through shared discovery and collaborative learning with their peers."
+                    },
+                    {
+                        question_text: "How does a Distributed Collective learner typically generate academic knowledge?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "By waiting for knowledge to be passed down from an authority figure",
+                            "Through interaction and leveraging the collective intelligence of the network",
+                            "By working through a private textbook without internet access",
+                            "Through solitary trial-and-error without peer input"
+                        ],
+                        correct_answer: "Through interaction and leveraging the collective intelligence of the network",
+                        explanation: "Knowledge generation happens dynamically through peer interaction and collective intelligence."
+                    },
+                    {
+                        question_text: "In a BSIT technical environment, what is a signature strength of this learning modality?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Excelling at solitary, timed multiple-choice theory exams",
+                            "Navigating team dynamics and troubleshooting logic collaboratively on a whiteboard",
+                            "Refusing to use group communication channels like Discord",
+                            "Following strict laboratory manuals line-by-line without asking questions"
+                        ],
+                        correct_answer: "Navigating team dynamics and troubleshooting logic collaboratively on a whiteboard",
+                        explanation: "Distributed Collective students excel at dynamic team communication, whiteboard brainstorming, and group debugging."
+                    },
+                    {
+                        question_text: "Which action is recommended to help maximize your dominant collaborative strength?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Organizing study group chats and Discord servers before starting a coding project",
+                            "Cutting off all communication channels to study in total isolation",
+                            "Waiting until the instructor explicitly assigns group roles",
+                            "Avoiding screen-sharing during code reviews"
+                        ],
+                        correct_answer: "Organizing study group chats and Discord servers before starting a coding project",
+                        explanation: "Setting up collaborative channels early enables seamless screen-sharing and real-time peer assistance."
+                    },
+                    {
+                        question_text: "How does a Distributed Collective student view academic success?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "As the result of individual ranking over peers",
+                            "As the direct result of leveraging the collective intelligence of the group",
+                            "As absolute adherence to an instructor’s lecture slides",
+                            "As the speed of completing assignments alone"
+                        ],
+                        correct_answer: "As the direct result of leveraging the collective intelligence of the group",
+                        explanation: "Success is viewed as a collective achievement reached by combining group intelligence and mutual support."
                     }
                 ]
             },
@@ -557,16 +893,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "Why is individual accountability (Hierarchical Individual) vital when preparing for technical certification exams?",
+                        question_text: "According to Chapter 2, what is the exact opposite (least dominant) quadrant for a Distributed Collective learner?",
                         question_type: "multiple_choice",
                         options: [
-                            "Because exams must be taken individually without the assistance of a group",
-                            "Because teamwork is not respected in the tech sector",
-                            "To replace practical programming entirely",
-                            "To avoid talking to instructors"
+                            "Distributed Individual",
+                            "Hierarchical Collective",
+                            "Hierarchical Individual",
+                            "Collaborative Network"
                         ],
-                        correct_answer: "Because exams must be taken individually without the assistance of a group",
-                        explanation: "Standardized certifications and individual assessments demand rigorous personal mastery and solo accountability."
+                        correct_answer: "Hierarchical Individual",
+                        explanation: "Hierarchical Individual represents the structural opposite of Distributed Collective on the learning matrix."
+                    },
+                    {
+                        question_text: "Why does relying solely on Distributed Collective habits cause academic friction in a BSIT curriculum?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Tech degrees do not permit students to use computers",
+                            "The curriculum demands foundational technical theories and strict compliance with solo standards",
+                            "Team projects are completely banned in higher education",
+                            "Group work is considered an academic violation by definition"
+                        ],
+                        correct_answer: "The curriculum demands foundational technical theories and strict compliance with solo standards",
+                        explanation: "Individual assessments and standard technical certifications require solo deep work and adherence to criteria."
+                    },
+                    {
+                        question_text: "In which educational scenario are unstructured group study formats highly ineffective?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Casual hackathons with friends",
+                            "Rigid, sequential realities of theoretical memorization and standardized measurements",
+                            "Open-ended capstone brainstorming sessions",
+                            "Informal peer code reviews"
+                        ],
+                        correct_answer: "Rigid, sequential realities of theoretical memorization and standardized measurements",
+                        explanation: "Memorizing sequential theories and strict syntax requires structured solo focus rather than open group discussion."
+                    },
+                    {
+                        question_text: "When should a student recognize that their group-oriented approach is stalling?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "When they realize they are stuck waiting for a classmate to reply to a question",
+                            "When the instructor assigns a group presentation",
+                            "When a peer agrees with their logic right away",
+                            "When the group chat is active and productive"
+                        ],
+                        correct_answer: "When they realize they are stuck waiting for a classmate to reply to a question",
+                        explanation: "Waiting for peers to respond creates study bottlenecks that can be solved with direct independent research."
+                    },
+                    {
+                        question_text: "What is the core goal of strengthening your non-dominant quadrant?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Replacing your collaborative superpowers entirely with isolation",
+                            "Developing adaptability to absorb direct instructions and master heavy fundamentals alone",
+                            "Avoiding teamwork throughout the rest of your IT degree",
+                            "Ensuring you never need to consult instructor documentation again"
+                        ],
+                        correct_answer: "Developing adaptability to absorb direct instructions and master heavy fundamentals alone",
+                        explanation: "Strengthening non-dominant quadrants builds adaptability without erasing your natural collaborative strengths."
                     }
                 ]
             },
@@ -627,16 +1011,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What habit helps a collective learner build strong solo accountability during development?",
+                        question_text: "What is the fundamental concept behind building Hierarchical Individual habits according to Chapter 3?",
                         question_type: "multiple_choice",
                         options: [
-                            "Practicing the 'Rubric Check' and dedicating focused solo study blocks to official documentation",
-                            "Ignoring error messages and hoping a teammate fixes them",
-                            "Leaving all database configurations until 5 minutes before submission",
-                            "Only studying when in a noisy discord call"
+                            "Isolating yourself permanently from your development team",
+                            "Absorbing top-down knowledge directly from an expert through solo accountability and sequential processing",
+                            "Refusing to read official rubrics or instructor notes",
+                            "Memorizing entire codebases without understanding underlying logic"
                         ],
-                        correct_answer: "Practicing the 'Rubric Check' and dedicating focused solo study blocks to official documentation",
-                        explanation: "Scheduling solo deep work blocks and verifying code against rubrics ensures independent mastery and technical precision."
+                        correct_answer: "Absorbing top-down knowledge directly from an expert through solo accountability and sequential processing",
+                        explanation: "Building Hierarchical Individual habits focuses on sequential mastery and direct knowledge transfer from authoritative sources."
+                    },
+                    {
+                        question_text: "What does the 'Solo Syllabus Rule' require a student to do during a study session?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Jump randomly between advanced topics based on personal interest",
+                            "Resist jumping around with friends and follow the chronological order of the textbook",
+                            "Rewrite the professor's syllabus to match personal preferences",
+                            "Only study when accompanied by a peer"
+                        ],
+                        correct_answer: "Resist jumping around with friends and follow the chronological order of the textbook",
+                        explanation: "Following chronological textbook sequences prevents knowledge gaps in foundational technical subjects."
+                    },
+                    {
+                        question_text: "What does the 'Practice the Rubric Check' habit advise students to do before submitting work?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Ask classmates in Discord if the project 'looks good enough'",
+                            "Pull up the professor's exact grading rubric and verify deliverables against standard measurements independently",
+                            "Submit without checking and wait for feedback after grading",
+                            "Let a teammate evaluate and change the codebase"
+                        ],
+                        correct_answer: "Pull up the professor's exact grading rubric and verify deliverables against standard measurements independently",
+                        explanation: "Independent rubric verification ensures your deliverables satisfy objective assessment benchmarks."
+                    },
+                    {
+                        question_text: "In the Chapter 3 database scenario, how did the student solve their 11:30 PM local connection error?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "By spamming their Discord server for a quick code snippet",
+                            "By tracing the instructor's step-by-step documentation and verifying environment path variables independently",
+                            "By reinstalling the operating system completely",
+                            "By asking for an extension because the team was offline"
+                        ],
+                        correct_answer: "By tracing the instructor's step-by-step documentation and verifying environment path variables independently",
+                        explanation: "Tracing official step-by-step documentation allowed the student to resolve environment path variables autonomously."
+                    },
+                    {
+                        question_text: "What is the main outcome of deliberately practicing these non-dominant study habits?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Slowly migrating your learning profile toward the center of the matrix for maximum versatility",
+                            "Completely losing your collaborative communication abilities",
+                            "Guaranteeing that you will never need instructor assistance again",
+                            "Switching your degree program from BSIT to pure theory"
+                        ],
+                        correct_answer: "Slowly migrating your learning profile toward the center of the matrix for maximum versatility",
+                        explanation: "Practicing opposite habits migrates your learning style toward the matrix center, giving you adaptive versatility in any setting."
                     }
                 ]
             }
@@ -702,16 +1134,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What is a signature advantage of the Hierarchical Collective learning style?",
+                        question_text: "What type of learning environment does a Hierarchical Collective student naturally prefer?",
                         question_type: "multiple_choice",
                         options: [
-                            "Working completely independent of teacher deadlines",
-                            "Excelling in structured lectures, cohort synchronization, and organized class projects",
-                            "Ignoring group assignments",
-                            "Avoiding structured feedback from professors"
+                            "Independent solo projects with no fixed deadlines or rubrics",
+                            "Group instruction conducted under structured leadership and centralized authority",
+                            "Unmoderated peer discussions without an instructor",
+                            "Self-paced exploration using informal trial and error"
                         ],
-                        correct_answer: "Excelling in structured lectures, cohort synchronization, and organized class projects",
-                        explanation: "Hierarchical Collective learners excel in organized lectures, cohort milestones, and instructor-guided discussions."
+                        correct_answer: "Group instruction conducted under structured leadership and centralized authority",
+                        explanation: "Hierarchical Collective learners thrive in guided classroom settings led by structured instructors."
+                    },
+                    {
+                        question_text: "In the Hierarchical Collective modality, what role does the central figure (teacher/coach) serve?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "A passive observer who allows students to set their own curriculum",
+                            "A director who guides a group of learners toward a shared goal with consistent organization",
+                            "An external evaluator only consulted during the final defense",
+                            "A peer learner who discovers solutions alongside the students"
+                        ],
+                        correct_answer: "A director who guides a group of learners toward a shared goal with consistent organization",
+                        explanation: "The central figure establishes structure, curriculum pacing, and milestone clarity for the collective group."
+                    },
+                    {
+                        question_text: "Why is the Hierarchical Collective modality considered a strength in large lecture halls and organized class projects?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Students naturally bypass teacher lectures to work ahead",
+                            "Students stay locked in on the instructor's pacing and avoid getting lost in the weeds",
+                            "Students prefer to rewrite the course syllabus to fit their own pace",
+                            "Students complete assignments without adhering to the class schedule"
+                        ],
+                        correct_answer: "Students stay locked in on the instructor's pacing and avoid getting lost in the weeds",
+                        explanation: "Synchronized listening and alignment with teacher pacing keeps students focused on core class competencies."
+                    },
+                    {
+                        question_text: "Which step-by-step tip is specifically recommended in Chapter 1 to maximize this dominant strength?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Sit near the front to keep a direct line of sight to the central figure and minimize distractions",
+                            "Turn off all notifications and leave student group chats",
+                            "Disregard the teacher's weekly checklist and follow external tutorials",
+                            "Work exclusively from home to avoid classroom interaction"
+                        ],
+                        correct_answer: "Sit near the front to keep a direct line of sight to the central figure and minimize distractions",
+                        explanation: "Positioning near the front reinforces engagement with instructor delivery and minimizes room distractions."
+                    },
+                    {
+                        question_text: "When participating in guided Q&A sessions, what should a Hierarchical Collective learner aim to do?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Ask questions on advanced topics that derail the lecture flow",
+                            "Ask questions that benefit the entire collective group, ensuring everyone acquires core competencies",
+                            "Avoid asking questions until after the semester ends",
+                            "Challenge the instructor's authority to alter the course pace"
+                        ],
+                        correct_answer: "Ask questions that benefit the entire collective group, ensuring everyone acquires core competencies",
+                        explanation: "Asking questions that clarify core concepts helps the entire group master essential learning milestones."
                     }
                 ]
             },
@@ -761,16 +1241,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "Why should a student accustomed to teacher-led instruction practice self-directed exploration?",
+                        question_text: "According to Chapter 2, what is the absolute weakest quadrant for a Hierarchical Collective learner?",
                         question_type: "multiple_choice",
                         options: [
-                            "To prepare for specialized certifications, niche debugging, and self-paced industry learning",
-                            "To drop out of college",
-                            "To stop following classroom rules",
-                            "To avoid ever listening to professors"
+                            "Hierarchical Individual",
+                            "Distributed Individual",
+                            "Distributed Collective",
+                            "Centralized Collective"
                         ],
-                        correct_answer: "To prepare for specialized certifications, niche debugging, and self-paced industry learning",
-                        explanation: "Self-directed exploration equips students to master cutting-edge tools beyond the standard classroom syllabus."
+                        correct_answer: "Distributed Individual",
+                        explanation: "Distributed Individual (self-directed, autonomous pacing) is the diagonal opposite of Hierarchical Collective."
+                    },
+                    {
+                        question_text: "Why does relying entirely on a teacher-led group format create friction in an IT curriculum?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "IT programs do not allow instructors to lecture in classrooms",
+                            "Real-world IT demands handling niche bugs, undocumented issues, and certifications outside the class syllabus",
+                            "All programming certifications require group submissions",
+                            "Classrooms move too fast for theoretical memorization"
+                        ],
+                        correct_answer: "Real-world IT demands handling niche bugs, undocumented issues, and certifications outside the class syllabus",
+                        explanation: "Real-world software development requires independently researching emerging tools not covered in standard lectures."
+                    },
+                    {
+                        question_text: "What pacing cue signals that a student is experiencing friction from over-relying on the group?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Feeling bored waiting for the class to catch up or anxious when the class moves ahead too quickly",
+                            "Finishing an exam at the exact same minute as every classmate",
+                            "Memorizing the professor's slides before the lecture starts",
+                            "Successfully answering every question in guided Q&A"
+                        ],
+                        correct_answer: "Feeling bored waiting for the class to catch up or anxious when the class moves ahead too quickly",
+                        explanation: "Pacing friction indicates that a student needs to adopt flexible, self-directed study habits."
+                    },
+                    {
+                        question_text: "In the Chapter 2 network configuration scenario, what should the student do instead of sitting and waiting for the teacher's next command?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Log off and leave the computer laboratory early",
+                            "Pull up advanced Cisco documentation independently and explore routing protocols at their own pace",
+                            "Interrupt other classmates to check if they need help",
+                            "Wait silently until the instructor gives permission to touch the terminal"
+                        ],
+                        correct_answer: "Pull up advanced Cisco documentation independently and explore routing protocols at their own pace",
+                        explanation: "Consulting advanced documentation independently enables students to expand their technical competencies."
+                    },
+                    {
+                        question_text: "What is the ultimate goal of strengthening the Distributed Individual quadrant?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Abandoning all formal lectures and dropping out of group projects",
+                            "Becoming an adaptable professional who takes initiative to access diverse resources and tailor their own pace",
+                            "Replacing programming practice with solo textbook reading",
+                            "Ensuring you never have to work under a project manager again"
+                        ],
+                        correct_answer: "Becoming an adaptable professional who takes initiative to access diverse resources and tailor their own pace",
+                        explanation: "Developing self-direction allows learners to explore specialized tools and adapt to autonomous tasks."
                     }
                 ]
             },
@@ -831,16 +1359,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What is the 'One Digital Resource' rule designed to encourage?",
+                        question_text: "What mindset shift is necessary to strengthen the Distributed Individual mode?",
                         question_type: "multiple_choice",
                         options: [
-                            "Finding an external technical article, tutorial, or documentation to expand beyond class lectures",
-                            "Only visiting one website per week",
-                            "Deleting external bookmarks",
-                            "Copying homework directly from peers"
+                            "Realizing that learning must always wait for a teacher's explicit assignment",
+                            "Embracing the idea that you do not need a central figure to tell you what to learn next",
+                            "Assuming that all online documentation is unreliable without professor approval",
+                            "Focusing strictly on standardized exam prep"
                         ],
-                        correct_answer: "Finding an external technical article, tutorial, or documentation to expand beyond class lectures",
+                        correct_answer: "Embracing the idea that you do not need a central figure to tell you what to learn next",
+                        explanation: "Developing autonomy means taking charge of your learning path without waiting for top-down instructions."
+                    },
+                    {
+                        question_text: "What does the 'One Digital Resource' rule challenge students to do?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Restrict their study to a single slide from the teacher's deck",
+                            "Find one external tutorial, article, or forum post that goes deeper into the topic than what was taught in class",
+                            "Delete all digital resources and read only printed textbooks",
+                            "Submit an external link instead of completing the assigned lab task"
+                        ],
+                        correct_answer: "Find one external tutorial, article, or forum post that goes deeper into the topic than what was taught in class",
                         explanation: "Finding external documentation or tutorials trains students in self-directed research and independent problem solving."
+                    },
+                    {
+                        question_text: "How is the 'Personal Interest' block structured in Chapter 3's action plan?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Spending 45 minutes a week dedicated strictly to exploring an IT topic not on your syllabus",
+                            "Studying with a large group of classmates for 3 hours every day",
+                            "Memorizing lecture notes during the 10-minute break between classes",
+                            "Reviewing the previous semester's exam papers"
+                        ],
+                        correct_answer: "Spending 45 minutes a week dedicated strictly to exploring an IT topic not on your syllabus",
+                        explanation: "Scheduling a 45-minute block outside the standard syllabus builds self-directed technical curiosity."
+                    },
+                    {
+                        question_text: "In the Chapter 3 Tkinter scenario, how did the student successfully build their application over the weekend?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "By waiting until Monday morning to ask the professor to teach GUI development to the class",
+                            "By independently pulling up official documentation, watching specialized tutorials, and learning at their own pace",
+                            "By asking a teammate to write the entire interface code",
+                            "By abandoning the GUI requirement and building a console-only tool"
+                        ],
+                        correct_answer: "By independently pulling up official documentation, watching specialized tutorials, and learning at their own pace",
+                        explanation: "Autonomous research and video tutorials enabled the student to implement the GUI before class lectures."
+                    },
+                    {
+                        question_text: "What happens to your baseline strengths when you practice Distributed Individual habits?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "You permanently lose your ability to function in a lecture hall or group project",
+                            "You maintain your classroom excellence while adding the ability to explore independently, moving toward the center of the matrix",
+                            "You become completely dependent on online forums for simple syntax",
+                            "Your group project grades will decline significantly"
+                        ],
+                        correct_answer: "You maintain your classroom excellence while adding the ability to explore independently, moving toward the center of the matrix",
+                        explanation: "You preserve your classroom competencies while expanding your independent versatility toward the matrix center."
                     }
                 ]
             }
@@ -902,16 +1478,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What is a major technical advantage of a Distributed Individual learner in software development?",
+                        question_text: "What characterizes a student who aligns with the Distributed Individual quadrant?",
                         question_type: "multiple_choice",
                         options: [
-                            "Relying strictly on instructor lectures for every syntax error",
-                            "Self-directed problem solving, autonomous research in raw documentation, and flexible pacing",
-                            "Waiting for group consensus before starting any coding task",
-                            "Avoiding solo practice entirely"
+                            "Thriving in environments featuring self-directed exploration, independent discovery, and tailored pacing",
+                            "Relying entirely on group consensus before starting any code",
+                            "Learning exclusively from teacher-led blackboard recitations",
+                            "Working strictly within mandatory cohort study circles"
                         ],
-                        correct_answer: "Self-directed problem solving, autonomous research in raw documentation, and flexible pacing",
-                        explanation: "Distributed Individual learners excel in independent deep work, navigating technical documentation, and pacing their learning autonomously."
+                        correct_answer: "Thriving in environments featuring self-directed exploration, independent discovery, and tailored pacing",
+                        explanation: "Distributed Individual learners excel in independent research, self-directed exploration, and flexible pacing."
+                    },
+                    {
+                        question_text: "Which technical tasks highlight the strength of independent pacing?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Absorbing heavy backend fundamentals, like configuring XAMPP databases or tracing Python logic",
+                            "Designing group posters and oral presentations",
+                            "Memorizing non-technical business concepts in a lecture hall",
+                            "Waiting for instructor approval on every terminal command"
+                        ],
+                        correct_answer: "Absorbing heavy backend fundamentals, like configuring XAMPP databases or tracing Python logic",
+                        explanation: "Independent pacing allows deep concentration when mastering heavy backend systems and code tracing."
+                    },
+                    {
+                        question_text: "What does 'Curating your digital stack' specifically advise students to organize before starting a project?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Bookmarks for framework and programming language documentation",
+                            "A list of classmates' phone numbers for emergency calls",
+                            "Social media links for developer memes",
+                            "Printed laboratory guides from previous academic years"
+                        ],
+                        correct_answer: "Bookmarks for framework and programming language documentation",
+                        explanation: "Organizing bookmarks for official frameworks and language documentation streamlines independent development."
+                    },
+                    {
+                        question_text: "How should a student optimize their solo study environment?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Configure a dedicated, quiet workspace for their laptop to tune out distractions when reviewing concepts",
+                            "Study in noisy common areas with peer study groups",
+                            "Keep multiple collaborative Discord voice channels unmuted",
+                            "Study only during scheduled classroom lectures"
+                        ],
+                        correct_answer: "Configure a dedicated, quiet workspace for their laptop to tune out distractions when reviewing concepts",
+                        explanation: "A quiet, dedicated workspace minimizes interruptions during deep technical study."
+                    },
+                    {
+                        question_text: "What does 'Solo Accountability' mean in an academic IT context?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Viewing academic success as the direct result of the effort you invest individually",
+                            "Blaming system errors on group partners",
+                            "Relying on teaching assistants to submit lab deliverables",
+                            "Taking credit for collective project outputs without coding"
+                        ],
+                        correct_answer: "Viewing academic success as the direct result of the effort you invest individually",
+                        explanation: "Solo accountability focuses on personal dedication and ownership of learning outcomes."
                     }
                 ]
             },
@@ -961,16 +1585,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "Why should a solo-oriented developer practice peer-to-peer collaborative debugging (Distributed Collective)?",
+                        question_text: "When your profile indicates a need for collaborative growth, which quadrant represents peer-to-peer learning among equals?",
                         question_type: "multiple_choice",
                         options: [
-                            "To avoid ever writing code alone",
-                            "To crowdsource solutions, unblock persistent errors faster, and adapt to agile team environments",
-                            "To let teammates do all backend configurations",
-                            "To ignore official documentation"
+                            "Distributed Collective",
+                            "Hierarchical Individual",
+                            "Hierarchical Collective",
+                            "Linear Individual"
                         ],
-                        correct_answer: "To crowdsource solutions, unblock persistent errors faster, and adapt to agile team environments",
-                        explanation: "Peer troubleshooting and screen-sharing prevent isolation bottlenecks and cultivate agile collaborative problem solving."
+                        correct_answer: "Distributed Collective",
+                        explanation: "Distributed Collective represents peer-to-peer collaboration, shared troubleshooting, and collective knowledge generation."
+                    },
+                    {
+                        question_text: "What challenge arises if a student remains trapped exclusively in solitary study habits?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Extreme frustration when faced with open-ended group projects or collaborative debugging sessions",
+                            "Inability to write single-file scripts in Python",
+                            "Failing solo multiple-choice examinations",
+                            "Becoming overly reliant on instructor lectures"
+                        ],
+                        correct_answer: "Extreme frustration when faced with open-ended group projects or collaborative debugging sessions",
+                        explanation: "Isolation in software development makes open-ended team projects and rapid group debugging more difficult."
+                    },
+                    {
+                        question_text: "What is the 'Isolation Trap' during technical troubleshooting?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Delaying a project just because you stubbornly try to fix a single syntax error without asking for a second set of eyes",
+                            "Being locked out of the university computer laboratory",
+                            "Forgetting your laptop password during an exam",
+                            "Having your internet connection disconnect during a download"
+                        ],
+                        correct_answer: "Delaying a project just because you stubbornly try to fix a single syntax error without asking for a second set of eyes",
+                        explanation: "The isolation trap occurs when solo developers waste hours struggling alone rather than asking for quick peer input."
+                    },
+                    {
+                        question_text: "When encountering a persistent 500 Internal Server Error in backend routing, what is an effective collaborative action?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Joining a voice channel, sharing screens, and crowdsourcing the debugging process with peers",
+                            "Spending six hours reading raw documentation alone until burnout",
+                            "Rewriting the entire web framework from scratch",
+                            "Dropping the course before the deadline"
+                        ],
+                        correct_answer: "Joining a voice channel, sharing screens, and crowdsourcing the debugging process with peers",
+                        explanation: "Crowdsourcing errors on screen-share allows group members to spot syntax issues in minutes."
+                    },
+                    {
+                        question_text: "What does 'Acknowledge the boundary' mean when diagnosing study friction?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Recognizing when solo documentation is too dense and a quick five-minute peer chat could clarify logic instantly",
+                            "Setting a strict rule never to speak with peers in the computer lab",
+                            "Refusing to use digital platforms outside classroom hours",
+                            "Limiting coding sessions to exactly 10 minutes"
+                        ],
+                        correct_answer: "Recognizing when solo documentation is too dense and a quick five-minute peer chat could clarify logic instantly",
+                        explanation: "Recognizing boundaries prevents burnout by identifying when peer clarification is more effective than solitary reading."
                     }
                 ]
             },
@@ -996,16 +1668,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What action step demonstrates an effective shift from isolated coding to collaborative network intelligence?",
+                        question_text: "What is the core shift required when adopting collaborative peer habits?",
                         question_type: "multiple_choice",
                         options: [
-                            "Silently struggling with a database crash for days",
-                            "Bringing complex architectural or debugging problems to a 45-minute peer study session or group voice chat",
-                            "Refusing to explain code to classmates",
-                            "Deleting project files when errors occur"
+                            "Shifting from independent research to actively generating knowledge through interaction and shared discovery",
+                            "Abandoning all technical documentation and reading only general textbooks",
+                            "Waiting for the instructor to lecture on every bug",
+                            "Letting other group members write all project code"
                         ],
-                        correct_answer: "Bringing complex architectural or debugging problems to a 45-minute peer study session or group voice chat",
-                        explanation: "Actively engaging peers in structured group troubleshooting builds collaborative competence and reinforces shared technical mastery."
+                        correct_answer: "Shifting from independent research to actively generating knowledge through interaction and shared discovery",
+                        explanation: "The core shift is learning to generate knowledge through dynamic interaction and shared peer discovery."
+                    },
+                    {
+                        question_text: "How can a student take 'Initiate shared action' when stuck on a technical roadblock?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Making a conscious choice to open a Discord study group and share your screen instead of struggling in silence",
+                            "Closing your laptop and waiting until finals week",
+                            "Submitting a blank project file to avoid confrontation",
+                            "Emailing the department head to report an undocumented bug"
+                        ],
+                        correct_answer: "Making a conscious choice to open a Discord study group and share your screen instead of struggling in silence",
+                        explanation: "Proactively opening communication and sharing screens prevents project stalls and fosters team problem-solving."
+                    },
+                    {
+                        question_text: "Why is crowdsourcing beneficial during complex system troubleshooting?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Tapping into the collective intelligence of a network reveals edge cases and syntax errors faster than isolated trial-and-error",
+                            "It eliminates the need to compile or run code",
+                            "Tech frameworks do not permit single-developer debugging",
+                            "It ensures that students do not have to learn programming fundamentals"
+                        ],
+                        correct_answer: "Tapping into the collective intelligence of a network reveals edge cases and syntax errors faster than isolated trial-and-error",
+                        explanation: "Collective peer review catches edge cases, syntax flaws, and architecture traps much faster."
+                    },
+                    {
+                        question_text: "What purpose does an independent 'Personal Interest' study block serve?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Exploring specialized technical topics outside group projects to maintain your independent learning edge while balancing teamwork",
+                            "Replacing all classroom lectures with video games",
+                            "Cramming for standardized multiple-choice tests at the last minute",
+                            "Practicing handwriting code on paper without a computer"
+                        ],
+                        correct_answer: "Exploring specialized technical topics outside group projects to maintain your independent learning edge while balancing teamwork",
+                        explanation: "Dedicated personal interest blocks preserve your self-directed technical edge while balancing teamwork duties."
+                    },
+                    {
+                        question_text: "How does developing complementary collaborative habits transform your professional profile?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "It transforms you from an isolated coder into an adaptable tech professional who can navigate complex team dynamics and crowdsource solutions",
+                            "It permanently prevents you from working on independent freelance contracts",
+                            "It replaces your core technical understanding with social banter",
+                            "It forces you to strictly follow top-down management without question"
+                        ],
+                        correct_answer: "It transforms you from an isolated coder into an adaptable tech professional who can navigate complex team dynamics and crowdsource solutions",
+                        explanation: "Complementing solo depth with collaborative skills creates an adaptable, high-impact tech professional."
                     }
                 ]
             }
@@ -1067,16 +1787,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What is a primary characteristic of the Distributed Collective learning style?",
+                        question_text: "What defines the primary learning environment of a Distributed Collective student?",
                         question_type: "multiple_choice",
                         options: [
-                            "Working strictly in total isolation without asking questions",
-                            "Peer-to-peer collaborative problem solving, screen-sharing, and interactive knowledge generation",
-                            "Only following rigid 1-on-1 teacher instructions without peer discussion",
-                            "Never participating in group discussions"
+                            "Isolated self-study using printed textbooks without internet access",
+                            "Peer-to-peer collaborative learning among equals to dynamically share insights and solve problems",
+                            "Traditional classroom lectures where only the professor speaks",
+                            "Silent laboratory tasks with strict individual rankings"
                         ],
-                        correct_answer: "Peer-to-peer collaborative problem solving, screen-sharing, and interactive knowledge generation",
-                        explanation: "Distributed Collective learners thrive through peer interaction, shared troubleshooting, and collective brainstorming."
+                        correct_answer: "Peer-to-peer collaborative learning among equals to dynamically share insights and solve problems",
+                        explanation: "Distributed Collective learners thrive through peer-to-peer collaboration, shared problem solving, and dynamic insight sharing."
+                    },
+                    {
+                        question_text: "Why is collaborative focus considered an asset in the BSIT program?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "It allows students to excel at agile teamwork, group debugging, and open-ended capstone projects",
+                            "It eliminates the requirement to learn programming syntax",
+                            "It replaces all individual examinations with group grades",
+                            "It prevents students from needing to use computers"
+                        ],
+                        correct_answer: "It allows students to excel at agile teamwork, group debugging, and open-ended capstone projects",
+                        explanation: "Collaborative focus empowers students in agile team tasks, whiteboard brainstorms, and group troubleshooting."
+                    },
+                    {
+                        question_text: "Which action is recommended to maximize collaborative strengths before major exams or project milestones?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Initiating collaborative study sessions to crowdsource solutions and solidify understanding",
+                            "Muting all cohort discussions and studying exclusively from memory",
+                            "Leaving all Discord channels to avoid helping classmates",
+                            "Waiting until the day of the exam to ask questions"
+                        ],
+                        correct_answer: "Initiating collaborative study sessions to crowdsource solutions and solidify understanding",
+                        explanation: "Collaborative study sessions allow students to crowdsource answers, test logic, and deepen comprehension together."
+                    },
+                    {
+                        question_text: "What does 'Interactive Progression' look like in this modality?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Engaging with study groups and forums to clarify complex IT concepts together",
+                            "Moving through a textbook in strict chronological order alone",
+                            "Memorizing slides without speaking to peers",
+                            "Relying exclusively on one-on-one instructor consultations"
+                        ],
+                        correct_answer: "Engaging with study groups and forums to clarify complex IT concepts together",
+                        explanation: "Interactive progression involves dynamic participation in forums, study chats, and peer Q&A."
+                    },
+                    {
+                        question_text: "What is the benefit of engaging in peer reviews according to the recommended tips?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Exchanging code to review logic, spot syntax errors, and learn alternative coding approaches",
+                            "Copying code directly to avoid doing personal work",
+                            "Finding reasons to disqualify teammates from group credit",
+                            "Skipping the software testing phase entirely"
+                        ],
+                        correct_answer: "Exchanging code to review logic, spot syntax errors, and learn alternative coding approaches",
+                        explanation: "Peer review exposes students to varied problem-solving approaches while improving code quality."
                     }
                 ]
             },
@@ -1126,16 +1894,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What risk does a student face when relying exclusively on the Distributed Collective modality?",
+                        question_text: "When your dominant mode is Distributed Collective, which quadrant represents your least dominant area?",
                         question_type: "multiple_choice",
                         options: [
-                            "Developing too much solo autonomy",
-                            "Experiencing friction and delays when assigned independent coding projects or solitary technical research",
-                            "Mastering technical documentation too quickly",
-                            "Becoming overly proficient at solo exams"
+                            "Distributed Individual",
+                            "Hierarchical Collective",
+                            "Hierarchical Individual",
+                            "Centralized Collective"
                         ],
-                        correct_answer: "Experiencing friction and delays when assigned independent coding projects or solitary technical research",
-                        explanation: "Over-reliance on group consensus can create bottlenecks when independent deep work and solo problem solving are required."
+                        correct_answer: "Distributed Individual",
+                        explanation: "Distributed Individual (autonomous self-directed discovery) is the complementary weak area targeted in Set B."
+                    },
+                    {
+                        question_text: "What friction arises when a student relies exclusively on group interaction?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Over-relying on group brainstorming limits the ability to dive into specialized IT topics independently",
+                            "Students become unable to communicate during team meetings",
+                            "Students fail all group capstone deliverables",
+                            "Study groups prevent software from compiling"
+                        ],
+                        correct_answer: "Over-relying on group brainstorming limits the ability to dive into specialized IT topics independently",
+                        explanation: "Over-reliance on group interaction can hinder deep, autonomous exploration of specialized technical subjects."
+                    },
+                    {
+                        question_text: "What does 'Identify group dependency' advise students to watch out for?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Delaying starting a task simply because you are waiting for peers to join or discuss it",
+                            "Spending too much time reading official software documentation",
+                            "Finishing individual assignments too far ahead of deadlines",
+                            "Refusing to join class Discord servers"
+                        ],
+                        correct_answer: "Delaying starting a task simply because you are waiting for peers to join or discuss it",
+                        explanation: "Group dependency manifests as reluctance or delays in starting coding tasks without peer accompaniment."
+                    },
+                    {
+                        question_text: "What debugging practice is suggested to build autonomy before asking classmates for help?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Spending at least 20 minutes debugging error logs on your own",
+                            "Waiting 48 hours for someone else to encounter the same bug",
+                            "Deleting the entire codebase and restarting from scratch",
+                            "Immediately emailing the department head"
+                        ],
+                        correct_answer: "Spending at least 20 minutes debugging error logs on your own",
+                        explanation: "Attempting solo debugging for 20 minutes exercises autonomous analytical and documentation reading skills."
+                    },
+                    {
+                        question_text: "In the Laravel API routing scenario, how did the student successfully practice independent problem-solving?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "By scheduling a dedicated personal interest block and following the official documentation setup guide step-by-step",
+                            "By waiting for a group study session to start before writing any code",
+                            "By asking a teammate to write the endpoint logic",
+                            "By abandoning the Laravel framework for plain HTML"
+                        ],
+                        correct_answer: "By scheduling a dedicated personal interest block and following the official documentation setup guide step-by-step",
+                        explanation: "Following official setup documentation in a dedicated solo study block built autonomous technical mastery."
                     }
                 ]
             },
@@ -1169,16 +1985,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "How does practicing independent pre-work before group sessions strengthen a collective learner?",
+                        question_text: "What is the first step in the actionable roadmap for balancing collaborative and individual skills?",
                         question_type: "multiple_choice",
                         options: [
-                            "It eliminates the need for teamwork",
-                            "It builds individual technical competence while providing valuable, unique insights to share during team collaboration",
-                            "It prevents other students from speaking",
-                            "It replaces practical lab exercises"
+                            "Practicing independent pre-work by spending 30 minutes reviewing documentation or logic individually before group sessions",
+                            "Refusing to speak to peers during group project meetings",
+                            "Waiting until the group finishes before looking at the code",
+                            "Letting classmates assign your tasks without reading the syllabus"
                         ],
-                        correct_answer: "It builds individual technical competence while providing valuable, unique insights to share during team collaboration",
-                        explanation: "Autonomous preparation ensures deep personal understanding, allowing you to contribute meaningful solutions to group discussions."
+                        correct_answer: "Practicing independent pre-work by spending 30 minutes reviewing documentation or logic individually before group sessions",
+                        explanation: "Spending 30 minutes in pre-work ensures you grasp the logic individually before collaborating."
+                    },
+                    {
+                        question_text: "What is the purpose of practicing independent pre-work before joining a study session?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Ensuring you bring unique insights and prepared perspectives to the team",
+                            "Finishing the group's entire assignment alone so they don't have to work",
+                            "Memorizing solutions to test your peers' knowledge",
+                            "Avoiding classroom attendance completely"
+                        ],
+                        correct_answer: "Ensuring you bring unique insights and prepared perspectives to the team",
+                        explanation: "Independent preparation enriches group brainstorming by bringing fresh insights to team sessions."
+                    },
+                    {
+                        question_text: "When encountering errors during development, how should you practice autonomous debugging?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Spending time exploring solution documentation on your own before reaching out to your network",
+                            "Immediately posting the error code in every group chat without reading it",
+                            "Abandoning the project until the instructor holds office hours",
+                            "Restarting your computer repeatedly without checking log files"
+                        ],
+                        correct_answer: "Spending time exploring solution documentation on your own before reaching out to your network",
+                        explanation: "Exploring documentation first solidifies personal debugging competence before seeking external help."
+                    },
+                    {
+                        question_text: "How does the roadmap recommend bridging solo learning back into collective growth?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Using team channels to share and present solutions you discovered independently",
+                            "Keeping your personal research secret to maintain a competitive edge",
+                            "Insisting that the group only use your personal coding style",
+                            "Charging classmates for access to your notes"
+                        ],
+                        correct_answer: "Using team channels to share and present solutions you discovered independently",
+                        explanation: "Sharing self-discovered solutions in team channels reinforces your mastery and elevates group productivity."
+                    },
+                    {
+                        question_text: "What is the ultimate goal of balancing your learning matrix across these modalities?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Preparing yourself for tech industry demands by combining teamwork strengths with deep technical autonomy",
+                            "Discarding all collaborative skills in favor of working purely as a lone developer",
+                            "Becoming dependent on instructors for daily task management",
+                            "Skipping all practical programming labs"
+                        ],
+                        correct_answer: "Preparing yourself for tech industry demands by combining teamwork strengths with deep technical autonomy",
+                        explanation: "Combining teamwork with technical autonomy creates a well-rounded, versatile developer."
                     }
                 ]
             }
@@ -1250,16 +2114,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "Which learning style is characterized by top-down instruction, sequential progression, and defined grading rubrics?",
+                        question_text: "Which four key characteristics define the learning mode in Module Set B?",
                         question_type: "multiple_choice",
                         options: [
-                            "Distributed Collective",
-                            "Hierarchical Individual",
-                            "Unstructured Brainstorming",
-                            "Decentralized Crowdsourcing"
+                            "Expert-Led, Linear Progression, Objective Success, and Independent Drive",
+                            "Peer-to-Peer, Unstructured Inquiry, Subjective Rubrics, and Group Drive",
+                            "Spontaneous Flow, Collaborative Pacing, Shared Benchmarks, and External Supervision",
+                            "Decentralized Authority, Lateral Dialogue, Open Pacing, and Social Motivation"
                         ],
-                        correct_answer: "Hierarchical Individual",
-                        explanation: "Hierarchical Individual learning focuses on direct knowledge transfer from an authoritative source with clear rubrics and individual accountability."
+                        correct_answer: "Expert-Led, Linear Progression, Objective Success, and Independent Drive",
+                        explanation: "Hierarchical Individual Set B highlights expert-led instruction, linear pacing, objective success metrics, and independent drive."
+                    },
+                    {
+                        question_text: "What type of evaluation does a Hierarchical Individual student prefer according to Set B?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Peer evaluations and subjective group discussions",
+                            "Standardized exams and clear rubrics over subjective evaluations",
+                            "Ungraded exploratory hackathons",
+                            "Attendance-based grading without formal tests"
+                        ],
+                        correct_answer: "Standardized exams and clear rubrics over subjective evaluations",
+                        explanation: "Standardized measurements and objective rubrics provide unambiguous performance feedback."
+                    },
+                    {
+                        question_text: "What action is specifically recommended under the 'Request the roadmap' tip?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Asking instructors for the full semester schedule or project rubrics early to plan solo study sessions",
+                            "Asking peers to create a shared study calendar",
+                            "Waiting until the midterm week to find out project guidelines",
+                            "Creating custom assignments that differ from the syllabus"
+                        ],
+                        correct_answer: "Asking instructors for the full semester schedule or project rubrics early to plan solo study sessions",
+                        explanation: "Securing semester schedules early enables thorough, sequential solo planning."
+                    },
+                    {
+                        question_text: "How should complex topics like networking protocols or database structures be tackled according to Set B?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "By discussing them randomly during casual lunch breaks",
+                            "By building a sequential study plan that breaks them down into step-by-step checklists",
+                            "By skipping theoretical foundations to test real-world hardware directly",
+                            "By asking a lab partner to handle all configuration commands"
+                        ],
+                        correct_answer: "By building a sequential study plan that breaks them down into step-by-step checklists",
+                        explanation: "Checklists and sequential plans break down heavy technical topics into manageable steps."
+                    },
+                    {
+                        question_text: "What is the recommended method for creating an effective solo 'focus zone'?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Establishing a quiet, distraction-free environment when tackling foundational theories or heavy coding syntax",
+                            "Studying in crowded laboratory common areas with loud music",
+                            "Keeping multiple group chat windows open during practice",
+                            "Studying exclusively in large group circles"
+                        ],
+                        correct_answer: "Establishing a quiet, distraction-free environment when tackling foundational theories or heavy coding syntax",
+                        explanation: "Quiet, distraction-free focus zones facilitate deep concentration on complex programming syntax."
                     }
                 ]
             },
@@ -1309,16 +2221,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "When encountering an undocumented software bug, why is pivoting to peer collaboration (Distributed Collective) beneficial?",
+                        question_text: "Why is relying strictly on solo, step-by-step studying problematic during real-world technical troubleshooting?",
                         question_type: "multiple_choice",
                         options: [
-                            "Because classmates can offer diverse perspectives and crowdsource solutions faster than waiting for a single authority",
-                            "To avoid having to understand the bug yourself",
-                            "Because solo study is completely obsolete",
-                            "To copy answers without learning"
+                            "Computer hardware does not support solo programming",
+                            "Obscure server bugs and PHP backend errors often lack immediate manuals or teacher answers, requiring dynamic teamwork",
+                            "Tech companies strictly prohibit individual problem-solving",
+                            "Step-by-step manuals prevent code from compiling"
                         ],
-                        correct_answer: "Because classmates can offer diverse perspectives and crowdsource solutions faster than waiting for a single authority",
-                        explanation: "Brainstorming and screen-sharing with peers unblocks development roadblocks dynamically in agile tech settings."
+                        correct_answer: "Obscure server bugs and PHP backend errors often lack immediate manuals or teacher answers, requiring dynamic teamwork",
+                        explanation: "Emerging bugs in frameworks often lack manual documentation, requiring collaborative brainstorming."
+                    },
+                    {
+                        question_text: "What mindset shift is outlined in Set B to overcome the solo 'friction'?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Shifting from waiting for expert instructions to actively crowdsourcing solutions with classmates",
+                            "Stopping project work whenever an error occurs",
+                            "Waiting for the next academic semester before fixing bugs",
+                            "Demanding that instructors write complete code solutions"
+                        ],
+                        correct_answer: "Shifting from waiting for expert instructions to actively crowdsourcing solutions with classmates",
+                        explanation: "Crowdsourcing peer insight unblocks technical bottlenecks faster than waiting for single authorities."
+                    },
+                    {
+                        question_text: "What does 'Acknowledge the network' advise students to realize during roadblocks?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "That classmates might hold the missing piece of the puzzle",
+                            "That the local Wi-Fi router is always responsible for software bugs",
+                            "That online developer forums are unsafe to browse",
+                            "That group projects should be avoided whenever possible"
+                        ],
+                        correct_answer: "That classmates might hold the missing piece of the puzzle",
+                        explanation: "Recognizing peer capability empowers developers to tap into collective knowledge networks."
+                    },
+                    {
+                        question_text: "In the Set B Laravel development scenario, how did the student resolve an unscheduled framework error?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "By spending days reading documentation in isolated frustration",
+                            "By sharing their screen with groupmates, brainstorming together, and solving the bug in minutes",
+                            "By deleting the Laravel framework and switching to plain HTML",
+                            "By dropping the course to avoid collaborative grading"
+                        ],
+                        correct_answer: "By sharing their screen with groupmates, brainstorming together, and solving the bug in minutes",
+                        explanation: "Sharing screens and brainstorming dynamic workarounds solved the framework bug in minutes."
+                    },
+                    {
+                        question_text: "What does 'forcing a pivot' mean when a student hits an impasse?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Consciously deciding to stop solo troubleshooting and asking a peer for a fresh perspective",
+                            "Switching to a completely different college degree program",
+                            "Blaming the instructor for unannounced framework changes",
+                            "Working continuously without sleep until the error resolves itself"
+                        ],
+                        correct_answer: "Consciously deciding to stop solo troubleshooting and asking a peer for a fresh perspective",
+                        explanation: "Forcing a pivot prevents stubborn isolation by actively asking peers for a fresh angle."
                     }
                 ]
             },
@@ -1379,16 +2339,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What role in pair programming involves actively guiding the architectural logic and reviewing code in real time while a partner types?",
+                        question_text: "What is the '15-Minute Peer Rule' in Module Set B?",
                         question_type: "multiple_choice",
                         options: [
-                            "The Driver",
-                            "The Navigator",
-                            "The Solo Coder",
-                            "The Examiner"
+                            "Asking a classmate for input before emailing the professor about a roadblock to build collaborative instincts",
+                            "Limiting peer conversations to exactly 15 minutes per month",
+                            "Spending 15 minutes memorizing syntax before opening a compiler",
+                            "Taking a 15-minute break after every lecture slide"
                         ],
-                        correct_answer: "The Navigator",
-                        explanation: "In pair programming, the Navigator analyzes logic, catches errors, and guides strategy while the Driver writes the code."
+                        correct_answer: "Asking a classmate for input before emailing the professor about a roadblock to build collaborative instincts",
+                        explanation: "The 15-minute peer rule builds reflexes of mutual peer troubleshooting before escalating."
+                    },
+                    {
+                        question_text: "How does Set B suggest structuring peer 'Code Reviews'?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Setting up a 20-minute weekly session with classmates to review each other's logic or UI designs",
+                            "Comparing final exam scores publicly on a whiteboard",
+                            "Reviewing code silently without speaking to the author",
+                            "Submitting code to external review sites for monetary compensation"
+                        ],
+                        correct_answer: "Setting up a 20-minute weekly session with classmates to review each other's logic or UI designs",
+                        explanation: "Weekly 20-minute review sessions create safe, structured environments for peer feedback."
+                    },
+                    {
+                        question_text: "What is the benefit of embracing the 'Navigator' role in pair programming lab exercises?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "It allows you to browse the internet while your partner completes the lab",
+                            "It forces real-time communication by guiding the logic out loud while your partner types",
+                            "It exempts you from having to understand programming syntax",
+                            "It ensures that you receive a separate grade from your partner"
+                        ],
+                        correct_answer: "It forces real-time communication by guiding the logic out loud while your partner types",
+                        explanation: "Navigating trains verbal communication, real-time code analysis, and collaborative architectural thinking."
+                    },
+                    {
+                        question_text: "In the Set B scenario the night before capstone defense, how was the failing feature repaired?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "By hopping on a group call with the capstone team to trace logic and patch the system together",
+                            "By waiting outside the professor's office early the next morning",
+                            "By removing the critical feature from the project presentation",
+                            "By submitting an incomplete build and explaining the error"
+                        ],
+                        correct_answer: "By hopping on a group call with the capstone team to trace logic and patch the system together",
+                        explanation: "Group calls and collective code tracing allowed the team to patch the bug before the defense deadline."
+                    },
+                    {
+                        question_text: "How does Chapter 3 define the long-term objective of building Distributed Collective skills?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Migrating toward the center of the matrix so you can crush solo exams and seamlessly integrate with dev teams",
+                            "Completely unlearning your individual focus and sequence habits",
+                            "Becoming exclusively an extroverted manager who does not code",
+                            "Eliminating individual accountability in future courses"
+                        ],
+                        correct_answer: "Migrating toward the center of the matrix so you can crush solo exams and seamlessly integrate with dev teams",
+                        explanation: "The ultimate goal is balance across the matrix: excelling on solo benchmarks and agile development teams."
                     }
                 ]
             }
@@ -1450,16 +2458,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What environment best supports the natural strengths of a Hierarchical Collective learner?",
+                        question_text: "What defines the 'Simplified Progression' characteristic in Module Set B?",
                         question_type: "multiple_choice",
                         options: [
-                            "Unstructured, solitary coding in a basement",
-                            "Instructor-led lectures, synchronized classroom milestones, and structured group curricula",
-                            "Completely undocumented software tasks without guidance",
-                            "Ignoring syllabi and teachers entirely"
+                            "Reading raw developer documentation without any summaries",
+                            "Learning best when heavy technical data is simplified into shared, step-by-step reviewers",
+                            "Skipping basic concepts to experiment with advanced tools immediately",
+                            "Developing custom algorithms without following standard patterns"
                         ],
-                        correct_answer: "Instructor-led lectures, synchronized classroom milestones, and structured group curricula",
-                        explanation: "Hierarchical Collective learners excel in structured, teacher-guided group settings with synchronized milestones."
+                        correct_answer: "Learning best when heavy technical data is simplified into shared, step-by-step reviewers",
+                        explanation: "Simplified progression focuses on breaking complex topics down into clear, structured class reviewers."
+                    },
+                    {
+                        question_text: "In the Hierarchical Collective modality, what creates a sense of academic security?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Exploring obscure frameworks completely alone",
+                            "Knowing that you and all members of your group are acquiring the exact same competencies simultaneously",
+                            "Competing against peers to finish assignments faster",
+                            "Working on unassigned projects outside the curriculum"
+                        ],
+                        correct_answer: "Knowing that you and all members of your group are acquiring the exact same competencies simultaneously",
+                        explanation: "Synchronized group pacing ensures everyone masters core course competencies as a collective cohort."
+                    },
+                    {
+                        question_text: "Which step-by-step tip is specifically suggested in Set B to organize a group's academic resources?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Compiling the professor's module-by-module instructions into a single, clean reviewer for the class",
+                            "Hiding personal class notes so other students cannot copy them",
+                            "Asking the instructor to cancel all collective study sessions",
+                            "Relying solely on spontaneous voice calls without any written materials"
+                        ],
+                        correct_answer: "Compiling the professor's module-by-module instructions into a single, clean reviewer for the class",
+                        explanation: "Compiling instructors' guidelines into structured reviewers benefits the entire cohort."
+                    },
+                    {
+                        question_text: "How should a student clarify milestones during group projects according to Set B?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Guess what needs to be delivered at the end of the term",
+                            "Ask the instructor to explicitly define the expected outcome for each phase to track collective progress",
+                            "Wait until final grading to see if milestones were met",
+                            "Let individual team members follow whatever deadline they prefer"
+                        ],
+                        correct_answer: "Ask the instructor to explicitly define the expected outcome for each phase to track collective progress",
+                        explanation: "Clear phase milestones keep project teams synchronized and on track."
+                    },
+                    {
+                        question_text: "What is the recommended purpose of forming a study circle in this modality?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "To strictly follow the provided syllabus and reinforce the shared learning experience",
+                            "To discuss topics completely unrelated to the current IT course",
+                            "To bypass teacher-led lectures and study alternative frameworks",
+                            "To divide an exam so individuals only study one question"
+                        ],
+                        correct_answer: "To strictly follow the provided syllabus and reinforce the shared learning experience",
+                        explanation: "Study circles aligned with course syllabi reinforce shared cohort understanding."
                     }
                 ]
             },
@@ -1509,16 +2565,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "Why should a student accustomed to teacher-led instruction practice self-directed exploration?",
+                        question_text: "What is the main friction caused by relying solely on shared class reviewers according to Set B?",
                         question_type: "multiple_choice",
                         options: [
-                            "To prepare for specialized certifications, niche debugging, and self-paced industry learning",
-                            "To drop out of college",
-                            "To stop following classroom rules",
-                            "To avoid ever listening to professors"
+                            "Class reviewers are always completely inaccurate",
+                            "Waiting for simplified reviewers limits your ability to tackle undocumented, niche, or complex technical errors",
+                            "Reviewers take too long to read compared to textbooks",
+                            "Reviewers prevent students from attending classroom lectures"
                         ],
-                        correct_answer: "To prepare for specialized certifications, niche debugging, and self-paced industry learning",
-                        explanation: "Self-directed exploration equips students to master cutting-edge tools beyond the standard classroom syllabus."
+                        correct_answer: "Waiting for simplified reviewers limits your ability to tackle undocumented, niche, or complex technical errors",
+                        explanation: "Relying strictly on simplified reviewers limits your exposure to complex real-world documentation."
+                    },
+                    {
+                        question_text: "What does 'Acknowledge the boundary' mean when diagnosing study friction?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Refusing to use computers outside of laboratory hours",
+                            "Recognizing when a class reviewer is too simplified to solve a complex, specific error in your code",
+                            "Stopping a project completely when an error appears in the terminal",
+                            "Accepting that only top students can solve programming bugs"
+                        ],
+                        correct_answer: "Recognizing when a class reviewer is too simplified to solve a complex, specific error in your code",
+                        explanation: "Acknowledging boundaries means understanding when you must look beyond simplified lecture notes to raw docs."
+                    },
+                    {
+                        question_text: "What is 'the waiting game' described in Chapter 2 of Set B?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Delaying progress on a project just because the professor hasn't released the next instructional module yet",
+                            "Waiting for the computer laboratory to open in the morning",
+                            "Spending hours waiting for software packages to finish downloading",
+                            "Waiting for peers to arrive before starting a solo exam"
+                        ],
+                        correct_answer: "Delaying progress on a project just because the professor hasn't released the next instructional module yet",
+                        explanation: "The waiting game occurs when progress stops simply because you are waiting for teacher-provided materials."
+                    },
+                    {
+                        question_text: "In the Set B Chapter 2 scenario, why was relying on the class reviewer insufficient for the student's Python project?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "The reviewer only covered basic loops and functions, while the project required an unscheduled Tkinter GUI",
+                            "The reviewer was written in a completely different programming language",
+                            "The professor prohibited students from opening the reviewer",
+                            "The reviewer contained corrupted files that could not be read"
+                        ],
+                        correct_answer: "The reviewer only covered basic loops and functions, while the project required an unscheduled Tkinter GUI",
+                        explanation: "The class reviewer only covered basic loops and functions, requiring independent GUI exploration."
+                    },
+                    {
+                        question_text: "How does building Distributed Individual habits transform a student's technical career?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "They transform from someone who waits for the class into an adaptable professional who tailors their path to their own pace",
+                            "They become completely isolated and refuse to attend workplace meetings",
+                            "They focus only on management rather than writing technical code",
+                            "They avoid learning foundational technical concepts"
+                        ],
+                        correct_answer: "They transform from someone who waits for the class into an adaptable professional who tailors their path to their own pace",
+                        explanation: "Self-direction fosters adaptability and empowers students to master complex technical challenges independently."
                     }
                 ]
             },
@@ -1579,16 +2683,64 @@ const modulesData = [
                 ],
                 questions: [
                     {
-                        question_text: "What does the '20-minute Delay the Question' rule encourage?",
+                        question_text: "What does the 'Raw Docs Challenge' require a student to do once a week?",
                         question_type: "multiple_choice",
                         options: [
-                            "Refusing to ever speak with instructors",
-                            "Enforcing a focused window of independent troubleshooting and raw documentation research before escalating to an authority figure",
-                            "Waiting 20 minutes before submitting quizzes",
-                            "Leaving exams early"
+                            "Read through an entire programming textbook in one night",
+                            "Force yourself to learn a new command or function using only official software documentation, avoiding simplified summaries",
+                            "Write documentation for another classmate's project without running the code",
+                            "Delete existing code documentation to practice writing it from scratch"
                         ],
-                        correct_answer: "Enforcing a focused window of independent troubleshooting and raw documentation research before escalating to an authority figure",
-                        explanation: "Practicing independent troubleshooting before asking for assistance builds autonomous problem-solving capabilities."
+                        correct_answer: "Force yourself to learn a new command or function using only official software documentation, avoiding simplified summaries",
+                        explanation: "The Raw Docs challenge builds comfort with primary developer documentation without relying on simplified summaries."
+                    },
+                    {
+                        question_text: "What is the focus of 'Unstructured Solo Time' in the Set B action plan?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Dedicating 45 minutes to experimenting with a coding framework that is not part of your current BSIT syllabus",
+                            "Browsing social media while listening to an IT podcast",
+                            "Attending an extra teacher-led review session",
+                            "Completing scheduled homework assignments ahead of the deadline"
+                        ],
+                        correct_answer: "Dedicating 45 minutes to experimenting with a coding framework that is not part of your current BSIT syllabus",
+                        explanation: "Unstructured solo time develops personal technical initiative outside prescribed curricula."
+                    },
+                    {
+                        question_text: "What is the '20-minute rule' under the 'Delay the Question' tip?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "Spending 20 minutes asking every classmate for an answer before checking Google",
+                            "Enforcing a 20-minute window to solve an error independently through online research before asking the professor",
+                            "Taking a 20-minute break whenever an error appears in your terminal",
+                            "Limiting lecture questions to the first 20 minutes of class"
+                        ],
+                        correct_answer: "Enforcing a 20-minute window to solve an error independently through online research before asking the professor",
+                        explanation: "The 20-minute rule ensures you make an active attempt at self-directed troubleshooting before escalating."
+                    },
+                    {
+                        question_text: "In the Set B health center management system scenario, how did the student practice self-paced exploration?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "By waiting for the class to finish basic database lectures next month",
+                            "By independently researching advanced inventory algorithms and using raw documentation to implement them over the weekend",
+                            "By asking the clinic administrator to simplify the project requirements",
+                            "By submitting only the basic database tables without any algorithms"
+                        ],
+                        correct_answer: "By independently researching advanced inventory algorithms and using raw documentation to implement them over the weekend",
+                        explanation: "Autonomous research in raw documentation enabled the student to implement advanced algorithms ahead of class pacing."
+                    },
+                    {
+                        question_text: "What does Chapter 3 emphasize regarding adopting these new habits?",
+                        question_type: "multiple_choice",
+                        options: [
+                            "You must immediately stop attending class lectures to become fully self-taught",
+                            "You start small with structured micro-sessions to explore topics without losing your ability to excel in a lecture hall",
+                            "Solo study habits should only be used during final examination week",
+                            "Independent research replaces the need to follow any professional software standards"
+                        ],
+                        correct_answer: "You start small with structured micro-sessions to explore topics without losing your ability to excel in a lecture hall",
+                        explanation: "Starting with structured micro-sessions allows you to expand your autonomous skills while maintaining classroom success."
                     }
                 ]
             }

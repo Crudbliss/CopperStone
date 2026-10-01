@@ -42,6 +42,38 @@
         input:focus, select:focus { outline: none; border-color: #4ade80; }
         option { background: #0a1e2d; color: #fff; }
 
+        /* Actions Styling */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+        .btn-action-reset {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+        .btn-action-reset:hover {
+            background: rgba(56, 189, 248, 0.22);
+            border-color: #38bdf8;
+        }
+        .btn-action-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .btn-action-delete:hover {
+            background: rgba(239, 68, 68, 0.22);
+            border-color: #ef4444;
+        }
+
         /* --- MOBILE RESPONSIVENESS --- */
         .table-responsive {
             width: 100%;
@@ -78,6 +110,7 @@
                         <th>Name</th>
                         <th>Learning Mode</th>
                         <th>Email</th>
+                        <th style="text-align: center; width: 230px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="studentTableBody">
@@ -164,7 +197,7 @@
                 tbody.innerHTML = '';
                 
                 if (students.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #8b9eb0; padding: 30px;">No students added yet.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #8b9eb0; padding: 30px;">No students added yet.</td></tr>';
                     return;
                 }
 
@@ -180,12 +213,27 @@
                         modeBadge = `<span style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; background: ${bg}; color: ${color};">${s.learning_mode}</span>`;
                     }
 
+                    const studentFullName = `${s.first_name} ${s.mi || ''} ${s.last_name}`.replace(/'/g, "\\'");
+                    const safeEmail = s.email ? s.email.replace(/'/g, "\\'") : '';
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td style="font-weight: 600;">${s.student_no}</td>
                         <td>${s.first_name} ${s.mi || ''} ${s.last_name}</td>
                         <td>${modeBadge}</td>
                         <td>${s.email}</td>
+                        <td style="text-align: center;">
+                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                <button type="button" class="btn-action btn-action-reset" onclick="resetStudentProgress(${s.id}, '${studentFullName}')" title="Reset this student's assessment history and module progress so they can start over">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                                    Reset
+                                </button>
+                                <button type="button" class="btn-action btn-action-delete" onclick="deleteStudent(${s.id}, '${studentFullName}')" title="Permanently delete this student account and all data">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -195,6 +243,46 @@
         }
         
         loadStudents();
+
+        async function resetStudentProgress(studentId, studentName) {
+            if (!confirm(`⚠️ Reset Progress for ${studentName}?\n\nThis will clear their assessment history, coordinates, mastery scores, and module progress so they can start the learning cycle over from the beginning with this account.`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/students/${studentId}/reset-progress`, { method: 'POST' });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`✅ Progress for ${studentName} has been reset. The student can now retake their baseline assessment.`);
+                    loadStudents();
+                } else {
+                    alert("Error: " + (data.error || "Failed to reset student progress"));
+                }
+            } catch (err) {
+                alert("Failed to connect to server.");
+                console.error(err);
+            }
+        }
+
+        async function deleteStudent(studentId, studentName) {
+            if (!confirm(`🗑️ Permanently Delete ${studentName}?\n\nThis will completely remove the student account, login access, and all associated assessment and module records from the database.`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/students/${studentId}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`✅ Student ${studentName} was permanently deleted.`);
+                    loadStudents();
+                } else {
+                    alert("Error: " + (data.error || "Failed to delete student"));
+                }
+            } catch (err) {
+                alert("Failed to connect to server.");
+                console.error(err);
+            }
+        }
 
         async function factoryResetStudents() {
             if (!confirm("⚠️ WARNING: This will permanently delete ALL student accounts, assessment histories, module progress, and quiz submissions. The database will be completely wiped clean of all student data. Are you sure you want to proceed?")) {
