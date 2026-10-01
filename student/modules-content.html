@@ -815,6 +815,209 @@
             margin-bottom: 10px;
         }
 
+        /* Video Preview Card */
+        .video-card-preview {
+            background: rgba(13, 21, 32, 0.65);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .video-card-preview:hover {
+            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(239, 68, 68, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .video-card-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .video-play-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .video-info-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .video-tag-label {
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #ef4444;
+        }
+
+        .video-title-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.35;
+        }
+
+        .video-duration-pill {
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Tips Card */
+        .tips-card {
+            background: rgba(216, 166, 26, 0.04);
+            border: 1px solid rgba(216, 166, 26, 0.22);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+
+        .tips-card-title {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.9px;
+            color: #fbbf24;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tip-item-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .tip-bullet-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: rgba(216, 166, 26, 0.15);
+            color: #fbbf24;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            border: 1px solid rgba(216, 166, 26, 0.3);
+        }
+
+        /* Scenario Card */
+        .scenario-card {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.06) 0%, rgba(13, 21, 32, 0.8) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .scenario-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .scenario-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .scenario-body-text {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #cbd5e1;
+            font-style: normal;
+        }
+
+        /* Summary & Conclusion Card */
+        .summary-card {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.06) 0%, rgba(13, 21, 32, 0.85) 100%);
+            border: 1px solid rgba(74, 222, 128, 0.28);
+            border-radius: 16px;
+            padding: 26px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .summary-card-title {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #4ade80;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-closing-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 16px 20px;
+            border-left: 3px solid #4ade80;
+            font-size: 13.5px;
+            line-height: 1.7;
+            color: #cbd5e1;
+            margin-top: 4px;
+        }
+
         /* Bottom Sticky Unlock Bar */
         .bottom-action-bar {
             position: absolute;
@@ -1763,43 +1966,46 @@
                 } catch(e) {}
             }
 
-            let domModeName = (studentProfile && studentProfile.learning_mode && studentProfile.learning_mode !== 'Unknown') 
-                ? studentProfile.learning_mode 
-                : "Hierarchical Individual";
-
+            const hasAssessment = !!(studentProfile && studentProfile.learning_mode && studentProfile.learning_mode !== 'Unknown');
+            
+            let domModeName = hasAssessment ? studentProfile.learning_mode : "Distributed Individual";
             let weakestModeName = (studentProfile && studentProfile.weakest_learning_mode && studentProfile.weakest_learning_mode !== 'Unknown')
                 ? studentProfile.weakest_learning_mode
-                : modeOpposites[domModeName] || "Distributed Collective";
+                : modeOpposites[domModeName] || "Hierarchical Collective";
 
-            const weakestConfig = quadrantConfig[weakestModeName] || quadrantConfig["Distributed Collective"];
+            const dominantConfig = quadrantConfig[domModeName] || quadrantConfig["Distributed Individual"];
+            const weakestConfig = quadrantConfig[weakestModeName] || quadrantConfig["Hierarchical Collective"];
 
             try {
                 const res = await fetch('/api/modules');
                 const allModules = await res.json();
 
-                // Exclusively show the quadrant modules they are weak at
-                const weakestModules = allModules.filter(m => m.quadrant_category === weakestModeName);
+                // Strictly filter to ONLY the module assigned to the student's learning profile
+                const displayModules = allModules.filter(m => m.quadrant_category === domModeName);
 
                 let html = `
                     <div class="page-header">
-                        <h1 class="page-title">My Modules</h1>
-                        <p class="page-subtitle">Weakness-first routing: your lowest-scoring quadrant module is unlocked and shown first.</p>
+                        <h1 class="page-title">My Assigned Module</h1>
+                        <p class="page-subtitle">Adaptive weakness-strengthening module unlocked exclusively for your learning profile.</p>
                         
                         <div class="adaptive-banner">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                             </svg>
                             <span>
-                                <strong>Adaptive Routing Active:</strong> Modules targeting your weakest quadrant (${weakestConfig.short}) are automatically prioritized.
+                                <strong>Adaptive Lock Active:</strong> Unlocked for your <strong>${dominantConfig.title} (${dominantConfig.short})</strong> profile to target and strengthen your weakest quadrant: <strong>${weakestConfig.title} (${weakestConfig.short})</strong>.
                             </span>
                         </div>
                     </div>
                 `;
 
-                if (weakestModules.length > 0) {
+                if (displayModules.length > 0) {
                     html += `
                         <div class="modules-list">
-                            ${weakestModules.map((m, idx) => renderHorizontalModuleCard(m, idx, weakestConfig)).join('')}
+                            ${displayModules.map((m, idx) => {
+                                const cardConfig = quadrantConfig[m.quadrant_category] || dominantConfig;
+                                return renderHorizontalModuleCard(m, idx, cardConfig, true);
+                            }).join('')}
                         </div>
                     `;
                 } else {
@@ -1808,8 +2014,8 @@
                             <div style="color: var(--text-muted); margin-bottom: 4px;">
                                 <svg width="36" height="36"><use href="#icon-book"></use></svg>
                             </div>
-                            <h3 style="font-size: 18px; font-weight: 700; color: #fff;">No Modules Available Yet for ${weakestConfig.title}</h3>
-                            <p style="font-size: 13px; color: var(--text-muted); max-width: 480px; line-height: 1.5;">Your learning coach has routed your focus to <strong>${weakestConfig.title} (${weakestConfig.short})</strong>. Modules tailored for this dimension will appear here soon.</p>
+                            <h3 style="font-size: 18px; font-weight: 700; color: #fff;">Complete Assessment to Unlock Module</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); max-width: 480px; line-height: 1.5;">Your personalized adaptive module will unlock automatically once you complete your baseline assessment.</p>
                         </div>
                     `;
                 }
@@ -1897,7 +2103,7 @@
                             <div class="module-info">
                                 <div class="module-title-row">
                                     <span class="module-title-text">Module ${index + 1}: ${escapeHtml(m.title)}</span>
-                                    ${isRecommended ? `<span class="pill-recommended ${config.colorName}">★ Recommended</span>` : ''}
+                                    ${isRecommended ? `<span class="pill-recommended ${config.colorName}"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: -1px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Recommended</span>` : ''}
                                 </div>
                                 <p class="module-description-text">${escapeHtml(m.description || `Develop your ${config.title} skills through peer-driven inquiry, co-creation, and shared leadership activities.`)}</p>
                                 <div class="module-meta-info">
@@ -2184,6 +2390,13 @@
                     }
                 }
 
+                // Helper for bold markdown within safe HTML
+                function formatSafeRichText(str) {
+                    if (!str) return '';
+                    let safe = escapeHtml(str);
+                    return safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                }
+
                 // Render each block sequentially
                 blocks.forEach(block => {
                     if (block.type === 'card') {
@@ -2196,17 +2409,110 @@
                                         ${items.map((it, i) => `
                                             <div class="objective-item">
                                                 <span class="num-circle">${i + 1}</span>
-                                                <span>${escapeHtml(it)}</span>
+                                                <span>${formatSafeRichText(it)}</span>
                                             </div>
                                         `).join('')}
                                     </div>
                                 </div>
                             `;
                         }
+                    } else if (block.type === 'tips') {
+                        const items = Array.isArray(block.items) ? block.items : parseListItems(block.items, []);
+                        if (items.length > 0) {
+                            html += `
+                                <div class="tips-card">
+                                    <div class="tips-card-title">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                        </svg>
+                                        ${escapeHtml(block.title || 'STEP-BY-STEP TIPS')}
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                        ${items.map((it, i) => `
+                                            <div class="tip-item-row">
+                                                <span class="tip-bullet-num">${i + 1}</span>
+                                                <span>${formatSafeRichText(it)}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    } else if (block.type === 'scenario') {
+                        html += `
+                            <div class="scenario-card">
+                                <div class="scenario-card-header">
+                                    <span class="scenario-badge">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                        </svg>
+                                        ${escapeHtml(block.title || 'REAL-LIFE SCENARIO')}
+                                    </span>
+                                </div>
+                                <div class="scenario-body-text">
+                                    ${formatSafeRichText(block.content || '')}
+                                </div>
+                            </div>
+                        `;
+                    } else if (block.type === 'video_card') {
+                        const durationText = block.duration || 'Watch Video';
+                        const videoUrl = block.url || '#';
+                        html += `
+                            <a href="${escapeHtml(videoUrl)}" target="_blank" class="video-card-preview" title="Watch recommended lesson video on YouTube">
+                                <div class="video-card-left">
+                                    <div class="video-play-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                        </svg>
+                                    </div>
+                                    <div class="video-info-wrap">
+                                        <span class="video-tag-label">Video Lesson · YouTube</span>
+                                        <span class="video-title-text">${escapeHtml(block.title || 'Video Resource')}</span>
+                                    </div>
+                                </div>
+                                <span class="video-duration-pill">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    ${escapeHtml(durationText)}
+                                </span>
+                            </a>
+                        `;
+                    } else if (block.type === 'summary_card') {
+                        const items = Array.isArray(block.items) ? block.items : parseListItems(block.items, []);
+                        html += `
+                            <div class="summary-card">
+                                <div class="summary-card-title">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    </svg>
+                                    ${escapeHtml(block.title || 'SUMMARY AND CONCLUSION')}
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    ${items.map(it => `
+                                        <div class="objective-item">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:3px;">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            <span>${formatSafeRichText(it)}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                ${block.closing ? `
+                                    <div class="summary-closing-box">
+                                        ${formatSafeRichText(block.closing).replace(/\n/g, '<br>')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
                     } else if (block.type === 'text') {
                         if (block.content && block.content.trim()) {
                             const paragraphs = block.content.split(/\n\s*\n/).filter(p => p.trim() !== '');
-                            const formattedHtml = paragraphs.map(p => `<p>${escapeHtml(p).replace(/\n/g, '<br>')}</p>`).join('');
+                            const formattedHtml = paragraphs.map(p => `<p>${formatSafeRichText(p).replace(/\n/g, '<br>')}</p>`).join('');
                             html += `<div class="article-body-text">${formattedHtml}</div>`;
                         }
                     } else if (block.type === 'image') {

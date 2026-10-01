@@ -894,10 +894,11 @@
             <p class="page-subtitle">Strategy at a glance · migration analytics below.</p>
         </div>
 
-        <!-- SECTION 1: STRATEGY ROADMAP -->
-        <span class="section-label">Strategy Roadmap</span>
+        <!-- SECTION 1: STRATEGY ROADMAP (Active during in-progress phases 1 & 2) -->
+        <div id="roadmap-section-container">
+            <span class="section-label">Strategy Roadmap</span>
 
-        <div class="top-grid">
+            <div class="top-grid">
 
             <!-- LEFT COLUMN: WEAKEST AREA & RECOMMENDED NEXT STEP -->
             <div class="left-column">
@@ -1053,6 +1054,41 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+        <!-- COMPLETION HERO BANNER (Visible once all 3 assessments are completed) -->
+        <div id="cycle-completed-analytics-banner" style="display: none; margin-bottom: 24px;">
+            <div class="glass-card" style="background: linear-gradient(135deg, rgba(74, 222, 128, 0.08) 0%, rgba(13, 21, 32, 0.95) 100%); border: 1px solid rgba(74, 222, 128, 0.35); border-radius: 16px; padding: 22px 28px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(74, 222, 128, 0.15); border: 1px solid rgba(74, 222, 128, 0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                <h2 style="font-size: 18px; font-weight: 800; color: #ffffff; margin: 0;">Learning Cycle Completed</h2>
+                                <span style="background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.35); font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 9999px;">All 3 Assessments Done</span>
+                            </div>
+                            <p style="font-size: 13px; color: #94a3b8; margin: 0; line-height: 1.4;">
+                                You have successfully finished all 3 assessment phases. Your roadmap is complete, and your full longitudinal migration analytics and quadrant growth are presented below.
+                            </p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdODAgsGVCucIw6-2K4GCpy0F_RXkHQB8f8UTyZZ0LVIjnEFg/viewform" target="_blank" style="background: rgba(216, 166, 26, 0.15); border: 1px solid rgba(216, 166, 26, 0.4); color: #fbbf24; font-size: 12.5px; font-weight: 700; padding: 9px 16px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            </svg>
+                            <span>Post-Study Survey &rarr;</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- SECTION 2: MIGRATION ANALYTICS -->
@@ -2321,6 +2357,21 @@
                 const isS1Active = completedStagesCount >= 1;
                 const isS2Active = completedStagesCount >= 2;
                 const isS3Active = completedStagesCount >= 3;
+
+                // Cycle Completion Handler: When 3 assessments are finished, remove the roadmap and leave analytics
+                const roadmapContainer = document.getElementById('roadmap-section-container');
+                const completedBanner = document.getElementById('cycle-completed-analytics-banner');
+                const pageSubtitle = document.querySelector('.page-subtitle');
+
+                if (isS3Active) {
+                    if (roadmapContainer) roadmapContainer.style.display = 'none';
+                    if (completedBanner) completedBanner.style.display = 'block';
+                    if (pageSubtitle) pageSubtitle.textContent = 'Learning cycle complete · 3-phase longitudinal migration analytics & quadrant growth.';
+                } else {
+                    if (roadmapContainer) roadmapContainer.style.display = 'block';
+                    if (completedBanner) completedBanner.style.display = 'none';
+                    if (pageSubtitle) pageSubtitle.textContent = 'Strategy at a glance · migration analytics below.';
+                }
 
                 // Render Learning Cycle dynamically based on student progress & assessment status
                 const modProgress = window._currentModuleTasks || { clampedCompleted: 0, maxTasks: 4 };
