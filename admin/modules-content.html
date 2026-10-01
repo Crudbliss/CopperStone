@@ -1322,20 +1322,39 @@
                     </div>
 
                     <!-- Add Block Toolbar placed directly below heading! -->
-                    <div class="add-blocks-toolbar" style="margin-bottom: 16px;">
-                        <span style="font-size: 11.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">+
+                    <div class="add-blocks-toolbar" style="margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+                        <span style="font-size: 11.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; align-self: center;">+
                             Add Section:</span>
-                        <button type="button" class="btn-add-block" onclick="addContentBlock('card')">
-                            <svg width="13" height="13" style="color: #c084fc;">
-                                <use href="#icon-clipboard"></use>
-                            </svg>
-                            Block Card (Callout)
-                        </button>
                         <button type="button" class="btn-add-block" onclick="addContentBlock('text')">
                             <svg width="13" height="13" style="color: #38bdf8;">
                                 <use href="#icon-book"></use>
                             </svg>
                             Body Text
+                        </button>
+                        <button type="button" class="btn-add-block" onclick="addContentBlock('card')">
+                            <svg width="13" height="13" style="color: #c084fc;">
+                                <use href="#icon-clipboard"></use>
+                            </svg>
+                            Callout Card
+                        </button>
+                        <button type="button" class="btn-add-block" onclick="addContentBlock('tips')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+                            </svg>
+                            Actionable Tips
+                        </button>
+                        <button type="button" class="btn-add-block" onclick="addContentBlock('scenario')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="4 17 10 11 4 5"></polyline>
+                                <line x1="12" y1="19" x2="20" y2="19"></line>
+                            </svg>
+                            Real Scenario
+                        </button>
+                        <button type="button" class="btn-add-block" onclick="addContentBlock('video_card')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            Video Card
                         </button>
                         <button type="button" class="btn-add-block" onclick="addContentBlock('image')">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1344,12 +1363,6 @@
                                 <polyline points="21 15 16 10 5 21"></polyline>
                             </svg>
                             Image / Diagram
-                        </button>
-                        <button type="button" class="btn-add-block" onclick="addContentBlock('video')">
-                            <svg width="13" height="13" style="color: #f87171;">
-                                <use href="#icon-play"></use>
-                            </svg>
-                            Video Embed
                         </button>
                         <button type="button" class="btn-add-block" onclick="addContentBlock('pdf')">
                             <svg width="13" height="13" style="color: #d8a61a;">
@@ -2107,6 +2120,88 @@
                             ` : ''}
                         </div>
                     `;
+                } else if (block.type === 'video_card') {
+                    typeBadge = '<span class="block-type-badge" style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Video Recommendation Card</span>';
+                    blockContentHtml = `
+                        <div class="form-group" style="margin-bottom: 8px;">
+                            <label class="form-label" style="font-size: 11px;">Video Title</label>
+                            <input type="text" class="form-input" placeholder="e.g. The Solo Achiever: Strengths of Self-Directed Learning" value="${escapeHtml(block.title || '')}" oninput="updateBlockVideoCardTitle(${bIdx}, this.value)">
+                        </div>
+                        <div class="grid-2-col" style="gap: 10px; margin-bottom: 8px;">
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 11px;">Duration Badge</label>
+                                <input type="text" class="form-input" placeholder="e.g. 3:15 mins" value="${escapeHtml(block.duration || '')}" oninput="updateBlockVideoCardDuration(${bIdx}, this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 11px;">YouTube URL</label>
+                                <input type="text" class="form-input" placeholder="https://www.youtube.com/watch?v=..." value="${escapeHtml(block.url || '')}" oninput="updateBlockVideoCardUrl(${bIdx}, this.value)">
+                            </div>
+                        </div>
+                    `;
+                } else if (block.type === 'tips') {
+                    typeBadge = '<span class="block-type-badge" style="background: rgba(245, 158, 11, 0.12); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg> Actionable Tips Card</span>';
+                    const items = block.items || [];
+                    blockContentHtml = `
+                        <div class="form-group" style="margin-bottom: 8px;">
+                            <label class="form-label" style="font-size: 11px;">Tips Header Title</label>
+                            <input type="text" class="form-input" placeholder="e.g. STEP-BY-STEP TIPS FOR MAXIMIZING YOUR DOMINANT STRENGTH" value="${escapeHtml(block.title || '')}" oninput="updateBlockCardTitle(${bIdx}, this.value)">
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size: 11px;">Action Steps & Tips</label>
+                            <div class="card-items-list">
+                                ${items.map((it, iIdx) => `
+                                    <div class="card-item-row">
+                                        <span class="card-item-num" style="background: #f59e0b; color: #000;">${iIdx + 1}</span>
+                                        <input type="text" class="form-input" style="flex: 1; width: 100%;" placeholder="Tip or actionable guideline..." value="${escapeHtml(it)}" oninput="updateBlockCardItem(${bIdx}, ${iIdx}, this.value)">
+                                        <button type="button" class="btn-block-delete" style="padding: 6px 10px; flex-shrink: 0;" onclick="removeBlockCardItem(${bIdx}, ${iIdx})" title="Remove Item">&times;</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button type="button" class="btn-secondary" style="margin-top: 8px; font-size: 11px; padding: 4px 10px;" onclick="addBlockCardItem(${bIdx})">+ Add Tip</button>
+                        </div>
+                    `;
+                } else if (block.type === 'scenario') {
+                    typeBadge = '<span class="block-type-badge" style="background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg> Real-Life Scenario</span>';
+                    blockContentHtml = `
+                        <div class="form-group" style="margin-bottom: 8px;">
+                            <label class="form-label" style="font-size: 11px;">Scenario Heading</label>
+                            <input type="text" class="form-input" placeholder="Real-Life Scenario" value="${escapeHtml(block.title || 'Real-Life Scenario')}" oninput="updateBlockScenarioTitle(${bIdx}, this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 11px;">Scenario Context & Problem-Solving Story</label>
+                            <textarea class="form-textarea" rows="4" placeholder="Describe the practical challenge and resolution..." oninput="updateBlockScenarioContent(${bIdx}, this.value)">${escapeHtml(block.content || '')}</textarea>
+                        </div>
+                    `;
+                } else if (block.type === 'summary_card') {
+                    typeBadge = '<span class="block-type-badge" style="background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Summary & Takeaways</span>';
+                    const items = block.items || [];
+                    blockContentHtml = `
+                        <div class="form-group" style="margin-bottom: 8px;">
+                            <label class="form-label" style="font-size: 11px;">Summary Title</label>
+                            <input type="text" class="form-input" placeholder="e.g. KEY LESSON TAKEAWAYS" value="${escapeHtml(block.title || '')}" oninput="updateBlockCardTitle(${bIdx}, this.value)">
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size: 11px;">Summary Key Points</label>
+                            <div class="card-items-list">
+                                ${items.map((it, iIdx) => `
+                                    <div class="card-item-row">
+                                        <span class="card-item-num" style="background: #10b981; color: #fff;">${iIdx + 1}</span>
+                                        <input type="text" class="form-input" style="flex: 1; width: 100%;" placeholder="Summary takeaway..." value="${escapeHtml(it)}" oninput="updateBlockCardItem(${bIdx}, ${iIdx}, this.value)">
+                                        <button type="button" class="btn-block-delete" style="padding: 6px 10px; flex-shrink: 0;" onclick="removeBlockCardItem(${bIdx}, ${iIdx})" title="Remove Item">&times;</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button type="button" class="btn-secondary" style="margin-top: 8px; font-size: 11px; padding: 4px 10px;" onclick="addBlockCardItem(${bIdx})">+ Add Point</button>
+                        </div>
+                    `;
+                } else {
+                    typeBadge = `<span class="block-type-badge">${escapeHtml(block.type || 'Custom Block')}</span>`;
+                    blockContentHtml = `
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 11px;">Block Content</label>
+                            <textarea class="form-textarea" rows="3" oninput="updateBlockText(${bIdx}, this.value)">${escapeHtml(block.content || JSON.stringify(block))}</textarea>
+                        </div>
+                    `;
                 }
 
                 return `
@@ -2134,6 +2229,14 @@
                 currentChapterBlocks.push({ type: 'card', title: 'LEARNING OBJECTIVES', items: ['Understand key principles', 'Apply structured methods'] });
             } else if (type === 'text') {
                 currentChapterBlocks.push({ type: 'text', content: 'Enter study notes and lecture text here.' });
+            } else if (type === 'tips') {
+                currentChapterBlocks.push({ type: 'tips', title: 'STEP-BY-STEP TIPS', items: ['Step 1: Focus on core fundamentals', 'Step 2: Practice active recall'] });
+            } else if (type === 'scenario') {
+                currentChapterBlocks.push({ type: 'scenario', title: 'Real-Life Scenario', content: 'Describe practical real-world problem and solution here.' });
+            } else if (type === 'video_card') {
+                currentChapterBlocks.push({ type: 'video_card', title: 'Video Title', duration: '3:30 mins', url: 'https://www.youtube.com/watch?v=...' });
+            } else if (type === 'summary_card') {
+                currentChapterBlocks.push({ type: 'summary_card', title: 'SUMMARY & TAKEAWAYS', items: ['Key takeaway 1', 'Key takeaway 2'] });
             } else if (type === 'image') {
                 currentChapterBlocks.push({ type: 'image', url: '', caption: 'Figure 1: Lesson Diagram / Framework' });
             } else if (type === 'video') {
@@ -2191,6 +2294,26 @@
         }
 
         function updateBlockText(bIdx, val) {
+            if (currentChapterBlocks[bIdx]) currentChapterBlocks[bIdx].content = val;
+        }
+
+        function updateBlockVideoCardTitle(bIdx, val) {
+            if (currentChapterBlocks[bIdx]) currentChapterBlocks[bIdx].title = val;
+        }
+
+        function updateBlockVideoCardDuration(bIdx, val) {
+            if (currentChapterBlocks[bIdx]) currentChapterBlocks[bIdx].duration = val;
+        }
+
+        function updateBlockVideoCardUrl(bIdx, val) {
+            if (currentChapterBlocks[bIdx]) currentChapterBlocks[bIdx].url = val;
+        }
+
+        function updateBlockScenarioTitle(bIdx, val) {
+            if (currentChapterBlocks[bIdx]) currentChapterBlocks[bIdx].title = val;
+        }
+
+        function updateBlockScenarioContent(bIdx, val) {
             if (currentChapterBlocks[bIdx]) currentChapterBlocks[bIdx].content = val;
         }
 

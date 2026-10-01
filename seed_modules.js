@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./database.sqlite');
+const path = require('path');
 
 const modulesData = [
     // -------------------------------------------------------------
@@ -854,81 +854,67 @@ const modulesData = [
     }
 ];
 
-function seedModules() {
-    db.serialize(() => {
-        // Clear previous placeholder modules to ensure fresh exact match with the new curriculum
-        db.run(`DELETE FROM module_questions WHERE module_id IN (SELECT id FROM modules)`);
-        db.run(`DELETE FROM module_chapters WHERE module_id IN (SELECT id FROM modules)`);
-        db.run(`DELETE FROM modules`);
-
-        const insertModule = db.prepare(`INSERT INTO modules (title, description, quadrant_category, difficulty, topic, estimated_time, is_published, is_archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
-        const insertChapter = db.prepare(`INSERT INTO module_chapters (module_id, chapter_order, title, text_content, learning_objectives, examples, estimated_time, content_blocks_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
-        const insertQuestion = db.prepare(`INSERT INTO module_questions (module_id, chapter_id, question_type, question_order, question_text, options_json, correct_answer_json, explanation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
-
-        modulesData.forEach((mod, modIdx) => {
-            insertModule.run(
-                mod.title,
-                mod.description,
-                mod.quadrant_category,
-                mod.difficulty,
-                mod.topic,
-                mod.estimated_time,
-                mod.is_published,
-                mod.is_archived,
-                function(err) {
-                    if (err) {
-                        console.error("Error inserting module:", err);
-                        return;
-                    }
-                    const moduleId = this.lastID;
-                    console.log(`Inserted Module ${moduleId}: ${mod.title}`);
-
-                    mod.chapters.forEach((ch, chIdx) => {
-                        const blocksJson = JSON.stringify(ch.content_blocks);
-                        insertChapter.run(
-                            moduleId,
-                            chIdx + 1,
-                            ch.title,
-                            '',
-                            '',
-                            '',
-                            ch.estimated_time,
-                            blocksJson,
-                            function(chErr) {
-                                if (chErr) {
-                                    console.error("Error inserting chapter:", chErr);
-                                    return;
-                                }
-                                const chapterId = this.lastID;
-                                console.log(`  -> Inserted Chapter ${chapterId}: ${ch.title}`);
-
-                                if (ch.questions && ch.questions.length > 0) {
-                                    ch.questions.forEach((q, qIdx) => {
-                                        insertQuestion.run(
-                                            moduleId,
-                                            chapterId,
-                                            q.question_type,
-                                            qIdx + 1,
-                                            q.question_text,
-                                            JSON.stringify(q.options),
-                                            JSON.stringify(q.correct_answer),
-                                            q.explanation
-                                        );
-                                    });
-                                }
-                            }
-                        );
-                    });
-                }
-            );
+async function seedModules(customDb) {
+    const targetDb = customDb || new sqlite3.Database(path.resolve(__dirname, 'database.sqlite'));
+    const runAsync = (sql, params = []) => new Promise((resolve, reject) => {
+        targetDb.run(sql, params, function(err) {
+            if (err) return reject(err);
+            resolve(this);
         });
-
-        insertModule.finalize();
     });
+
+    console.log("Starting synchronous module seeding...");
+    try {
+        await runAsync(`DELETE FROM module_questions WHERE module_id IN (SELECT id FROM modules)`);
+        await runAsync(`DELETE FROM module_chapters WHERE module_id IN (SELECT id FROM modules)`);
+        await runAsync(`DELETE FROM modules`);
+        console.log("Cleared existing modules.");
+
+        for (let i = 0; i < modulesData.length; i++) {
+            const mod = modulesData[i];
+            const modRes = await runAsync(
+                `INSERT INTO modules (title, description, quadrant_category, difficulty, topic, estimated_time, is_published, is_archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                [mod.title, mod.description, mod.quadrant_category, mod.difficulty, mod.topic, mod.estimated_time, mod.is_published, mod.is_archived]
+            );
+            const moduleId = modRes.lastID;
+            console.log(`Inserted Module ${moduleId}: ${mod.title} (${mod.quadrant_category})`);
+
+            for (let c = 0; c < mod.chapters.length; c++) {
+                const ch = mod.chapters[c];
+                const blocksJson = JSON.stringify(ch.content_blocks);
+                const chRes = await runAsync(
+                    `INSERT INTO module_chapters (module_id, chapter_order, title, text_content, learning_objectives, examples, estimated_time, content_blocks_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [moduleId, c + 1, ch.title, '', '', '', ch.estimated_time, blocksJson]
+                );
+                const chapterId = chRes.lastID;
+                console.log(`  -> Chapter ${chapterId}: ${ch.title}`);
+
+                if (ch.questions && ch.questions.length > 0) {
+                    for (let q = 0; q < ch.questions.length; q++) {
+                        const ques = ch.questions[q];
+                        await runAsync(
+                            `INSERT INTO module_questions (module_id, chapter_id, question_type, question_order, question_text, options_json, correct_answer_json, explanation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                            [moduleId, chapterId, ques.question_type, q + 1, ques.question_text, JSON.stringify(ques.options), JSON.stringify(ques.correct_answer), ques.explanation]
+                        );
+                    }
+                }
+            }
+        }
+        console.log("All 4 modules seeded successfully!");
+    } catch (err) {
+        console.error("Seeding error:", err);
+    } finally {
+        if (!customDb) {
+            targetDb.close();
+        }
+    }
 }
 
-seedModules();
-setTimeout(() => {
-    console.log("Seeding complete!");
-    db.close();
-}, 2000);
+module.exports = {
+    modulesData,
+    seedModules
+};
+
+if (require.main === module) {
+    seedModules();
+}

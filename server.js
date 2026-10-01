@@ -288,7 +288,18 @@ db.serialize(() => {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(module_id) REFERENCES modules(id) ON DELETE CASCADE,
         FOREIGN KEY(chapter_id) REFERENCES module_chapters(id) ON DELETE CASCADE
-    )`);
+    )`, () => {
+        db.get("SELECT COUNT(*) as count FROM modules WHERE title LIKE 'Mastering Your Learning Matrix%'", (err, row) => {
+            if (!err && (!row || row.count < 4)) {
+                try {
+                    const { seedModules } = require('./seed_modules');
+                    seedModules(db);
+                } catch (seedErr) {
+                    console.error("Auto module seeding error:", seedErr);
+                }
+            }
+        });
+    });
 
     // 13. Submissions (Gradebook)
     db.run(`CREATE TABLE IF NOT EXISTS submissions (
