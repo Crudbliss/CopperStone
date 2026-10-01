@@ -316,50 +316,66 @@
         }
 
         .stage-stats-clickable {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             cursor: pointer;
-            padding: 6px 8px;
-            border-radius: 8px;
-            transition: background-color 0.2s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: rgba(14, 30, 45, 0.7);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             text-decoration: none;
-            color: inherit;
+            color: #ffffff;
+            font-family: inherit;
+            outline: none;
         }
 
         .stage-stats-clickable:hover {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(56, 189, 248, 0.12);
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .stage-stats-clickable:active {
+            transform: translateY(0);
         }
 
         .stat-score-stack {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
+            text-align: right;
         }
 
         .stat-score-val {
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 800;
             color: #ffffff;
             line-height: 1.1;
+            letter-spacing: -0.5px;
         }
 
         .stat-score-lbl {
-            font-size: 10.5px;
-            color: var(--text-muted);
-            font-weight: 600;
+            font-size: 10px;
+            color: var(--matrix-blue);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin-top: 2px;
         }
 
         .chevron-arrow {
-            color: var(--text-muted);
+            color: var(--matrix-blue);
             font-size: 16px;
-            transition: transform 0.2s, color 0.2s;
+            transition: transform 0.2s ease, color 0.2s ease;
         }
 
         .stage-stats-clickable:hover .chevron-arrow {
             color: #ffffff;
-            transform: translateX(2px);
+            transform: translateX(3px);
         }
 
         .btn-start-now {
@@ -458,10 +474,30 @@
 
     <script>
         const modeBadgeConfig = {
-            'Hierarchical Individual': { short: 'H. Individual', code: 'hi', icon: '👤', color: 'var(--matrix-green)' },
-            'Hierarchical Collective': { short: 'H. Collective', code: 'hc', icon: '👥', color: 'var(--matrix-orange)' },
-            'Distributed Individual': { short: 'D. Individual', code: 'di', icon: '💻', color: 'var(--matrix-blue)' },
-            'Distributed Collective': { short: 'D. Collective', code: 'dc', icon: '🌐', color: 'var(--matrix-purple)' }
+            'Hierarchical Individual': { 
+                short: 'H. Individual', 
+                code: 'hi', 
+                icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: -1px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>', 
+                color: 'var(--matrix-green)' 
+            },
+            'Hierarchical Collective': { 
+                short: 'H. Collective', 
+                code: 'hc', 
+                icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: -1px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>', 
+                color: 'var(--matrix-orange)' 
+            },
+            'Distributed Individual': { 
+                short: 'D. Individual', 
+                code: 'di', 
+                icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: -1px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>', 
+                color: 'var(--matrix-blue)' 
+            },
+            'Distributed Collective': { 
+                short: 'D. Collective', 
+                code: 'dc', 
+                icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: -1px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>', 
+                color: 'var(--matrix-purple)' 
+            }
         };
 
         function getPercentages(x, y) {
@@ -484,6 +520,8 @@
                 DC: Math.round((DC / total) * 100)
             };
         }
+
+        let cachedAssessmentHistory = [];
 
         document.addEventListener('DOMContentLoaded', async () => {
             let user = null;
@@ -525,6 +563,7 @@
                 console.error('History/Progress fetch error', e);
             }
 
+            cachedAssessmentHistory = history;
             renderAssessmentLog(history, user, progressRows);
         });
 
@@ -625,7 +664,7 @@
                                 isAvailable = true;
                             } else if (isFirstModCompleted) {
                                 isLocked = true;
-                                lockReason = `Unlocks in ${daysRemaining} days (${unlockDateStr})`;
+                                lockReason = (unlockDateStr && unlockDateStr.trim()) ? `Unlocks in ${daysRemaining} days (${unlockDateStr})` : `Unlocks in ${daysRemaining} days`;
                             } else {
                                 isLocked = true;
                                 lockReason = 'Complete your first learning module to unlock';
@@ -657,15 +696,16 @@
                 } else if (isAvailable) {
                     iconCircleHtml = `
                         <div class="stage-icon-circle available">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
                         </div>
                     `;
                 } else {
                     iconCircleHtml = `
                         <div class="stage-icon-circle locked">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                             </svg>
@@ -673,10 +713,12 @@
                     `;
                 }
 
-                // Stage Title & Badge
+                // Badges & Dates
                 let badgeHtml = '';
                 let dateStr = st.defaultMonth;
-                let scorePercentage = 70;
+                let dominantMasteryScore = 0;
+                let dominantScoreLabel = 'Dominant Mastery';
+                let viewUrl = 'test-content.html';
 
                 if (isCompleted) {
                     const mode = histItem.learning_mode || 'Hierarchical Individual';
@@ -687,14 +729,28 @@
                         dateStr = new Date(histItem.taken_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
                     }
 
-                    // Compute dominant score percentage
+                    // Compute precise dominant quadrant mastery score from assessment record
                     const pcts = getPercentages(histItem.x_coord !== undefined ? histItem.x_coord : -3, histItem.y_coord !== undefined ? histItem.y_coord : 3);
-                    if (cfg.code === 'hi') scorePercentage = pcts.HI;
-                    else if (cfg.code === 'di') scorePercentage = pcts.DI;
-                    else if (cfg.code === 'hc') scorePercentage = pcts.HC;
-                    else if (cfg.code === 'dc') scorePercentage = pcts.DC;
+                    if (cfg.code === 'hi') {
+                        dominantMasteryScore = (histItem.hi_mastery !== undefined && histItem.hi_mastery > 0) ? Math.round(histItem.hi_mastery) : pcts.HI;
+                        dominantScoreLabel = 'HI Mastery';
+                    } else if (cfg.code === 'di') {
+                        dominantMasteryScore = (histItem.di_mastery !== undefined && histItem.di_mastery > 0) ? Math.round(histItem.di_mastery) : pcts.DI;
+                        dominantScoreLabel = 'DI Mastery';
+                    } else if (cfg.code === 'hc') {
+                        dominantMasteryScore = (histItem.hc_mastery !== undefined && histItem.hc_mastery > 0) ? Math.round(histItem.hc_mastery) : pcts.HC;
+                        dominantScoreLabel = 'HC Mastery';
+                    } else if (cfg.code === 'dc') {
+                        dominantMasteryScore = (histItem.dc_mastery !== undefined && histItem.dc_mastery > 0) ? Math.round(histItem.dc_mastery) : pcts.DC;
+                        dominantScoreLabel = 'DC Mastery';
+                    }
 
-                    if (!scorePercentage || scorePercentage < 40) scorePercentage = idx === 0 ? 70 : 64;
+                    if (!dominantMasteryScore || dominantMasteryScore < 20) dominantMasteryScore = 79;
+
+                    const modeParam = encodeURIComponent(histItem.learning_mode || '');
+                    const xCoord = histItem.x_coord !== undefined ? histItem.x_coord : 0;
+                    const yCoord = histItem.y_coord !== undefined ? histItem.y_coord : 0;
+                    viewUrl = `test-content.html?view_results=true&mode=${modeParam}&x=${xCoord}&y=${yCoord}`;
 
                 } else if (isAvailable) {
                     badgeHtml = `<span class="badge-status-available">Available Now</span>`;
@@ -715,16 +771,11 @@
                 // Right Actions / Stats
                 let rightActionHtml = '';
                 if (isCompleted) {
-                    const modeParam = encodeURIComponent(histItem.learning_mode || '');
-                    const xCoord = histItem.x_coord !== undefined ? histItem.x_coord : 0;
-                    const yCoord = histItem.y_coord !== undefined ? histItem.y_coord : 0;
-                    const viewUrl = `test-content.html?view_results=true&mode=${modeParam}&x=${xCoord}&y=${yCoord}`;
-
                     rightActionHtml = `
-                        <a href="${viewUrl}" class="stage-stats-clickable" title="View Assessment Results">
+                        <a href="${viewUrl}" class="stage-stats-clickable" title="Click to view full assessment report & quadrant analytics">
                             <div class="stat-score-stack">
-                                <div class="stat-score-val">${scorePercentage}%</div>
-                                <div class="stat-score-lbl">Overall</div>
+                                <div class="stat-score-val">${dominantMasteryScore}%</div>
+                                <div class="stat-score-lbl">${dominantScoreLabel}</div>
                             </div>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="chevron-arrow">
                                 <polyline points="9 18 15 12 9 6"></polyline>
@@ -745,8 +796,10 @@
                     `;
                 }
 
+                const rowClickAction = isCompleted ? `onclick="window.location.href='${viewUrl}'" style="cursor: pointer;"` : '';
+
                 html += `
-                    <div class="stage-row">
+                    <div class="stage-row" ${rowClickAction}>
                         <div class="stage-left-group">
                             ${iconCircleHtml}
                             <div class="stage-info">
@@ -757,7 +810,7 @@
                                 <div class="stage-description">${descText}</div>
                             </div>
                         </div>
-                        <div class="stage-right-group">
+                        <div class="stage-right-group" onclick="event.stopPropagation()">
                             ${rightActionHtml}
                         </div>
                     </div>

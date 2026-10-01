@@ -1583,11 +1583,33 @@
                     else { finalX = 3; finalY = -3; }
                 }
 
-                renderFuzzyGraph(mode, null, finalX, finalY);
+                // Fetch actual history for user if available to get exact mastery scores
+                let realMastery = null;
+                const userRaw = localStorage.getItem('currentUser');
+                if (userRaw) {
+                    try {
+                        const parsedUser = JSON.parse(userRaw);
+                        const hRes = await fetch(`/api/students/${parsedUser.id}/history`);
+                        if (hRes.ok) {
+                            const hData = await hRes.json();
+                            if (hData && hData.length > 0) {
+                                const lastH = hData[hData.length - 1];
+                                realMastery = {
+                                    'Hierarchical Individual': lastH.hi_mastery,
+                                    'Distributed Individual': lastH.di_mastery,
+                                    'Hierarchical Collective': lastH.hc_mastery,
+                                    'Distributed Collective': lastH.dc_mastery
+                                };
+                            }
+                        }
+                    } catch (e) {}
+                }
+
+                renderDualModelResults(mode, null, realMastery, finalX, finalY);
 
                 // Modify the existing return button to act as a back button
                 const returnBtn = document.getElementById('return-btn');
-                returnBtn.textContent = '← Back to Assessment';
+                returnBtn.textContent = '← Back to Assessment Center';
                 returnBtn.onclick = () => window.history.back();
                 return;
             }
