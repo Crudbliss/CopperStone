@@ -249,6 +249,7 @@ db.serialize(() => {
         db.run(`ALTER TABLE modules ADD COLUMN is_published INTEGER DEFAULT 1`, (err) => {});
         db.run(`ALTER TABLE modules ADD COLUMN is_archived INTEGER DEFAULT 0`, (err) => {});
         db.run(`ALTER TABLE modules ADD COLUMN image_url TEXT`, (err) => {});
+        db.run(`ALTER TABLE modules ADD COLUMN target_weakest_quadrant TEXT`, (err) => {});
     });
 
     // 12b. Module Chapters (Chapters inside a module)
@@ -290,7 +291,7 @@ db.serialize(() => {
         FOREIGN KEY(chapter_id) REFERENCES module_chapters(id) ON DELETE CASCADE
     )`, () => {
         db.get("SELECT COUNT(*) as count FROM modules WHERE title LIKE 'Mastering Your Learning Matrix%'", (err, row) => {
-            if (!err && (!row || row.count < 4)) {
+            if (!err && (!row || row.count < 8)) {
                 try {
                     const { seedModules } = require('./seed_modules');
                     seedModules(db);

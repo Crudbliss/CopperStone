@@ -2122,6 +2122,7 @@
                     `;
                 } else if (block.type === 'video_card') {
                     typeBadge = '<span class="block-type-badge" style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Video Recommendation Card</span>';
+                    const embedUrl = formatYoutubeEmbedUrl(block.url || '');
                     blockContentHtml = `
                         <div class="form-group" style="margin-bottom: 8px;">
                             <label class="form-label" style="font-size: 11px;">Video Title</label>
@@ -2137,6 +2138,11 @@
                                 <input type="text" class="form-input" placeholder="https://www.youtube.com/watch?v=..." value="${escapeHtml(block.url || '')}" oninput="updateBlockVideoCardUrl(${bIdx}, this.value)">
                             </div>
                         </div>
+                        ${embedUrl ? `
+                            <div class="video-responsive" style="margin-top: 8px;">
+                                <iframe src="${embedUrl}" allowfullscreen></iframe>
+                            </div>
+                        ` : ''}
                     `;
                 } else if (block.type === 'tips') {
                     typeBadge = '<span class="block-type-badge" style="background: rgba(245, 158, 11, 0.12); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg> Actionable Tips Card</span>';
