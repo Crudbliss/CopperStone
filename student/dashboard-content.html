@@ -647,6 +647,64 @@
             }
         }
 
+        @media (max-width: 600px) {
+            .roadmap-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .user-name {
+                font-size: 24px;
+            }
+
+            .cert-sheet {
+                width: 100%;
+                min-width: 300px;
+                padding: 24px 16px;
+                min-height: auto;
+            }
+
+            .cert-main-title {
+                font-size: 26px;
+                letter-spacing: 3px;
+            }
+
+            .cert-sub-title {
+                font-size: 13px;
+                letter-spacing: 2px;
+            }
+
+            .cert-recipient-name {
+                font-size: 20px;
+                min-width: 180px;
+            }
+
+            .cert-bottom-section {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+                padding: 0;
+            }
+
+            .cert-signatory-col {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .cert-meta-footer {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 4px;
+            }
+
+            .dominant-mode-box, .weakest-mode-box {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+
         /* --- CERTIFICATE MODAL & PRINT STYLES --- */
         .cert-modal-backdrop {
             display: none;
