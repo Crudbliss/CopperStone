@@ -646,6 +646,359 @@
                 padding: 16px;
             }
         }
+
+        /* --- CERTIFICATE MODAL & PRINT STYLES --- */
+        .cert-modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(4, 10, 18, 0.88);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .cert-modal-dialog {
+            background: #0d1722;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: certModalIn 0.25s ease-out;
+        }
+
+        @keyframes certModalIn {
+            from { opacity: 0; transform: translateY(16px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .cert-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .cert-modal-title {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cert-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-cert-action {
+            background: var(--matrix-yellow);
+            color: #060f17;
+            font-weight: 700;
+            font-size: 13px;
+            font-family: inherit;
+            border-radius: 8px;
+            padding: 7px 16px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-cert-action:hover {
+            background: var(--matrix-yellow-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-cert-close {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: inherit;
+            border-radius: 8px;
+            padding: 7px 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cert-close:hover {
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        /* --- THE CERTIFICATE SHEET (Exact match to template image) --- */
+        .cert-sheet-wrapper {
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            background: #09111b;
+            overflow-x: auto;
+        }
+
+        .cert-sheet {
+            width: 880px;
+            min-height: 580px;
+            background: #ffffff;
+            color: #071b30;
+            position: relative;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+            padding: 40px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-family: 'Times New Roman', Times, Georgia, serif;
+        }
+
+        /* Certificate Double Border */
+        .cert-inner-border {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px solid #071b30;
+            pointer-events: none;
+        }
+
+        .cert-inner-border-fine {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            right: 24px;
+            bottom: 24px;
+            border: 1px solid #c49312;
+            pointer-events: none;
+        }
+
+        /* Geometric Navy / Gold Corners */
+        .cert-corner-top-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 140px;
+            height: 100px;
+            pointer-events: none;
+        }
+
+        .cert-corner-bottom-right {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 140px;
+            height: 100px;
+            pointer-events: none;
+        }
+
+        .cert-dots-tl {
+            position: absolute;
+            top: 48px;
+            left: 28px;
+            display: flex;
+            gap: 6px;
+            z-index: 5;
+        }
+
+        .cert-dots-br {
+            position: absolute;
+            bottom: 48px;
+            right: 28px;
+            display: flex;
+            gap: 6px;
+            z-index: 5;
+        }
+
+        .cert-dot {
+            width: 8px;
+            height: 8px;
+            background: #071b30;
+            border-radius: 50%;
+        }
+
+        .cert-header-section {
+            text-align: center;
+            margin-top: 14px;
+            z-index: 2;
+        }
+
+        .cert-main-title {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 6px;
+            color: #071b30;
+            margin: 0;
+            line-height: 1.1;
+            font-family: 'Times New Roman', Times, Georgia, serif;
+            text-transform: uppercase;
+        }
+
+        .cert-sub-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 5px;
+            color: #071b30;
+            margin: 4px 0 0 0;
+            text-transform: uppercase;
+        }
+
+        .cert-body-section {
+            text-align: center;
+            margin: 18px 0;
+            z-index: 2;
+        }
+
+        .cert-presented-text {
+            font-size: 15px;
+            color: #475569;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            font-style: italic;
+        }
+
+        .cert-recipient-name {
+            font-size: 34px;
+            font-weight: 800;
+            color: #071b30;
+            letter-spacing: 1px;
+            margin: 8px 0 12px 0;
+            padding-bottom: 6px;
+            display: inline-block;
+            border-bottom: 2px solid #071b30;
+            min-width: 320px;
+        }
+
+        .cert-description-text {
+            font-size: 14px;
+            color: #334155;
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .cert-bottom-section {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            z-index: 2;
+            padding: 0 16px;
+        }
+
+        .cert-signatory-col {
+            text-align: center;
+            width: 210px;
+        }
+
+        .cert-sign-line {
+            width: 100%;
+            height: 1.5px;
+            background: #071b30;
+            margin-bottom: 6px;
+        }
+
+        .cert-sign-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #071b30;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .cert-sign-title {
+            font-size: 11px;
+            color: #475569;
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cert-seals-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .cert-seal-img {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+
+        .cert-meta-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10.5px;
+            color: #64748b;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin-top: 8px;
+            padding: 0 6px;
+            z-index: 2;
+        }
+
+        /* --- PRINT MEDIA RULE (Pixel-perfect A4 landscape) --- */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .cert-modal-backdrop, .cert-modal-dialog, .cert-sheet-wrapper, .cert-sheet, .cert-sheet * {
+                visibility: visible;
+            }
+            .cert-modal-backdrop {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: #ffffff;
+                padding: 0;
+                display: block !important;
+            }
+            .cert-modal-header, .btn-cert-action, .btn-cert-close {
+                display: none !important;
+            }
+            .cert-modal-dialog {
+                box-shadow: none;
+                border: none;
+                max-width: 100%;
+                width: 100%;
+            }
+            .cert-sheet-wrapper {
+                background: #ffffff;
+                padding: 0;
+            }
+            .cert-sheet {
+                box-shadow: none;
+                width: 100%;
+                height: 100vh;
+                margin: 0;
+                page-break-after: avoid;
+            }
+            @page {
+                size: landscape;
+                margin: 0;
+            }
+        }
     </style>
 </head>
 
@@ -805,6 +1158,120 @@
         </section>
 
     </main>
+
+    <!-- ================= OFFICIAL CERTIFICATE OF COMPLETION MODAL ================= -->
+    <div id="certificate-modal" class="cert-modal-backdrop" onclick="handleCertBackdropClick(event)">
+        <div class="cert-modal-dialog">
+            <div class="cert-modal-header">
+                <div class="cert-modal-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5">
+                        <circle cx="12" cy="8" r="7"></circle>
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                    </svg>
+                    <span>Official Certificate of Completion</span>
+                </div>
+                <div class="cert-btn-group">
+                    <button type="button" class="btn-cert-action" onclick="printCertificate()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        <span>Print / Save PDF</span>
+                    </button>
+                    <button type="button" class="btn-cert-close" onclick="closeCertificateModal()">&times; Close</button>
+                </div>
+            </div>
+
+            <div class="cert-sheet-wrapper">
+                <div class="cert-sheet" id="printable-cert-sheet">
+                    <!-- Outer & Inner Frame Lines -->
+                    <div class="cert-inner-border"></div>
+                    <div class="cert-inner-border-fine"></div>
+
+                    <!-- Geometric Navy / Gold Corner Accents (Top Left) -->
+                    <svg class="cert-corner-top-left" viewBox="0 0 140 100" fill="none">
+                        <polygon points="0,0 140,0 100,40 0,40" fill="#071b30" />
+                        <polygon points="0,40 100,40 85,55 0,55" fill="#c49312" />
+                        <polygon points="0,0 40,0 0,100" fill="#071b30" />
+                    </svg>
+                    <div class="cert-dots-tl">
+                        <span class="cert-dot"></span>
+                        <span class="cert-dot"></span>
+                        <span class="cert-dot"></span>
+                    </div>
+
+                    <!-- Geometric Navy / Gold Corner Accents (Bottom Right) -->
+                    <svg class="cert-corner-bottom-right" viewBox="0 0 140 100" fill="none">
+                        <polygon points="140,100 0,100 40,60 140,60" fill="#071b30" />
+                        <polygon points="140,60 40,60 55,45 140,45" fill="#c49312" />
+                        <polygon points="140,100 100,100 140,0" fill="#071b30" />
+                    </svg>
+                    <div class="cert-dots-br">
+                        <span class="cert-dot"></span>
+                        <span class="cert-dot"></span>
+                        <span class="cert-dot"></span>
+                    </div>
+
+                    <!-- HEADER TITLE -->
+                    <div class="cert-header-section">
+                        <h1 class="cert-main-title">CERTIFICATE</h1>
+                        <h2 class="cert-sub-title">OF COMPLETION</h2>
+                    </div>
+
+                    <!-- BODY PRESENTATION -->
+                    <div class="cert-body-section">
+                        <div class="cert-presented-text">This Certificate is Proudly Presented To</div>
+                        <div class="cert-recipient-name" id="cert-student-name">MATRIX GUDIPIPI</div>
+                        <div class="cert-description-text" id="cert-description-text">
+                            With respect and appreciation, this Certificate of Completion is granted for remarkable accomplishment in completing the Continuous 3-Stage Learning Matrix Evaluation and Cognitive Growth Curriculum.
+                        </div>
+                    </div>
+
+                    <!-- SIGNATORIES & SEALS -->
+                    <div class="cert-bottom-section">
+                        <!-- Signatory 1 -->
+                        <div class="cert-signatory-col">
+                            <div class="cert-sign-line"></div>
+                            <div class="cert-sign-name">CRUDLIS KARDING</div>
+                            <div class="cert-sign-title">(BLANK) HEAD</div>
+                        </div>
+
+                        <!-- University / College Seals -->
+                        <div class="cert-seals-center">
+                            <!-- OLFU Official Seal SVG / Crest Representation -->
+                            <div style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid #071b30; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; color: #071b30; font-size: 8px; font-weight: 800; text-align: center; line-height: 1.1; padding: 2px;">
+                                <span style="font-size: 6.5px; letter-spacing: 0.5px;">OUR LADY OF FATIMA</span>
+                                <span style="font-size: 9px; margin: 2px 0;">🛡️ 1967</span>
+                                <span style="font-size: 6px;">UNIVERSITY</span>
+                            </div>
+
+                            <!-- CCS College of Computer Studies Seal -->
+                            <div style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid #071b30; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; color: #071b30; font-size: 8px; font-weight: 800; text-align: center; line-height: 1.1; padding: 2px;">
+                                <span style="font-size: 6.5px; letter-spacing: 0.5px;">COLLEGE OF</span>
+                                <span style="font-size: 9px; margin: 2px 0;">💻 CCS</span>
+                                <span style="font-size: 6px;">COMPUTER STUDIES</span>
+                            </div>
+                        </div>
+
+                        <!-- Signatory 2 -->
+                        <div class="cert-signatory-col">
+                            <div class="cert-sign-line"></div>
+                            <div class="cert-sign-name">KARDING SACARIAS</div>
+                            <div class="cert-sign-title">(BLANK) HEAD</div>
+                        </div>
+                    </div>
+
+                    <!-- METADATA FOOTER -->
+                    <div class="cert-meta-footer">
+                        <span id="cert-footer-id">Verification ID: MTX-OLFU-2026-001</span>
+                        <span>Our Lady of Fatima University · College of Computer Studies</span>
+                        <span id="cert-footer-date">Date: October 2, 2026</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Navigation & Dynamic Backend Data Handler -->
     <script>
@@ -1038,6 +1505,66 @@
                 }
             } catch (e) {
                 console.error('Modules fetch error', e);
+            }
+
+            // If all 3 assessments are completed, replace Active Learning Roadmap Card with Certificate Claim Card!
+            if (history && history.length >= 3) {
+                const fullName = `${user.name || user.first_name || 'Student'} ${user.last_name || ''}`.trim().toUpperCase();
+                const certCode = `MTX-OLFU-${user.id || '1'}-${(user.student_no ? user.student_no.replace(/[^0-9]/g, '') : '2026')}`;
+                const cardRoadmap = document.getElementById('card-roadmap');
+                if (cardRoadmap) {
+                    cardRoadmap.style.setProperty('--target-color', '#fbbf24');
+                    cardRoadmap.innerHTML = `
+                        <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                            <div>
+                                <div class="roadmap-eyebrow" style="color: #fbbf24; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); margin-bottom: 12px;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <circle cx="12" cy="8" r="7"></circle>
+                                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                                    </svg>
+                                    <span>CERTIFICATION UNLOCKED · ALL 3 ASSESSMENTS COMPLETE</span>
+                                </div>
+
+                                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(251, 191, 36, 0.25); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                                        <span style="font-size: 14.5px; font-weight: 800; color: #ffffff;">Certificate of Completion</span>
+                                        <span style="font-size: 10px; font-weight: 700; color: #4ade80; background: rgba(74, 222, 128, 0.12); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(74, 222, 128, 0.25);">✓ Verified</span>
+                                    </div>
+                                    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin: 0 0 8px 0;">
+                                        Congratulations! You have successfully completed the 3-stage learning matrix diagnostic and mastery roadmap.
+                                    </p>
+                                    <div style="font-size: 10.5px; color: #fbbf24; font-family: monospace; letter-spacing: 0.5px;">
+                                        ID: ${certCode}
+                                    </div>
+                                </div>
+
+                                <!-- Post-Assessment Evaluation Survey Box -->
+                                <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;">
+                                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                                        <span style="font-size: 12px; font-weight: 700; color: #38bdf8;">Final Evaluation Survey</span>
+                                    </div>
+                                    <p style="font-size: 11.5px; color: var(--text-muted); margin: 0 0 6px 0; line-height: 1.35;">
+                                        Please take a moment to answer our Google Form evaluation survey:
+                                    </p>
+                                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdODAgsGVCucIw6-2K4GCpy0F_RXkHQB8f8UTyZZ0LVIjnEFg/viewform" target="_blank" rel="noopener noreferrer" style="font-size: 11.5px; color: #38bdf8; text-decoration: underline; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                                        <span>Open Google Evaluation Form</span> &rarr;
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button type="button" class="btn-take-now" style="background: #fbbf24; color: #060f17; flex: 1; padding: 8px 16px; font-size: 13px;" onclick="openCertificateModal()">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+                                    <span>Claim / View Certificate</span>
+                                </button>
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdODAgsGVCucIw6-2K4GCpy0F_RXkHQB8f8UTyZZ0LVIjnEFg/viewform" target="_blank" rel="noopener noreferrer" class="btn-open-module" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); text-decoration: none; padding: 8px 14px; font-size: 12.5px;">
+                                    <span>Survey Form</span> &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }
             }
 
             // 5. Card 4: Assessment Journey (3 Stages)
@@ -1358,6 +1885,47 @@
                     }
                 }
             }
+        }
+
+        /* --- CERTIFICATE MODAL CONTROLS --- */
+        function openCertificateModal() {
+            let user = null;
+            try {
+                const userStr = localStorage.getItem('currentUser');
+                if (userStr) user = JSON.parse(userStr);
+            } catch(e) {}
+
+            const fullName = user ? `${user.name || user.first_name || 'STUDENT'} ${user.last_name || ''}`.trim().toUpperCase() : 'MATRIX GUDIPIPI';
+            const certCode = user ? `MTX-OLFU-${user.id || '1'}-${(user.student_no ? user.student_no.replace(/[^0-9]/g, '') : '2026')}` : 'MTX-OLFU-2026-001';
+            const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+            document.getElementById('cert-student-name').textContent = fullName;
+            document.getElementById('cert-footer-id').textContent = `Verification ID: ${certCode}`;
+            document.getElementById('cert-footer-date').textContent = `Date: ${dateStr}`;
+
+            const modal = document.getElementById('certificate-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeCertificateModal() {
+            const modal = document.getElementById('certificate-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+
+        function handleCertBackdropClick(event) {
+            if (event.target && event.target.id === 'certificate-modal') {
+                closeCertificateModal();
+            }
+        }
+
+        function printCertificate() {
+            window.print();
         }
     </script>
 </body>

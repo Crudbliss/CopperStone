@@ -2612,7 +2612,7 @@
                                             ${escapeHtml(durationText)}
                                         </span>
                                         ${videoUrl ? `
-                                            <a href="${escapeHtml(videoUrl)}" target="_blank" rel="noopener noreferrer" class="btn-external-video" title="Open video in YouTube">
+                                            <a href="${escapeHtml(videoUrl)}" target="_blank" rel="noopener noreferrer" class="btn-external-video" title="Open video directly in YouTube">
                                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                                             </a>
                                         ` : ''}
@@ -2620,7 +2620,20 @@
                                 </div>
                                 ${embedUrl ? `
                                     <div class="video-embed-wrapper">
-                                        <iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" loading="lazy"></iframe>
+                                        <iframe 
+                                            src="${embedUrl}" 
+                                            title="${escapeHtml(block.title || 'Video Lesson')}"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen 
+                                            referrerpolicy="strict-origin-when-cross-origin"
+                                            loading="lazy">
+                                        </iframe>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding: 0 4px;">
+                                        <span style="font-size: 11px; color: var(--text-muted);">Having trouble with embedded playback?</span>
+                                        <a href="${escapeHtml(videoUrl || embedUrl)}" target="_blank" rel="noopener noreferrer" style="font-size: 11px; color: var(--matrix-blue); text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                            <span>Watch on YouTube</span> &rarr;
+                                        </a>
                                     </div>
                                 ` : ''}
                             </div>
@@ -3580,10 +3593,10 @@
         function formatYoutubeEmbedUrl(url) {
             if (!url || url.trim() === '') return '';
             let videoId = '';
-            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            const match = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
             if (match && match[1]) {
                 videoId = match[1];
-                return `https://www.youtube.com/embed/${videoId}`;
+                return `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0&modestbranding=1`;
             }
             return url;
         }

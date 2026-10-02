@@ -50,13 +50,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Solo Achiever: Strengths of Self-Directed Learning",
                         duration: "3:15 mins",
-                        url: "https://www.youtube.com/watch?v=k9WUpZqS_pU"
+                        url: "https://www.youtube.com/watch?v=ukLnPbIffxE"
                     },
                     {
                         type: "video_card",
                         title: "How to Maximize Your Focus During Solo Coding Sessions",
                         duration: "4:20 mins",
-                        url: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+                        url: "https://www.youtube.com/watch?v=FwD6i24aR34"
                     },
                     {
                         type: "tips",
@@ -152,13 +152,13 @@ const modulesData = [
                         type: "video_card",
                         title: "Why Tech Companies Hire for Team Alignment Over Solo Hacking",
                         duration: "5:00 mins",
-                        url: "https://www.youtube.com/watch?v=r8dO10Jb_eE"
+                        url: "https://www.youtube.com/watch?v=DUa7FU_nhgk"
                     },
                     {
                         type: "video_card",
                         title: "The Danger of the 'One-Size-Fits-All' Study Trap",
                         duration: "3:45 mins",
-                        url: "https://www.youtube.com/watch?v=yW6UqBqBfmg"
+                        url: "https://www.youtube.com/watch?v=TjPFZaMe2yw"
                     },
                     {
                         type: "tips",
@@ -259,13 +259,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Power of Group Instruction in IT",
                         duration: "4:10 mins",
-                        url: "https://www.youtube.com/watch?v=0k3X4c2l5kM"
+                        url: "https://www.youtube.com/watch?v=F8xSubT3nI8"
                     },
                     {
                         type: "video_card",
                         title: "Team Alignment 101: Collaborating on Code",
                         duration: "6:20 mins",
-                        url: "https://www.youtube.com/watch?v=mG4KL8z5G-8"
+                        url: "https://www.youtube.com/watch?v=2b3xG_YjegI"
                     },
                     {
                         type: "tips",
@@ -408,13 +408,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Solo Achiever: Strengths of Structured Learning",
                         duration: "3:15 mins",
-                        url: "https://www.youtube.com/watch?v=k9WUpZqS_pU"
+                        url: "https://www.youtube.com/watch?v=ukLnPbIffxE"
                     },
                     {
                         type: "video_card",
                         title: "How to Maximize Your Focus During Solo Coding Sessions",
                         duration: "4:20 mins",
-                        url: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+                        url: "https://www.youtube.com/watch?v=FwD6i24aR34"
                     },
                     {
                         type: "tips",
@@ -510,13 +510,13 @@ const modulesData = [
                         type: "video_card",
                         title: "Why Tech Companies Hire for Adaptability Over Memorization",
                         duration: "5:00 mins",
-                        url: "https://www.youtube.com/watch?v=r8dO10Jb_eE"
+                        url: "https://www.youtube.com/watch?v=DUa7FU_nhgk"
                     },
                     {
                         type: "video_card",
                         title: "The Danger of the 'One-Size-Fits-All' Study Trap",
                         duration: "3:45 mins",
-                        url: "https://www.youtube.com/watch?v=yW6UqBqBfmg"
+                        url: "https://www.youtube.com/watch?v=TjPFZaMe2yw"
                     },
                     {
                         type: "tips",
@@ -617,13 +617,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Power of Peer-to-Peer Learning in IT",
                         duration: "4:10 mins",
-                        url: "https://www.youtube.com/watch?v=0k3X4c2l5kM"
+                        url: "https://www.youtube.com/watch?v=F8xSubT3nI8"
                     },
                     {
                         type: "video_card",
                         title: "Pair Programming 101: Collaborating on Code",
                         duration: "6:20 mins",
-                        url: "https://www.youtube.com/watch?v=mG4KL8z5G-8"
+                        url: "https://www.youtube.com/watch?v=2b3xG_YjegI"
                     },
                     {
                         type: "tips",
@@ -766,13 +766,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Collaborative Coder: Strengths of Peer-to-Peer Learning",
                         duration: "3:15 mins",
-                        url: "https://www.youtube.com/watch?v=0k3X4c2l5kM"
+                        url: "https://www.youtube.com/watch?v=F8xSubT3nI8"
                     },
                     {
                         type: "video_card",
                         title: "How to Maximize Your Engagement During Group Brainstorming",
                         duration: "4:20 mins",
-                        url: "https://www.youtube.com/watch?v=mG4KL8z5G-8"
+                        url: "https://www.youtube.com/watch?v=2b3xG_YjegI"
                     },
                     {
                         type: "tips",
@@ -868,13 +868,13 @@ const modulesData = [
                         type: "video_card",
                         title: "Why Tech Companies Require Mastery of Solo Fundamentals",
                         duration: "5:00 mins",
-                        url: "https://www.youtube.com/watch?v=r8dO10Jb_eE"
+                        url: "https://www.youtube.com/watch?v=DUa7FU_nhgk"
                     },
                     {
                         type: "video_card",
                         title: "The Danger of the 'One-Size-Fits-All' Study Trap",
                         duration: "3:45 mins",
-                        url: "https://www.youtube.com/watch?v=yW6UqBqBfmg"
+                        url: "https://www.youtube.com/watch?v=TjPFZaMe2yw"
                     },
                     {
                         type: "tips",
@@ -975,13 +975,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Power of Solo Accountability in IT",
                         duration: "4:10 mins",
-                        url: "https://www.youtube.com/watch?v=k9WUpZqS_pU"
+                        url: "https://www.youtube.com/watch?v=ukLnPbIffxE"
                     },
                     {
                         type: "video_card",
                         title: "Deep Work 101: Mastering Foundational Concepts",
                         duration: "6:20 mins",
-                        url: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+                        url: "https://www.youtube.com/watch?v=FwD6i24aR34"
                     },
                     {
                         type: "tips",
@@ -1114,13 +1114,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Power of the Classroom: Maximizing Group Instruction",
                         duration: "3:15 mins",
-                        url: "https://www.youtube.com/watch?v=0k3X4c2l5kM"
+                        url: "https://www.youtube.com/watch?v=F8xSubT3nI8"
                     },
                     {
                         type: "video_card",
                         title: "How to Get the Most Out of Teacher-Led IT Lectures",
                         duration: "4:20 mins",
-                        url: "https://www.youtube.com/watch?v=mG4KL8z5G-8"
+                        url: "https://www.youtube.com/watch?v=2b3xG_YjegI"
                     },
                     {
                         type: "tips",
@@ -1216,13 +1216,13 @@ const modulesData = [
                         type: "video_card",
                         title: "Breaking the Mold: The Importance of Self-Directed IT Learning",
                         duration: "5:00 mins",
-                        url: "https://www.youtube.com/watch?v=k9WUpZqS_pU"
+                        url: "https://www.youtube.com/watch?v=ukLnPbIffxE"
                     },
                     {
                         type: "video_card",
                         title: "How to Build Your Own Personalized Tech Curriculum",
                         duration: "3:45 mins",
-                        url: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+                        url: "https://www.youtube.com/watch?v=FwD6i24aR34"
                     },
                     {
                         type: "tips",
@@ -1323,13 +1323,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Self-Taught Developer: Using Online Platforms for Skill Building",
                         duration: "4:10 mins",
-                        url: "https://www.youtube.com/watch?v=k9WUpZqS_pU"
+                        url: "https://www.youtube.com/watch?v=ukLnPbIffxE"
                     },
                     {
                         type: "video_card",
                         title: "How to Read Technical Documentation Independently",
                         duration: "6:20 mins",
-                        url: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+                        url: "https://www.youtube.com/watch?v=FwD6i24aR34"
                     },
                     {
                         type: "tips",
@@ -1458,13 +1458,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Solo Coder: Strengths of Self-Directed IT Learning",
                         duration: "4:10 mins",
-                        url: "https://www.youtube.com/watch?v=k9WUpZqS_pU"
+                        url: "https://www.youtube.com/watch?v=ukLnPbIffxE"
                     },
                     {
                         type: "video_card",
                         title: "How to Maximize Your Focus During Solo Development",
                         duration: "3:30 mins",
-                        url: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+                        url: "https://www.youtube.com/watch?v=FwD6i24aR34"
                     },
                     {
                         type: "tips",
@@ -1560,13 +1560,13 @@ const modulesData = [
                         type: "video_card",
                         title: "Why Tech Companies Require Collaborative Brainstorming",
                         duration: "5:15 mins",
-                        url: "https://www.youtube.com/watch?v=r8dO10Jb_eE"
+                        url: "https://www.youtube.com/watch?v=DUa7FU_nhgk"
                     },
                     {
                         type: "video_card",
                         title: "The Danger of the 'Solo-Dev Only' Study Trap",
                         duration: "4:45 mins",
-                        url: "https://www.youtube.com/watch?v=yW6UqBqBfmg"
+                        url: "https://www.youtube.com/watch?v=TjPFZaMe2yw"
                     },
                     {
                         type: "tips",
@@ -1767,13 +1767,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Power of Peer-to-Peer Learning in Tech",
                         duration: "4:15 mins",
-                        url: "https://www.youtube.com/watch?v=0k3X4c2l5kM"
+                        url: "https://www.youtube.com/watch?v=F8xSubT3nI8"
                     },
                     {
                         type: "video_card",
                         title: "How to Brainstorm and Debug Effectively as a Team",
                         duration: "3:45 mins",
-                        url: "https://www.youtube.com/watch?v=mG4KL8z5G-8"
+                        url: "https://www.youtube.com/watch?v=2b3xG_YjegI"
                     },
                     {
                         type: "tips",
@@ -1869,13 +1869,13 @@ const modulesData = [
                         type: "video_card",
                         title: "Developing Autonomy: The Art of Solo Technical Deep Dives",
                         duration: "5:00 mins",
-                        url: "https://www.youtube.com/watch?v=k9WUpZqS_pU"
+                        url: "https://www.youtube.com/watch?v=ukLnPbIffxE"
                     },
                     {
                         type: "video_card",
                         title: "Overcoming Group Reliance: Building Independent Problem-Solving Skills",
                         duration: "4:20 mins",
-                        url: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+                        url: "https://www.youtube.com/watch?v=FwD6i24aR34"
                     },
                     {
                         type: "tips",
@@ -2094,13 +2094,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Solo Achiever: Strengths of Structured Learning",
                         duration: "3:15 mins",
-                        url: "https://www.youtube.com/watch?v=k9WUpZqS_pU"
+                        url: "https://www.youtube.com/watch?v=ukLnPbIffxE"
                     },
                     {
                         type: "video_card",
                         title: "How to Maximize Your Focus During Solo Coding Sessions",
                         duration: "4:20 mins",
-                        url: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+                        url: "https://www.youtube.com/watch?v=FwD6i24aR34"
                     },
                     {
                         type: "tips",
@@ -2196,13 +2196,13 @@ const modulesData = [
                         type: "video_card",
                         title: "Why Tech Companies Hire for Adaptability Over Memorization",
                         duration: "5:00 mins",
-                        url: "https://www.youtube.com/watch?v=r8dO10Jb_eE"
+                        url: "https://www.youtube.com/watch?v=DUa7FU_nhgk"
                     },
                     {
                         type: "video_card",
                         title: "The Danger of the 'One-Size-Fits-All' Study Trap",
                         duration: "3:45 mins",
-                        url: "https://www.youtube.com/watch?v=yW6UqBqBfmg"
+                        url: "https://www.youtube.com/watch?v=TjPFZaMe2yw"
                     },
                     {
                         type: "tips",
@@ -2303,13 +2303,13 @@ const modulesData = [
                         type: "video_card",
                         title: "The Power of Peer-to-Peer Learning in IT",
                         duration: "4:10 mins",
-                        url: "https://www.youtube.com/watch?v=0k3X4c2l5kM"
+                        url: "https://www.youtube.com/watch?v=F8xSubT3nI8"
                     },
                     {
                         type: "video_card",
                         title: "Pair Programming 101: Collaborating on Code",
                         duration: "6:20 mins",
-                        url: "https://www.youtube.com/watch?v=mG4KL8z5G-8"
+                        url: "https://www.youtube.com/watch?v=2b3xG_YjegI"
                     },
                     {
                         type: "tips",
@@ -2438,13 +2438,13 @@ const modulesData = [
                         type: "video_card",
                         title: "Succeeding in the IT Classroom: The Power of Guided Instruction",
                         duration: "4:10 mins",
-                        url: "https://www.youtube.com/watch?v=0k3X4c2l5kM"
+                        url: "https://www.youtube.com/watch?v=F8xSubT3nI8"
                     },
                     {
                         type: "video_card",
                         title: "How to Use Class Reviewers to Master Tech Fundamentals",
                         duration: "3:30 mins",
-                        url: "https://www.youtube.com/watch?v=mG4KL8z5G-8"
+                        url: "https://www.youtube.com/watch?v=2b3xG_YjegI"
                     },
                     {
                         type: "tips",
@@ -2540,13 +2540,13 @@ const modulesData = [
                         type: "video_card",
                         title: "Escaping the Syllabus: Teaching Yourself Advanced Code",
                         duration: "5:15 mins",
-                        url: "https://www.youtube.com/watch?v=k9WUpZqS_pU"
+                        url: "https://www.youtube.com/watch?v=ukLnPbIffxE"
                     },
                     {
                         type: "video_card",
                         title: "How to Read Raw Documentation When There Is No Tutorial",
                         duration: "4:45 mins",
-                        url: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+                        url: "https://www.youtube.com/watch?v=FwD6i24aR34"
                     },
                     {
                         type: "tips",
@@ -2647,13 +2647,13 @@ const modulesData = [
                         type: "video_card",
                         title: "Building Your First App Without a Tutorial",
                         duration: "6:00 mins",
-                        url: "https://www.youtube.com/watch?v=k9WUpZqS_pU"
+                        url: "https://www.youtube.com/watch?v=ukLnPbIffxE"
                     },
                     {
                         type: "video_card",
                         title: "The IT Student's Guide to Self-Paced Upskilling",
                         duration: "5:20 mins",
-                        url: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+                        url: "https://www.youtube.com/watch?v=FwD6i24aR34"
                     },
                     {
                         type: "tips",
