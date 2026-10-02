@@ -277,6 +277,35 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
             const loginData = await loginRes.json();
             assert.strictEqual(loginData.success, true);
         });
+
+        it('should authenticate admin with Admin@123 password and reject wrong passwords', async () => {
+            // Wrong password
+            const badLogin = await fetch(`${BASE_URL}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: 'admin',
+                    password: 'WrongPassword!',
+                    requested_role: 'admin'
+                })
+            });
+            assert.strictEqual(badLogin.status, 401, 'Bad password should return 401');
+
+            // Correct password Admin@123
+            const goodLogin = await fetch(`${BASE_URL}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: 'admin',
+                    password: 'Admin@123',
+                    requested_role: 'admin'
+                })
+            });
+            assert.strictEqual(goodLogin.status, 200, 'Valid admin login should return 200');
+            const goodData = await goodLogin.json();
+            assert.strictEqual(goodData.success, true);
+            assert.strictEqual(goodData.role, 'admin');
+        });
     });
 
     // 4. Data Retrieval & History Consistency
@@ -364,4 +393,47 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
             assert.strictEqual(verifyRes.status, 404, 'Deleted student must return 404');
         });
     });
+
+    // 5. Global System Settings & Demo Assessment Toggle
+    describe('5. Global System Settings & Demo Assessment Toggle', () => {
+        it('should get global settings with skip_assessment_waiting_time', async () => {
+            const res = await fetch(`${BASE_URL}/api/settings`);
+            assert.strictEqual(res.status, 200, 'Settings endpoint should return 200');
+            const data = await res.json();
+            assert.strictEqual(typeof data.skip_assessment_waiting_time, 'boolean');
+        });
+
+        it('should toggle skip_assessment_waiting_time on and off', async () => {
+            // Toggle ON
+            const postOn = await fetch(`${BASE_URL}/api/settings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ skip_assessment_waiting_time: true })
+            });
+            assert.strictEqual(postOn.status, 200);
+            const dataOn = await postOn.json();
+            assert.strictEqual(dataOn.skip_assessment_waiting_time, true);
+
+            // Verify via GET
+            const getOn = await fetch(`${BASE_URL}/api/settings`);
+            const getOnData = await getOn.json();
+            assert.strictEqual(getOnData.skip_assessment_waiting_time, true);
+
+            // Toggle back OFF
+            const postOff = await fetch(`${BASE_URL}/api/settings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ skip_assessment_waiting_time: false })
+            });
+            assert.strictEqual(postOff.status, 200);
+            const dataOff = await postOff.json();
+            assert.strictEqual(dataOff.skip_assessment_waiting_time, false);
+
+            // Verify via GET
+            const getOff = await fetch(`${BASE_URL}/api/settings`);
+            const getOffData = await getOff.json();
+            assert.strictEqual(getOffData.skip_assessment_waiting_time, false);
+        });
+    });
 });
+

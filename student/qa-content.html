@@ -549,25 +549,31 @@
             const programText = user.course ? `${user.year_level || '1st Year'} ${user.course}` : '1st Year BSIT';
             document.getElementById('assessment-header-subtitle').textContent = `Continuous 3-stage evaluation · ${programText}`;
 
-            // Fetch Assessment History and Module Progress
+            // Fetch Assessment History, Module Progress, and Global Settings
             let history = [];
             let progressRows = [];
+            let isDemoSkipEnabled = false;
             try {
-                const [histRes, progRes] = await Promise.all([
+                const [histRes, progRes, setRes] = await Promise.all([
                     fetch(`/api/students/${user.id}/history`),
-                    fetch(`/api/progress/${user.id}`)
+                    fetch(`/api/progress/${user.id}`),
+                    fetch(`/api/settings`)
                 ]);
                 if (histRes.ok) history = await histRes.json();
                 if (progRes.ok) progressRows = await progRes.json();
+                if (setRes.ok) {
+                    const settings = await setRes.json();
+                    isDemoSkipEnabled = !!settings.skip_assessment_waiting_time;
+                }
             } catch(e) {
-                console.error('History/Progress fetch error', e);
+                console.error('History/Progress/Settings fetch error', e);
             }
 
             cachedAssessmentHistory = history;
-            renderAssessmentLog(history, user, progressRows);
+            renderAssessmentLog(history, user, progressRows, isDemoSkipEnabled);
         });
 
-        function renderAssessmentLog(history, user, progressRows = []) {
+        function renderAssessmentLog(history, user, progressRows = [], isDemoSkipEnabled = false) {
             const container = document.getElementById('assessment-log-list');
             if (!container) return;
 
@@ -596,13 +602,13 @@
                 isFirstModCompleted = true;
             }
 
-            const isDemoOverrideUnlocked = localStorage.getItem(`demo_reassess_1_unlocked_${studentId}`) === 'true';
             const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
             let isReassess1Unlocked = false;
             let unlockDateStr = '';
             let daysRemaining = 7;
 
-            if (isDemoOverrideUnlocked) {
+            if (isDemoSkipEnabled && isFirstModCompleted) {
+                // If Demo Mode is turned ON globally by admin, unlock immediately
                 isReassess1Unlocked = true;
             } else if (isFirstModCompleted && firstModCompletedAt) {
                 const compTime = new Date(firstModCompletedAt).getTime();

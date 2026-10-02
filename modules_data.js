@@ -16,18 +16,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "Self-Directed Learning - Definition, Examples, Pros & Cons",
-                        "duration": "3:30 mins",
-                        "url": "https://www.youtube.com/watch?v=dygN8IlZn58"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "How to FOCUS for 10 Hours a Day? 5 Simple Tips That Work",
-                        "duration": "8 mins",
-                        "url": "https://www.youtube.com/watch?v=FKs0bA9tJm8"
-                    },
-                    {
                         "type": "text",
                         "content": "Welcome to your personalized MATRIX learning roadmap. This module is designed as an automated module guiding component to actively help you identify and improve your academic weaknesses. Let's dive into your results and unlock your full potential!\n\nYour assessment results are in, and you are officially a **Distributed Individual**! In this quadrant, the focus shifts toward self-directed learning. You take the initiative to access diverse resources such as digital platforms, books, and practical tools to facilitate personalized skill building and exploration.\n\nIn this quadrant, your primary objective is independent discovery. You are highly flexible, allowing yourself to tailor your educational path according to your specific interests and pace. When you sit down to study, you view it as your own individual responsibility, focusing intensely on the effort you invest to assimilate and report the knowledge you've accumulated.\n\nThis is a massive superpower in the BSIT program. Because you focus on flexible pacing, you excel at absorbing heavy technical fundamentals, from basic to advanced. You do not get easily distracted by group chatter when you need to memorize commands or trace logic. Your ability to navigate external digital platforms makes you incredibly reliable when it comes to open-ended technical challenges."
                     },
@@ -62,6 +50,18 @@ const modulesData = [
                             "Consider mapping out your own milestones: Breaking down your semester schedule into a chronological sequence can be a great way to study topics strictly from basic to advanced.",
                             "Set up a solo environment: To block out distractions, you could try setting up a dedicated, quiet digital workspace when reviewing foundational concepts."
                         ]
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Self-Directed Learning - Definition, Examples, Pros & Cons",
+                        "duration": "3:30 mins",
+                        "url": "https://www.youtube.com/watch?v=dygN8IlZn58"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to FOCUS for 10 Hours a Day? 5 Simple Tips That Work",
+                        "duration": "8 mins",
+                        "url": "https://www.youtube.com/watch?v=FKs0bA9tJm8"
                     }
                 ],
                 "questions": [
@@ -132,18 +132,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "Tuckman's Stages of Team Development",
-                        "duration": "3:53 mins",
-                        "url": "https://www.youtube.com/watch?v=9LwGE5o6V3s"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Good Team vs Bad Team by Simon Sinek",
-                        "duration": "2:20 mins",
-                        "url": "https://www.youtube.com/watch?v=wX-y0Yh3g1U"
-                    },
-                    {
                         "type": "text",
                         "content": "While your solo focus is excellent, attempting to navigate a diverse BSIT curriculum using only a single, uniform method creates severe friction in academic development. Your profile indicates that your absolute weakest area is the exact opposite of your dominant mode: the **Hierarchical Collective** quadrant. This mode involves group instruction conducted under structured leadership.\n\nWhy does this matter? Because the modern IT curriculum demands constant practical application and complex problem-solving. In the real world, there will not always be the freedom to just figure things out on your own. Often, a central figure, such as a teacher or coach, directs a group of learners toward a shared goal.\n\nIf you remain trapped exclusively in the Distributed Individual quadrant, you risk extreme academic frustration when faced with strict group workshops or standardized corporate training. Strict, unstructured solo formats are highly ineffective for teaching the fluid, fast-paced realities of agile software development where entire teams must align. You need to be able to pivot.\n\nStrengthening this non-dominant quadrant is about giving yourself options. The goal is to learn how to maintain consistent delivery and organization across a collective audience, rather than waiting to just do things at your own pace. By building these collaborative muscles, you transform from a student who strictly learns alone into an adaptable tech professional who can ensure that all members of the group acquire the same core competencies simultaneously."
                     },
@@ -169,6 +157,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Capstone Team Alignment",
                         "content": "You are assigned a massive Capstone project with three other classmates. The instructor requires everyone to follow strict group instruction under structured leadership to map out network architectures using standard Cisco Packet Tracer topologies. If you stay in your dominant mode, you might feel overwhelmed and try to do all the unstructured work yourself. But by recognizing the need for flexibility, you realize it is much more efficient to rely on your team's shared goals to ensure everyone masters the ACL restrictions together."
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Tuckman's Stages of Team Development",
+                        "duration": "3:53 mins",
+                        "url": "https://www.youtube.com/watch?v=9LwGE5o6V3s"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Good Team vs Bad Team by Simon Sinek",
+                        "duration": "2:20 mins",
+                        "url": "https://www.youtube.com/watch?v=wX-y0Yh3g1U"
                     }
                 ],
                 "questions": [
@@ -239,18 +239,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Form a Study Group That Actually Works",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=7h4G-g_i9qE"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "How to Be a Great Group Leader (or Team Member)",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=D-x24QfI9qY"
-                    },
-                    {
                         "type": "text",
                         "content": "To strengthen the Hierarchical Collective mode, you must embrace the idea that sometimes you must follow a central figure directing a group toward a shared goal. This involves stepping away from the solo textbook and actively participating in group instruction and standardized procedures.\n\nYou can build these habits without losing your solo-studying superpowers. Think of it as installing a new software update to your brain. You are simply adding the ability to maintain organization and consistency across a collective.\n\nBy deliberately practicing these habits, you will slowly migrate your learning mode toward the center of the matrix. This balanced approach ensures you can crush a solo exam when you need to, but also step up and seamlessly integrate with a development team when the project demands it.\n\nStart small. You do not need to become the most extroverted person in the room overnight. The focus should be on creating structured micro-interactions with your peers where you are forced to figure things out together under standard guidelines."
                     },
@@ -276,6 +264,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Late-Night Discord Alignment",
                         "content": "It is 11:30 PM, and your GUI application will not compile. The deadline is tomorrow. In the past, you would have spent hours researching obscure forums alone. Instead of giving up, you activate your new Hierarchical Collective habit: you message your class Discord server, share your screen, and ask if anyone else is following the professor's exact rubric for this error. You fix the error, proving you can generate knowledge through structured group alignment!"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Form a Study Group That Actually Works",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=7h4G-g_i9qE"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Be a Great Group Leader (or Team Member)",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=D-x24QfI9qY"
                     },
                     {
                         "type": "summary_card",
@@ -370,18 +370,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Learn Coding Fast and Never Forget It",
-                        "duration": "~12–15 mins",
-                        "url": "https://www.youtube.com/watch?v=lEpo36Vyxhc"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "How to FOCUS for 10 Hours a Day? 5 Simple Tips That Work",
-                        "duration": "~8 mins",
-                        "url": "https://www.youtube.com/watch?v=FKs0bA9tJm8"
-                    },
-                    {
                         "type": "text",
                         "content": "Welcome to your personalized MATRIX learning roadmap. This module is designed as an automated module guiding component to actively help you identify and improve your academic weaknesses. Let's dive into your results and unlock your full potential!\n\nYour assessment results are in, and you are officially a **Hierarchical Individual**! This means you naturally thrive in a traditional, top-down approach to education, involving a one-on-one relationship between an instructor and a learner. You are the kind of student who loves a clear syllabus, structured lectures, and knowing exactly what is expected of you on day one.\n\nIn this quadrant, your primary objective is direct knowledge transfer. You prefer an expert to guide you step-by-step through a specific curriculum to ensure you achieve absolute mastery of foundational concepts. When you sit down to study, you view it as your own individual responsibility, focusing intensely on the effort you invest to assimilate and report the knowledge you've accumulated.\n\nThis is a massive superpower in the BSIT program. Because you focus on sequence and structure, you excel at absorbing heavy technical fundamentals, from basic to advanced. You do not get easily distracted by group chatter when you need to memorize commands or trace logic. Your ability to lock in and absorb direct instructions makes you incredibly reliable when it comes to exams and standardized performance measurements."
                     },
@@ -416,6 +404,18 @@ const modulesData = [
                             "Consider mapping out the syllabus: Breaking down your semester schedule into a chronological sequence can be a great way to study topics strictly from basic to advanced.",
                             "Set up a solo environment: To block out distractions, you could try setting up a dedicated, quiet digital workspace when reviewing foundational concepts."
                         ]
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Learn Coding Fast and Never Forget It",
+                        "duration": "~12–15 mins",
+                        "url": "https://www.youtube.com/watch?v=lEpo36Vyxhc"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to FOCUS for 10 Hours a Day? 5 Simple Tips That Work",
+                        "duration": "~8 mins",
+                        "url": "https://www.youtube.com/watch?v=FKs0bA9tJm8"
                     }
                 ],
                 "questions": [
@@ -486,18 +486,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Become a Software Engineer | Degrees, Skills & Career Path",
-                        "duration": "~10 mins",
-                        "url": "https://www.youtube.com/watch?v=19xyRYdzSZA"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Applied Software Engineering 6: Soft Skills",
-                        "duration": "~16 mins",
-                        "url": "https://www.youtube.com/watch?v=7S0mz6BnPFE"
-                    },
-                    {
                         "type": "text",
                         "content": "While your solo focus is excellent, attempting to navigate a diverse BSIT curriculum using only a single, uniform method creates severe friction in academic development. Your profile indicates that your absolute weakest area is the exact opposite of your dominant mode: the **Distributed Collective** quadrant. This mode focuses entirely on peer-to-peer collaborative learning among equals.\n\nWhy does this matter? Because the modern IT curriculum demands constant practical application and complex problem-solving. In the real world, there will not always be a professor standing by to hand you a structured answer key. When a server crashes or your Python code breaks, you cannot just wait for the next lecture; you have to adapt immediately.\n\nIf you remain trapped exclusively in the Hierarchical Individual quadrant, you risk extreme academic frustration when faced with open-ended group projects or undocumented software bugs. Strict, traditional lecture formats are highly ineffective for teaching the fluid, fast-paced realities of agile software development. You need to be able to pivot.\n\nStrengthening this non-dominant quadrant is about giving yourself options. The goal is to learn how to generate knowledge through interaction, rather than waiting for it to be passed down from a single authority. By building these collaborative muscles, you transform from a student who simply waits for instructions into an adaptable tech professional who can troubleshoot dynamically alongside a team."
                     },
@@ -523,6 +511,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Whiteboard Capstone Brainstorming",
                         "content": "You are assigned a massive Capstone project with three other classmates. There is no step-by-step textbook for your specific system. If you stay in your dominant mode, you might feel overwhelmed and try to do all the structured work yourself. But by recognizing the need for flexibility, you realize it is much more efficient to rely on your team's diverse skills and brainstorm solutions together on a whiteboard, even if it feels unstructured at first."
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Become a Software Engineer | Degrees, Skills & Career Path",
+                        "duration": "~10 mins",
+                        "url": "https://www.youtube.com/watch?v=19xyRYdzSZA"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Applied Software Engineering 6: Soft Skills",
+                        "duration": "~16 mins",
+                        "url": "https://www.youtube.com/watch?v=7S0mz6BnPFE"
                     }
                 ],
                 "questions": [
@@ -593,18 +593,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "The Benefits of Peer Learning",
-                        "duration": "~3 mins",
-                        "url": "https://www.youtube.com/watch?v=dUhgg6HboSs"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Pair Programming Deep Dive: How Ping Pong TDD Boosts Code",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=QxMFiufmhh0"
-                    },
-                    {
                         "type": "text",
                         "content": "To strengthen the Distributed Collective mode, you must embrace the idea that knowledge is not passed down from a single authority but is instead generated through interaction. This involves stepping away from the solo textbook and actively sharing insights, asking questions, and solving problems together with your peers.\n\nYou can build these habits without losing your solo-studying superpowers. Think of it as installing a new software update to your brain. You are simply adding the ability to leverage the collective intelligence of the network to deepen your understanding.\n\nBy deliberately practicing these habits, you will slowly migrate your learning mode toward the center of the matrix. This balanced approach ensures you can crush a solo exam when you need to, but also step up and seamlessly integrate with a development team when the project demands it.\n\nStart small. You do not need to become the most extroverted person in the room overnight. The focus should be on creating structured micro-interactions with your peers where you are forced to figure things out together, without a professor acting as a safety net."
                     },
@@ -630,6 +618,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Late-Night Collaborative Screen Sharing",
                         "content": "It is 11:30 PM, and your GUI application will not compile. The deadline is tomorrow. Your professor is asleep, so direct knowledge transfer from an expert is impossible. Instead of giving up, you activate your new Distributed Collective habit: you message your class Discord server, share your screen, and debug the logic in real-time with a classmate. You fix the error, proving you can generate knowledge through interaction without needing a teacher!"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "The Benefits of Peer Learning",
+                        "duration": "~3 mins",
+                        "url": "https://www.youtube.com/watch?v=dUhgg6HboSs"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Pair Programming Deep Dive: How Ping Pong TDD Boosts Code",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=QxMFiufmhh0"
                     },
                     {
                         "type": "summary_card",
@@ -724,18 +724,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "The Power of Collaborative Learning",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=rWEwv_qibIY"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "How To Brainstorm Better",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=yA53yhiOe04"
-                    },
-                    {
                         "type": "text",
                         "content": "Welcome to your personalized MATRIX learning roadmap. This module is designed as an automated module guiding component to actively help you identify and improve your academic weaknesses. Let's dive into your results and unlock your full potential!\n\nYour assessment results are in, and you are officially a **Distributed Collective** learner! In this quadrant, the focus shifts toward peer-to-peer collaborative learning among equals. You take the initiative to generate knowledge through interaction, leveraging the collective intelligence of the network to deepen your understanding rather than waiting for it to be passed down from a single authority.\n\nIn this quadrant, your primary objective is shared discovery. You are highly flexible, allowing yourself to tackle open-ended group projects by sharing insights, asking questions, and solving problems dynamically alongside a team. When you sit down to study, you view it as a collaborative responsibility, focusing intensely on the effort you invest to brainstorm and crowdsource solutions.\n\nThis is a massive superpower in the BSIT program. Because you focus on interaction, you excel at absorbing complex practical applications when working in a group. You do not get easily distracted by changing variables when you need to troubleshoot logic on a whiteboard. Your ability to navigate team dynamics makes you incredibly reliable when it comes to open-ended technical challenges, like brainstorming backend structures for your MATRIX Capstone project."
                     },
@@ -770,6 +758,18 @@ const modulesData = [
                             "Consider mapping out team milestones: Breaking down your semester schedule into shared group objectives can be a great way to tackle topics dynamically with your peers.",
                             "Set up a collaborative environment: To avoid isolation, you could try setting up a dedicated digital workspace where you can freely share screens when reviewing core concepts."
                         ]
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "The Power of Collaborative Learning",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=rWEwv_qibIY"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How To Brainstorm Better",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=yA53yhiOe04"
                     }
                 ],
                 "questions": [
@@ -840,18 +840,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Read a Syllabus (And Why It Matters)",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=5rG4n0wR2e8"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "The Danger of Multitasking and Context Switching",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=qX9FSZJu448"
-                    },
-                    {
                         "type": "text",
                         "content": "While your collaborative focus is excellent, attempting to navigate a diverse BSIT curriculum using only a single, uniform method creates severe friction in academic development. Your profile indicates that your absolute weakest area is the exact opposite of your dominant mode: the **Hierarchical Individual** quadrant. This mode involves a traditional, top-down approach to education, involving a one-on-one relationship between an instructor and a learner.\n\nWhy does this matter? Because the modern IT curriculum demands mastery of foundational technical theories and strict compliance with standards. In the real world, there will not always be the freedom to just figure things out with a team. Often, you will need to absorb instruction delivered from an expert directly to a single student to ensure absolute mastery of basic concepts.\n\nIf you remain trapped exclusively in the Distributed Collective quadrant, you risk extreme academic frustration when faced with strict solo certification exams or rigid, chronological assignments. Strict, unstructured group formats are highly ineffective for teaching the rigid, sequential realities of theoretical memorization where you must rely heavily on defined rubrics and standardized performance measurements. You need to be able to pivot.\n\nStrengthening this non-dominant quadrant is about giving yourself options. The goal is to learn how to lock in and absorb direct instructions chronologically, rather than waiting to crowdsource an answer. By building these solo muscles, you transform from a student who strictly learns in groups into an adaptable tech professional who can ensure they master heavy technical fundamentals entirely on their own."
                     },
@@ -877,6 +865,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Individual Theory Certification Exam",
                         "content": "You are working on the theoretical documentation for your MATRIX Capstone project. The instructor requires everyone to pass a strict solo exam on the underlying Fuzzy K-Nearest Neighbor logic using a highly specific grading rubric. If you stay in your dominant mode, you might feel overwhelmed and try to crowdsource the study session with your team. But by recognizing the need for flexibility, you realize it is much more efficient to rely on the professor's direct lecture notes to ensure you master the foundational concepts individually."
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Read a Syllabus (And Why It Matters)",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=5rG4n0wR2e8"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "The Danger of Multitasking and Context Switching",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=qX9FSZJu448"
                     }
                 ],
                 "questions": [
@@ -947,18 +947,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Take Notes from a Textbook",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=WtJ-C5pW-9c"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "How to Break Down a Syllabus and Plan Your Semester",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=R9Z2L0n92g8"
-                    },
-                    {
                         "type": "text",
                         "content": "To strengthen the Hierarchical Individual mode, you must embrace the idea that sometimes you must follow instruction delivered from an expert directly to a single student. This involves stepping away from the shared whiteboard and actively participating in solo accountability and sequential processing.\n\nYou can build these habits without losing your team-player superpowers. Think of it as installing a new software update to your brain. You are simply adding the ability to maintain deep focus and follow clear metrics on your own.\n\nBy deliberately practicing these habits, you will slowly migrate your learning mode toward the center of the matrix. This balanced approach ensures you can seamlessly integrate with a development team when the project demands it, but also step up and crush a solo exam when you need to.\n\nStart small. You do not need to become a completely isolated hermit overnight. The focus should be on creating structured solo micro-sessions where you are forced to figure things out independently under standard guidelines."
                     },
@@ -984,6 +972,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Independent Database Troubleshooting",
                         "content": "It is 11:30 PM, and your local XAMPP database will not connect to your framework. The deadline is tomorrow. In the past, you would have spent hours messaging your Discord server for a quick fix. Instead of giving up, you activate your new Hierarchical Individual habit: you pull up the instructor's official step-by-step documentation, trace the logic chronologically, and verify your environment path variables. You fix the error, proving you can achieve mastery through structured solo accountability!"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Take Notes from a Textbook",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=WtJ-C5pW-9c"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Break Down a Syllabus and Plan Your Semester",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=R9Z2L0n92g8"
                     },
                     {
                         "type": "summary_card",
@@ -1078,18 +1078,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Take Notes in Class: The 5 Best Methods",
-                        "duration": "8:38 mins",
-                        "url": "https://www.youtube.com/watch?v=AffuwyJZTQQ"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Focus & Concentration: Crash Course Study Skills #5",
-                        "duration": "9:47 mins",
-                        "url": "https://www.youtube.com/watch?v=L_2JaFnkZ4o"
-                    },
-                    {
                         "type": "text",
                         "content": "Welcome to your personalized MATRIX learning roadmap. This module is designed as an automated module guiding component to actively help you identify and improve your academic weaknesses. Let's dive into your results and unlock your full potential!\n\nYour assessment results are in, and you are officially a **Hierarchical Collective** learner! This means you naturally thrive in environments featuring group instruction conducted under structured leadership. You are the kind of student who loves a traditional classroom setting where a professor lectures, the whole class moves at the exact same pace, and everyone shares the same academic milestones.\n\nIn this quadrant, you rely on a central figure, such as a teacher or coach, who directs a group of learners toward a shared goal. You prefer situations with consistent delivery and organization across a collective audience. When you sit down to study, you are most comfortable knowing that you and all members of your group are acquiring the same core competencies simultaneously.\n\nThis is a massive superpower in the BSIT program. Because you focus on structured group dynamics, you excel in large lecture halls and organized class projects. You do not get lost in the weeds because you always follow the instructor's pacing. Your ability to lock in on the central figure's guidance makes you incredibly reliable when it comes to keeping up with the class syllabus and participating in guided, collective discussions."
                     },
@@ -1114,6 +1102,18 @@ const modulesData = [
                             "Consider tracking class milestones: Keeping a checklist of the shared goals your professor sets for the week can help you stay perfectly synchronized with the group's pacing.",
                             "Engage in guided Q&A: When the teacher opens the floor to the group, try to ask questions that benefit everyone, ensuring the whole class acquires the same core competencies."
                         ]
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Take Notes in Class: The 5 Best Methods",
+                        "duration": "8:38 mins",
+                        "url": "https://www.youtube.com/watch?v=AffuwyJZTQQ"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Focus & Concentration: Crash Course Study Skills #5",
+                        "duration": "9:47 mins",
+                        "url": "https://www.youtube.com/watch?v=L_2JaFnkZ4o"
                     }
                 ],
                 "questions": [
@@ -1184,18 +1184,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to become a software engineer with no experience (Self-taught Roadmap)",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=puLSsuG1YE4"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "How to Learn to Code (With Accelerated Learning Techniques)",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=rEdqh8y6-X8"
-                    },
-                    {
                         "type": "text",
                         "content": "While your focus on guided group learning is excellent, attempting to navigate a diverse BSIT curriculum using only a single, uniform method creates severe friction in academic development. Your profile indicates that your absolute weakest area is the exact opposite of your dominant mode: the **Distributed Individual** quadrant. In this quadrant, the focus shifts entirely toward self-directed learning.\n\nWhy does this matter? Because the modern IT curriculum is not always neatly packaged into a guided classroom lecture. In the real world, you will face niche technical problems, obscure bugs, and specialized certifications that the rest of your class is not studying. You cannot always wait for a central figure to direct the group; sometimes, you have to break away from the pack and forge your own path.\n\nIf you remain trapped exclusively in the Hierarchical Collective quadrant, you risk extreme academic frustration when faced with independent, self-paced coding projects. Waiting for a professor to teach a concept to the whole group is highly ineffective when you need to fix a specific error right now. You need to be able to pivot and take control of your own pacing.\n\nStrengthening this non-dominant quadrant is about giving yourself options. The goal is to become an individual learner who takes the initiative to access diverse resources such as digital platforms, books, and practical tools to facilitate personalized skill building and exploration. By building these solo muscles, you transform from a student who simply waits for the class into an adaptable tech professional who is highly flexible, tailoring your educational path according to your specific interests and pace."
                     },
@@ -1221,6 +1209,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Independent Cisco Lab Routing",
                         "content": "You are working on a network configuration lab, and the professor is slowly walking the entire class through a basic Cisco IOS setup. You finish early, but instead of exploring further, you just sit and wait for the instructor to give the next command to the group. By recognizing the need for flexibility, you realize it is much more efficient to pull up an advanced Cisco documentation page on your own and start exploring independent routing protocols at your own pace."
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to become a software engineer with no experience (Self-taught Roadmap)",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=puLSsuG1YE4"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Learn to Code (With Accelerated Learning Techniques)",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=rEdqh8y6-X8"
                     }
                 ],
                 "questions": [
@@ -1291,18 +1291,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "Seven Proven Strategies to Master Self-Regulated Learning",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=PHAYScgLxRI"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "How To Read Documentations For Beginners",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=SWr6NW2osqc"
-                    },
-                    {
                         "type": "text",
                         "content": "To strengthen the Distributed Individual mode, you must embrace the idea that you do not need a central figure to tell you what to learn next. This involves stepping away from the synchronized class pacing and taking the initiative to access diverse resources such as digital platforms and practical tools on your own.\n\nYou can build these habits without losing your ability to excel in a lecture hall. Think of it as installing a new software update to your brain. You are simply adding the ability to facilitate personalized skill building and exploration outside of the classroom.\n\nBy deliberately practicing these habits, you will slowly migrate your learning mode toward the center of the matrix. This balanced approach ensures you can follow a professor's lecture perfectly when you need to, but also dive deep into a self-paced, independent programming project when the curriculum demands it.\n\nStart small. You do not need to drop out of your lectures to become a self-taught maverick overnight. The focus should be on creating structured micro-sessions where you are forced to explore topics that interest you, entirely independent of the class syllabus."
                     },
@@ -1328,6 +1316,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Independent Python GUI Project",
                         "content": "It is the weekend, and you are trying to build a custom application interface using Python classes and Tkinter. This specific GUI framework was not covered by your professor in the group lecture. Instead of giving up or waiting until Monday to ask the central figure to teach it to the class, you activate your new Distributed Individual habit: you independently pull up the official Tkinter documentation, watch a specialized digital tutorial, and tailor your learning to your specific pace. You build the application entirely on your own!"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Seven Proven Strategies to Master Self-Regulated Learning",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=PHAYScgLxRI"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How To Read Documentations For Beginners",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=SWr6NW2osqc"
                     },
                     {
                         "type": "summary_card",
@@ -1422,18 +1422,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "Self-Directed Learning",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=G3ssXZWOel4"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "The Feynman Technique: How to Learn Anything Fast by Thomas Frank",
-                        "duration": "5:48 mins",
-                        "url": "https://www.youtube.com/watch?v=_f-qkGJBPts"
-                    },
-                    {
                         "type": "text",
                         "content": "Welcome to your personalized MATRIX learning roadmap. This module is designed as an automated module guiding component to actively help you identify and improve your academic weaknesses. Let's dive into your results and unlock your full potential!\n\nYour assessment results are in, and you are officially a **Distributed Individual** learner! This means you naturally thrive in environments featuring self-directed exploration and independent discovery. You are the kind of student who loves taking the initiative to access diverse resources—like official documentation, forums, and practical tools—tailoring your educational path entirely to your own pace.\n\nIn this quadrant, you rely on your own solo accountability rather than waiting for group consensus or a central figure. You prefer situations where you can deeply focus on assimilating and reporting the knowledge you have accumulated on your own. When you sit down to study, you are most comfortable diving into raw code or complex technical logic entirely independently.\n\nThis is a massive superpower in the BSIT program. Because you focus on self-directed learning, you excel at absorbing heavy backend fundamentals, like configuring XAMPP databases or tracing Python logic. You do not get lost in the weeds because you always follow your own optimized pacing. Your ability to lock in on independent research makes you incredibly reliable when it comes to tackling open-ended technical challenges without needing someone to hold your hand.\n\nHowever, relying strictly on this solo, independent mode is only one piece of the puzzle. Recognizing your baseline characteristics is the first step toward becoming a truly flexible, unstoppable IT professional."
                     },
@@ -1454,6 +1442,18 @@ const modulesData = [
                             "Map your own milestones: Break down your semester schedule into a chronological sequence so you can master topics strictly from basic to advanced.",
                             "Optimize your solo environment: Configure a dedicated, quiet workspace for your laptop to tune out distractions when reviewing foundational concepts."
                         ]
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Self-Directed Learning",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=G3ssXZWOel4"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "The Feynman Technique: How to Learn Anything Fast by Thomas Frank",
+                        "duration": "5:48 mins",
+                        "url": "https://www.youtube.com/watch?v=_f-qkGJBPts"
                     }
                 ],
                 "questions": [
@@ -1524,18 +1524,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Survive Group Projects",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=2eE-4Hj2a2U"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Teamwork: The Secret to Successful Group Projects",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=QO-Q-W92rD4"
-                    },
-                    {
                         "type": "text",
                         "content": "While your focus on independent learning is excellent, attempting to navigate a diverse BSIT curriculum using only a single, uniform method creates severe friction in academic development. Your profile indicates that your absolute weakest area is the exact opposite of your dominant mode: the **Distributed Collective** quadrant. In this quadrant, the focus shifts entirely toward peer-to-peer collaborative learning among equals.\n\nWhy does this matter? Because the modern IT curriculum is not always neatly packaged into solo assignments. In the real world, agile software development and complex system integrations require you to leverage the collective intelligence of a network. You cannot always wait to figure things out alone; sometimes, you have to actively generate knowledge through interaction and brainstorm dynamically alongside a team.\n\nIf you remain trapped exclusively in the Distributed Individual quadrant, you risk extreme academic frustration when faced with open-ended group projects or collaborative debugging sessions. Waiting to master a concept entirely on your own is highly ineffective when a team needs you to brainstorm a whiteboard solution right now. You need to be able to pivot and integrate with your peers.\n\nStrengthening this non-dominant quadrant is about giving yourself options. The goal is to become a collaborative learner who takes the initiative to share insights, ask questions, and solve problems dynamically. By building these teamwork muscles, you transform from a student who simply codes in isolation into an adaptable tech professional who is highly flexible, ensuring you can navigate complex team dynamics and crowdsource solutions."
                     },
@@ -1561,6 +1549,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Overcoming the Solo Debugging Trap",
                         "content": "You are developing a project involving PHP database routing. You encounter a persistent 500 Internal Server Error. Instead of spending six hours reading raw documentation alone and risking burnout, you recognize the need for collaborative action. You jump into a voice channel with your capstone group, share your screen, and crowdsource the debugging process. Together, you spot a missing semicolon in two minutes, moving far ahead of your isolated pace."
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Survive Group Projects",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=2eE-4Hj2a2U"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Teamwork: The Secret to Successful Group Projects",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=QO-Q-W92rD4"
                     }
                 ],
                 "questions": [
@@ -1631,6 +1631,10 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
+                        "type": "text",
+                        "content": "Congratulations on finishing this module! Taking the time to understand your own cognitive habits is a massive step forward in your BSIT journey.\n\nMastering your learning matrix is not about abandoning your strengths; it is about expanding your adaptability. By identifying your natural reliance on distributed, individual learning and deliberately practicing distributed, collective habits, you are preparing yourself for the dynamic, team-based reality of the tech industry. Keep practicing these small shifts, and your ability to tackle any academic or professional challenge will multiply!"
+                    },
+                    {
                         "type": "video_card",
                         "title": "The Feynman Technique 2.0 (Peer Teaching)",
                         "duration": "Video Lesson",
@@ -1641,10 +1645,6 @@ const modulesData = [
                         "title": "How to Study in a Group",
                         "duration": "Video Lesson",
                         "url": "https://www.youtube.com/watch?v=U6_XbZ4Jk6U"
-                    },
-                    {
-                        "type": "text",
-                        "content": "Congratulations on finishing this module! Taking the time to understand your own cognitive habits is a massive step forward in your BSIT journey.\n\nMastering your learning matrix is not about abandoning your strengths; it is about expanding your adaptability. By identifying your natural reliance on distributed, individual learning and deliberately practicing distributed, collective habits, you are preparing yourself for the dynamic, team-based reality of the tech industry. Keep practicing these small shifts, and your ability to tackle any academic or professional challenge will multiply!"
                     },
                     {
                         "type": "summary_card",
@@ -1739,18 +1739,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "5 Tips for Effective Study Groups",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=1x2p2Q-3O8M"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Active Learning: Why You Shouldn't Just Read Your Textbook",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=LqUueb2lEqE"
-                    },
-                    {
                         "type": "text",
                         "content": "Welcome to your personalized MATRIX learning roadmap. This module is designed as an automated module guiding component to actively help you identify and improve your academic weaknesses. Let's dive into your results and unlock your full potential!\n\nYour assessment results are in, and you are officially a **Distributed Collective** learner! This means you naturally thrive in environments featuring peer-to-peer collaborative learning among equals. You are the kind of student who loves taking the initiative to share insights, ask questions, and solve problems dynamically—tailoring your educational path alongside your peers.\n\nIn this quadrant, you rely on shared discovery and group interaction rather than isolated study or strictly waiting for top-down instructions. You prefer situations where you can generate knowledge through active discussion and collaborative troubleshooting. When you sit down to learn, you are most comfortable jumping into group chats, sharing screens, and crowdsourcing technical solutions.\n\nThis is a massive superpower in the BSIT program. Because you focus on collaborative learning, you excel at agile teamwork, group debugging, and open-ended capstone projects. You do not get stuck in solo isolation because you know how to leverage collective intelligence. Your ability to connect and brainstorm dynamically makes you incredibly effective when navigating fast-paced development environments.\n\nHowever, relying strictly on this collective mode is only one piece of the puzzle. Recognizing your baseline characteristics is the first step toward becoming a truly flexible, well-rounded IT professional."
                     },
@@ -1771,6 +1759,18 @@ const modulesData = [
                             "Engage in peer reviews: Exchange code with classmates to review logic, spot syntax errors, and learn alternative coding approaches.",
                             "Lead group discussions: Initiate collaborative study sessions before major exams or project milestones to crowdsource solutions and solidify your understanding."
                         ]
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "5 Tips for Effective Study Groups",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=1x2p2Q-3O8M"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Active Learning: Why You Shouldn't Just Read Your Textbook",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=LqUueb2lEqE"
                     }
                 ],
                 "questions": [
@@ -1841,18 +1841,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Study for Standardized Tests",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=V-UvSKe8jW4"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Why You Need a Strict Study Routine",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=33K16gJ3_n8"
-                    },
-                    {
                         "type": "text",
                         "content": "While your focus on collaborative learning is excellent, attempting to navigate a diverse BSIT curriculum using only group interaction creates friction when solo focus is required. Your profile indicates that your absolute weakest area is the exact opposite of your dominant mode: the **Distributed Individual** quadrant. In this quadrant, the focus shifts entirely toward self-directed exploration and independent discovery.\n\nWhy does this matter? Because IT work often demands deeply focused, independent problem-solving. You cannot always rely on a study group or screen-sharing session; sometimes, you must sit down, read dense technical documentation, trace complex logic, and configure systems entirely on your own.\n\nIf you remain trapped exclusively in the Distributed Collective quadrant, you risk feeling stuck or unproductive when given individual tasks or solo coding assignments. Waiting for group consensus when you need to solve an isolated bug alone slows down your personal growth. You need to be able to lock in independently.\n\nStrengthening this non-dominant quadrant gives you self-reliance. By developing independent study habits, you complement your teamwork skills with deep technical autonomy—ensuring you can tackle complex tasks both as a team player and as a capable solo developer."
                     },
@@ -1878,6 +1866,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Independent API Endpoint Configuration",
                         "content": "You are assigned an individual project configuring API endpoints in Laravel. Instead of waiting for a study group session to begin, you schedule a dedicated personal interest block, open the official Laravel documentation, and follow the setup guide step-by-step. By tackling the setup autonomously, you build personal confidence and gain a deep understanding of backend routing that you can later share with your peers."
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Study for Standardized Tests",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=V-UvSKe8jW4"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Why You Need a Strict Study Routine",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=33K16gJ3_n8"
                     }
                 ],
                 "questions": [
@@ -1948,18 +1948,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Create a Study Schedule You'll Actually Stick To",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=5_321Yc90-8"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Mastering Time Management for College Students",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=iNDjG9E-3rE"
-                    },
-                    {
                         "type": "text",
                         "content": "To become a well-rounded IT professional, you need a strategy that leverages your strengths in Distributed Collective learning while systematically strengthening your Distributed Individual skills. Follow these practical steps to achieve balance across all your learning activities.\n\nMastering your learning matrix is not about abandoning your strengths; it is about expanding your adaptability. By leveraging your natural talent for team collaboration while actively cultivating self-directed study habits, you prepare yourself for the fast-paced, versatile demands of the tech industry. Keep practicing these habits, and your ability to tackle any technical or academic challenge will multiply!"
                     },
@@ -1971,6 +1959,18 @@ const modulesData = [
                             "2. Solve Bugs Autonomously First: When encountering errors, spend time exploring solution documentation on your own before reaching out to your network for debugging assistance.",
                             "3. Share Individual Findings with the Group: Use your team channels to present solutions you discovered independently, bridging your solo learning back into collective growth."
                         ]
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Create a Study Schedule You'll Actually Stick To",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=5_321Yc90-8"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Mastering Time Management for College Students",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=iNDjG9E-3rE"
                     },
                     {
                         "type": "summary_card",
@@ -2064,18 +2064,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Learn to Code FAST",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=mw0LGzIKvoo"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "How To Self Study Technical Things",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=UkBq1waNmtQ"
-                    },
-                    {
                         "type": "text",
                         "content": "Welcome to your personalized MATRIX learning roadmap. This module is designed as an automated module guiding component to actively help you identify and improve your academic weaknesses. Let's dive into your results and unlock your full potential!\n\nYour assessment results are in, and you are officially a **Hierarchical Individual**! This means you naturally thrive in a traditional, top-down approach to education, involving a one-on-one relationship between an instructor and a learner. You are the kind of student who loves a clear syllabus, structured lectures, and knowing exactly what is expected of you on day one.\n\nIn this quadrant, your primary objective is direct knowledge transfer. You prefer an expert to guide you step-by-step through a specific curriculum to ensure you achieve absolute mastery of foundational concepts. When you sit down to study, you view it as your own individual responsibility, focusing intensely on the effort you invest to assimilate and report the knowledge you've accumulated.\n\nThis is a massive superpower in the BSIT program. Because you focus on sequence and structure, you excel at absorbing heavy technical fundamentals, from basic to advanced. You do not get easily distracted by group chatter when you need to memorize commands or trace logic. Your ability to lock in and absorb direct instructions makes you incredibly reliable when it comes to exams and standardized performance measurements."
                     },
@@ -2106,6 +2094,18 @@ const modulesData = [
                             "Build a sequential study plan: Break down complex topics—like networking protocols or database structures—into step-by-step checklists.",
                             "Create a focus zone: Establish a quiet, distraction-free environment when tackling foundational theories or heavy coding syntax."
                         ]
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Learn to Code FAST",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=mw0LGzIKvoo"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How To Self Study Technical Things",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=UkBq1waNmtQ"
                     }
                 ],
                 "questions": [
@@ -2176,18 +2176,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "The 5 Soft Skills You Need",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=iIF90HqoB9U"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "HELP! I have a GROUP PROJECT!",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=ufWEAggchcE"
-                    },
-                    {
                         "type": "text",
                         "content": "While your independent focus is a superpower, navigating a modern IT curriculum solely through solo effort creates friction. Your assessment shows that your least dominant area is the **Distributed Collective** quadrant, which revolves around peer-to-peer collaboration and unstructured group learning.\n\nWhy does this matter? Because the tech industry is inherently collaborative. When you are debugging a complex PHP backend or troubleshooting a server error, there won't always be a professor or a manual to give you the exact answer. You have to adapt and solve problems dynamically alongside a team of other students.\n\nIf you stay strictly in the Hierarchical Individual quadrant, you may struggle with agile group projects or open-ended development tasks. Rigid, step-by-step studying doesn't always apply to the fluid nature of real-world software development.\n\nStrengthening this opposite quadrant gives you flexibility. The goal is to learn how to generate solutions through peer interaction rather than waiting for top-down instructions. Building these collaborative skills transforms you from a student who follows the manual into an agile developer who can innovate with a team."
                     },
@@ -2213,6 +2201,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Brainstorming Framework Errors with Peers",
                         "content": "You and your team are developing a web application using Laravel. The framework is throwing an error that isn't covered in your syllabus. If you stay in your dominant mode, you might spend hours reading documentation alone and feeling frustrated. By pivoting to a flexible mindset, you decide to share your screen with your groupmates, brainstorm together, and solve the bug in minutes."
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "The 5 Soft Skills You Need",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=iIF90HqoB9U"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "HELP! I have a GROUP PROJECT!",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=ufWEAggchcE"
                     }
                 ],
                 "questions": [
@@ -2283,18 +2283,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "Group Work in an Online Setting | Remote & Online Learning Tips",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=U8u_Rwu-F2s"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Pair Programming Explained Boost Code Quality & Teamwork",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=42znbhm-KKE"
-                    },
-                    {
                         "type": "text",
                         "content": "To develop your Distributed Collective skills, you need to practice generating knowledge through teamwork. This means occasionally putting down the textbook and actively discussing, questioning, and building with your peers.\n\nYou can build these habits without losing your solo-studying superpowers. Think of it as installing a new software update to your brain. You are simply adding the ability to leverage the collective intelligence of the network to deepen your understanding.\n\nBy deliberately practicing these habits, you will slowly migrate your learning mode toward the center of the matrix. This balanced approach ensures you can crush a solo exam when you need to, but also step up and seamlessly integrate with a development team when the project demands it.\n\nStart small. You do not need to become the most extroverted person in the room overnight. The focus should be on creating structured micro-interactions with your peers where you are forced to figure things out together, without a professor acting as a safety net."
                     },
@@ -2320,6 +2308,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Late-Night Capstone Defense Resolution",
                         "content": "It’s the night before a major system defense. A critical feature in your application is failing, and the professor is unavailable. Instead of panicking in isolation, you activate your Distributed Collective skills: you hop on a group call with your capstone team, collaboratively trace the logic, and patch the system together. You successfully generated a solution through interaction!"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Group Work in an Online Setting | Remote & Online Learning Tips",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=U8u_Rwu-F2s"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Pair Programming Explained Boost Code Quality & Teamwork",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=42znbhm-KKE"
                     },
                     {
                         "type": "summary_card",
@@ -2414,18 +2414,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "Note-Taking Tips for College",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=_rNzHn9S5tk"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "How to Take Notes in College | Note Taking Tips for Readings, Lectures, Exams",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=QCfXg29A3Ao"
-                    },
-                    {
                         "type": "text",
                         "content": "Welcome to your personalized MATRIX learning roadmap. This module is designed as an automated module guiding component to actively help you identify and improve your academic weaknesses. Let's dive into your results and unlock your full potential!\n\nYour assessment results are in, and you are officially a **Hierarchical Collective** learner! This means you naturally thrive in environments featuring group instruction conducted under structured leadership. You are the kind of student who loves a traditional classroom setting where a professor lectures, the whole class moves at the exact same pace, and everyone shares the same academic milestones.\n\nIn this quadrant, you rely on a central figure, such as a teacher or coach, who directs a group of learners toward a shared goal. You prefer situations with consistent delivery and organization across a collective audience. When you sit down to study, you are most comfortable knowing that you and all members of your group are acquiring the same core competencies simultaneously.\n\nThis is a massive superpower in the BSIT program. Because you focus on structured group dynamics, you excel in large lecture halls and organized class projects. You do not get lost in the weeds because you always follow the instructor's pacing. Your ability to lock in on the central figure's guidance makes you incredibly reliable when it comes to keeping up with the class syllabus and participating in guided, collective discussions.\n\nHowever, relying strictly on this teacher-led, group-dependent mode is only one piece of the puzzle. Recognizing your baseline characteristics is the first step toward becoming a truly flexible, unstoppable IT professional."
                     },
@@ -2446,6 +2434,18 @@ const modulesData = [
                             "2. Clarify milestones: Always ask the instructor to explicitly define the expected outcome for each phase of a group project so you can track the collective progress.",
                             "3. Stay synchronized: Form a study circle that strictly follows the provided syllabus to reinforce the shared learning experience."
                         ]
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Note-Taking Tips for College",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=_rNzHn9S5tk"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Take Notes in College | Note Taking Tips for Readings, Lectures, Exams",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=QCfXg29A3Ao"
                     }
                 ],
                 "questions": [
@@ -2516,18 +2516,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "Don't WASTE Your Time.. Learn to Code the RIGHT Way!",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=21JrQF1QmDE"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Self-Directed Learning - Definition, Examples, Pros & Cons",
-                        "duration": "3:30 mins",
-                        "url": "https://www.youtube.com/watch?v=dygN8IlZn58"
-                    },
-                    {
                         "type": "text",
                         "content": "While your focus on guided group learning is excellent, attempting to navigate a diverse BSIT curriculum using only a single, uniform method creates severe friction in academic development. Your profile indicates that your absolute weakest area is the exact opposite of your dominant mode: the **Distributed Individual** quadrant. In this quadrant, the focus shifts entirely toward self-directed learning.\n\nWhy does this matter? Because the modern IT curriculum is not always neatly packaged into a guided classroom lecture. In the real world, you will face niche technical problems, obscure bugs, and specialized certifications that the rest of your class is not studying. You cannot always wait for a central figure to direct the group; sometimes, you have to break away from the pack and forge your own path.\n\nIf you remain trapped exclusively in the Hierarchical Collective quadrant, you risk extreme academic frustration when faced with independent, self-paced coding projects. Waiting for a professor to teach a concept to the whole group is highly ineffective when you need to fix a specific error right now. You need to be able to pivot and take control of your own pacing.\n\nStrengthening this non-dominant quadrant is about giving yourself options. The goal is to become an individual learner who takes the initiative to access diverse resources such as digital platforms, books, and practical tools to facilitate personalized skill building and exploration. By building these solo muscles, you transform from a student who simply waits for the class into an adaptable tech professional who is highly flexible, tailoring your educational path according to your specific interests and pace."
                     },
@@ -2553,6 +2541,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Independent GUI Exploration",
                         "content": "You are developing a project involving Python classes and a Tkinter GUI. The professor has only provided a basic reviewer for standard Python loops and functions, and the class is not scheduled to cover GUI development. Instead of waiting for a guided lecture or changing your project scope, you recognize the need for independent action. You find the official Tkinter documentation, watch a solo tutorial, and build the interface independently, moving far ahead of the synchronized class pace."
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Don't WASTE Your Time.. Learn to Code the RIGHT Way!",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=21JrQF1QmDE"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Self-Directed Learning - Definition, Examples, Pros & Cons",
+                        "duration": "3:30 mins",
+                        "url": "https://www.youtube.com/watch?v=dygN8IlZn58"
                     }
                 ],
                 "questions": [
@@ -2623,18 +2623,6 @@ const modulesData = [
                 "estimated_time": "15 min",
                 "content_blocks": [
                     {
-                        "type": "video_card",
-                        "title": "How to Study at University - Independent Study Skills",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=ZwLrC9R-1yE"
-                    },
-                    {
-                        "type": "video_card",
-                        "title": "Flutter - How To Read Documentation As A New Developer (For Beginners)",
-                        "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=gzVJwBd-oEs"
-                    },
-                    {
                         "type": "text",
                         "content": "To strengthen the Distributed Individual mode, you must embrace the idea that you do not need a central figure to tell you what to learn next. This involves stepping away from the synchronized class pacing and taking the initiative to access diverse resources such as digital platforms and practical tools on your own.\n\nYou can build these habits without losing your ability to excel in a lecture hall. Think of it as installing a new software update to your brain. You are simply adding the ability to facilitate personalized skill building and exploration outside of the classroom.\n\nBy deliberately practicing these habits, you will slowly migrate your learning mode toward the center of the matrix. This balanced approach ensures you can follow a professor's lecture perfectly when you need to, but also dive deep into a self-paced, independent programming project when the curriculum demands it.\n\nStart small. You do not need to drop out of your lectures to become a self-taught maverick overnight. The focus should be on creating structured micro-sessions where you are forced to explore topics that interest you, entirely independent of the class syllabus."
                     },
@@ -2660,6 +2648,18 @@ const modulesData = [
                         "type": "scenario",
                         "title": "Real-Life Scenario: Independent Health Center Database Optimization",
                         "content": "You are assigned to build a localized health center management system. The class is moving slowly through basic database concepts. Instead of restricting your progress to the group's pace, you take the initiative to independently research advanced inventory algorithms and implement them into your system over the weekend, utilizing raw documentation to refine the logic on your own."
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "How to Study at University - Independent Study Skills",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=ZwLrC9R-1yE"
+                    },
+                    {
+                        "type": "video_card",
+                        "title": "Flutter - How To Read Documentation As A New Developer (For Beginners)",
+                        "duration": "Video Lesson",
+                        "url": "https://www.youtube.com/watch?v=gzVJwBd-oEs"
                     },
                     {
                         "type": "summary_card",

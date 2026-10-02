@@ -3430,7 +3430,7 @@
         }
 
         /* --- VICTORY & NEXT ASSESSMENT MODAL CONTROLS --- */
-        function showVictoryModal() {
+        async function showVictoryModal() {
             const allModuleQuestions = (currentActiveModule && currentActiveModule.questions) || [];
             const isFinal = currentStepType === 'final' || (allModuleQuestions.length === 0);
             const badgeBox = document.getElementById('victory-badge-box');
@@ -3440,6 +3440,16 @@
             const iconBox = document.getElementById('victory-icon-box');
 
             if (isFinal) {
+                // Fetch Global System Settings
+                let isDemoSkipEnabled = false;
+                try {
+                    const sRes = await fetch('/api/settings');
+                    if (sRes.ok) {
+                        const sData = await sRes.json();
+                        isDemoSkipEnabled = !!sData.skip_assessment_waiting_time;
+                    }
+                } catch(e) {}
+
                 iconBox.innerHTML = `
                     <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(216, 166, 26, 0.12); border: 1.5px solid rgba(216, 166, 26, 0.35); display: flex; align-items: center; justify-content: center; margin: 0 auto; color: var(--matrix-yellow);">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3497,6 +3507,18 @@
                 `;
 
                 const buttonsWrap = document.getElementById('victory-action-buttons-wrap');
+                let demoButtonHtml = '';
+                if (isDemoSkipEnabled) {
+                    demoButtonHtml = `
+                        <button style="width: 100%; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-weight: 700; padding: 11px 20px; border-radius: 10px; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;" onclick="handleDemoUnlockAndTake()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                            <span>Take Assessment Now (Demo Mode)</span>
+                        </button>
+                    `;
+                }
+
                 buttonsWrap.innerHTML = `
                     <button class="btn-victory-continue" style="background: var(--matrix-yellow); color: #060f17; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 8px;" onclick="handleNavigateToAssessments()">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3507,12 +3529,7 @@
                         </svg>
                         <span>View Assessment Schedule &rarr;</span>
                     </button>
-                    <button style="width: 100%; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-weight: 700; padding: 11px 20px; border-radius: 10px; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;" onclick="handleDemoUnlockAndTake()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                        </svg>
-                        <span>Take Assessment Now (Demo Mode)</span>
-                    </button>
+                    ${demoButtonHtml}
                     <button class="btn-victory-stay" onclick="handleVictoryContinue()">
                         Back to All Modules
                     </button>

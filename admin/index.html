@@ -213,12 +213,12 @@
         document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorMsg = document.getElementById('errorMessage');
             
-            // Retaining the local admin/admin fallback for the admin portal
-            if (username === 'admin' && password === 'admin') {
+            // Updated secure admin authentication credentials
+            if ((username === 'admin' || username.toLowerCase() === 'admin@copperstone.edu') && password === 'Admin@123') {
                 errorMsg.style.display = 'none';
                 localStorage.setItem('currentUser', JSON.stringify({ role: 'admin', name: 'Administrator' }));
                 window.location.href = 'a-dashboard.html';

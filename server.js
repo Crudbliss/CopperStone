@@ -328,6 +328,15 @@ db.serialize(() => {
         FOREIGN KEY(teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
     )`);
 
+    // 15. System Global Settings (Demo skip waiting toggle, etc.)
+    db.run(`CREATE TABLE IF NOT EXISTS system_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, () => {
+        db.run(`INSERT OR IGNORE INTO system_settings (key, value) VALUES ('skip_assessment_waiting_time', '0')`);
+    });
+
     // 15. Student Module Progress
     db.run(`CREATE TABLE IF NOT EXISTS student_module_progress (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1242,6 +1251,16 @@ app.post('/api/login', async (req, res) => {
             }
             return res.status(404).json({ error: 'Teacher not found' });
         });
+    } else if (requested_role === 'admin') {
+        if ((normalizedEmail === 'admin' || normalizedEmail === 'admin@copperstone.edu') && password === 'Admin@123') {
+            return res.json({
+                success: true,
+                role: 'admin',
+                user: { id: 0, name: 'Administrator', email: 'admin@copperstone.edu', role: 'admin' }
+            });
+        } else {
+            return res.status(401).json({ error: 'Invalid admin credentials' });
+        }
     } else {
         // Fallback or missing role
         return res.status(400).json({ error: 'Invalid login portal' });
@@ -2770,6 +2789,40 @@ app.put('/api/progress/:student_id/:module_id', (req, res) => {
                     res.json({ success: true, progress_id: this.lastID });
                 });
         }
+    });
+});
+
+// --- SYSTEM SETTINGS API (Demo assessment unlock toggle) ---
+// GET /api/settings - Retrieve global configuration
+app.get('/api/settings', (req, res) => {
+    db.all(`SELECT key, value FROM system_settings`, (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        const settings = {
+            skip_assessment_waiting_time: false
+        };
+        (rows || []).forEach(r => {
+            if (r.key === 'skip_assessment_waiting_time') {
+                settings.skip_assessment_waiting_time = (r.value === '1' || r.value === 'true');
+            } else {
+                settings[r.key] = r.value;
+            }
+        });
+        res.json(settings);
+    });
+});
+
+// POST /api/settings - Update global settings
+app.post('/api/settings', (req, res) => {
+    const { skip_assessment_waiting_time } = req.body || {};
+    const valStr = (skip_assessment_waiting_time === true || skip_assessment_waiting_time === 'true' || skip_assessment_waiting_time === '1' || skip_assessment_waiting_time === 1) ? '1' : '0';
+    
+    db.run(`INSERT INTO system_settings (key, value, updated_at) VALUES ('skip_assessment_waiting_time', ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP`, [valStr], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({
+            success: true,
+            skip_assessment_waiting_time: valStr === '1'
+        });
     });
 });
 

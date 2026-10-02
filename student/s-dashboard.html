@@ -1117,11 +1117,12 @@
             let activityItems = [];
 
             try {
-                // Fetch modules, history, and announcements in parallel
-                const [mRes, hRes, aRes] = await Promise.all([
+                // Fetch modules, history, announcements, and global settings in parallel
+                const [mRes, hRes, aRes, sRes] = await Promise.all([
                     fetch('/api/modules').catch(() => null),
                     fetch('/api/students/' + user.id + '/history').catch(() => null),
-                    fetch('/api/announcements?target_audience=Student').catch(() => null)
+                    fetch('/api/announcements?target_audience=Student').catch(() => null),
+                    fetch('/api/settings').catch(() => null)
                 ]);
 
                 let modules = [];
@@ -1132,6 +1133,14 @@
 
                 let announcements = [];
                 if (aRes && aRes.ok) announcements = await aRes.json();
+
+                let isDemoSkipEnabled = false;
+                if (sRes && sRes.ok) {
+                    try {
+                        const sData = await sRes.json();
+                        isDemoSkipEnabled = !!sData.skip_assessment_waiting_time;
+                    } catch(e) {}
+                }
 
                 // 1. Pending Assessment Session (Urgent To-Do)
                 const studentProfile = JSON.parse(localStorage.getItem('studentProfile') || '{}');
@@ -1155,12 +1164,13 @@
                     isFirstModDone = true;
                 }
 
-                const isDemoUnlock = localStorage.getItem(`demo_reassess_1_unlocked_${user.id}`) === 'true';
                 const ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
-                let isReassessReady = isDemoUnlock;
+                let isReassessReady = false;
                 let unlockDateText = '';
 
-                if (isFirstModDone && firstModCompAt) {
+                if (isDemoSkipEnabled && isFirstModDone) {
+                    isReassessReady = true;
+                } else if (isFirstModDone && firstModCompAt) {
                     const compMs = parseDateInput(firstModCompAt).getTime();
                     const unlockMs = compMs + ONE_WEEK;
                     unlockDateText = formatNotifDate(unlockMs);
