@@ -287,8 +287,10 @@
         .switch input:checked + .slider:before {
             transform: translateX(22px);
         }
-            background: var(--bg-base);
-            margin-top: 16px;
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .data-table {
@@ -507,10 +509,11 @@
                 </div>
                 
                 <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px;">
-                    Control whether students must observe the <strong>7-day spaced learning period</strong> before unlocking subsequent reassessments, or allow instant testing in Demo mode.
+                    Control whether students must observe the <strong>7-day spaced learning period</strong> before unlocking subsequent reassessments, or allow instant testing.
                 </p>
 
-                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                <!-- 1. The Toggle Switch (Separate) -->
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px;">
                     <div>
                         <div style="font-size: 13.5px; font-weight: 700; color: #ffffff;">Demo Mode: Instant Assessment Unlock</div>
                         <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
@@ -523,7 +526,28 @@
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div id="settings-save-feedback" style="display: none; font-size: 12px; color: var(--matrix-green); margin-top: 10px; text-align: right;">✓ System settings saved successfully</div>
+
+                <!-- 2. The Action Button (Separate!) -->
+                <div style="background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                    <div>
+                        <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                            <span>Skip Student Waiting Time</span>
+                        </div>
+                        <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
+                            Makes everyone's assessment ready to answer right now from the get-go.
+                        </div>
+                    </div>
+                    <button type="button" id="btn-skip-waiting-now" onclick="handleSkipWaitingButtonClick()" style="background: #38bdf8; color: #060f17; font-weight: 800; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; white-space: nowrap; transition: all 0.2s; box-shadow: 0 2px 8px rgba(56, 189, 248, 0.25);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                        <span>Skip Waiting Time</span>
+                    </button>
+                </div>
+                <div id="settings-save-feedback" style="display: none; font-size: 12px; color: var(--matrix-green); margin-top: 10px; text-align: right;"></div>
             </div>
 
             <!-- Basic Stats -->
@@ -699,12 +723,82 @@
                     const fb = document.getElementById('settings-save-feedback');
                     if (fb) {
                         fb.style.display = 'block';
-                        fb.textContent = isChecked ? '✓ Demo Mode enabled: Assessments unlock immediately' : '✓ Normal Mode enabled: 7-day waiting schedule active';
+                        fb.style.color = isChecked ? 'var(--matrix-green)' : 'var(--text-muted)';
+                        fb.textContent = isChecked ? '✓ Demo Mode enabled: 7-day waiting period bypassed' : '✓ Normal Mode enabled: 7-day waiting schedule active';
                         setTimeout(() => { fb.style.display = 'none'; }, 3500);
                     }
                 }
             } catch(e) {
                 console.error("Failed to save setting:", e);
+            }
+        }
+
+        async function handleSkipWaitingButtonClick() {
+            const btn = document.getElementById('btn-skip-waiting-now');
+            const originalHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.style.opacity = '0.7';
+                btn.innerHTML = `
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;">
+                        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                        <path d="M12 2a10 10 0 0 1 10 10"></path>
+                    </svg>
+                    <span>Unlocking...</span>
+                `;
+            }
+
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ skip_assessment_waiting_time: true })
+                });
+
+                if (res.ok) {
+                    const toggleEl = document.getElementById('toggle-skip-waiting');
+                    if (toggleEl) toggleEl.checked = true;
+                    updateDemoBadge(true);
+
+                    if (btn) {
+                        btn.style.background = '#10b981';
+                        btn.style.color = '#ffffff';
+                        btn.innerHTML = `
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Assessments Available Now!</span>
+                        `;
+                    }
+
+                    const fb = document.getElementById('settings-save-feedback');
+                    if (fb) {
+                        fb.style.display = 'block';
+                        fb.style.color = 'var(--matrix-green)';
+                        fb.textContent = "✓ Waiting time skipped! All students' assessments are now ready to answer right now.";
+                        setTimeout(() => { fb.style.display = 'none'; }, 4500);
+                    }
+
+                    setTimeout(() => {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.style.opacity = '1';
+                            btn.style.background = '#38bdf8';
+                            btn.style.color = '#060f17';
+                            btn.innerHTML = originalHtml;
+                        }
+                    }, 3000);
+                } else {
+                    throw new Error('Failed to update server');
+                }
+            } catch(e) {
+                console.error("Failed to skip waiting time:", e);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.innerHTML = originalHtml;
+                }
+                alert("Failed to skip waiting time: " + e.message);
             }
         }
 

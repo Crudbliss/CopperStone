@@ -53,7 +53,7 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "Self-Directed Learning - Definition, Examples, Pros & Cons",
+                        "title": "Self-Directed Learning - Definition, Examples, Pros & Cons (3 Minute Explainer)",
                         "duration": "3:30 mins",
                         "url": "https://www.youtube.com/watch?v=dygN8IlZn58"
                     },
@@ -160,15 +160,15 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "Tuckman's Stages of Team Development",
-                        "duration": "3:53 mins",
-                        "url": "https://www.youtube.com/watch?v=9LwGE5o6V3s"
+                        "title": "Tuckman's 5 Stages of Team Development (Forming, Storming, Norming, Performing, Re-forming)",
+                        "duration": "Video Lesson",
+                        "url": "https://youtu.be/-RwkZxGPQb8?si=u_5qGir5qtfbaSna"
                     },
                     {
                         "type": "video_card",
-                        "title": "Good Team vs Bad Team by Simon Sinek",
-                        "duration": "2:20 mins",
-                        "url": "https://www.youtube.com/watch?v=wX-y0Yh3g1U"
+                        "title": "What Makes the Highest Performing Teams in the World | Simon Sinek",
+                        "duration": "Video Lesson",
+                        "url": "https://youtu.be/zP9jpxitfb4?si=-rRiGIe3V-1sggtq"
                     }
                 ],
                 "questions": [
@@ -267,15 +267,15 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "How to Form a Study Group That Actually Works",
+                        "title": "How to Optimize Group Study Sessions",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=7h4G-g_i9qE"
+                        "url": "https://youtu.be/iu4Q_DZZcZY?si=3HqgVWp0DOpihOkn"
                     },
                     {
                         "type": "video_card",
-                        "title": "How to Be a Great Group Leader (or Team Member)",
+                        "title": "How to Lead When Your Team is Smarter Than You – 6 Leadership Principles",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=D-x24QfI9qY"
+                        "url": "https://youtu.be/A_OQw_sj5iY?si=f0Q-QF3yLqfc5nUN"
                     },
                     {
                         "type": "summary_card",
@@ -761,15 +761,15 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "The Power of Collaborative Learning",
+                        "title": "Collaborative Learning (Explained in 2 Minutes)",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=rWEwv_qibIY"
+                        "url": "https://youtu.be/jXwBzbb0Huc?si=6tcjSkrhWP84GCL8"
                     },
                     {
                         "type": "video_card",
-                        "title": "How To Brainstorm Better",
+                        "title": "Brendan Boyle: How to Brainstorm Better",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=yA53yhiOe04"
+                        "url": "https://youtu.be/W4rfqKYd6o4?si=AWLRieoeWbj8ZA6n"
                     }
                 ],
                 "questions": [
@@ -868,15 +868,15 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "How to Read a Syllabus (And Why It Matters)",
+                        "title": "How to Read a College Syllabus - And Strategize for How to Best Approach the Course",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=5rG4n0wR2e8"
+                        "url": "https://youtu.be/mQ_Xmc_Urxw?si=njfewLPnw5hT37G4"
                     },
                     {
                         "type": "video_card",
-                        "title": "The Danger of Multitasking and Context Switching",
+                        "title": "Multitasking Is a Myth, and to Attempt It Comes at a Neurobiological Cost | Big Think",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=qX9FSZJu448"
+                        "url": "https://youtu.be/iM4u-7Z5URk?si=rfA1BwpmoXGKF-0e"
                     }
                 ],
                 "questions": [
@@ -975,15 +975,15 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "How to Take Notes from a Textbook",
+                        "title": "How to Take Notes from a Textbook Effectively - 5 Steps: Note Taking Method",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=WtJ-C5pW-9c"
+                        "url": "https://youtu.be/0NpBvG_oPoA?si=JTgdru43lVphBXTA"
                     },
                     {
                         "type": "video_card",
-                        "title": "How to Break Down a Syllabus and Plan Your Semester",
+                        "title": "STUDY HACK: How To Make A Syllabus Study Strategy To Ace Your Classes",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=R9Z2L0n92g8"
+                        "url": "https://youtu.be/clUQFnMahvo?si=WC7PVIrvLGJyq1KE"
                     },
                     {
                         "type": "summary_card",
@@ -1445,13 +1445,13 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "Self-Directed Learning",
+                        "title": "Self-Directed Learning at Maastricht University",
                         "duration": "Video Lesson",
                         "url": "https://www.youtube.com/watch?v=G3ssXZWOel4"
                     },
                     {
                         "type": "video_card",
-                        "title": "The Feynman Technique: How to Learn Anything Fast by Thomas Frank",
+                        "title": "How to Learn Faster with the Feynman Technique (Example Included)",
                         "duration": "5:48 mins",
                         "url": "https://www.youtube.com/watch?v=_f-qkGJBPts"
                     }
@@ -1552,15 +1552,15 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "How to Survive Group Projects",
+                        "title": "How to Deal With Difficult Group Project Members",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=2eE-4Hj2a2U"
+                        "url": "https://youtu.be/e2dcCtjfD80?si=rkIHxvse8Fy7FBCI"
                     },
                     {
                         "type": "video_card",
-                        "title": "Teamwork: The Secret to Successful Group Projects",
+                        "title": "Secrets Of Successful Teamwork: Insights From Google",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=QO-Q-W92rD4"
+                        "url": "https://youtu.be/hHIikHJV9fI?si=ZhNooRGSw-hin-Za"
                     }
                 ],
                 "questions": [
@@ -1636,15 +1636,15 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "The Feynman Technique 2.0 (Peer Teaching)",
+                        "title": "The Feynman Technique 2.0",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=FrNqWQ-3zWg"
+                        "url": "https://youtu.be/0d_r7o-PkWw?si=kImo9arobf5brxkc"
                     },
                     {
                         "type": "video_card",
-                        "title": "How to Study in a Group",
+                        "title": "How to study in groups",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=U6_XbZ4Jk6U"
+                        "url": "https://youtu.be/EjdzhDTVS1I?si=fnrMXaVfsx2lJANT"
                     },
                     {
                         "type": "summary_card",
@@ -1762,15 +1762,15 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "5 Tips for Effective Study Groups",
+                        "title": "5 steps: make your study group ELITE",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=1x2p2Q-3O8M"
+                        "url": "https://youtu.be/L_9XriMUYUE?si=omSVhqMKV8OaE-m3"
                     },
                     {
                         "type": "video_card",
-                        "title": "Active Learning: Why You Shouldn't Just Read Your Textbook",
+                        "title": "How to Read Your Textbooks More Efficiently - College Info Geek",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=LqUueb2lEqE"
+                        "url": "https://youtu.be/tgVjmFSx7rg?si=fDWZVn081Gn0dY3M"
                     }
                 ],
                 "questions": [
@@ -1869,15 +1869,15 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "How to Study for Standardized Tests",
+                        "title": "Learn How To Ace Every Exam (in 6 minutes)",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=V-UvSKe8jW4"
+                        "url": "https://youtu.be/1OO8j3lz-i8?si=MxB_noZC3hsUYW9P"
                     },
                     {
                         "type": "video_card",
-                        "title": "Why You Need a Strict Study Routine",
+                        "title": "How to Actually Stick to Your Schedule (2 Simple Rules)",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=33K16gJ3_n8"
+                        "url": "https://youtu.be/Y-jbe-je5XM?si=60Iy8qSMa9jRgcKL"
                     }
                 ],
                 "questions": [
@@ -1962,15 +1962,15 @@ const modulesData = [
                     },
                     {
                         "type": "video_card",
-                        "title": "How to Create a Study Schedule You'll Actually Stick To",
+                        "title": "How to actually stick to a schedule (even if you lack discipline)",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=5_321Yc90-8"
+                        "url": "https://youtu.be/7jexR_hd6L8?si=2l587LQ0bLZHKNN5"
                     },
                     {
                         "type": "video_card",
-                        "title": "Mastering Time Management for College Students",
+                        "title": "You MUST learn time management as a student.",
                         "duration": "Video Lesson",
-                        "url": "https://www.youtube.com/watch?v=iNDjG9E-3rE"
+                        "url": "https://youtu.be/88gfx3Y5o1Q?si=_P0mTokZC68q7nJo"
                     },
                     {
                         "type": "summary_card",

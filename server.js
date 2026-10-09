@@ -763,7 +763,7 @@ app.post('/api/auth/send-reset-otp', async (req, res) => {
         }
 
         if (!userType) {
-            return res.status(404).json({ error: 'No account found with this email address.' });
+            return res.status(404).json({ error: 'Incorrect email. Email does not exist.' });
         }
 
         // Generate 6-digit OTP
