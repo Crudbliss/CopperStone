@@ -321,8 +321,8 @@
         .cert-name {
             position: absolute;
             top: 44.8%;
-            left: 18%;
-            right: 18%;
+            left: 10%;
+            right: 10%;
             text-align: center;
             font-family: 'Georgia', 'Playfair Display', 'Times New Roman', serif;
             font-size: clamp(14px, 3.2cqw, 30px);
@@ -331,8 +331,8 @@
             letter-spacing: 1.5px;
             text-transform: uppercase;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            overflow: visible;
+            text-overflow: clip;
             line-height: 1.2;
             transform: translateY(0);
             transition: all 0.1s ease-out;
@@ -510,10 +510,12 @@
             }
 
             .cert-name {
-                font-size: 32pt !important;
+                font-size: clamp(18pt, 2.8vw, 30pt) !important;
                 top: 44.8% !important;
-                left: 18% !important;
-                right: 18% !important;
+                left: 10% !important;
+                right: 10% !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
             }
 
             @page {
@@ -902,6 +904,15 @@
             document.getElementById('recipient-name').value = fullName;
             document.getElementById('cert-code').value = certCode;
 
+            // Auto-adjust font size slider if long name so it fits beautifully
+            const slider = document.getElementById('font-size-slider');
+            if (slider) {
+                if (fullName.length > 32) slider.value = 20;
+                else if (fullName.length > 25) slider.value = 22;
+                else if (fullName.length > 20) slider.value = 25;
+                else slider.value = 28;
+            }
+
             const select = document.getElementById('student-select');
             if (select) select.value = student.id;
 
@@ -1028,10 +1039,17 @@
                     renderText = studentName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
                 }
 
+                let finalCanvasFontSize = canvasFontSize;
                 ctx.fillStyle = '#0d2647';
-                ctx.font = `bold ${canvasFontSize}px "Georgia", "Times New Roman", serif`;
+                ctx.font = `bold ${finalCanvasFontSize}px "${fontFamily}", "Times New Roman", serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'alphabetic';
+
+                // Auto-fit check on canvas to guarantee zero overflow
+                while (ctx.measureText(renderText).width > 2200 && finalCanvasFontSize > 40) {
+                    finalCanvasFontSize -= 2;
+                    ctx.font = `bold ${finalCanvasFontSize}px "${fontFamily}", "Times New Roman", serif`;
+                }
 
                 // Recipient baseline is at y ≈ 51.8% of height
                 const y = (canvas.height * 0.518) - 18 + scaledOffsetY;

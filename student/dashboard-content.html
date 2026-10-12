@@ -843,8 +843,8 @@
         .cert-recipient-name {
             position: absolute;
             top: 44.8%;
-            left: 18%;
-            right: 18%;
+            left: 10%;
+            right: 10%;
             text-align: center;
             font-family: 'Georgia', 'Playfair Display', 'Times New Roman', serif;
             font-size: 26px;
@@ -853,8 +853,8 @@
             letter-spacing: 1.5px;
             text-transform: uppercase;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            overflow: visible;
+            text-overflow: clip;
             line-height: 1.2;
         }
 
@@ -919,10 +919,12 @@
                 object-fit: contain;
             }
             .cert-recipient-name {
-                font-size: 32pt;
+                font-size: clamp(18pt, 2.8vw, 30pt);
                 top: 44.8%;
-                left: 18%;
-                right: 18%;
+                left: 10%;
+                right: 10%;
+                overflow: visible;
+                text-overflow: clip;
             }
             @page {
                 size: A4 landscape;
@@ -1762,7 +1764,15 @@
             const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
             const nameEl = document.getElementById('cert-student-name');
-            if (nameEl) nameEl.textContent = fullName;
+            if (nameEl) {
+                nameEl.textContent = fullName;
+                // Dynamically scale font size so the entire name is always shown without any cutoff
+                let baseFontSize = 26;
+                if (fullName.length > 32) baseFontSize = 18;
+                else if (fullName.length > 25) baseFontSize = 21;
+                else if (fullName.length > 20) baseFontSize = 23;
+                nameEl.style.fontSize = baseFontSize + 'px';
+            }
             const idEl = document.getElementById('cert-footer-id');
             if (idEl) idEl.textContent = `Verification ID: ${certCode}`;
             const dateEl = document.getElementById('cert-footer-date');
@@ -1806,10 +1816,21 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
 
+                let canvasFontSize = 105;
+                if (studentName.length > 32) canvasFontSize = 72;
+                else if (studentName.length > 25) canvasFontSize = 85;
+                else if (studentName.length > 20) canvasFontSize = 95;
+
                 ctx.fillStyle = '#0d2647';
-                ctx.font = 'bold 105px "Georgia", "Times New Roman", serif';
+                ctx.font = `bold ${canvasFontSize}px "Georgia", "Times New Roman", serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'alphabetic';
+
+                // Auto-fit check on canvas to guarantee zero overflow
+                while (ctx.measureText(studentName).width > 2200 && canvasFontSize > 40) {
+                    canvasFontSize -= 2;
+                    ctx.font = `bold ${canvasFontSize}px "Georgia", "Times New Roman", serif`;
+                }
 
                 // Position above the underline line (y ≈ 51.8% of height)
                 const y = canvas.height * 0.518 - 18;
