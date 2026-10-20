@@ -835,7 +835,7 @@ app.post('/api/auth/reset-password', async (req, res) => {
         return res.status(400).json({ error: 'Please provide email, verification code, and new password.' });
     }
 
-    email = email.trim().toLowerCase();
+    email = String(email).trim().toLowerCase();
     otp = String(otp).trim();
 
     const storedOtp = passwordResetOtpStore.get(email);
@@ -1008,6 +1008,20 @@ app.get('/api/students/:id/certificate', (req, res) => {
     });
 });
 
+// Helper to standardize and format names in clean Title Case (e.g. "JUAN DELA CRUZ" -> "Juan Dela Cruz")
+function formatName(str) {
+    if (!str || typeof str !== 'string') return '';
+    return str
+        .trim()
+        .toLowerCase()
+        .split(/(\s+|-)/)
+        .map(word => {
+            if (/^\s+$/.test(word) || word === '-') return word;
+            return word.replace(/(^[a-z]|['’][a-z])/g, m => m.toUpperCase());
+        })
+        .join('');
+}
+
 // POST /api/students/register - Register a new student
 app.post('/api/students/register', async (req, res) => {
     let { student_no, first_name, last_name, mi, program, year_level, section, email, password, otp } = req.body;
@@ -1018,9 +1032,9 @@ app.post('/api/students/register', async (req, res) => {
     }
 
     // Normalize email to lowercase and trim
-    email = email.trim().toLowerCase();
-    first_name = first_name.trim();
-    last_name = last_name.trim();
+    email = String(email || '').trim().toLowerCase();
+    first_name = formatName(first_name);
+    last_name = formatName(last_name);
 
     // Disallow numbers/integers in first and last name
     if (/\d/.test(first_name)) {
@@ -1112,9 +1126,9 @@ app.post('/api/teachers/register', async (req, res) => {
     }
 
     // Normalize email to lowercase and trim
-    email = email.trim().toLowerCase();
-    first_name = first_name.trim();
-    last_name = last_name.trim();
+    email = String(email || '').trim().toLowerCase();
+    first_name = formatName(first_name);
+    last_name = formatName(last_name);
 
     // Disallow numbers/integers in first and last name
     if (/\d/.test(first_name)) {
@@ -1213,13 +1227,14 @@ app.delete('/api/students/:id', (req, res) => {
 
 // POST /api/login - Universal login for Students and Teachers
 app.post('/api/login', async (req, res) => {
-    const { email, password, requested_role } = req.body;
+    let { email, password, requested_role } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
-    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const rawInput = String(email).trim();
 
     if (requested_role === 'student') {
-        db.get(`SELECT * FROM students WHERE LOWER(TRIM(email)) = ?`, [normalizedEmail], async (err, student) => {
+        db.get(`SELECT * FROM students WHERE LOWER(TRIM(email)) = ? OR TRIM(student_no) = ?`, [normalizedEmail, rawInput], async (err, student) => {
             if (err) return res.status(500).json({ error: err.message });
             if (student) {
                 const match = await bcrypt.compare(password, student.password_hash);
