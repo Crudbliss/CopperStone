@@ -636,24 +636,21 @@
                     name: 'First Assessment',
                     typeLabel: 'Pre-Assessment Diagnostic',
                     objective: 'Maps your baseline learning matrix quadrant',
-                    questionsCount: 28,
-                    defaultMonth: 'January 15, 2026'
+                    questionsCount: 28
                 },
                 {
                     key: 'stage_2',
                     name: 'Second Assessment',
                     typeLabel: 'Post-Module Evaluation',
                     objective: 'Unlocked after completing all module chapters',
-                    questionsCount: 28,
-                    defaultMonth: 'April 10, 2026'
+                    questionsCount: 28
                 },
                 {
                     key: 'stage_3',
                     name: 'Final Assessment',
                     typeLabel: 'Final Re-evaluation Milestone',
                     objective: 'End-of-term cognitive habit migration',
-                    questionsCount: 28,
-                    defaultMonth: 'July 2026'
+                    questionsCount: 28
                 }
             ];
 
@@ -728,7 +725,7 @@
 
                 // Badges & Dates
                 let badgeHtml = '';
-                let dateStr = st.defaultMonth;
+                let dateStr = '';
                 let dominantMasteryScore = 0;
                 let dominantScoreLabel = 'Dominant Mastery';
                 let viewUrl = 'test-content.html';
@@ -774,11 +771,11 @@
                 // Description Subtext
                 let descText = '';
                 if (isCompleted) {
-                    descText = `${st.typeLabel} &middot; ${st.objective} &middot; ${st.questionsCount} Questions &middot; Completed ${dateStr}`;
+                    descText = `${st.typeLabel} &middot; ${st.objective} &middot; ${st.questionsCount} Questions${dateStr ? ` &middot; Completed ${dateStr}` : ''}`;
                 } else if (isAvailable) {
-                    descText = `${st.typeLabel} &middot; ${st.objective} &middot; ${st.questionsCount} Questions &middot; ${dateStr}`;
+                    descText = `${st.typeLabel} &middot; ${st.objective} &middot; ${st.questionsCount} Questions`;
                 } else {
-                    descText = `${st.typeLabel} &middot; ${st.objective} &middot; ${st.questionsCount} Questions &middot; ${lockReason}`;
+                    descText = `${st.typeLabel} &middot; ${st.objective} &middot; ${st.questionsCount} Questions${lockReason ? ` &middot; ${lockReason}` : ''}`;
                 }
 
                 // Right Actions / Stats

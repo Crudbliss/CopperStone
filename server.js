@@ -918,14 +918,19 @@ async function sendCycleCompletionEmail(student) {
         await transporter.sendMail({
             from: `"${senderName}" <${process.env.SMTP_USER}>`,
             to: student.email,
-            subject: '🎓 Congratulations on Completing the Matrix Learning Cycle! (Post-Study Survey & Certificate)',
+            subject: 'Congratulations on Completing the Matrix Learning Cycle! (Post-Study Survey & Certificate)',
             html: `
                 <div style="font-family: Arial, sans-serif; background-color: #0e2e41; padding: 40px 20px; color: #ffffff; text-align: center;">
                     <div style="max-width: 520px; margin: 0 auto; background: #0a1e2d; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); text-align: left;">
                         <div style="text-align: center; margin-bottom: 24px;">
-                            <span style="font-size: 40px;">🎓</span>
+                            <div style="display: inline-block; width: 56px; height: 56px; border-radius: 50%; background: rgba(74, 222, 128, 0.15); border: 1px solid rgba(74, 222, 128, 0.35); text-align: center; line-height: 56px; margin: 0 auto 12px auto;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; display: inline-block;">
+                                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                                </svg>
+                            </div>
                             <h2 style="color: #4ade80; margin: 8px 0 4px 0; font-size: 22px;">Cycle Completed!</h2>
-                            <p style="color: #94a3b8; font-size: 13px; margin: 0;">Our Lady of Fatima University · BSIT Capstone Study</p>
+                            <p style="color: #94a3b8; font-size: 13px; margin: 0;">Matrix Adaptive Learning Platform &middot; BSIT Capstone Study</p>
                         </div>
                         
                         <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6;">
@@ -936,18 +941,38 @@ async function sendCycleCompletionEmail(student) {
                         </p>
 
                         <div style="background: rgba(216, 166, 26, 0.1); border: 1px solid rgba(216, 166, 26, 0.35); border-radius: 12px; padding: 18px; margin: 24px 0; text-align: center;">
-                            <h3 style="color: #fbbf24; margin: 0 0 8px 0; font-size: 16px;">📋 Final Evaluation & Survey</h3>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; display: inline-block;">
+                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                                </svg>
+                                <h3 style="color: #fbbf24; margin: 0; font-size: 16px; display: inline;">Final Evaluation &amp; Survey</h3>
+                            </div>
                             <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5; margin: 0 0 16px 0;">
                                 Please take 2 minutes to complete the official Post-Study Evaluation Form. Your valuable feedback is critical for our research validation:
                             </p>
                             <a href="${surveyUrl}" target="_blank" style="display: inline-block; background: #d8a61a; color: #0a1e2d; font-weight: 700; font-size: 14px; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 4px 12px rgba(216, 166, 26, 0.4);">
-                                Open Evaluation Form →
+                                Open Evaluation Form &rarr;
                             </a>
                         </div>
 
-                        <p style="color: #cbd5e1; font-size: 13px; line-height: 1.6;">
-                            🏆 <strong>Certificate of Completion:</strong> Your official Certificate of Adaptive Learning Completion is now unlocked and can be viewed and downloaded from your student dashboard.
-                        </p>
+                        <div style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 16px 20px; margin: 20px 0;">
+                            <div style="margin-bottom: 8px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; display: inline-block; margin-right: 6px;">
+                                    <circle cx="12" cy="8" r="7"></circle>
+                                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                                </svg>
+                                <strong style="color: #38bdf8; font-size: 14px; vertical-align: middle;">Where to get your Certificate:</strong>
+                            </div>
+                            <p style="color: #cbd5e1; font-size: 13px; line-height: 1.6; margin: 0 0 8px 0;">
+                                Your official Certificate of Adaptive Learning Completion is now unlocked. You can view and download it directly inside your student account:
+                            </p>
+                            <ol style="color: #cbd5e1; font-size: 12.5px; line-height: 1.6; margin: 0; padding-left: 20px;">
+                                <li>Log in to your <strong>Student Portal</strong>.</li>
+                                <li>Click on <strong>Assessment History</strong> or your <strong>Profile</strong> tab in the sidebar.</li>
+                                <li>Click the <strong>Download Certificate</strong> button to generate and save your official verified certificate PDF.</li>
+                            </ol>
+                        </div>
 
                         <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 24px 0;" />
 
@@ -2645,12 +2670,12 @@ app.post('/api/modules/:id/submit-quiz', (req, res) => {
 
         const total = questions.length;
         const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
-        const isPerfect = total > 0 && correctCount === total;
+        const isPassed = total > 0 && percentage >= 80;
 
         // Record student progress if student_id is provided
         if (student_id) {
             db.run(`INSERT INTO student_module_progress (student_id, module_id, tasks_completed, total_tasks, status) VALUES (?, ?, ?, ?, ?)`,
-                [student_id, moduleId, correctCount, total, isPerfect ? 'Completed' : 'Review Needed'],
+                [student_id, moduleId, correctCount, total, isPassed ? 'Completed' : 'Review Needed'],
                 (progErr) => {
                     if (progErr) console.error("Error logging module progress:", progErr);
                 }
@@ -2662,7 +2687,7 @@ app.post('/api/modules/:id/submit-quiz', (req, res) => {
             score: correctCount,
             total: total,
             percentage: percentage,
-            passed: isPerfect, // Must be 100% perfected to pass
+            passed: isPassed, // Minimum 80% (e.g. 4/5) required to pass
             results: results
         });
     });

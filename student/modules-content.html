@@ -268,22 +268,177 @@
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 8px;
             font-size: 12px;
             color: var(--text-subtle);
             font-weight: 500;
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
+        .meta-pill,
         .module-meta-info span {
             display: inline-flex;
             align-items: center;
             gap: 5px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            color: #94a3b8;
+        }
+
+        .current-chapter-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: rgba(56, 189, 248, 0.06);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 10px;
+            padding: 9px 12px;
+            margin-top: 6px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .current-chapter-banner.status-completed {
+            background: rgba(16, 185, 129, 0.06);
+            border-color: rgba(16, 185, 129, 0.25);
+        }
+
+        .current-chapter-banner.status-locked {
+            background: rgba(239, 68, 68, 0.05);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .current-chapter-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .status-completed .current-chapter-icon {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .status-locked .current-chapter-icon {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+        }
+
+        .current-chapter-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .current-chapter-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #64748b;
+        }
+
+        .current-chapter-title-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #f1f5f9;
+            line-height: 1.4;
+            word-break: break-word;
         }
 
         .current-chapter-highlight {
             color: #38bdf8;
             font-weight: 600;
+        }
+
+        /* Mobile Reader Top Bar (Desktop Default: Hidden) */
+        .mobile-reader-topbar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            height: 52px;
+            padding: 0 14px;
+            background: #091018;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 40;
+        }
+
+        .mobile-topbar-back-btn,
+        .mobile-topbar-drawer-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            padding: 6px 11px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-topbar-back-btn:hover,
+        .mobile-topbar-drawer-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .mobile-topbar-center {
+            font-size: 13px;
+            font-weight: 700;
+            color: #f8fafc;
+            max-width: 170px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        .reader-sidebar-backdrop {
+            display: none;
+        }
+
+        .sidebar-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .mobile-sidebar-close-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mobile-sidebar-close-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
         }
 
         .card-right-group {
@@ -1725,50 +1880,155 @@
             }
 
             .module-card-horizontal {
-                padding: 18px 16px;
+                padding: 16px 14px;
                 gap: 14px;
             }
 
-            .card-top-row {
+            .card-header-row {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 12px;
             }
 
-            .card-right-group {
+            .card-left-group {
+                width: 100%;
+                gap: 12px;
+            }
+
+            .module-title-row {
+                flex-direction: column;
                 align-items: flex-start;
+                gap: 6px;
+            }
+
+            .module-title-text {
+                font-size: 15px;
+            }
+
+            .card-right-group {
+                align-items: center;
                 text-align: left;
                 width: 100%;
                 flex-direction: row;
                 justify-content: space-between;
+                padding-top: 10px;
+                border-top: 1px solid rgba(255, 255, 255, 0.06);
             }
 
             .pct-large {
                 font-size: 20px;
             }
 
+            .card-action-row {
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+            }
+
+            /* Fullscreen Mobile Reader with Off-Canvas Drawer */
             #view-reader {
-                grid-template-columns: 1fr;
-                height: auto;
-                min-height: 100vh;
-                overflow-y: auto;
+                display: none;
+                flex-direction: column;
+                width: 100vw;
+                height: 100vh;
+                height: 100dvh;
+                overflow: hidden;
+                position: fixed;
+                inset: 0;
+                z-index: 100;
+                background: var(--bg-base);
+            }
+
+            .mobile-reader-topbar {
+                display: flex;
+            }
+
+            .reader-sidebar-backdrop {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.72);
+                backdrop-filter: blur(4px);
+                z-index: 150;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.25s ease;
+            }
+
+            .reader-sidebar-backdrop.sidebar-open {
+                opacity: 1;
+                pointer-events: auto;
             }
 
             .reader-sidebar-pane {
-                height: auto;
-                max-height: 260px;
-                border-right: none;
-                border-bottom: 1px solid var(--border-light);
-                padding: 16px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 300px;
+                max-width: 85vw;
+                height: 100%;
+                background: #091018;
+                border-right: 1px solid var(--border-light);
+                box-shadow: 4px 0 24px rgba(0, 0, 0, 0.7);
+                z-index: 160;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                padding: 18px 16px;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .reader-sidebar-pane.sidebar-open {
+                transform: translateX(0);
+            }
+
+            .mobile-sidebar-close-btn {
+                display: flex;
             }
 
             .reader-main-pane {
-                height: auto;
-                padding: 16px;
+                flex: 1;
+                min-height: 0;
+                height: calc(100vh - 52px);
+                height: calc(100dvh - 52px);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                position: relative;
+                padding: 0;
             }
 
-            .reader-content-wrap {
-                padding: 16px;
+            .reader-scrollable-area {
+                flex: 1;
+                min-height: 0;
+                overflow-y: auto;
+                padding: 16px 14px 105px 14px;
+                -webkit-overflow-scrolling: touch;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .reader-header-card {
+                padding: 16px 18px;
+                border-radius: 12px;
+            }
+
+            .reader-chapter-title {
+                font-size: 17px;
+                line-height: 1.35;
+            }
+
+            .content-block-card {
+                padding: 18px 16px;
+                border-radius: 12px;
+                gap: 12px;
+            }
+
+            .objective-item, .example-item {
+                font-size: 13.5px;
+                gap: 12px;
             }
 
             .block-video iframe {
@@ -1782,13 +2042,72 @@
                 overflow-x: auto;
             }
 
-            .kc-carousel-footer {
-                flex-direction: column;
-                gap: 12px;
+            /* Sticky Bottom Action Bar on Mobile */
+            .bottom-action-bar {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 11px 14px;
+                background: rgba(13, 21, 32, 0.96);
+                backdrop-filter: blur(14px);
+                border-top: 1px solid var(--border-light);
+                z-index: 70;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
             }
 
-            .btn-kc-nav, .btn-kc-submit {
-                width: 100%;
+            .unlock-status-text {
+                font-size: 11.5px;
+                line-height: 1.3;
+                max-width: calc(100% - 110px);
+            }
+
+            .btn-unlock-kc {
+                padding: 9px 15px;
+                font-size: 12px;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            /* Knowledge Check Quiz Mobile */
+            .kc-card {
+                padding: 18px 16px;
+                border-radius: 14px;
+            }
+
+            .kc-question-title {
+                font-size: 15px;
+                line-height: 1.45;
+            }
+
+            .kc-option-card {
+                padding: 11px 13px;
+                font-size: 13px;
+                gap: 10px;
+            }
+
+            .kc-carousel-footer {
+                display: flex;
+                flex-direction: row;
+                gap: 8px;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .btn-kc-nav {
+                padding: 8px 14px;
+                font-size: 12px;
+                flex: 1;
+                justify-content: center;
+            }
+
+            .btn-kc-submit {
+                padding: 9px 16px;
+                font-size: 12.5px;
+                flex: 1.2;
                 justify-content: center;
             }
         }
@@ -1806,6 +2125,7 @@
 
             .victory-modal-card {
                 padding: 24px 18px;
+                max-width: 92vw;
             }
         }
     </style>
@@ -1866,11 +2186,30 @@
 
     <!-- VIEW 2: FULL-SCREEN INTERACTIVE MODULE & KNOWLEDGE CHECK READER -->
     <div id="view-reader">
-        <!-- Sidebar Navigation (Stepper) -->
-        <div class="reader-sidebar-pane">
-            <button class="back-to-modules-btn" onclick="exitReaderView()">
-                &larr; All Modules
+        <!-- Mobile Top App Bar (Visible on mobile <= 768px) -->
+        <div class="mobile-reader-topbar" id="mobile-reader-topbar">
+            <button class="mobile-topbar-back-btn" onclick="exitReaderView()" title="Back to All Modules">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <span>Modules</span>
             </button>
+            <div class="mobile-topbar-center" id="mobile-topbar-title">Chapter Content</div>
+            <button class="mobile-topbar-drawer-btn" id="mobile-drawer-btn" onclick="toggleMobileStepperDrawer()" title="View Chapters">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                <span>Contents</span>
+            </button>
+        </div>
+
+        <!-- Sidebar Navigation (Stepper) & Mobile Drawer Overlay -->
+        <div class="reader-sidebar-backdrop" id="reader-sidebar-backdrop" onclick="closeMobileStepperDrawer()"></div>
+        <div class="reader-sidebar-pane" id="reader-sidebar-pane">
+            <div class="sidebar-header-row">
+                <button class="back-to-modules-btn" onclick="exitReaderView()">
+                    &larr; All Modules
+                </button>
+                <button class="mobile-sidebar-close-btn" onclick="closeMobileStepperDrawer()" title="Close Contents Drawer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
 
             <div class="sidebar-module-card">
                 <div class="sidebar-module-top">
@@ -2274,6 +2613,32 @@
         /* ==========================================================================
            FULL-SCREEN READER CONTROLLER
            ========================================================================== */
+        function toggleMobileStepperDrawer() {
+            const pane = document.getElementById('reader-sidebar-pane');
+            const backdrop = document.getElementById('reader-sidebar-backdrop');
+            if (!pane) return;
+            const isOpen = pane.classList.contains('sidebar-open');
+            if (isOpen) {
+                closeMobileStepperDrawer();
+            } else {
+                openMobileStepperDrawer();
+            }
+        }
+
+        function openMobileStepperDrawer() {
+            const pane = document.getElementById('reader-sidebar-pane');
+            const backdrop = document.getElementById('reader-sidebar-backdrop');
+            if (pane) pane.classList.add('sidebar-open');
+            if (backdrop) backdrop.classList.add('sidebar-open');
+        }
+
+        function closeMobileStepperDrawer() {
+            const pane = document.getElementById('reader-sidebar-pane');
+            const backdrop = document.getElementById('reader-sidebar-backdrop');
+            if (pane) pane.classList.remove('sidebar-open');
+            if (backdrop) backdrop.classList.remove('sidebar-open');
+        }
+
         async function launchModuleReader(moduleId) {
             const numId = parseInt(moduleId);
             if (!numId || isNaN(numId)) {
@@ -2288,7 +2653,8 @@
 
                 // Switch UI views
                 document.getElementById('view-overview').style.display = 'none';
-                document.getElementById('view-reader').style.display = 'grid';
+                document.getElementById('view-reader').style.display = (window.innerWidth <= 768) ? 'flex' : 'grid';
+                closeMobileStepperDrawer();
 
                 // Populate Sidebar Header
                 document.getElementById('sidebar-mod-badge').textContent = '1';
@@ -2324,6 +2690,7 @@
         function exitReaderView() {
             document.getElementById('view-reader').style.display = 'none';
             document.getElementById('view-overview').style.display = 'flex';
+            closeMobileStepperDrawer();
             loadStudentModules(); // Refresh cards with updated progress
         }
 
@@ -2456,6 +2823,7 @@
             studentQuizAnswers = {};
             quizGradedResults = null;
 
+            closeMobileStepperDrawer();
             renderReaderStepper();
             renderCurrentReaderContent();
 
@@ -2469,6 +2837,19 @@
             const body = document.getElementById('reader-content-body');
             const bottomBar = document.getElementById('bottom-action-bar');
             const chapters = currentActiveModule.chapters || [];
+
+            // Update mobile topbar title
+            const topbarTitle = document.getElementById('mobile-topbar-title');
+            if (topbarTitle) {
+                if (currentStepType === 'chapter') {
+                    const ch = chapters[currentChapterIndex];
+                    topbarTitle.textContent = ch ? `Ch. ${currentChapterIndex + 1}: ${ch.title}` : 'Chapter Content';
+                } else if (currentStepType === 'kc') {
+                    topbarTitle.textContent = `Knowledge Check ${currentChapterIndex + 1}`;
+                } else {
+                    topbarTitle.textContent = 'Final Assessment';
+                }
+            }
 
             if (currentStepType === 'chapter') {
                 const ch = chapters[currentChapterIndex];
@@ -2746,8 +3127,11 @@
             const scrollPos = container.scrollTop + container.clientHeight;
             const scrollHeight = container.scrollHeight;
 
-            // When scrolled near bottom (within 80px) or if content fits on screen
-            if (scrollPos >= scrollHeight - 80 || scrollHeight <= container.clientHeight + 60) {
+            const winScrollPos = window.innerHeight + window.scrollY;
+            const winScrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+
+            // When scrolled near bottom (within 90px) or if content fits on screen
+            if (scrollPos >= scrollHeight - 90 || scrollHeight <= container.clientHeight + 60 || (winScrollPos >= winScrollHeight - 90 && window.scrollY > 20)) {
                 markChapterScrolled();
             }
         }
@@ -2991,15 +3375,18 @@
             // Graded summary banner if graded
             if (isGraded) {
                 const isFinalStep = currentStepType === 'final';
+                const isPerfect = quizGradedResults.percentage === 100;
                 if (quizGradedResults.passed) {
                     html += `
                         <div class="mastery-banner perfect" style="margin-bottom: 8px;">
                             <div style="font-size: 16px; font-weight: 700; color: #4ade80; display: flex; align-items: center; gap: 8px;">
                                 <svg width="22" height="22"><use href="#icon-award"></use></svg>
-                                100% Perfect Mastery! (${quizGradedResults.score} / ${quizGradedResults.total})
+                                ${isPerfect ? '100% Perfect Mastery!' : `Passed with Mastery! (${quizGradedResults.percentage}%)`} (${quizGradedResults.score} / ${quizGradedResults.total})
                             </div>
                             <p style="font-size: 13.5px; color: #cbd5e1;">
-                                ${isFinalStep ? 'Outstanding job! You have perfected the Final Module Assessment. Your mastery is recorded!' : 'Outstanding job! You have perfected this Knowledge Check. You can review your answers below or proceed.'}
+                                ${isFinalStep 
+                                    ? (isPerfect ? 'Outstanding job! You have perfected the Final Module Assessment. Your mastery is recorded!' : 'Great job! You passed the Final Module Assessment with 80%+ mastery. Your progress is recorded!') 
+                                    : (isPerfect ? 'Outstanding job! You have perfected this Knowledge Check. You can review your answers below or proceed.' : 'Great job! You achieved the required 80%+ passing score. You can review your answers below or proceed to the next chapter.')}
                             </p>
                         </div>
                     `;
@@ -3011,7 +3398,7 @@
                                 Mastery Required (${quizGradedResults.score} / ${quizGradedResults.total} Correct &middot; ${quizGradedResults.percentage}%)
                             </div>
                             <p style="font-size: 13px; color: #cbd5e1; max-width: 540px; line-height: 1.55;">
-                                ${isFinalStep ? 'You must achieve a <strong>perfect 100% score</strong> to complete the module. Review the explanation slides below and try again!' : 'You must achieve a <strong>perfect 100% score</strong> to unlock the next chapter. Review the explanation slides below and try again!'}
+                                ${isFinalStep ? 'You must achieve at least <strong>80% (4 / 5 or higher)</strong> to complete the module. Review the explanation slides below and try again!' : 'You must achieve at least <strong>80% (4 / 5 or higher)</strong> to unlock the next chapter. Review the explanation slides below and try again!'}
                             </p>
                         </div>
                     `;
@@ -3383,17 +3770,18 @@
                     });
 
                     const totalQ = currentActiveQuestions.length;
-                    const isPerfect = totalQ > 0 && correctCount === totalQ;
+                    const pctScore = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+                    const isPassed = totalQ > 0 && pctScore >= 80;
                     quizGradedResults = {
                         score: correctCount,
                         total: totalQ,
-                        percentage: totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0,
-                        passed: isPerfect,
+                        percentage: pctScore,
+                        passed: isPassed,
                         results: results
                     };
                 }
 
-                // If perfected 100%, unlock next chapter and trigger victory modal
+                // If passed (80%+), unlock next chapter and trigger victory modal
                 if (quizGradedResults.passed && quizGradedResults.total > 0) {
                     const progress = getStudentProgress(currentActiveModule.id);
                     if (currentStepType === 'final') {
@@ -3421,7 +3809,7 @@
                     renderKnowledgeCheckContent();
                     showVictoryModal();
                 } else {
-                    // Score < 100%: Keep next section locked, re-render to display graded answers, explanations, and retake button
+                    // Score < 80%: Keep next section locked, re-render to display graded answers, explanations, and retake button
                     renderKnowledgeCheckContent();
                 }
 
@@ -3634,6 +4022,21 @@
                 }[m];
             });
         }
+
+        // Global listeners for responsive behavior
+        window.addEventListener('scroll', handleChapterScroll, { passive: true });
+        window.addEventListener('resize', () => {
+            const reader = document.getElementById('view-reader');
+            if (reader && reader.style.display !== 'none' && reader.style.display !== '') {
+                reader.style.display = (window.innerWidth <= 768) ? 'flex' : 'grid';
+            }
+        });
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeMobileStepperDrawer();
+                closeVictoryModal();
+            }
+        });
     </script>
 </body>
 </html>
