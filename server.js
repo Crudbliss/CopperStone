@@ -335,6 +335,7 @@ db.serialize(() => {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`, () => {
         db.run(`INSERT OR IGNORE INTO system_settings (key, value) VALUES ('skip_assessment_waiting_time', '0')`);
+        db.run(`INSERT OR IGNORE INTO system_settings (key, value) VALUES ('skip_module_completion', '0')`);
     });
 
     // 15. Student Module Progress
@@ -2807,17 +2808,20 @@ app.put('/api/progress/:student_id/:module_id', (req, res) => {
     });
 });
 
-// --- SYSTEM SETTINGS API (Demo assessment unlock toggle) ---
+// --- SYSTEM SETTINGS API (Demo assessment unlock toggle & skip module toggle) ---
 // GET /api/settings - Retrieve global configuration
 app.get('/api/settings', (req, res) => {
     db.all(`SELECT key, value FROM system_settings`, (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         const settings = {
-            skip_assessment_waiting_time: false
+            skip_assessment_waiting_time: false,
+            skip_module_completion: false
         };
         (rows || []).forEach(r => {
             if (r.key === 'skip_assessment_waiting_time') {
                 settings.skip_assessment_waiting_time = (r.value === '1' || r.value === 'true');
+            } else if (r.key === 'skip_module_completion') {
+                settings.skip_module_completion = (r.value === '1' || r.value === 'true');
             } else {
                 settings[r.key] = r.value;
             }
@@ -2828,15 +2832,39 @@ app.get('/api/settings', (req, res) => {
 
 // POST /api/settings - Update global settings
 app.post('/api/settings', (req, res) => {
-    const { skip_assessment_waiting_time } = req.body || {};
-    const valStr = (skip_assessment_waiting_time === true || skip_assessment_waiting_time === 'true' || skip_assessment_waiting_time === '1' || skip_assessment_waiting_time === 1) ? '1' : '0';
+    const { skip_assessment_waiting_time, skip_module_completion } = req.body || {};
     
-    db.run(`INSERT INTO system_settings (key, value, updated_at) VALUES ('skip_assessment_waiting_time', ?, CURRENT_TIMESTAMP)
-            ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP`, [valStr], function(err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({
-            success: true,
-            skip_assessment_waiting_time: valStr === '1'
+    db.serialize(() => {
+        if (skip_assessment_waiting_time !== undefined) {
+            const valStr = (skip_assessment_waiting_time === true || skip_assessment_waiting_time === 'true' || skip_assessment_waiting_time === '1' || skip_assessment_waiting_time === 1) ? '1' : '0';
+            db.run(`INSERT INTO system_settings (key, value, updated_at) VALUES ('skip_assessment_waiting_time', ?, CURRENT_TIMESTAMP)
+                    ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP`, [valStr]);
+        }
+        if (skip_module_completion !== undefined) {
+            const valStr = (skip_module_completion === true || skip_module_completion === 'true' || skip_module_completion === '1' || skip_module_completion === 1) ? '1' : '0';
+            db.run(`INSERT INTO system_settings (key, value, updated_at) VALUES ('skip_module_completion', ?, CURRENT_TIMESTAMP)
+                    ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP`, [valStr]);
+        }
+
+        db.all(`SELECT key, value FROM system_settings`, (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            const settings = {
+                skip_assessment_waiting_time: false,
+                skip_module_completion: false
+            };
+            (rows || []).forEach(r => {
+                if (r.key === 'skip_assessment_waiting_time') {
+                    settings.skip_assessment_waiting_time = (r.value === '1' || r.value === 'true');
+                } else if (r.key === 'skip_module_completion') {
+                    settings.skip_module_completion = (r.value === '1' || r.value === 'true');
+                } else {
+                    settings[r.key] = r.value;
+                }
+            });
+            res.json({
+                success: true,
+                ...settings
+            });
         });
     });
 });

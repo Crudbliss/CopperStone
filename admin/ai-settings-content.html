@@ -527,7 +527,25 @@
                     </label>
                 </div>
 
-                <!-- 2. The Action Button (Separate!) -->
+                <!-- 2. Skip Module Requirement Toggle Switch -->
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px;">
+                    <div>
+                        <div style="font-size: 13.5px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                            <span>Direct Assessment: Skip Module Requirement</span>
+                            <span id="skip-module-status-badge" style="font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 6px; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);">OFF</span>
+                        </div>
+                        <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
+                            Allows students to skip answering learning modules and proceed straight to the next assessment.
+                        </div>
+                    </div>
+                    <!-- Toggle Switch -->
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-skip-module" onchange="handleToggleSkipModule(this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <!-- 3. The Action Button (Separate!) -->
                 <div style="background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
                     <div>
                         <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
@@ -665,7 +683,7 @@
                 if (settings.k_value) document.getElementById('setting-k').value = settings.k_value;
                 if (settings.distance_metric) document.getElementById('setting-metric').value = settings.distance_metric;
 
-                // Global System Settings (Demo Assessment Skip Waiting Toggle)
+                // Global System Settings (Demo Assessment Skip Waiting & Skip Module Toggles)
                 try {
                     const resGlobal = await fetch('/api/settings');
                     if (resGlobal.ok) {
@@ -674,6 +692,11 @@
                         const toggleEl = document.getElementById('toggle-skip-waiting');
                         if (toggleEl) toggleEl.checked = isSkip;
                         updateDemoBadge(isSkip);
+
+                        const isSkipModule = !!globalSettings.skip_module_completion;
+                        const toggleModEl = document.getElementById('toggle-skip-module');
+                        if (toggleModEl) toggleModEl.checked = isSkipModule;
+                        updateSkipModuleBadge(isSkipModule);
                     }
                 } catch(e) {
                     console.error("Global settings error:", e);
@@ -711,6 +734,22 @@
             }
         }
 
+        function updateSkipModuleBadge(isOn) {
+            const badge = document.getElementById('skip-module-status-badge');
+            if (!badge) return;
+            if (isOn) {
+                badge.textContent = 'ON';
+                badge.style.background = 'rgba(74, 222, 128, 0.15)';
+                badge.style.color = '#4ade80';
+                badge.style.borderColor = 'rgba(74, 222, 128, 0.35)';
+            } else {
+                badge.textContent = 'OFF';
+                badge.style.background = 'rgba(239, 68, 68, 0.15)';
+                badge.style.color = '#f87171';
+                badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            }
+        }
+
         async function handleToggleSkipWaiting(isChecked) {
             updateDemoBadge(isChecked);
             try {
@@ -725,6 +764,28 @@
                         fb.style.display = 'block';
                         fb.style.color = isChecked ? 'var(--matrix-green)' : 'var(--text-muted)';
                         fb.textContent = isChecked ? '✓ Demo Mode enabled: 7-day waiting period bypassed' : '✓ Normal Mode enabled: 7-day waiting schedule active';
+                        setTimeout(() => { fb.style.display = 'none'; }, 3500);
+                    }
+                }
+            } catch(e) {
+                console.error("Failed to save setting:", e);
+            }
+        }
+
+        async function handleToggleSkipModule(isChecked) {
+            updateSkipModuleBadge(isChecked);
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ skip_module_completion: isChecked })
+                });
+                if (res.ok) {
+                    const fb = document.getElementById('settings-save-feedback');
+                    if (fb) {
+                        fb.style.display = 'block';
+                        fb.style.color = isChecked ? 'var(--matrix-green)' : 'var(--text-muted)';
+                        fb.textContent = isChecked ? '✓ Direct Assessment enabled: Students can skip module chapters' : '✓ Module Requirement enabled: Students must complete modules';
                         setTimeout(() => { fb.style.display = 'none'; }, 3500);
                     }
                 }

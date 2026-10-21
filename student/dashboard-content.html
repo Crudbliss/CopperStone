@@ -1311,14 +1311,22 @@
             }
 
             let isTargetModuleCompleted = false;
+            let isSkipModuleSetting = false;
 
             // Fetch Real Modules & Compute Exact Module Progress
             try {
                 let modules = [];
                 let progressRows = [];
 
-                const modRes = await fetch('/api/modules?role=student');
+                const [modRes, setRes] = await Promise.all([
+                    fetch('/api/modules?role=student'),
+                    fetch('/api/settings')
+                ]);
                 if (modRes.ok) modules = await modRes.json();
+                if (setRes.ok) {
+                    const settings = await setRes.json();
+                    isSkipModuleSetting = !!settings.skip_module_completion;
+                }
 
                 if (user && user.id) {
                     const progRes = await fetch(`/api/progress/${user.id}`);
@@ -1360,12 +1368,14 @@
                     document.getElementById('module-chapters-text').textContent = `${clampedCompleted}/${maxTasks} chapters`;
                     document.getElementById('module-progress-fill').style.width = `${progressPct}%`;
 
-                    // Check if target module is 100% completed
+                    // Check if target module is 100% completed or if skip module setting is active
                     const isCompletedLocal = localProg && (localProg.moduleCompleted || localProg.completedFinal || (Array.isArray(localProg.completedChapters) && totalChapters > 0 && localProg.completedChapters.length >= totalChapters));
                     const isCompletedServer = activeProg && (activeProg.status === 'Completed' || (totalChapters > 0 && activeProg.tasks_completed >= totalChapters));
-                    if (progressPct >= 100 || isCompletedLocal || isCompletedServer) {
+                    if (progressPct >= 100 || isCompletedLocal || isCompletedServer || isSkipModuleSetting) {
                         isTargetModuleCompleted = true;
                     }
+                } else if (isSkipModuleSetting) {
+                    isTargetModuleCompleted = true;
                 }
             } catch (e) {
                 console.error('Modules fetch error', e);

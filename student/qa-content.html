@@ -553,6 +553,7 @@
             let history = [];
             let progressRows = [];
             let isDemoSkipEnabled = false;
+            let isSkipModuleEnabled = false;
             try {
                 const [histRes, progRes, setRes] = await Promise.all([
                     fetch(`/api/students/${user.id}/history`),
@@ -564,23 +565,24 @@
                 if (setRes.ok) {
                     const settings = await setRes.json();
                     isDemoSkipEnabled = !!settings.skip_assessment_waiting_time;
+                    isSkipModuleEnabled = !!settings.skip_module_completion;
                 }
             } catch(e) {
                 console.error('History/Progress/Settings fetch error', e);
             }
 
             cachedAssessmentHistory = history;
-            renderAssessmentLog(history, user, progressRows, isDemoSkipEnabled);
+            renderAssessmentLog(history, user, progressRows, isDemoSkipEnabled, isSkipModuleEnabled);
         });
 
-        function renderAssessmentLog(history, user, progressRows = [], isDemoSkipEnabled = false) {
+        function renderAssessmentLog(history, user, progressRows = [], isDemoSkipEnabled = false, isSkipModuleEnabled = false) {
             const container = document.getElementById('assessment-log-list');
             if (!container) return;
 
             const studentId = user.id;
 
-            // Check if first module is completed (via server progress or local storage)
-            let isFirstModCompleted = progressRows.some(p => p.status === 'Completed' || (p.total_tasks > 0 && p.tasks_completed >= p.total_tasks));
+            // Check if first module is completed (via server progress, local storage, or admin skip toggle)
+            let isFirstModCompleted = isSkipModuleEnabled || progressRows.some(p => p.status === 'Completed' || (p.total_tasks > 0 && p.tasks_completed >= p.total_tasks));
             let firstModCompletedAt = localStorage.getItem(`student_first_mod_completed_${studentId}`);
 
             if (!firstModCompletedAt) {
@@ -600,6 +602,11 @@
                 }
             } else {
                 isFirstModCompleted = true;
+            }
+
+            if (isSkipModuleEnabled) {
+                isFirstModCompleted = true;
+                if (!firstModCompletedAt) firstModCompletedAt = new Date().toISOString();
             }
 
             const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
