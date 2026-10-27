@@ -1484,31 +1484,23 @@
 
                 let html = '';
                 modes.forEach(m => {
-                    const isMastered = m.score >= 80;
-                    const targetDiff = 80 - m.score;
-                    let badgeHtml = isMastered
-                        ? `<span class="dist-tag-strength" style="background: rgba(74, 222, 128, 0.12); color: var(--matrix-green); border: 1px solid rgba(74, 222, 128, 0.3);">✓ Mastered</span>`
-                        : `<span class="dist-tag-intervention" style="background: rgba(216, 166, 26, 0.12); color: var(--matrix-yellow); border: 1px solid rgba(216, 166, 26, 0.3);">${targetDiff}% to 80% Target</span>`;
-
                     html += `
                         <div class="dist-row">
                             <div class="dist-row-top">
                                 <div class="dist-label-left">
                                     <span style="display: flex; align-items: center; color: var(--matrix-${m.colorClass});">${m.iconSvg}</span>
                                     <span>${m.key === 'HC' || m.key === 'DI' ? m.short : m.name}</span>
-                                    ${badgeHtml}
                                 </div>
-                                <span class="dist-val-pct" style="color: ${isMastered ? 'var(--matrix-green)' : '#ffffff'}; font-weight: 800;">${m.score}%</span>
+                                <span class="dist-val-pct" style="color: #ffffff; font-weight: 800;">${m.score}%</span>
                             </div>
-                            <div class="dist-track" style="margin-top: 8px; position: relative; overflow: visible;">
-                                <div style="position: absolute; left: 80%; top: -2px; bottom: -2px; width: 2px; background: var(--matrix-yellow); z-index: 2; border-radius: 1px;" title="80% Target Benchmark"></div>
+                            <div class="dist-track" style="margin-top: 8px; position: relative;">
                                 <div class="dist-fill ${m.colorClass}" style="width: ${Math.min(100, m.score)}%;"></div>
                             </div>
                         </div>
                     `;
                 });
 
-                html += `<div class="dist-footnote" id="dist-footnote-text">Target Benchmark: 80% &middot; Advance your mastery through modules & knowledge checks</div>`;
+                html += `<div class="dist-footnote" id="dist-footnote-text">Advance your mastery through modules &middot; Knowledge checks reinforce your learning</div>`;
                 container.innerHTML = html;
 
             } else {

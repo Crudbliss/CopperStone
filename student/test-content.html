@@ -1032,9 +1032,9 @@
                 <div class="dual-model-col">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <span style="font-size: 11px; font-weight: 800; color: var(--matrix-green); letter-spacing: 1px; text-transform: uppercase;">
-                            2. QUADRANT MASTERY (80% BENCHMARK)
+                            2. QUADRANT MASTERY
                         </span>
-                        <span style="font-size: 10px; color: var(--matrix-yellow); font-weight: 700; background: rgba(216, 166, 26, 0.1); border: 1px solid rgba(216,166,26,0.3); padding: 2px 7px; border-radius: 6px;">Target: ≥ 80%</span>
+                        <span style="font-size: 10px; color: var(--matrix-blue); font-weight: 700; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56,189,248,0.3); padding: 2px 7px; border-radius: 6px;">Evaluated Mastery</span>
                     </div>
                     <div id="mastery-bars-container">
                         <!-- Independent Mastery Bars injected here -->
@@ -1882,11 +1882,6 @@
                 ];
 
                 masteryList.forEach(item => {
-                    const isMastered = item.score >= 80;
-                    const statusPill = isMastered 
-                        ? `<span style="font-size: 10px; font-weight: 700; color: #4ade80; background: rgba(74, 222, 128, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(74, 222, 128, 0.3);">✓ Mastered</span>`
-                        : `<span style="font-size: 10px; font-weight: 700; color: #fb923c; background: rgba(251, 146, 60, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(251, 146, 60, 0.3);">${80 - item.score}% to 80% Target</span>`;
-
                     const row = document.createElement('div');
                     row.className = 'fuzzy-bar-row';
                     row.style.marginBottom = '14px';
@@ -1897,12 +1892,10 @@
                                 <span>${item.name}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                ${statusPill}
                                 <span style="color: white; font-weight: 700;">${item.score}%</span>
                             </div>
                         </div>
                         <div class="fuzzy-bar-track" style="position: relative; height: 9px;">
-                            <div style="position: absolute; left: 80%; top: -2px; bottom: -2px; width: 2px; background: #d8a61a; z-index: 3;" title="80% Target Benchmark"></div>
                             <div class="fuzzy-bar-fill mastery-fill" style="width: 0%; background: ${item.color}; position: relative; z-index: 1;"></div>
                         </div>
                     `;

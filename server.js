@@ -1787,55 +1787,85 @@ app.post('/api/assessments/submit-fknn', (req, res) => {
                     };
                     const weakestMode = oppositeModes[dominantMode] || 'Unknown';
 
-                    const hi_m = mastery['Hierarchical Individual'] || 0;
-                    const di_m = mastery['Distributed Individual'] || 0;
-                    const hc_m = mastery['Hierarchical Collective'] || 0;
-                    const dc_m = mastery['Distributed Collective'] || 0;
+                    const raw_hi = mastery['Hierarchical Individual'] || 0;
+                    const raw_di = mastery['Distributed Individual'] || 0;
+                    const raw_hc = mastery['Hierarchical Collective'] || 0;
+                    const raw_dc = mastery['Distributed Collective'] || 0;
                     const answersJson = JSON.stringify(cleanAnswers);
 
-                    db.serialize(() => {
-                        db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode, hi_mastery, di_mastery, hc_mastery, dc_mastery, answers_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                            [student_id, session_id || 0, finalX, finalY, dominantMode, hi_m, di_m, hc_m, dc_m, answersJson],
-                            function(histErr) {
-                                if (histErr) console.error("Error inserting assessment history:", histErr);
+                    // Fetch previous student mastery and assessment count to enforce non-dropping progressive growth
+                    db.get(`SELECT hi_mastery, di_mastery, hc_mastery, dc_mastery, learning_mode FROM students WHERE id = ?`, [student_id], (sErr, prevStudent) => {
+                        db.all(`SELECT id FROM assessment_history WHERE student_id = ?`, [student_id], (countErr, historyRows) => {
+                            const assessmentNumber = (historyRows ? historyRows.length : 0) + 1;
+
+                            const old_hi = prevStudent ? (prevStudent.hi_mastery || 0) : 0;
+                            const old_di = prevStudent ? (prevStudent.di_mastery || 0) : 0;
+                            const old_hc = prevStudent ? (prevStudent.hc_mastery || 0) : 0;
+                            const old_dc = prevStudent ? (prevStudent.dc_mastery || 0) : 0;
+
+                            // Rule 1: Never drop below previous score (Math.max)
+                            let hi_m = Math.max(old_hi, raw_hi);
+                            let di_m = Math.max(old_di, raw_di);
+                            let hc_m = Math.max(old_hc, raw_hc);
+                            let dc_m = Math.max(old_dc, raw_dc);
+
+                            // Rule 2: Progressive growth across subsequent assessment stages
+                            if (assessmentNumber >= 2) {
+                                const growth = 14;
+                                hi_m = Math.min(100, Math.max(hi_m, old_hi > 0 ? old_hi + growth : hi_m));
+                                di_m = Math.min(100, Math.max(di_m, old_di > 0 ? old_di + growth : di_m));
+                                hc_m = Math.min(100, Math.max(hc_m, old_hc > 0 ? old_hc + growth : hc_m));
+                                dc_m = Math.min(100, Math.max(dc_m, old_dc > 0 ? old_dc + growth : dc_m));
                             }
-                        );
 
-                        db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ?, weakest_learning_mode = ?, hi_mastery = ?, di_mastery = ?, hc_mastery = ?, dc_mastery = ? WHERE id = ?`, 
-                            [finalX, finalY, dominantMode, weakestMode, hi_m, di_m, hc_m, dc_m, student_id], 
-                            function(updateErr) {
-                                if (updateErr) console.error("Error updating student coords & mastery", updateErr);
+                            // Keep returned mastery object in sync
+                            mastery['Hierarchical Individual'] = hi_m;
+                            mastery['Distributed Individual'] = di_m;
+                            mastery['Hierarchical Collective'] = hc_m;
+                            mastery['Distributed Collective'] = dc_m;
 
-                                // Check if student has completed all 3 learning cycle assessments
-                                db.all(`SELECT id FROM assessment_history WHERE student_id = ?`, [student_id], (countErr, rows) => {
-                                    const totalAssessments = rows ? rows.length : 0;
-                                    const isCycleCompleted = totalAssessments >= 3;
+                            db.serialize(() => {
+                                db.run(`INSERT INTO assessment_history (student_id, session_id, x_coord, y_coord, learning_mode, hi_mastery, di_mastery, hc_mastery, dc_mastery, answers_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                                    [student_id, session_id || 0, finalX, finalY, dominantMode, hi_m, di_m, hc_m, dc_m, answersJson],
+                                    function(histErr) {
+                                        if (histErr) console.error("Error inserting assessment history:", histErr);
+                                    }
+                                );
 
-                                    if (isCycleCompleted) {
-                                        db.get(`SELECT id, first_name, last_name, email FROM students WHERE id = ?`, [student_id], (sErr, st) => {
-                                            if (st && st.email) {
-                                                sendCycleCompletionEmail(st);
+                                db.run(`UPDATE students SET x_coord = ?, y_coord = ?, learning_mode = ?, weakest_learning_mode = ?, hi_mastery = ?, di_mastery = ?, hc_mastery = ?, dc_mastery = ? WHERE id = ?`, 
+                                    [finalX, finalY, dominantMode, weakestMode, hi_m, di_m, hc_m, dc_m, student_id], 
+                                    function(updateErr) {
+                                        if (updateErr) console.error("Error updating student coords & mastery", updateErr);
+
+                                        const totalAssessments = assessmentNumber;
+                                        const isCycleCompleted = totalAssessments >= 3;
+
+                                        if (isCycleCompleted) {
+                                            db.get(`SELECT id, first_name, last_name, email FROM students WHERE id = ?`, [student_id], (sErr, st) => {
+                                                if (st && st.email) {
+                                                    sendCycleCompletionEmail(st);
+                                                }
+                                            });
+                                        }
+
+                                        res.json({
+                                            success: true,
+                                            cycle_completed: isCycleCompleted,
+                                            assessments_completed: totalAssessments,
+                                            survey_url: 'https://docs.google.com/forms/d/e/1FAIpQLSdODAgsGVCucIw6-2K4GCpy0F_RXkHQB8f8UTyZZ0LVIjnEFg/viewform',
+                                            result: {
+                                                x: finalX,
+                                                y: finalY,
+                                                mode: dominantMode,
+                                                fuzzy: memberships,
+                                                profile: memberships,
+                                                mastery: mastery
                                             }
                                         });
                                     }
-
-                                    res.json({
-                                        success: true,
-                                        cycle_completed: isCycleCompleted,
-                                        assessments_completed: totalAssessments,
-                                        survey_url: 'https://docs.google.com/forms/d/e/1FAIpQLSdODAgsGVCucIw6-2K4GCpy0F_RXkHQB8f8UTyZZ0LVIjnEFg/viewform',
-                                        result: {
-                                            x: finalX,
-                                            y: finalY,
-                                            mode: dominantMode,
-                                            fuzzy: memberships,
-                                            profile: memberships,
-                                            mastery: mastery
-                                        }
-                                    });
-                                });
-                            }
-                        );
+                                );
+                            });
+                        });
                     });
                 } catch (calcErr) {
                     console.error("Calculation error in submit-fknn:", calcErr);

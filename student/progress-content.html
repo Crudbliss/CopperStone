@@ -923,22 +923,21 @@
                     <div class="metrics-grid">
                         <div class="metric-box">
                             <span class="metric-value" id="val-your-score">--%</span>
-                            <span class="metric-label">Your Score</span>
+                            <span class="metric-label">Current Mastery</span>
                         </div>
                         <div class="metric-box">
                             <span class="metric-value" id="val-threshold"
-                                style="color: var(--matrix-yellow);">80%</span>
-                            <span class="metric-label">Target Benchmark</span>
+                                style="color: var(--matrix-yellow);">Active</span>
+                            <span class="metric-label">Growth Status</span>
                         </div>
                         <div class="metric-box">
-                            <span class="metric-value gap" id="val-gap-to-close">--%</span>
-                            <span class="metric-label">Gap to Close</span>
+                            <span class="metric-value gap" id="val-gap-to-close" style="color: var(--matrix-purple);">Priority</span>
+                            <span class="metric-label">Focus Tier</span>
                         </div>
                     </div>
 
                     <p class="weakest-desc-text" id="weakest-instructions-text">
-                        Close the gap in this priority quadrant through targeted module activities to achieve benchmark
-                        mastery.
+                        Strengthen your skills in this priority quadrant through targeted module activities and practice.
                     </p>
                 </div>
 
@@ -1044,9 +1043,9 @@
                         <div class="step-text-content">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <h4 class="step-heading muted">4. Reassessment & Growth</h4>
-                                <span style="font-size: 10px; font-weight: 600; color: #64748b;">Target: &ge;80%</span>
+                                <span style="font-size: 10px; font-weight: 600; color: #64748b;" id="cycle-step-4-status">Growth Check</span>
                             </div>
-                            <p class="step-detail">Take stage reassessment to measure migration toward the benchmark.
+                            <p class="step-detail">Take stage reassessment to measure your learning growth.
                             </p>
                         </div>
                     </div>
@@ -1505,11 +1504,6 @@
 
                 <div class="chart-wrapper" id="trend-chart-wrapper">
                     <svg class="svg-chart-container" viewBox="0 0 900 240" preserveAspectRatio="none">
-                        <!-- Target Line (Dashed Yellow Line at 80%) -->
-                        <line x1="60" y1="56" x2="880" y2="56" stroke="#d8a61a" stroke-width="1.5"
-                            stroke-dasharray="5 5" opacity="0.85" />
-                        <text x="870" y="48" fill="#d8a61a" font-size="11" font-weight="700" font-family="Poppins"
-                            text-anchor="end">80% Target</text>
 
                         <!-- Y-Axis Grid Lines & Labels -->
                         <line x1="60" y1="20" x2="880" y2="20" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
@@ -1662,8 +1656,7 @@
                             <div class="tooltip-row" id="trend-tooltip-score-row" style="color: #ffffff;">
                                 <span>Score</span><span id="trend-val-score">21%</span>
                             </div>
-                            <div class="tooltip-row text-gold"><span>Target Gap</span><span id="trend-val-gap">-59% to
-                                    80% target</span></div>
+                            <div class="tooltip-row text-cyan"><span>Stage Progress</span><span id="trend-val-gap">Baseline Evaluated</span></div>
                             <div class="tooltip-row" style="color: #94a3b8; font-size: 11.5px; margin-top: 4px;"><span
                                     id="trend-val-status">Initial assessment completed</span></div>
                         </div>
@@ -1671,14 +1664,14 @@
                         <!-- 3-Lowest Comparison Tooltip View -->
                         <div id="trend-tooltip-compare-content" style="display: none;">
                             <div class="tooltip-row text-cyan" id="comp-row-1"><span id="comp-label-1">1st
-                                    (DI)</span><span id="comp-val-1">21% (-59%)</span></div>
+                                    (DI)</span><span id="comp-val-1">21%</span></div>
                             <div class="tooltip-row text-purple" id="comp-row-2"><span id="comp-label-2">2nd
-                                    (DC)</span><span id="comp-val-2">24% (-56%)</span></div>
+                                    (DC)</span><span id="comp-val-2">24%</span></div>
                             <div class="tooltip-row text-orange" id="comp-row-3"><span id="comp-label-3">3rd
-                                    (HC)</span><span id="comp-val-3">27% (-53%)</span></div>
-                            <div class="tooltip-row text-gold"
+                                    (HC)</span><span id="comp-val-3">27%</span></div>
+                            <div class="tooltip-row text-cyan"
                                 style="font-size: 11px; margin-top: 4px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.06);">
-                                <span>Milestone Goal</span><span>80% Mastery</span>
+                                <span>Milestone</span><span>Continuous Growth</span>
                             </div>
                         </div>
                     </div>
@@ -1912,7 +1905,7 @@
                 title: '1st Assessment Stage',
                 quadName: 'Distributed Individual',
                 score: '21%',
-                gap: '-59% to 80% target',
+                gap: 'Baseline established',
                 status: 'Initial assessment completed'
             },
             {
@@ -1926,7 +1919,7 @@
                 title: 'Final Assessment Milestone (Pending)',
                 quadName: 'Distributed Individual',
                 score: '--%',
-                gap: 'Targeting 80% mastery',
+                gap: 'Final evaluation pending',
                 status: 'Pending final evaluation'
             }
         ];
@@ -2254,9 +2247,7 @@
                 const weakName = weakest.name;
                 const profile = strategyProfiles[weakName] || strategyProfiles['Distributed Collective'];
 
-                const threshold = 80; // 80% Target Benchmark
                 const score = weakest.score || 48;
-                const gap = Math.max(0, threshold - score);
 
                 // Update Weakest Area Card
                 const weakestTitleEl = document.getElementById('weakest-quadrant-title');
@@ -2265,12 +2256,15 @@
                 const yourScoreEl = document.getElementById('val-your-score');
                 if (yourScoreEl) yourScoreEl.textContent = `${score}%`;
 
+                const threshEl = document.getElementById('val-threshold');
+                if (threshEl) threshEl.textContent = 'Active';
+
                 const gapEl = document.getElementById('val-gap-to-close');
-                if (gapEl) gapEl.textContent = `${gap}%`;
+                if (gapEl) gapEl.textContent = 'Priority';
 
                 const instrEl = document.getElementById('weakest-instructions-text');
                 if (instrEl) {
-                    instrEl.textContent = `Close the ${gap}% gap in ${weakName} through targeted module activities to achieve the ${threshold}% mastery benchmark.`;
+                    instrEl.textContent = `Strengthen your understanding in ${weakName} through targeted module activities and interactive practice.`;
                 }
 
                 // Update Recommended Step Header & Titles
@@ -2974,27 +2968,27 @@
                     lineColor = '#38bdf8';
 
                     trendPointData[0] = {
-                        title: '1st Assessment Weakest Quadrant',
+                        title: '1st Assessment Focus Quadrant',
                         quadName: `${w1.name} (${w1.code})`,
                         score: isS1Active ? `${score1}%` : 'Not taken',
-                        gap: isS1Active ? `${score1 - 80}% to 80% target` : 'Pending',
-                        status: 'Diagnosed as lowest quadrant'
+                        gap: isS1Active ? 'Baseline established' : 'Pending',
+                        status: 'Diagnosed as focus quadrant'
                     };
 
                     trendPointData[1] = {
-                        title: '2nd Assessment Weakest Quadrant',
+                        title: '2nd Assessment Focus Quadrant',
                         quadName: isS2Active ? `${w2.name} (${w2.code})` : 'Pending Reassessment',
                         score: isS2Active ? `${score2}%` : '-- (Pending)',
-                        gap: isS2Active ? `${score2 - 80}% to 80% target` : 'Awaiting 2nd assessment',
+                        gap: isS2Active ? (score2 - score1 >= 0 ? `+${score2 - score1}% progress` : `${score2 - score1}%`) : 'Awaiting 2nd assessment',
                         status: isS2Active ? (w2.code === w1.code ? 'Lowest quadrant unchanged' : `Shifted from ${w1.code} to ${w2.code}`) : 'Awaiting module completion'
                     };
 
                     trendPointData[2] = {
-                        title: 'Final Assessment Weakest Quadrant',
+                        title: 'Final Assessment Focus Quadrant',
                         quadName: isS3Active ? `${w3.name} (${w3.code})` : 'Pending Final Assessment',
                         score: isS3Active ? `${score3}%` : '-- (Pending)',
-                        gap: isS3Active ? `${score3 - 80}% to 80% target` : 'Pending final evaluation',
-                        status: isS3Active ? (score3 >= 80 ? 'Target achieved!' : 'Final lowest quadrant') : 'Target milestone'
+                        gap: isS3Active ? (score3 - score2 >= 0 ? `+${score3 - score2}% progress` : `${score3 - score2}%`) : 'Pending final evaluation',
+                        status: isS3Active ? 'Assessment cycle completed' : 'Final evaluation milestone'
                     };
 
                 } else {
@@ -3035,7 +3029,7 @@
                         title: '1st Assessment Diagnostic',
                         quadName: `${meta.name} (${targetKey})`,
                         score: isS1Active ? `${score1}%` : 'Not taken',
-                        gap: isS1Active ? `${score1 - 80}% to 80% target` : 'Pending',
+                        gap: isS1Active ? 'Baseline established' : 'Pending',
                         status: 'Initial assessment completed'
                     };
 
@@ -3051,8 +3045,8 @@
                         title: 'Final Assessment Milestone',
                         quadName: `${meta.name} (${targetKey})`,
                         score: isS3Active ? `${score3}%` : '-- (Pending)',
-                        gap: isS3Active ? (score3 >= 80 ? '80% Target achieved' : `${80 - score3}% to target`) : 'Pending Final Assessment',
-                        status: isS3Active ? 'Final Evaluation milestone' : 'Target milestone'
+                        gap: isS3Active ? (score3 - score2 >= 0 ? `+${score3 - score2}% final gain` : `${score3 - score2}%`) : 'Pending Final Assessment',
+                        status: isS3Active ? 'Final Evaluation completed' : 'Final evaluation milestone'
                     };
                 }
 
@@ -3237,23 +3231,19 @@
             }
 
             // Step 4: Reassessment & Growth
-            let s4Status = 'Target: ≥80%';
+            let s4Status = 'Growth Check';
             let s4StatusColor = '#64748b';
             let s4BadgeClass = 'gray-pending';
             let s4BadgeHtml = '4';
             let s4ActiveItem = '';
-            let s4Desc = `Take stage reassessment to measure migration toward the benchmark.`;
+            let s4Desc = `Take stage reassessment to measure your learning growth.`;
 
             if (isS2Active) {
-                s4Status = score >= 80 ? 'Mastered' : 'Evaluated';
-                s4StatusColor = score >= 80 ? 'var(--matrix-green)' : 'var(--matrix-yellow)';
-                s4BadgeClass = score >= 80 ? 'green-done' : 'yellow-active';
-                s4BadgeHtml = score >= 80
-                    ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
-                    : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
-                s4Desc = score >= 80
-                    ? `Target achieved! Reassessment score reached ≥80% mastery.`
-                    : `Stage 2 evaluated at ${score}%. Continue modules to reach 80%.`;
+                s4Status = 'Evaluated';
+                s4StatusColor = 'var(--matrix-green)';
+                s4BadgeClass = 'green-done';
+                s4BadgeHtml = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                s4Desc = `Stage 2 evaluated at ${score}%. Continue modules to further enhance your skills.`;
             } else if (isPhase4Active) {
                 s4Status = 'Ready to Take';
                 s4StatusColor = 'var(--matrix-yellow)';
