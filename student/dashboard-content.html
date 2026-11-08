@@ -405,13 +405,6 @@
             flex-shrink: 0;
         }
 
-        .dist-code-muted {
-            color: var(--text-subtle);
-            font-size: 11px;
-            font-weight: 500;
-            margin-left: 2px;
-        }
-
         .dist-tag-strength {
             background: rgba(74, 222, 128, 0.12);
             color: var(--matrix-green);
@@ -450,13 +443,6 @@
             color: var(--matrix-purple);
             font-size: 16px;
             font-weight: 800;
-        }
-
-        .dist-sub-code {
-            color: var(--text-subtle);
-            font-size: 11px;
-            margin-top: 1px;
-            margin-bottom: 6px;
         }
 
         .dist-track {
@@ -1563,8 +1549,6 @@
                         badgeHtml = `<span class="dist-tag-strength">Strengths &uarr;</span>`;
                     } else if (isLowest) {
                         badgeHtml = `<span class="dist-tag-intervention">Intervention &darr;</span>`;
-                    } else {
-                        badgeHtml = `<span class="dist-code-muted">${m.key}</span>`;
                     }
 
                     const pctClass = isHighest ? 'green' : (isLowest ? 'purple' : '');
@@ -1579,8 +1563,7 @@
                                 </div>
                                 <span class="dist-val-pct ${pctClass}">${m.pct}% share</span>
                             </div>
-                            ${(isHighest || isLowest) ? `<div class="dist-sub-code">${m.key}</div>` : ''}
-                            <div class="dist-track" style="${!(isHighest || isLowest) ? 'margin-top: 8px;' : ''}">
+                            <div class="dist-track" style="margin-top: 8px; position: relative;">
                                 <div class="dist-fill ${m.colorClass}" style="width: ${m.pct}%;"></div>
                             </div>
                         </div>
