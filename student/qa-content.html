@@ -760,7 +760,11 @@
                     const modeParam = encodeURIComponent(histItem.learning_mode || '');
                     const xCoord = histItem.x_coord !== undefined ? histItem.x_coord : 0;
                     const yCoord = histItem.y_coord !== undefined ? histItem.y_coord : 0;
-                    viewUrl = `test-content.html?view_results=true&mode=${modeParam}&x=${xCoord}&y=${yCoord}`;
+                    const hiM = histItem.hi_mastery !== undefined ? histItem.hi_mastery : 0;
+                    const diM = histItem.di_mastery !== undefined ? histItem.di_mastery : 0;
+                    const hcM = histItem.hc_mastery !== undefined ? histItem.hc_mastery : 0;
+                    const dcM = histItem.dc_mastery !== undefined ? histItem.dc_mastery : 0;
+                    viewUrl = `test-content.html?view_results=true&mode=${modeParam}&x=${xCoord}&y=${yCoord}&history_id=${histItem.id || ''}&stage=${idx + 1}&hi=${hiM}&di=${diM}&hc=${hcM}&dc=${dcM}`;
 
                 } else if (isAvailable) {
                     badgeHtml = `<span class="badge-status-available">Available Now</span>`;

@@ -34,7 +34,8 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             overflow-x: hidden;
             width: 100%;
             max-width: 100%;
@@ -863,9 +864,29 @@
             padding: 40px 48px;
             width: 100%;
             max-width: 480px;
+            max-height: 92dvh;
+            overflow-y: auto;
             position: relative;
             transform: translateY(20px);
             transition: transform 0.3s ease;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .modal-overlay.active .modal-content {
@@ -1155,9 +1176,23 @@
             margin-bottom: 16px;
         }
 
+        .modal-password-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .modal-register-content {
+            max-width: 580px !important;
+            padding: 34px 40px !important;
+        }
+
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            html, body {
+
+            html,
+            body {
                 overflow-x: hidden !important;
                 width: 100%;
                 max-width: 100vw;
@@ -1323,6 +1358,16 @@
             .modal-name-grid {
                 grid-template-columns: 1fr !important;
                 gap: 12px !important;
+            }
+
+            .modal-password-grid {
+                grid-template-columns: 1fr !important;
+                gap: 14px !important;
+            }
+
+            .modal-register-content {
+                max-width: calc(100vw - 24px) !important;
+                padding: 24px 18px !important;
             }
 
             footer {
@@ -1797,7 +1842,8 @@
                 <div class="dropdown-menu" id="navDropdown">
                     <a href="#" class="dropdown-item" onclick="switchView('home'); return false;">Home</a>
                     <a href="#" class="dropdown-item" onclick="switchView('about'); return false;">About Us</a>
-                    <a href="#" class="dropdown-item" onclick="switchView('support'); return false;">Help &amp; Support</a>
+                    <a href="#" class="dropdown-item" onclick="switchView('support'); return false;">Help &amp;
+                        Support</a>
                 </div>
             </div>
         </div>
@@ -1811,7 +1857,8 @@
                     • MATRIX Gudipipi — Quezon City
                 </div>
 
-                <h1 class="hero-title">MA<span class="matrix-t">T</span><span class="matrix-r">R</span><span class="matrix-i">I</span><span class="matrix-x">X</span></h1>
+                <h1 class="hero-title">MA<span class="matrix-t">T</span><span class="matrix-r">R</span><span
+                        class="matrix-i">I</span><span class="matrix-x">X</span></h1>
 
                 <div class="hero-subtitle">
                     A QUADRANT-BASED EVALUATION AND TARGETED MODULE DELIVERY SYSTEM
@@ -1934,66 +1981,85 @@
             <div class="container">
                 <div class="text-center" style="margin-bottom: 48px;">
                     <div class="section-eyebrow">DESIGNED FOR LEARNERS</div>
-                    <h2 class="section-title" style="margin-bottom: 0;">Your Personalized <span>Learning Platform</span></h2>
+                    <h2 class="section-title" style="margin-bottom: 0;">Your Personalized <span>Learning Platform</span>
+                    </h2>
                 </div>
 
-                <div class="learner-portal-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; padding: 48px 40px 40px 40px; text-align: center; max-width: 980px; margin: 0 auto; box-shadow: 0 16px 40px rgba(0,0,0,0.2);">
-                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                <div class="learner-portal-card"
+                    style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; padding: 48px 40px 40px 40px; text-align: center; max-width: 980px; margin: 0 auto; box-shadow: 0 16px 40px rgba(0,0,0,0.2);">
+                    <div
+                        style="width: 48px; height: 48px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
                         <svg width="24" height="24" fill="currentColor">
                             <use href="#icon-student"></use>
                         </svg>
                     </div>
 
                     <h3 style="color: #ffffff; font-size: 24px; font-weight: 800; margin-bottom: 8px;">For Students</h3>
-                    <p style="color: var(--text-opacity); font-size: 14.5px; margin-bottom: 36px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    <p
+                        style="color: var(--text-opacity); font-size: 14.5px; margin-bottom: 36px; max-width: 600px; margin-left: auto; margin-right: auto;">
                         A complete adaptive learning experience built around your cognitive habits
                     </p>
 
                     <div class="learner-features-grid" style="margin-bottom: 36px; text-align: center;">
                         <!-- Card 1 -->
-                        <div class="learner-subcard" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 32px 22px; display: flex; flex-direction: column; align-items: center;">
-                            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <div class="learner-subcard"
+                            style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 32px 22px; display: flex; flex-direction: column; align-items: center;">
+                            <div
+                                style="width: 44px; height: 44px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                                     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                                 </svg>
                             </div>
-                            <h4 style="color: #ffffff; font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 12px;">Discover your exact learning quadrant</h4>
+                            <h4
+                                style="color: #ffffff; font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 12px;">
+                                Discover your exact learning quadrant</h4>
                             <p style="color: var(--text-opacity); font-size: 13px; line-height: 1.6; margin: 0;">
                                 Map your position on the Elmore cognitive axis through continuous stage assessments
                             </p>
                         </div>
 
                         <!-- Card 2 -->
-                        <div class="learner-subcard" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 32px 22px; display: flex; flex-direction: column; align-items: center;">
-                            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                        <div class="learner-subcard"
+                            style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 32px 22px; display: flex; flex-direction: column; align-items: center;">
+                            <div
+                                style="width: 44px; height: 44px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
                                 <svg width="20" height="20" fill="currentColor">
                                     <use href="#icon-layer"></use>
                                 </svg>
                             </div>
-                            <h4 style="color: #ffffff; font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 12px;">Unlock personalized modules</h4>
+                            <h4
+                                style="color: #ffffff; font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 12px;">
+                                Unlock personalized modules</h4>
                             <p style="color: var(--text-opacity); font-size: 13px; line-height: 1.6; margin: 0;">
                                 Access study content automatically routed to your dominant and weakest learning modes
                             </p>
                         </div>
 
                         <!-- Card 3 -->
-                        <div class="learner-subcard" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 32px 22px; display: flex; flex-direction: column; align-items: center;">
-                            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <div class="learner-subcard"
+                            style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 32px 22px; display: flex; flex-direction: column; align-items: center;">
+                            <div
+                                style="width: 44px; height: 44px; border-radius: 12px; background: rgba(216, 166, 26, 0.12); border: 1px solid rgba(216, 166, 26, 0.35); color: var(--matrix-yellow); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="18" y1="20" x2="18" y2="10"></line>
                                     <line x1="12" y1="20" x2="12" y2="4"></line>
                                     <line x1="6" y1="20" x2="6" y2="14"></line>
                                 </svg>
                             </div>
-                            <h4 style="color: #ffffff; font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 12px;">Track your learning migration</h4>
+                            <h4
+                                style="color: #ffffff; font-size: 15px; font-weight: 700; line-height: 1.4; margin-bottom: 12px;">
+                                Track your learning migration</h4>
                             <p style="color: var(--text-opacity); font-size: 13px; line-height: 1.6; margin: 0;">
                                 See how your quadrant shifts across consecutive stages throughout your academic journey
                             </p>
                         </div>
                     </div>
 
-                    <button class="btn-primary" onclick="openLoginModal('student')" style="display: inline-flex; align-items: center; gap: 10px; border-radius: 9999px; padding: 14px 36px; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(216, 166, 26, 0.3);">
+                    <button class="btn-primary" onclick="openLoginModal('student')"
+                        style="display: inline-flex; align-items: center; gap: 10px; border-radius: 9999px; padding: 14px 36px; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(216, 166, 26, 0.3);">
                         <svg width="18" height="18" fill="currentColor">
                             <use href="#icon-student"></use>
                         </svg>
@@ -2530,9 +2596,15 @@
             MATRIX
         </div>
         <div style="display: flex; gap: 24px; align-items: center; font-size: 13px;">
-            <a href="#" onclick="switchView('home'); return false;" style="color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Home</a>
-            <a href="#" onclick="switchView('about'); return false;" style="color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">About Us</a>
-            <a href="#" onclick="switchView('support'); return false;" style="color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Help &amp; Support</a>
+            <a href="#" onclick="switchView('home'); return false;"
+                style="color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s;"
+                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Home</a>
+            <a href="#" onclick="switchView('about'); return false;"
+                style="color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s;"
+                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">About Us</a>
+            <a href="#" onclick="switchView('support'); return false;"
+                style="color: #94a3b8; text-decoration: none; font-weight: 500; transition: color 0.2s;"
+                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Help &amp; Support</a>
         </div>
         <div style="color: #64748b; font-size: 13px;">
             © 2026 MATRIX Gudipipi — Quezon City
@@ -2677,7 +2749,9 @@
                         style="text-transform: lowercase;" oninput="this.value = this.value.toLowerCase()" required>
                 </div>
 
-                <div id="forgotStep1Error" style="color: #ef4444; font-size: 13px; margin-bottom: 16px; text-align: center; display: none; font-weight: 500;"></div>
+                <div id="forgotStep1Error"
+                    style="color: #ef4444; font-size: 13px; margin-bottom: 16px; text-align: center; display: none; font-weight: 500;">
+                </div>
 
                 <button type="submit" id="btnForgotSend" class="btn-submit">Send Verification Code</button>
 
@@ -2688,20 +2762,27 @@
             </form>
 
             <!-- Step 2: Enter Code & Set New Password -->
-            <form id="forgotStep2Form" class="modal-form" autocomplete="off" style="display: none;" onsubmit="handleResetPasswordSubmit(event)">
+            <form id="forgotStep2Form" class="modal-form" autocomplete="off" style="display: none;"
+                onsubmit="handleResetPasswordSubmit(event)">
                 <div class="form-group" style="margin-bottom: 16px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <label style="margin-bottom: 0; font-size: 13px;">6-Digit Code <span style="color: #ef4444;">*</span></label>
-                        <a href="#" onclick="handleResendForgotOtp(event)" id="btnForgotResend" style="color: var(--matrix-yellow); font-size: 12px; text-decoration: underline;">Resend code</a>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label style="margin-bottom: 0; font-size: 13px;">6-Digit Code <span
+                                style="color: #ef4444;">*</span></label>
+                        <a href="#" onclick="handleResendForgotOtp(event)" id="btnForgotResend"
+                            style="color: var(--matrix-yellow); font-size: 12px; text-decoration: underline;">Resend
+                            code</a>
                     </div>
-                    <input type="text" id="forgotOtp" placeholder="Enter 6-digit code" maxlength="6" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}"
+                    <input type="text" id="forgotOtp" placeholder="Enter 6-digit code" maxlength="6"
+                        autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}"
                         style="letter-spacing: 4px; font-size: 15px; font-weight: 600; text-align: center;" required>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 16px;">
                     <label style="font-size: 13px;">New Password <span style="color: #ef4444;">*</span></label>
                     <div class="password-wrapper">
-                        <input type="password" id="forgotNewPassword" placeholder="••••••••" autocomplete="new-password" required>
+                        <input type="password" id="forgotNewPassword" placeholder="••••••••" autocomplete="new-password"
+                            required>
                         <button type="button" class="btn-eye" aria-label="Toggle password visibility"
                             onclick="togglePasswordVisibility('forgotNewPassword', 'eyeIconForgotNew')">
                             <svg width="20" height="20" id="eyeIconForgotNew">
@@ -2714,7 +2795,8 @@
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label style="font-size: 13px;">Confirm New Password <span style="color: #ef4444;">*</span></label>
                     <div class="password-wrapper">
-                        <input type="password" id="forgotConfirmPassword" placeholder="••••••••" autocomplete="new-password" required>
+                        <input type="password" id="forgotConfirmPassword" placeholder="••••••••"
+                            autocomplete="new-password" required>
                         <button type="button" class="btn-eye" aria-label="Toggle confirm password visibility"
                             onclick="togglePasswordVisibility('forgotConfirmPassword', 'eyeIconForgotConfirm')">
                             <svg width="20" height="20" id="eyeIconForgotConfirm">
@@ -2724,20 +2806,26 @@
                     </div>
                 </div>
 
-                <div id="forgotStep2Error" style="color: #ef4444; font-size: 13px; margin-bottom: 16px; text-align: center; display: none; font-weight: 500;"></div>
-                <div id="forgotStep2Success" style="color: #4ade80; font-size: 13px; margin-bottom: 16px; text-align: center; display: none; font-weight: 600;"></div>
+                <div id="forgotStep2Error"
+                    style="color: #ef4444; font-size: 13px; margin-bottom: 16px; text-align: center; display: none; font-weight: 500;">
+                </div>
+                <div id="forgotStep2Success"
+                    style="color: #4ade80; font-size: 13px; margin-bottom: 16px; text-align: center; display: none; font-weight: 600;">
+                </div>
 
                 <button type="submit" id="btnForgotSubmit" class="btn-submit">Reset Password</button>
 
                 <div style="text-align: center; margin-top: 16px; font-size: 14px; color: var(--text-muted);">
-                    <a href="#" onclick="resetForgotModalToStep1()" style="color: var(--text-gray); text-decoration: underline; font-size: 13px;">Change email address</a>
+                    <a href="#" onclick="resetForgotModalToStep1()"
+                        style="color: var(--text-gray); text-decoration: underline; font-size: 13px;">Change email
+                        address</a>
                 </div>
             </form>
         </div>
     </div>
 
     <div class="modal-overlay" id="registerModal">
-        <div class="modal-content student-theme" id="registerModalContent" style="max-width: 500px;">
+        <div class="modal-content student-theme modal-register-content" id="registerModalContent">
             <button class="modal-close" onclick="closeRegisterModal()" title="Close">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -2746,7 +2834,7 @@
                 </svg>
             </button>
             <div class="modal-header"
-                style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; width: 100%;">
+                style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; width: 100%;">
                 <div style="display: flex; align-items: center; gap: 16px;">
                     <div class="modal-role-icon">
                         <svg width="24" height="24">
@@ -2755,7 +2843,8 @@
                     </div>
                     <div>
                         <h3 class="modal-title" style="margin-bottom: 0;">Create Student Account</h3>
-                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">BSIT &middot; MATRIX Gudipipi — Quezon City</p>
+                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">BSIT &middot; MATRIX Gudipipi —
+                            Quezon City</p>
                     </div>
                 </div>
                 <button class="modal-switch-role-icon" style="visibility: hidden;">
@@ -2781,11 +2870,12 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 14px;">
                     <label style="font-size: 13px;">Email Address <span style="color: #ef4444;">*</span></label>
                     <div style="display: flex; gap: 8px;">
                         <input type="email" id="regEmail" placeholder="student@student.olfu.edu.ph" autocomplete="off"
-                            style="text-transform: lowercase; flex: 1;" oninput="this.value = this.value.toLowerCase()" required>
+                            style="text-transform: lowercase; flex: 1;" oninput="this.value = this.value.toLowerCase()"
+                            required>
                         <button type="button" id="btnSendOtp" onclick="handleSendRegistrationOtp()"
                             style="padding: 0 16px; background: rgba(69, 124, 82, 0.2); border: 1px solid var(--matrix-green); color: #4ade80; border-radius: 12px; font-weight: 600; font-size: 13px; font-family: 'Poppins', sans-serif; cursor: pointer; white-space: nowrap; transition: all 0.2s;">
                             Send Code
@@ -2793,45 +2883,50 @@
                     </div>
                 </div>
 
-                <div class="form-group" id="otpGroup" style="margin-bottom: 16px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <label style="font-size: 13px; margin-bottom: 0;">Verification Code <span style="color: #ef4444;">*</span></label>
+                <div class="form-group" id="otpGroup" style="margin-bottom: 14px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="font-size: 13px; margin-bottom: 0;">Verification Code <span
+                                style="color: #ef4444;">*</span></label>
                         <span id="otpStatusHint" style="font-size: 12px; color: var(--text-muted);">6-digit code</span>
                     </div>
-                    <input type="text" id="regOtp" placeholder="Enter 6-digit code" maxlength="6" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}"
+                    <input type="text" id="regOtp" placeholder="Enter 6-digit code" maxlength="6"
+                        autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}"
                         style="letter-spacing: 4px; font-size: 15px; font-weight: 600; text-align: center;" required>
                 </div>
 
-                <div class="form-group">
-                    <label>Password</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password"
-                            required>
-                        <button type="button" class="btn-eye" aria-label="Toggle password visibility"
-                            onclick="togglePasswordVisibility('regPassword', 'eyeIconReg')">
-                            <svg width="20" height="20" id="eyeIconReg">
-                                <use href="#icon-eye"></use>
-                            </svg>
-                        </button>
+                <div class="modal-password-grid">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 13px;">Password <span style="color: #ef4444;">*</span></label>
+                        <div class="password-wrapper">
+                            <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password"
+                                required>
+                            <button type="button" class="btn-eye" aria-label="Toggle password visibility"
+                                onclick="togglePasswordVisibility('regPassword', 'eyeIconReg')">
+                                <svg width="20" height="20" id="eyeIconReg">
+                                    <use href="#icon-eye"></use>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label>Confirm Password</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="regConfirmPassword" placeholder="••••••••"
-                            autocomplete="new-password" required>
-                        <button type="button" class="btn-eye" aria-label="Toggle confirm password visibility"
-                            onclick="togglePasswordVisibility('regConfirmPassword', 'eyeIconRegConfirm')">
-                            <svg width="20" height="20" id="eyeIconRegConfirm">
-                                <use href="#icon-eye"></use>
-                            </svg>
-                        </button>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 13px;">Confirm Password <span style="color: #ef4444;">*</span></label>
+                        <div class="password-wrapper">
+                            <input type="password" id="regConfirmPassword" placeholder="••••••••"
+                                autocomplete="new-password" required>
+                            <button type="button" class="btn-eye" aria-label="Toggle confirm password visibility"
+                                onclick="togglePasswordVisibility('regConfirmPassword', 'eyeIconRegConfirm')">
+                                <svg width="20" height="20" id="eyeIconRegConfirm">
+                                    <use href="#icon-eye"></use>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <div class="demo-box"
-                    style="background: rgba(74, 222, 128, 0.05); border: 1px solid rgba(74, 222, 128, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 24px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                    style="background: rgba(74, 222, 128, 0.05); border: 1px solid rgba(74, 222, 128, 0.2); border-radius: 8px; padding: 10px 14px; margin-bottom: 18px; font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">
                     After registering, you will complete a <span
                         style="color: var(--matrix-green); font-weight: 600;">Pre-Assessment Questionnaire</span> to
                     generate your initial learning quadrant profile.
@@ -3081,7 +3176,7 @@
                 document.getElementById('forgotStep2Form').style.display = 'block';
                 document.getElementById('forgotModalTitle').textContent = 'Enter Code & New Password';
                 document.getElementById('forgotModalSubtitle').textContent = `Verification code sent to ${email}`;
-                
+
                 const otpInput = document.getElementById('forgotOtp');
                 if (otpInput) {
                     otpInput.value = '';

@@ -1009,11 +1009,15 @@
         </div>
         <h3 style="font-size: 22px; margin-bottom: 2px;">Assessment Complete!</h3>
         <p style="color: var(--text-muted); font-size: 13.5px; margin-top: 4px; margin-bottom: 4px;">Your Learning Mode is:</p>
-        <div class="result-mode" id="final-mode" style="font-size: 26px; margin-bottom: 16px;">Loading...</div>
+        <div class="result-mode" id="final-mode" style="font-size: 26px; margin-bottom: 8px;">Loading...</div>
+
+        <p id="mode-description"
+            style="max-width: 720px; font-size: 13.5px; margin: 0 auto 20px auto; color: var(--text-muted); line-height: 1.55;">
+        </p>
 
         <!-- 2-COLUMN SIDE-BY-SIDE DUAL-MODEL CONTAINER -->
         <div class="quadrant-card" id="quadrant-card-container"
-            style="display: none; width: 100%; max-width: 960px; margin: 0 auto 16px auto; padding: 20px 24px; text-align: left;">
+            style="display: none; width: 100%; max-width: 960px; margin: 0 auto 20px auto; padding: 20px 24px; text-align: left;">
             <div class="dual-model-grid">
                 <!-- MODEL 1: RELATIVE PROFILE (100% SHARE) -->
                 <div class="dual-model-col">
@@ -1042,10 +1046,6 @@
                 </div>
             </div>
         </div>
-
-        <p id="mode-description"
-            style="max-width: 720px; font-size: 13.5px; margin: 0 auto 18px; color: var(--text-muted); line-height: 1.55;">
-        </p>
 
         <button id="return-btn" class="btn-submit" style="padding: 12px 36px; font-size: 15px; border-radius: 10px; margin-bottom: 16px;" onclick="returnFromTest()">Return to Dashboard</button>
     </div>
@@ -1585,21 +1585,54 @@
 
                 // Fetch actual history for user if available to get exact mastery scores
                 let realMastery = null;
+                const qHi = urlParams.get('hi');
+                const qDi = urlParams.get('di');
+                const qHc = urlParams.get('hc');
+                const qDc = urlParams.get('dc');
+
+                if (qHi !== null && qDi !== null && qHc !== null && qDc !== null && 
+                    (Number(qHi) > 0 || Number(qDi) > 0 || Number(qHc) > 0 || Number(qDc) > 0)) {
+                    realMastery = {
+                        'Hierarchical Individual': Math.round(Number(qHi)),
+                        'Distributed Individual': Math.round(Number(qDi)),
+                        'Hierarchical Collective': Math.round(Number(qHc)),
+                        'Distributed Collective': Math.round(Number(qDc))
+                    };
+                }
+
                 const userRaw = localStorage.getItem('currentUser');
-                if (userRaw) {
+                if (!realMastery && userRaw) {
                     try {
                         const parsedUser = JSON.parse(userRaw);
                         const hRes = await fetch(`/api/students/${parsedUser.id}/history`);
                         if (hRes.ok) {
                             const hData = await hRes.json();
                             if (hData && hData.length > 0) {
-                                const lastH = hData[hData.length - 1];
-                                realMastery = {
-                                    'Hierarchical Individual': lastH.hi_mastery,
-                                    'Distributed Individual': lastH.di_mastery,
-                                    'Hierarchical Collective': lastH.hc_mastery,
-                                    'Distributed Collective': lastH.dc_mastery
-                                };
+                                let targetH = null;
+                                const reqHistoryId = urlParams.get('history_id');
+                                const reqStage = urlParams.get('stage');
+
+                                if (reqHistoryId) {
+                                    targetH = hData.find(h => String(h.id) === String(reqHistoryId));
+                                }
+                                if (!targetH && reqStage) {
+                                    const stageIdx = parseInt(reqStage, 10) - 1;
+                                    if (stageIdx >= 0 && stageIdx < hData.length) {
+                                        targetH = hData[stageIdx];
+                                    }
+                                }
+                                if (!targetH) {
+                                    targetH = hData.find(h => Math.abs(h.x_coord - finalX) < 0.05 && Math.abs(h.y_coord - finalY) < 0.05) || hData[hData.length - 1];
+                                }
+
+                                if (targetH) {
+                                    realMastery = {
+                                        'Hierarchical Individual': targetH.hi_mastery,
+                                        'Distributed Individual': targetH.di_mastery,
+                                        'Hierarchical Collective': targetH.hc_mastery,
+                                        'Distributed Collective': targetH.dc_mastery
+                                    };
+                                }
                             }
                         }
                     } catch (e) {}

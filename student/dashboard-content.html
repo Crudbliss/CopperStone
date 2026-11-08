@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap"
         rel="stylesheet">
     <style>
         /* --- CSS VARIABLES & THEME --- */
@@ -123,7 +124,8 @@
             gap: 14px;
         }
 
-        .dominant-mode-icon, .weakest-mode-icon {
+        .dominant-mode-icon,
+        .weakest-mode-icon {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -698,7 +700,8 @@
                 gap: 4px;
             }
 
-            .dominant-mode-box, .weakest-mode-box {
+            .dominant-mode-box,
+            .weakest-mode-box {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 8px;
@@ -736,8 +739,15 @@
         }
 
         @keyframes certModalIn {
-            from { opacity: 0; transform: translateY(16px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(16px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .cert-modal-header {
@@ -863,9 +873,15 @@
             body * {
                 visibility: hidden;
             }
-            .cert-modal-backdrop, .cert-modal-dialog, .cert-sheet-wrapper, .cert-sheet, .cert-sheet * {
+
+            .cert-modal-backdrop,
+            .cert-modal-dialog,
+            .cert-sheet-wrapper,
+            .cert-sheet,
+            .cert-sheet * {
                 visibility: visible;
             }
+
             .cert-modal-backdrop {
                 position: fixed;
                 left: 0;
@@ -879,9 +895,13 @@
                 align-items: center;
                 justify-content: center;
             }
-            .cert-modal-header, .btn-cert-action, .btn-cert-close {
+
+            .cert-modal-header,
+            .btn-cert-action,
+            .btn-cert-close {
                 display: none !important;
             }
+
             .cert-modal-dialog {
                 box-shadow: none;
                 border: none;
@@ -893,6 +913,7 @@
                 align-items: center;
                 justify-content: center;
             }
+
             .cert-sheet-wrapper {
                 background: #ffffff;
                 padding: 0;
@@ -903,6 +924,7 @@
                 align-items: center;
                 justify-content: center;
             }
+
             .cert-sheet {
                 box-shadow: none;
                 width: 100vw;
@@ -913,11 +935,13 @@
                 margin: 0;
                 page-break-after: avoid;
             }
+
             .cert-bg-img {
                 width: 100%;
                 height: 100%;
                 object-fit: contain;
             }
+
             .cert-recipient-name {
                 font-size: clamp(18pt, 2.8vw, 30pt);
                 top: 44.8%;
@@ -926,6 +950,7 @@
                 overflow: visible;
                 text-overflow: clip;
             }
+
             @page {
                 size: A4 landscape;
                 margin: 0;
@@ -1059,8 +1084,10 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <div class="eyebrow-muted" id="dist-card-title" style="margin-bottom: 0;">QUADRANT MASTERY</div>
                 <div class="dist-toggle-group">
-                    <button class="dist-toggle-btn active" id="btn-view-mastery" onclick="setDistViewMode('mastery')">Mastery</button>
-                    <button class="dist-toggle-btn" id="btn-view-distribution" onclick="setDistViewMode('distribution')">Distribution</button>
+                    <button class="dist-toggle-btn active" id="btn-view-mastery"
+                        onclick="setDistViewMode('mastery')">Mastery</button>
+                    <button class="dist-toggle-btn" id="btn-view-distribution"
+                        onclick="setDistViewMode('distribution')">Distribution</button>
                 </div>
             </div>
 
@@ -1104,29 +1131,35 @@
                 </div>
                 <div class="cert-btn-group">
                     <button type="button" class="btn-cert-action" onclick="printCertificate()">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <polyline points="6 9 6 2 18 2 18 9"></polyline>
                             <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
                             <rect x="6" y="14" width="12" height="8"></rect>
                         </svg>
                         <span>Print / Save PDF</span>
                     </button>
-                    <button type="button" class="btn-cert-action" onclick="downloadCertificateImage()" style="background: rgba(56, 189, 248, 0.15); color: var(--matrix-blue); border: 1px solid rgba(56, 189, 248, 0.3);">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <button type="button" class="btn-cert-action" onclick="downloadCertificateImage()"
+                        style="background: rgba(56, 189, 248, 0.15); color: var(--matrix-blue); border: 1px solid rgba(56, 189, 248, 0.3);">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="7 10 12 15 17 10"></polyline>
                             <line x1="12" y1="15" x2="12" y2="3"></line>
                         </svg>
                         <span>Download HD (PNG)</span>
                     </button>
-                    <button type="button" class="btn-cert-close" onclick="closeCertificateModal()">&times; Close</button>
+                    <button type="button" class="btn-cert-close" onclick="closeCertificateModal()">&times;
+                        Close</button>
                 </div>
             </div>
 
             <div class="cert-sheet-wrapper">
                 <div class="cert-sheet" id="printable-cert-sheet">
                     <!-- High-Res Certificate Template Base Image (Exact Canva layout) -->
-                    <img src="../public/certificates/cert_template_base.png" onerror="if(!this.dataset.tried){this.dataset.tried='1';this.src='/public/certificates/cert_template_base.png';}" alt="Official Certificate of Completion" class="cert-bg-img" />
+                    <img src="../public/certificates/cert_template_base.png"
+                        onerror="if(!this.dataset.tried){this.dataset.tried='1';this.src='/public/certificates/cert_template_base.png';}"
+                        alt="Official Certificate of Completion" class="cert-bg-img" />
 
                     <!-- Dynamic Recipient Name Overlay -->
                     <div class="cert-recipient-overlay">
@@ -1276,10 +1309,10 @@
 
             // 4. Card 2: Active Learning Roadmap (Target Quadrant & Module Progress)
             const modesList = [
-                { key: 'HI', name: 'Hierarchical Individual', short: 'H. Individual', pct: pcts.HI, iconSvg: svgIcons.HI, color: 'var(--matrix-green)' },
-                { key: 'HC', name: 'Hierarchical Collective', short: 'H. Collective', pct: pcts.HC, iconSvg: svgIcons.HC, color: 'var(--matrix-orange)' },
-                { key: 'DI', name: 'Distributed Individual', short: 'D. Individual', pct: pcts.DI, iconSvg: svgIcons.DI, color: 'var(--matrix-blue)' },
-                { key: 'DC', name: 'Distributed Collective', short: 'D. Collective', pct: pcts.DC, iconSvg: svgIcons.DC, color: 'var(--matrix-purple)' }
+                { key: 'HI', name: 'Hierarchical Individual', short: 'Hierarchical Individual', pct: pcts.HI, iconSvg: svgIcons.HI, color: 'var(--matrix-green)' },
+                { key: 'HC', name: 'Hierarchical Collective', short: 'Hierarchical Collective', pct: pcts.HC, iconSvg: svgIcons.HC, color: 'var(--matrix-orange)' },
+                { key: 'DI', name: 'Distributed Individual', short: 'Distributed Individual', pct: pcts.DI, iconSvg: svgIcons.DI, color: 'var(--matrix-blue)' },
+                { key: 'DC', name: 'Distributed Collective', short: 'Distributed Collective', pct: pcts.DC, iconSvg: svgIcons.DC, color: 'var(--matrix-purple)' }
             ].sort((a, b) => a.pct - b.pct);
 
             const lowest = modesList[0]; // Target Quadrant is the lowest (weakest) quadrant
@@ -1476,10 +1509,10 @@
             if (currentDistView === 'mastery') {
                 const mastery = cachedMastery || cachedPcts;
                 const modes = [
-                    { key: 'HI', name: 'Hierarchical Individual', short: 'H. Individual', score: mastery.HI, iconSvg: svgIcons.HI, colorClass: 'green' },
-                    { key: 'HC', name: 'Hierarchical Collective', short: 'H. Collective', score: mastery.HC, iconSvg: svgIcons.HC, colorClass: 'orange' },
-                    { key: 'DI', name: 'Distributed Individual', short: 'D. Individual', score: mastery.DI, iconSvg: svgIcons.DI, colorClass: 'blue' },
-                    { key: 'DC', name: 'Distributed Collective', short: 'D. Collective', score: mastery.DC, iconSvg: svgIcons.DC, colorClass: 'purple' }
+                    { key: 'HI', name: 'Hierarchical Individual', short: 'Hierarchical Individual', score: mastery.HI, iconSvg: svgIcons.HI, colorClass: 'green' },
+                    { key: 'HC', name: 'Hierarchical Collective', short: 'Hierarchical Collective', score: mastery.HC, iconSvg: svgIcons.HC, colorClass: 'orange' },
+                    { key: 'DI', name: 'Distributed Individual', short: 'Distributed Individual', score: mastery.DI, iconSvg: svgIcons.DI, colorClass: 'blue' },
+                    { key: 'DC', name: 'Distributed Collective', short: 'Distributed Collective', score: mastery.DC, iconSvg: svgIcons.DC, colorClass: 'purple' }
                 ];
 
                 let html = '';
@@ -1489,7 +1522,7 @@
                             <div class="dist-row-top">
                                 <div class="dist-label-left">
                                     <span style="display: flex; align-items: center; color: var(--matrix-${m.colorClass});">${m.iconSvg}</span>
-                                    <span>${m.key === 'HC' || m.key === 'DI' ? m.short : m.name}</span>
+                                    <span>${m.name}</span>
                                 </div>
                                 <span class="dist-val-pct" style="color: #ffffff; font-weight: 800;">${m.score}%</span>
                             </div>
@@ -1507,10 +1540,10 @@
                 // Relative Share Distribution View
                 const pcts = cachedPcts;
                 const modes = [
-                    { key: 'HI', name: 'Hierarchical Individual', short: 'H. Individual', pct: pcts.HI, iconSvg: svgIcons.HI, colorClass: 'green' },
-                    { key: 'HC', name: 'Hierarchical Collective', short: 'H. Collective', pct: pcts.HC, iconSvg: svgIcons.HC, colorClass: 'orange' },
-                    { key: 'DI', name: 'Distributed Individual', short: 'D. Individual', pct: pcts.DI, iconSvg: svgIcons.DI, colorClass: 'blue' },
-                    { key: 'DC', name: 'Distributed Collective', short: 'D. Collective', pct: pcts.DC, iconSvg: svgIcons.DC, colorClass: 'purple' }
+                    { key: 'HI', name: 'Hierarchical Individual', short: 'Hierarchical Individual', pct: pcts.HI, iconSvg: svgIcons.HI, colorClass: 'green' },
+                    { key: 'HC', name: 'Hierarchical Collective', short: 'Hierarchical Collective', pct: pcts.HC, iconSvg: svgIcons.HC, colorClass: 'orange' },
+                    { key: 'DI', name: 'Distributed Individual', short: 'Distributed Individual', pct: pcts.DI, iconSvg: svgIcons.DI, colorClass: 'blue' },
+                    { key: 'DC', name: 'Distributed Collective', short: 'Distributed Collective', pct: pcts.DC, iconSvg: svgIcons.DC, colorClass: 'purple' }
                 ];
 
                 let highest = modes[0];
@@ -1541,7 +1574,7 @@
                             <div class="dist-row-top">
                                 <div class="dist-label-left">
                                     <span style="display: flex; align-items: center; color: var(--matrix-${m.colorClass});">${m.iconSvg}</span>
-                                    <span>${m.key === 'HC' || m.key === 'DI' ? m.short : m.name}</span>
+                                    <span>${m.name}</span>
                                     ${badgeHtml}
                                 </div>
                                 <span class="dist-val-pct ${pctClass}">${m.pct}% share</span>
@@ -1759,7 +1792,7 @@
             try {
                 const userStr = localStorage.getItem('currentUser');
                 if (userStr) user = JSON.parse(userStr);
-            } catch(e) {}
+            } catch (e) { }
 
             const fullName = user ? `${user.name || user.first_name || 'STUDENT'} ${user.last_name || ''}`.trim().toUpperCase() : 'MATRIX GUDIPIPI';
             const certCode = user ? `MTX-OLFU-${user.id || '1'}-${(user.student_no ? user.student_no.replace(/[^0-9]/g, '') : '2026')}` : 'MTX-OLFU-2026-001';
@@ -1808,10 +1841,10 @@
         function downloadCertificateImage() {
             const nameEl = document.getElementById('cert-student-name');
             const studentName = nameEl ? nameEl.textContent.trim() : 'STUDENT';
-            
+
             const img = new Image();
             img.crossOrigin = 'anonymous';
-            img.onload = function() {
+            img.onload = function () {
                 const canvas = document.createElement('canvas');
                 canvas.width = img.naturalWidth || 3510;
                 canvas.height = img.naturalHeight || 2482;
@@ -1843,7 +1876,7 @@
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             };
-            img.onerror = function() {
+            img.onerror = function () {
                 if (!img.triedRoot) {
                     img.triedRoot = true;
                     img.src = '/public/certificates/cert_template_base.png';
