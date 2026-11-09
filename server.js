@@ -1050,7 +1050,7 @@ function formatName(str) {
 
 // POST /api/students/register - Register a new student
 app.post('/api/students/register', async (req, res) => {
-    let { student_no, first_name, last_name, mi, program, year_level, section, email, password, otp } = req.body;
+    let { student_no, first_name, last_name, mi, program, year_level, section, email, password, otp, admin_bypass } = req.body;
     
     // Basic validation
     if (!first_name || !last_name || !email || !password) {
@@ -1070,30 +1070,32 @@ app.post('/api/students/register', async (req, res) => {
         return res.status(400).json({ error: 'Last name cannot contain numbers.' });
     }
 
-    // Verify OTP Code
-    if (!otp || String(otp).trim() === '') {
-        return res.status(400).json({ error: 'Please enter the 6-digit email verification code.' });
-    }
-
-    const storedOtp = registrationOtpStore.get(email);
-    if (!storedOtp) {
-        return res.status(400).json({ error: 'Please request a verification code for this email first.' });
-    }
-    if (Date.now() > storedOtp.expiresAt) {
-        registrationOtpStore.delete(email);
-        return res.status(400).json({ error: 'Verification code has expired. Please request a new code.' });
-    }
-    if (storedOtp.code !== String(otp).trim()) {
-        storedOtp.attempts = (storedOtp.attempts || 0) + 1;
-        if (storedOtp.attempts >= 5) {
-            registrationOtpStore.delete(email);
-            return res.status(400).json({ error: 'Too many incorrect attempts. Please request a new code.' });
+    // Verify OTP Code — skip if request comes from admin (admin_bypass flag)
+    if (!admin_bypass) {
+        if (!otp || String(otp).trim() === '') {
+            return res.status(400).json({ error: 'Please enter the 6-digit email verification code.' });
         }
-        return res.status(400).json({ error: 'Incorrect verification code. Please check your email or terminal.' });
-    }
 
-    // OTP successfully verified - consume it so it cannot be reused
-    registrationOtpStore.delete(email);
+        const storedOtp = registrationOtpStore.get(email);
+        if (!storedOtp) {
+            return res.status(400).json({ error: 'Please request a verification code for this email first.' });
+        }
+        if (Date.now() > storedOtp.expiresAt) {
+            registrationOtpStore.delete(email);
+            return res.status(400).json({ error: 'Verification code has expired. Please request a new code.' });
+        }
+        if (storedOtp.code !== String(otp).trim()) {
+            storedOtp.attempts = (storedOtp.attempts || 0) + 1;
+            if (storedOtp.attempts >= 5) {
+                registrationOtpStore.delete(email);
+                return res.status(400).json({ error: 'Too many incorrect attempts. Please request a new code.' });
+            }
+            return res.status(400).json({ error: 'Incorrect verification code. Please check your email or terminal.' });
+        }
+
+        // OTP successfully verified - consume it so it cannot be reused
+        registrationOtpStore.delete(email);
+    }
 
     // Format and validate optional Middle Initial (M.I.)
     if (mi && mi.trim() !== '') {

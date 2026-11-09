@@ -595,21 +595,86 @@
 
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            body { padding: 0; background-color: var(--bg-base); }
-            .container { padding: 14px 12px; min-height: 100vh; width: 100%; max-width: 100%; }
-            .top-navbar { flex-direction: row; justify-content: space-between; gap: 8px; margin-bottom: 20px; }
-            .logo-container { font-size: 16px; gap: 8px; }
-            .logo-container img { width: 26px; height: 26px; }
-            .pre-assessment-pill { font-size: 11px; padding: 4px 10px; }
-            .question-card { padding: 20px 14px; border-radius: 12px; }
-            .question-title { font-size: 15px; }
-            .answer-option { padding: 12px 14px; gap: 12px; font-size: 13.5px; }
-            .card-footer { flex-direction: column-reverse; gap: 10px; }
-            .btn-nav, .btn-submit { width: 100%; padding: 14px; text-align: center; justify-content: center; }
-            .quadrant-card { padding: 16px 12px; width: 100%; }
-            .quadrant-graph { max-width: 100%; aspect-ratio: 1 / 1; min-height: 240px; }
-            .result-mode { font-size: 22px; }
-            .fuzzy-bar-header { font-size: 12.5px; }
+            body {
+                padding: 0;
+                background-color: var(--bg-base);
+            }
+
+            .container {
+                padding: 14px 12px;
+                min-height: 100vh;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .top-navbar {
+                flex-direction: row;
+                justify-content: space-between;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+
+            .logo-container {
+                font-size: 16px;
+                gap: 8px;
+            }
+
+            .logo-container img {
+                width: 26px;
+                height: 26px;
+            }
+
+            .pre-assessment-pill {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+
+            .question-card {
+                padding: 20px 14px;
+                border-radius: 12px;
+            }
+
+            .question-title {
+                font-size: 15px;
+            }
+
+            .answer-option {
+                padding: 12px 14px;
+                gap: 12px;
+                font-size: 13.5px;
+            }
+
+            .card-footer {
+                flex-direction: column-reverse;
+                gap: 10px;
+            }
+
+            .btn-nav,
+            .btn-submit {
+                width: 100%;
+                padding: 14px;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .quadrant-card {
+                padding: 16px 12px;
+                width: 100%;
+            }
+
+            .quadrant-graph {
+                max-width: 100%;
+                aspect-ratio: 1 / 1;
+                min-height: 240px;
+            }
+
+            .result-mode {
+                font-size: 22px;
+            }
+
+            .fuzzy-bar-header {
+                font-size: 12.5px;
+            }
         }
 
         /* --- 7 DIMENSIONS STEPPER STYLES --- */
@@ -814,8 +879,15 @@
         }
 
         @keyframes fadeInToast {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .milestone-toast-text {
@@ -835,6 +907,7 @@
                 overflow-x: auto;
                 padding-bottom: 4px;
             }
+
             .dim-pill {
                 min-width: 78px;
                 flex: 0 0 auto;
@@ -913,8 +986,15 @@
         }
 
         @keyframes fadeInHelp {
-            from { opacity: 0; transform: translateY(-4px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .contextual-help-inner {
@@ -950,7 +1030,8 @@
                 MATRIX
             </div>
             <div class="pre-assessment-pill" id="session-pill">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
                     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                     <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                 </svg>
@@ -962,7 +1043,8 @@
         <div class="dimension-stepper-wrapper">
             <div class="dimension-stepper-header">
                 <span style="display: flex; align-items: center; gap: 6px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                         <polyline points="2 17 12 22 22 17"></polyline>
                         <polyline points="2 12 12 17 22 12"></polyline>
@@ -981,7 +1063,8 @@
                 <span>Overall Assessment Progress</span>
                 <span id="progress-pct" aria-live="polite">0% complete</span>
             </div>
-            <div class="progress-track" role="progressbar" id="progress-bar-track" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Assessment completion progress">
+            <div class="progress-track" role="progressbar" id="progress-bar-track" aria-valuemin="0" aria-valuemax="100"
+                aria-valuenow="0" aria-label="Assessment completion progress">
                 <div class="progress-fill" id="progress-fill" style="background-color: var(--matrix-blue);"></div>
             </div>
         </div>
@@ -1001,18 +1084,22 @@
     </div>
 
     <div id="result-screen">
-        <div class="result-icon" style="display: flex; justify-content: center; align-items: center; margin-bottom: 10px;">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--matrix-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="result-icon"
+            style="display: flex; justify-content: center; align-items: center; margin-bottom: 10px;">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--matrix-green)" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
             </svg>
         </div>
         <h3 style="font-size: 22px; margin-bottom: 2px;">Assessment Complete!</h3>
-        <p style="color: var(--text-muted); font-size: 13.5px; margin-top: 4px; margin-bottom: 4px;">Your Learning Mode is:</p>
+        <p style="color: var(--text-muted); font-size: 13.5px; margin-top: 4px; margin-bottom: 4px;">Your Learning Mode
+            is:</p>
         <div class="result-mode" id="final-mode" style="font-size: 26px; margin-bottom: 8px;">Loading...</div>
 
-        <p id="mode-description"
-            style="max-width: 720px; font-size: 13.5px; margin: 0 auto 20px auto; color: var(--text-muted); line-height: 1.55;">
+        <p id="mode-description" style="max-width: 720px; font-size: 13.5px; margin: 0 auto 20px auto; color: #ffffff; line-height: 1.55;
+                   background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+                   border-radius: 12px; padding: 14px 20px; display: none;">
         </p>
 
         <!-- 2-COLUMN SIDE-BY-SIDE DUAL-MODEL CONTAINER -->
@@ -1021,11 +1108,15 @@
             <div class="dual-model-grid">
                 <!-- MODEL 1: RELATIVE PROFILE (100% SHARE) -->
                 <div class="dual-model-col">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span
+                            style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;">
                             1. LEARNING MODE PROFILE (RELATIVE SHARE)
                         </span>
-                        <span style="font-size: 10px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 2px 7px; border-radius: 6px;">Total 100%</span>
+                        <span
+                            style="font-size: 10px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 2px 7px; border-radius: 6px;">Total
+                            100%</span>
                     </div>
                     <div id="fuzzy-bars-container">
                         <!-- Profile Bars injected here -->
@@ -1034,11 +1125,15 @@
 
                 <!-- MODEL 2: INDEPENDENT MASTERY (0%-100%) -->
                 <div class="dual-model-col">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <span style="font-size: 11px; font-weight: 800; color: var(--matrix-green); letter-spacing: 1px; text-transform: uppercase;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span
+                            style="font-size: 11px; font-weight: 800; color: var(--matrix-green); letter-spacing: 1px; text-transform: uppercase;">
                             2. QUADRANT MASTERY
                         </span>
-                        <span style="font-size: 10px; color: var(--matrix-blue); font-weight: 700; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56,189,248,0.3); padding: 2px 7px; border-radius: 6px;">Evaluated Mastery</span>
+                        <span
+                            style="font-size: 10px; color: var(--matrix-blue); font-weight: 700; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56,189,248,0.3); padding: 2px 7px; border-radius: 6px;">Evaluated
+                            Mastery</span>
                     </div>
                     <div id="mastery-bars-container">
                         <!-- Independent Mastery Bars injected here -->
@@ -1047,7 +1142,9 @@
             </div>
         </div>
 
-        <button id="return-btn" class="btn-submit" style="padding: 12px 36px; font-size: 15px; border-radius: 10px; margin-bottom: 16px;" onclick="returnFromTest()">Return to Dashboard</button>
+        <button id="return-btn" class="btn-submit"
+            style="padding: 12px 36px; font-size: 15px; border-radius: 10px; margin-bottom: 16px;"
+            onclick="returnFromTest()">Return to Dashboard</button>
     </div>
 
     <script>
@@ -1057,183 +1154,183 @@
         // 28 Questions grouped and ordered with default contextual explanations
         let surveyQuestions = [
             // 1. How does learning occur? (Old 5)
-            { 
-                title: "How does learning occur?", 
-                q: "DC", 
+            {
+                title: "How does learning occur?",
+                q: "DC",
                 text: "Learning occurs when individuals engage in activities that have meaning to them and contribute to their own as well as a communal knowledge base.",
                 contextual_help: "In this question, this means learning happens through collaborative, meaningful projects where your work contributes to a shared knowledge base for everyone."
             },
-            { 
-                title: "How does learning occur?", 
-                q: "HI", 
+            {
+                title: "How does learning occur?",
+                q: "HI",
                 text: "Learning occurs when experts provide scaffolding and sequencing to build knowledge and skill.",
                 contextual_help: "In this question, this means learning is best achieved through structured, step-by-step guidance provided by a teacher, syllabus, or subject expert."
             },
-            { 
-                title: "How does learning occur?", 
-                q: "DI", 
+            {
+                title: "How does learning occur?",
+                q: "DI",
                 text: "Learning occurs when individuals have to make sense of competing and diverse sources of knowledge, skill and expertise.",
                 contextual_help: "In this question, this means you learn most effectively when researching diverse resources independently and forming your own conclusions."
             },
-            { 
-                title: "How does learning occur?", 
-                q: "HC", 
+            {
+                title: "How does learning occur?",
+                q: "HC",
                 text: "Learning occurs through socialization by participating in a community with strong, clear values and norms.",
                 contextual_help: "In this question, this means learning happens by absorbing shared standards, traditions, and collective discipline within an organized class or school."
             },
 
             // 2. What is the definition of learning? (Old 6)
-            { 
-                title: "What is the definition of learning?", 
-                q: "DC", 
+            {
+                title: "What is the definition of learning?",
+                q: "DC",
                 text: "Learning is a collective activity requiring cooperation among people with diverse knowledge and skills.",
                 contextual_help: "In this question, this means learning is defined as an open team effort where people with different skills solve problems together."
             },
-            { 
-                title: "What is the definition of learning?", 
-                q: "DI", 
+            {
+                title: "What is the definition of learning?",
+                q: "DI",
                 text: "Learning is an innate biological imperative that is driven by individual interests.",
                 contextual_help: "In this question, this means learning is a natural personal drive that works best when fueled by your own curiosity and personal passions."
             },
-            { 
-                title: "What is the definition of learning?", 
-                q: "HC", 
+            {
+                title: "What is the definition of learning?",
+                q: "HC",
                 text: "Learning is a social activity guided by experts who create learning opportunities.",
                 contextual_help: "In this question, this means learning is structured group education directed by teachers who design lessons and activities for the class."
             },
-            { 
-                title: "What is the definition of learning?", 
-                q: "HI", 
+            {
+                title: "What is the definition of learning?",
+                q: "HI",
                 text: "Learning is the transfer of knowledge and skill from an expert to a novice.",
                 contextual_help: "In this question, this means learning is the direct transfer of curriculum facts, techniques, and syllabus concepts from instructor to student."
             },
 
             // 3. What constitutes successful learning? (Old 7)
-            { 
-                title: "What constitutes successful learning?", 
-                q: "DI", 
+            {
+                title: "What constitutes successful learning?",
+                q: "DI",
                 text: "Successful learning can only be defined by the individual learner.",
                 contextual_help: "In this question, this means success is measured by your own personal milestones and self-satisfaction rather than external grades."
             },
-            { 
-                title: "What constitutes successful learning?", 
-                q: "DC", 
+            {
+                title: "What constitutes successful learning?",
+                q: "DC",
                 text: "Successful learning means an exchange of ideas among learners in a community.",
                 contextual_help: "In this question, this means learning is successful when peers openly debate, share insights, and co-create solutions together."
             },
-            { 
-                title: "What constitutes successful learning?", 
-                q: "HI", 
+            {
+                title: "What constitutes successful learning?",
+                q: "HI",
                 text: "Successful learning is expressed via certification or recognition from an institution or expert.",
                 contextual_help: "In this question, this means success is proven by passing grades, official certificates, degrees, and academic credentials."
             },
-            { 
-                title: "What constitutes successful learning?", 
-                q: "HC", 
+            {
+                title: "What constitutes successful learning?",
+                q: "HC",
                 text: "Successful learning is expressed via recognition by and positive participation in a community.",
                 contextual_help: "In this question, this means success is reflected in being a reliable teammate, contributing to group harmony, and earning peer respect."
             },
 
             // 4. What is the purpose of learning? (Old 1)
-            { 
-                title: "What is the purpose of learning?", 
-                q: "HI", 
+            {
+                title: "What is the purpose of learning?",
+                q: "HI",
                 text: "The purpose of learning is to gain access to knowledge that is valued in society.",
                 contextual_help: "In this question, this means education exists to help you acquire standard academic and industry skills that society rewards."
             },
-            { 
-                title: "What is the purpose of learning?", 
-                q: "DC", 
+            {
+                title: "What is the purpose of learning?",
+                q: "DC",
                 text: "The purpose of learning is to know how to participate in a community with others of diverse, competing, and broadly distributed viewpoints.",
                 contextual_help: "In this question, this means education prepares you to engage with diverse perspectives and collaborate across different viewpoints."
             },
-            { 
-                title: "What is the purpose of learning?", 
-                q: "DI", 
+            {
+                title: "What is the purpose of learning?",
+                q: "DI",
                 text: "The purpose of learning is to live up to one's unique individual potential.",
                 contextual_help: "In this question, this means the main goal of learning is personal growth, self-actualization, and developing your unique talents."
             },
-            { 
-                title: "What is the purpose of learning?", 
-                q: "HC", 
+            {
+                title: "What is the purpose of learning?",
+                q: "HC",
                 text: "The purpose of learning is to socialize citizens for participation in democracy.",
                 contextual_help: "In this question, this means the primary purpose of education is building civic character, social responsibility, and community values."
             },
 
             // 5. What is worth learning? (Old 2)
-            { 
-                title: "What is worth learning?", 
-                q: "DC", 
+            {
+                title: "What is worth learning?",
+                q: "DC",
                 text: "What is worth learning is determined by communities that are formed around mutual interest.",
                 contextual_help: "In this question, this means what matters most is determined by active peer communities working on shared real-world interests."
             },
-            { 
-                title: "What is worth learning?", 
-                q: "DI", 
+            {
+                title: "What is worth learning?",
+                q: "DI",
                 text: "What is worth learning can only be determined by the individual for her/himself.",
                 contextual_help: "In this question, this means each student should decide what topics or skills are meaningful according to their own ambitions."
             },
-            { 
-                title: "What is worth learning?", 
-                q: "HC", 
+            {
+                title: "What is worth learning?",
+                q: "HC",
                 text: "What is worth learning are the knowledge and skills necessary to be an effective participant in a democratic society.",
                 contextual_help: "In this question, this means valuable learning centers on civic duty, social responsibility, and shared community benefits."
             },
-            { 
-                title: "What is worth learning?", 
-                q: "HI", 
+            {
+                title: "What is worth learning?",
+                q: "HI",
                 text: "What is worth learning is measured by clear standards and assessments.",
                 contextual_help: "In this question, this means essential knowledge consists of established curriculum benchmarks, rubrics, and formal tests."
             },
 
             // 6. How do people learn best? (Old 3)
-            { 
-                title: "How do people learn best?", 
-                q: "DC", 
+            {
+                title: "How do people learn best?",
+                q: "DC",
                 text: "People learn best when motivated by pursuing shared interests, values, and preferences with others.",
                 contextual_help: "In this question, this means you learn best in collaborative study groups, project teams, and mutual interest circles."
             },
-            { 
-                title: "How do people learn best?", 
-                q: "DI", 
+            {
+                title: "How do people learn best?",
+                q: "DI",
                 text: "People learn best when they make individual choices about what they learn.",
                 contextual_help: "In this question, this means you learn best when you have freedom to choose your own study paths, topics, and pacing."
             },
-            { 
-                title: "How do people learn best?", 
-                q: "HI", 
+            {
+                title: "How do people learn best?",
+                q: "HI",
                 text: "People learn best in educational institutions that provide them with competent teachers.",
                 contextual_help: "In this question, this means you learn best in an organized classroom environment led by experienced instructors."
             },
-            { 
-                title: "How do people learn best?", 
-                q: "HC", 
+            {
+                title: "How do people learn best?",
+                q: "HC",
                 text: "People learn best when they participate in a strong community with shared values about what to learn and how to learn.",
                 contextual_help: "In this question, this means you learn best in a close-knit cohort or community that shares united learning goals and values."
             },
 
             // 7. What are individuals responsible for in learning? (Old 4)
-            { 
-                title: "What are individuals responsible for in learning?", 
-                q: "HI", 
+            {
+                title: "What are individuals responsible for in learning?",
+                q: "HI",
                 text: "Individuals are responsible for acquiring the knowledge and skills that teachers and schools teach them.",
                 contextual_help: "In this question, this means as a student, your duty is to study assigned lessons, follow directions, and master the course syllabus."
             },
-            { 
-                title: "What are individuals responsible for in learning?", 
-                q: "DI", 
+            {
+                title: "What are individuals responsible for in learning?",
+                q: "DI",
                 text: "Individuals are responsible for initiating and choosing what and how they learn.",
                 contextual_help: "In this question, this means taking personal ownership of your education, finding learning resources, and directing your own growth."
             },
-            { 
-                title: "What are individuals responsible for in learning?", 
-                q: "DC", 
+            {
+                title: "What are individuals responsible for in learning?",
+                q: "DC",
                 text: "Individuals are responsible for joining networks or communities in order to learn what they want.",
                 contextual_help: "In this question, this means taking the initiative to join peer networks, seek feedback, and contribute to collaborative study groups."
             },
-            { 
-                title: "What are individuals responsible for in learning?", 
-                q: "HC", 
+            {
+                title: "What are individuals responsible for in learning?",
+                q: "HC",
                 text: "Individuals are responsible for playing an active role in supporting the learning and participation of others in their community.",
                 contextual_help: "In this question, this means your responsibility includes helping peers, contributing to group tasks, and supporting team success."
             }
@@ -1537,7 +1634,7 @@
                         }));
                     }
                 }
-            } catch(err) {
+            } catch (err) {
                 console.warn("Using default survey questions", err);
             }
         }
@@ -1570,12 +1667,12 @@
                 const resultScreen = document.getElementById('result-screen');
                 resultScreen.style.display = 'flex';
                 document.getElementById('final-mode').textContent = mode || 'See your profile for details';
-                
+
                 const xStr = urlParams.get('x');
                 const yStr = urlParams.get('y');
                 let finalX = xStr !== null && !isNaN(parseFloat(xStr)) ? parseFloat(xStr) : undefined;
                 let finalY = yStr !== null && !isNaN(parseFloat(yStr)) ? parseFloat(yStr) : undefined;
-                
+
                 if (finalX === undefined || finalY === undefined) {
                     if (mode === 'Hierarchical Individual') { finalX = -3; finalY = 3; }
                     else if (mode === 'Distributed Individual') { finalX = 3; finalY = 3; }
@@ -1590,7 +1687,7 @@
                 const qHc = urlParams.get('hc');
                 const qDc = urlParams.get('dc');
 
-                if (qHi !== null && qDi !== null && qHc !== null && qDc !== null && 
+                if (qHi !== null && qDi !== null && qHc !== null && qDc !== null &&
                     (Number(qHi) > 0 || Number(qDi) > 0 || Number(qHc) > 0 || Number(qDc) > 0)) {
                     realMastery = {
                         'Hierarchical Individual': Math.round(Number(qHi)),
@@ -1635,7 +1732,7 @@
                                 }
                             }
                         }
-                    } catch (e) {}
+                    } catch (e) { }
                 }
 
                 renderDualModelResults(mode, null, realMastery, finalX, finalY);
@@ -1753,7 +1850,7 @@
             const userStr = localStorage.getItem('currentUser');
             if (!userStr) { alert("You are not logged in!"); return; }
             let user = {};
-            try { user = JSON.parse(userStr); } catch (e) {}
+            try { user = JSON.parse(userStr); } catch (e) { }
             const studentId = user.id || user.student_id || 1;
 
             try {
@@ -1827,6 +1924,7 @@
             } else {
                 descEl.textContent = "Based on Elmore's framework, this is your optimal learning environment.";
             }
+            descEl.style.display = 'block';
 
             document.getElementById('quadrant-card-container').style.display = 'block';
 
@@ -1845,7 +1943,7 @@
             if (totalFuzzy < 10) {
                 let px = parseFloat(finalX !== undefined ? finalX : (mode === 'Hierarchical Individual' ? -3 : (mode === 'Distributed Individual' ? 3 : (mode === 'Hierarchical Collective' ? -3 : 3))));
                 let py = parseFloat(finalY !== undefined ? finalY : (mode === 'Hierarchical Individual' ? 3 : (mode === 'Distributed Individual' ? 3 : (mode === 'Hierarchical Collective' ? -3 : -3))));
-                
+
                 let normX = Math.max(0, Math.min(1, (px + 5) / 10));
                 let normY = Math.max(0, Math.min(1, (py + 5) / 10));
 
@@ -1853,7 +1951,7 @@
                 let DI = normX * normY;
                 let HC = (1 - normX) * (1 - normY);
                 let DC = normX * (1 - normY);
-                
+
                 let total = (HI + DI + HC + DC) || 1;
 
                 pHI = Math.round((HI / total) * 100);

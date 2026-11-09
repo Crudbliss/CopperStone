@@ -202,6 +202,11 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
             assert.strictEqual(successRes.status, 201, 'Valid OTP registration should succeed');
             const successData = await successRes.json();
             assert.strictEqual(successData.success, true);
+
+            // Clean up test student
+            if (successData.student_id) {
+                await fetch(`${BASE_URL}/api/students/${successData.student_id}`, { method: 'DELETE' });
+            }
         });
 
         it('should handle password reset with OTP verification and allow login with new password', async () => {
@@ -215,7 +220,7 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
             });
             const otpReqData = await otpReq.json();
 
-            await fetch(`${BASE_URL}/api/students/register`, {
+            const regRes = await fetch(`${BASE_URL}/api/students/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -226,6 +231,7 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
                     otp: otpReqData.dev_code
                 })
             });
+            const regData = await regRes.json();
 
             // Step 2: Request Password Reset OTP
             const forgotRes = await fetch(`${BASE_URL}/api/auth/send-reset-otp`, {
@@ -276,6 +282,11 @@ describe('ISO/IEC 25010 Software Quality Verification Suite', () => {
             assert.strictEqual(loginRes.status, 200, 'Login with new password must succeed');
             const loginData = await loginRes.json();
             assert.strictEqual(loginData.success, true);
+
+            // Clean up test student
+            if (regData && regData.student_id) {
+                await fetch(`${BASE_URL}/api/students/${regData.student_id}`, { method: 'DELETE' });
+            }
         });
 
         it('should authenticate admin with Admin@123 password and reject wrong passwords', async () => {
