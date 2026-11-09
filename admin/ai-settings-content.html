@@ -544,6 +544,28 @@
                 </div>
             </div>
 
+            <!-- Mathematical Classification Evaluation Metrics (Precision, Recall, F1-Score) -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                <div class="metric-card">
+                    <div class="metric-value" id="diag-precision" style="color: #38bdf8;">--%</div>
+                    <div class="metric-label">Precision Score</div>
+                    <div style="font-size: 11px; margin-top: 6px; font-weight: 600; color: var(--text-muted); font-family: monospace;">Precision = TP / (TP + FP)</div>
+                    <div id="diag-precision-sub" style="font-size: 11px; margin-top: 4px; color: var(--text-muted);"></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="diag-recall" style="color: #4ade80;">--%</div>
+                    <div class="metric-label">Recall Score</div>
+                    <div style="font-size: 11px; margin-top: 6px; font-weight: 600; color: var(--text-muted); font-family: monospace;">Recall = TP / (TP + FN)</div>
+                    <div id="diag-recall-sub" style="font-size: 11px; margin-top: 4px; color: var(--text-muted);"></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="diag-f1" style="color: #c084fc;">--%</div>
+                    <div class="metric-label">F1-Score</div>
+                    <div style="font-size: 11px; margin-top: 6px; font-weight: 600; color: var(--text-muted); font-family: monospace;">2 &times; (Precision &times; Recall) / (Precision + Recall)</div>
+                    <div id="diag-f1-sub" style="font-size: 11px; margin-top: 4px; color: var(--text-muted);"></div>
+                </div>
+            </div>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                 <div>
                     <h4 style="color: white; font-size: 14px; margin-bottom: 8px;">Feature Importance (Top 28)</h4>
@@ -1113,6 +1135,28 @@
                             rfStatusEl.innerHTML = '<span style="color: var(--matrix-green); font-weight: 700;">✓ Within ±5% Tolerance (≤ 0.05)</span>';
                         } else {
                             rfStatusEl.innerHTML = '<span style="color: var(--matrix-orange); font-weight: 700;">Δ Exceeds ±5% Target</span>';
+                        }
+                    }
+
+                    // Populate Precision, Recall, and F1-Score
+                    if (data.metrics.rf_precision !== undefined) {
+                        document.getElementById('diag-precision').textContent = data.metrics.rf_precision.toFixed(1) + '%';
+                        if (data.metrics.fknn_precision !== undefined) {
+                            document.getElementById('diag-precision-sub').textContent = `Random Forest: ${data.metrics.rf_precision.toFixed(1)}% | FKNN: ${data.metrics.fknn_precision.toFixed(1)}%`;
+                        }
+                    }
+
+                    if (data.metrics.rf_recall !== undefined) {
+                        document.getElementById('diag-recall').textContent = data.metrics.rf_recall.toFixed(1) + '%';
+                        if (data.metrics.fknn_recall !== undefined) {
+                            document.getElementById('diag-recall-sub').textContent = `Random Forest: ${data.metrics.rf_recall.toFixed(1)}% | FKNN: ${data.metrics.fknn_recall.toFixed(1)}%`;
+                        }
+                    }
+
+                    if (data.metrics.rf_f1 !== undefined) {
+                        document.getElementById('diag-f1').textContent = data.metrics.rf_f1.toFixed(1) + '%';
+                        if (data.metrics.fknn_f1 !== undefined) {
+                            document.getElementById('diag-f1-sub').textContent = `Random Forest: ${data.metrics.rf_f1.toFixed(1)}% | FKNN: ${data.metrics.fknn_f1.toFixed(1)}%`;
                         }
                     }
 

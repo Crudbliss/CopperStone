@@ -5,7 +5,7 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix, mean_squared_error
+from sklearn.metrics import accuracy_score, confusion_matrix, mean_squared_error, precision_score, recall_score, f1_score
 from sklearn.preprocessing import LabelBinarizer
 import json
 import sys
@@ -88,6 +88,20 @@ try:
     plt.close()
 
     # ==========================================
+    # CLASSIFICATION METRICS (Precision, Recall, F1-Score)
+    # Precision = TP / (TP + FP)
+    # Recall = TP / (TP + FN)
+    # F1-Score = 2 * (Precision * Recall) / (Precision + Recall)
+    # ==========================================
+    rf_precision = precision_score(y_test, rf_predictions, average='weighted', zero_division=0)
+    rf_recall = recall_score(y_test, rf_predictions, average='weighted', zero_division=0)
+    rf_f1 = f1_score(y_test, rf_predictions, average='weighted', zero_division=0)
+
+    knn_precision = precision_score(y_test, knn_predictions, average='weighted', zero_division=0)
+    knn_recall = recall_score(y_test, knn_predictions, average='weighted', zero_division=0)
+    knn_f1 = f1_score(y_test, knn_predictions, average='weighted', zero_division=0)
+
+    # ==========================================
     # JSON OUTPUT FOR NODE.JS
     # ==========================================
     output = {
@@ -98,6 +112,12 @@ try:
         "rf_mse_raw": float(rf_mse),
         "fknn_mse_raw": float(knn_mse),
         "mse_tolerance_met": bool(knn_mse <= 0.05),
+        "rf_precision": float(rf_precision * 100),
+        "rf_recall": float(rf_recall * 100),
+        "rf_f1": float(rf_f1 * 100),
+        "fknn_precision": float(knn_precision * 100),
+        "fknn_recall": float(knn_recall * 100),
+        "fknn_f1": float(knn_f1 * 100),
         "top_features": top_5,
         "sample_size": len(X),
         "test_size": len(X_test)
