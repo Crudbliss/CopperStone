@@ -2381,26 +2381,36 @@
             const hasAssessment = !!(studentProfile && studentProfile.learning_mode && studentProfile.learning_mode !== 'Unknown');
             
             let domModeName = hasAssessment ? studentProfile.learning_mode : "Distributed Individual";
-            
-            // Determine weakest quadrant based on lowest mastery percentage or opposite quadrant
+
+            // Compute distribution percentages from x_coord/y_coord (same logic as dashboard)
+            function getDistributionPcts(x, y) {
+                const normX = (x + 5) / 10;
+                const normY = (y + 5) / 10;
+                const HI = (1 - normX) * normY;
+                const DI = normX * normY;
+                const HC = (1 - normX) * (1 - normY);
+                const DC = normX * (1 - normY);
+                const total = (HI + DI + HC + DC) || 1;
+                return {
+                    'Hierarchical Individual': Math.round((HI / total) * 100),
+                    'Distributed Individual':  Math.round((DI / total) * 100),
+                    'Hierarchical Collective': Math.round((HC / total) * 100),
+                    'Distributed Collective':  Math.round((DC / total) * 100)
+                };
+            }
+
+            // Determine weakest quadrant based on lowest DISTRIBUTION share (consistent with dashboard)
             let weakestModeName = "Hierarchical Collective";
-            if (studentProfile) {
-                const scores = [
-                    { mode: 'Hierarchical Individual', score: Number(studentProfile.hi_mastery !== undefined ? studentProfile.hi_mastery : 100) },
-                    { mode: 'Distributed Individual', score: Number(studentProfile.di_mastery !== undefined ? studentProfile.di_mastery : 100) },
-                    { mode: 'Hierarchical Collective', score: Number(studentProfile.hc_mastery !== undefined ? studentProfile.hc_mastery : 100) },
-                    { mode: 'Distributed Collective', score: Number(studentProfile.dc_mastery !== undefined ? studentProfile.dc_mastery : 100) }
-                ];
-                // Check lowest score among non-dominant quadrants
-                const otherScores = scores.filter(s => s.mode !== domModeName);
-                otherScores.sort((a, b) => a.score - b.score);
-                if (otherScores.length > 0 && otherScores[0].score < 100) {
-                    weakestModeName = otherScores[0].mode;
-                } else if (studentProfile.weakest_learning_mode && studentProfile.weakest_learning_mode !== 'Unknown') {
-                    weakestModeName = studentProfile.weakest_learning_mode;
-                } else {
-                    weakestModeName = modeOpposites[domModeName] || "Hierarchical Collective";
-                }
+            if (studentProfile && studentProfile.x_coord !== undefined && studentProfile.y_coord !== undefined) {
+                const distPcts = getDistributionPcts(studentProfile.x_coord, studentProfile.y_coord);
+                const distScores = Object.entries(distPcts).map(([mode, pct]) => ({ mode, pct }));
+                distScores.sort((a, b) => a.pct - b.pct);
+                // Pick the lowest among ALL quadrants (including dominant — distribution treats all equally)
+                weakestModeName = distScores[0].mode;
+            } else if (studentProfile && studentProfile.weakest_learning_mode && studentProfile.weakest_learning_mode !== 'Unknown') {
+                weakestModeName = studentProfile.weakest_learning_mode;
+            } else {
+                weakestModeName = modeOpposites[domModeName] || "Hierarchical Collective";
             }
 
             const dominantConfig = quadrantConfig[domModeName] || quadrantConfig["Distributed Individual"];

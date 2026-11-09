@@ -1519,7 +1519,7 @@
                     `;
                 });
 
-                html += `<div class="dist-footnote" id="dist-footnote-text">Advance your mastery through modules &middot; Knowledge checks reinforce your learning</div>`;
+                html += `<div class="dist-footnote" id="dist-footnote-text">Independent quadrant scores from your latest assessment</div>`;
                 container.innerHTML = html;
 
             } else {
@@ -1570,10 +1570,7 @@
                     `;
                 });
 
-                const diff = 70 - lowest.pct;
-                const noteText = diff > 0
-                    ? `${diff}% below the 70% threshold &middot; focus on ${lowest.short}`
-                    : `All quadrants balanced above standard proficiency threshold`;
+                const noteText = `Assessment-based distribution · Focus on ${lowest.short}`;
 
                 html += `<div class="dist-footnote" id="dist-footnote-text">${noteText}</div>`;
                 container.innerHTML = html;
